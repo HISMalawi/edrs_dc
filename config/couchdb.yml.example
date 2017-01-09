@@ -1,0 +1,22 @@
+development: &development
+  protocol: 'http'
+  host: localhost
+  port: 5984
+  prefix: 
+  suffix: 
+  username: 
+  password: 
+  crtkey:
+  #facility_code: 
+  district_code:
+  exact_duplicate: true
+  duplicate_service_url: 'http://localhost:3008'
+
+test:
+  <<: *development
+  suffix: test
+
+production:
+  <<: *development
+  protocol: 'http'
+  suffix:

@@ -1,0 +1,21 @@
+:source:
+  :protocol: 'http'
+  :host: localhost
+  :port: '5984'
+  :primary:
+  :secondary:
+  :dashboard:
+  :sync:
+  :username: 
+  :password: 
+:target:
+  :protocol: 'http'
+  :host: localhost
+  :port: '5984'
+  :primary:
+  :secondary:
+  :dashboard:
+  :sync:
+  :username: 
+  :password: 
+  :bidirectional: false

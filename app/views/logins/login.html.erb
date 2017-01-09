@@ -1,0 +1,8 @@
+<%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
+    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username") %>
+
+    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password") %>
+
+    <input type="submit" value="Login">
+
+<% end %>

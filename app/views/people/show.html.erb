@@ -1,0 +1,90 @@
+<style type="text/css">
+	
+	table{
+
+		width: 98%;
+
+		margin: auto;
+
+		border-collapse :collapse;
+
+		//border : 1px solid black;
+
+	}
+
+	th{
+		font-size:2em;
+		text-align :left;
+		padding : 20px;
+		border-bottom :1px solid #ccc;
+	}
+
+	td{
+		
+		width :40%;
+		text-align :right;
+		border-bottom :1px dotted #ccc;
+		color :#333;
+		vertical-align :bottom;
+		font-size: 1.5em
+
+
+	}
+
+	#table_container{
+
+			height: calc(88% - 40px);
+
+			overflow-y: scroll;
+
+			margin-bottom : 0.3em
+
+	}
+
+	table tr:nth-child(odd) {
+
+		background-color:#eee;
+
+	}
+
+</style>
+
+<div style="font-size:2.2em; text-align:center; width: 100%; font-weight: bold;height:50px;background : #5d87ba; color:#ffffff ; margin-bottom : 0.1em; padding : 0.2em">
+	
+		Deceased person's Summary
+
+</div>
+
+<div id="table_container">
+	
+		<table >
+			<% @keys.each do |key| %>
+
+					<tr>
+						
+						<td style= "border : none" ><%= key.humanize %> &nbsp :</td>
+
+						<% if key.include? "date" %>
+
+								<td style="text-align :left; font-weight : bold; padding-left : 5%" ><%= Date.parse(@person[key]).strftime("%d/%b/%Y")  rescue @person[key] %></td>
+
+						<%else %>
+
+							<td style="text-align :left; font-weight : bold; padding-left : 5%" ><%= @person[key] %></td>
+
+						<%end%>
+
+						<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Change</button></td>
+
+					</tr>
+
+			<%end %>
+		</table>
+
+</div>
+<div style="background :#333434;width:100%;padding:0.2em">
+			<button class="red" style="width : 10%">Cancel</button>
+
+			<button class="green" style="float:right; width : 10%">Finish</button>
+
+</div>

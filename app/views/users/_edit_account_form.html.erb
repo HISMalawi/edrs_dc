@@ -1,0 +1,169 @@
+
+<%= form_for(@current_user) do |f| %>
+
+    <fieldset>
+      <legend>
+        User Details
+      </legend>
+
+      <% if @current_user.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@current_user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+            <ul>
+              <% @current_user.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+      <% end %>
+
+      <table cellpadding="5" width="90%" style="margin: auto; margin-top: 0px;">
+        <tr>
+          <td align="right">
+            <label for="user_preferred_keyboard">Preferred Keyboard</label>
+          </td>
+          <td>
+            :
+          </td>
+          <td>
+            <%= select_tag "user[preferred_keyboard]", options_for_select(@keyboards, @user.preferred_keyboard), :class => 'input_cell', :placeholder => "Select Preferred Keyboard", :required => true, :style => "width: 81.4% !important;" %>
+          </td>
+        </tr>
+      </table>
+
+      <div class="actions">
+        <%#= f.hidden_field :_rev %>
+        <%#= f.hidden_field :created_at %>
+        <%#= f.hidden_field :updated_at %>
+        <%#= f.submit :id => "btnAction", :class => "buttons blue", :style => "position: absolute; right: 160px; bottom: 20px;", :onclick => "submitForm()"  %>
+      </div>
+
+    </fieldset>
+
+<% end %>
+
+<!--button id="btnAction" class="blue" style="position: absolute; right: 160px; bottom: 20px;" onclick="submitForm()">
+  <%#= request.path.match(/new/) ? "Save" : "Update" %> User
+</button-->
+
+<script>
+
+    var timerHnd;
+
+    var good = <%= request.path.match(/new/) ? false : true %>
+
+            function submitForm() {
+                if (validateForm() && good) {
+                    document.getElementsByTagName('form')[0].submit();
+                }
+            }
+
+    function validateForm() {
+        username = document.getElementById('user_username');
+        first_name = document.getElementById('user_first_name');
+        last_name = document.getElementById('user_last_name');
+        user_role = document.getElementById('user_role');
+        password = document.getElementById('user_password_hash');
+        password_confirm = document.getElementById('user_confirm_password');
+
+        if (username.value == '') {
+            showMsg("Please enter username ...");
+            return false;
+        } else if (first_name.value == '') {
+            showMsg("Please enter user first name ...");
+            return false;
+        } else if (last_name.value == '') {
+            showMsg("Please enter user last name ...");
+            return false;
+        } else if (password.value == '') {
+            showMsg("Please password ...");
+            return false;
+        } else if (password.value.length < 6) {
+            showMsg("Please password should be atleast six characters ....");
+            return false;
+        } else if (password.value != password_confirm.value) {
+            showMsg("The two passwords you enter do not match ...");
+            return false;
+        } else if (user_role.value == '') {
+            showMsg("Please select user role ...");
+            return false;
+        }
+
+        return true;
+    }
+
+    var timeSpacing = 500;
+
+    function checkUsername() {
+
+        clearTimeout(timerHnd);
+
+        username = document.getElementById('user_username').value;
+
+        if (username == "Username" || username.trim().length == 0) {
+            timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+            return;
+        }
+
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var results = xmlhttp.responseText;
+
+                timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+                if (results == 'undefined' || results == '' || results == '"not validate"') {
+                    return;
+                } else {
+                    if (results == 'available') {
+                        good = true;
+
+                        document.getElementById('notice').innerHTML = 'Username ' + results;
+                        document.getElementById('notice').style.color = 'green';
+
+                        if(document.getElementById('btnAction')) {
+                            document.getElementById('btnAction').disabled = false;
+                            document.getElementById('btnAction').className = "blue";
+                        }
+                    } else {
+                        good = false;
+
+                        document.getElementById('notice').innerHTML = 'Username ' + results + "!";
+                        document.getElementById('notice').style.color = 'red';
+
+                        if(document.getElementById('btnAction')) {
+                            document.getElementById('btnAction').disabled = 'disabled';
+                            document.getElementById('btnAction').className = "gray";
+                        }
+                    }
+                }
+            }
+        }
+        xmlhttp.open("GET", "/username_availability?search_str=" + username, true);
+        xmlhttp.send();
+
+    }
+
+    <% if request.path.match(/new/) %>
+
+    // timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+    <% else %>
+
+    if (document.getElementById("user_username")) {
+
+        document.getElementById("user_username").disabled = true;
+
+    }
+
+    <% end %>
+
+    init();
+
+</script>

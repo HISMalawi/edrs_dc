@@ -1,0 +1,118 @@
+<script type="text/javascript" language="javascript" src="/javascripts/person_form.js" defer="true"></script>
+<%= form_for @person, :url => '/update_field', :method => :post do |f| %>
+
+		<input type="hidden" name="id" value="<%= params[:id] %>">
+
+		<% if @field  == "person[birthdate]" %>
+
+					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
+
+		  			<%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'"}%>
+
+		  			<%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %> 
+
+		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues()"%>
+
+				    <%= (f.hidden_field :birthdate) rescue "" %>
+
+				    <%= f.hidden_field :birthdate_estimated rescue "" %>
+
+		<% elsif @field  == "person[gender]" %>
+
+					<%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender") %>
+
+		<% elsif @field  == "person[first_name]" %>
+
+					<%= (f.text_field :first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+
+		<% elsif @field  == "person[last_name]" %>
+
+					<%= (f.text_field :last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[middle_name]" %>
+
+					<%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[father_first_name]" %>
+
+					<%= (f.text_field :father_first_name, :helpText => "Father First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+
+		<% elsif @field  == "person[father_last_name]" %>
+
+					<%= (f.text_field :father_last_name, :helpText => "Father Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[father_middle_name]" %>
+
+					<%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[mother_first_name]" %>
+
+					<%= (f.text_field :mother_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+
+		<% elsif @field  == "person[mother_last_name]" %>
+
+					<%= (f.text_field :mother_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[mother_middle_name]" %>
+
+					<%= (f.text_field :mother_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[informant_first_name]" %>
+
+					<%= (f.text_field :informant_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+
+		<% elsif @field  == "person[informant_last_name]" %>
+
+					<%= (f.text_field :informant_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[informant_middle_name]" %>
+
+					<%= (f.text_field :informant_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+
+		<% elsif @field  == "person[date_of_date]" %>
+
+				<%= (f.text_field :date_of_date, :helpText => "Death Date",:fieldtype => "date") rescue "" %>
+
+		<% elsif @field  == "person[birth_certificate_number]" %>
+
+				 <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate ID Number", :optional => true} %>
+
+		<% elsif @field.include? "place_of_death" or @field == "person[hospital_of_death_name]"  %>
+
+				<%= select_tag("person[:place_of_death]", options_for_select(["","Hospital", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death") %>
+
+			    <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" ,:optional=>true,  :ajaxURL => "/districts" , :tt_onUnLoad => "setAjaxUrl(0)") rescue "" %>
+
+			    <%= (f.text_field :hospital_of_death_name,:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.match('Hospital')",:optional=>true) rescue "" %>
+
+			    <%= (f.text_field :place_of_death_ta,:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :optional=>true , :tt_onUnLoad => "setAjaxUrl(1)") rescue "" %>
+
+			    <%= (f.text_field :place_of_death_village,:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :optional=>true) rescue "" %>
+
+			    <%= (f.text_field :other_place_of_death,:helpText => "Other place of death specify",:condition => "__$('person_place_of_death').value.match('Other')",:optional=>true) rescue "" %>
+
+		<% elsif @field == "person[manner_of_death]" %>
+
+				<%= select_tag("person[manner_of_death]", options_for_select(['Natural', 'Accident',
+                             'Sucide', 'Pending Investigation',
+                             'Could not be determined',
+                             'Other'], @person[:manner_of_death]),:helpText =>"Manner of death") %>
+
+            	<%= (f.text_field :other_manner_of_death,:helpText => "Other manners of death", :optional=>true, :condition => "__$('person_manner_of_death').value.match('Other')") rescue "" %>
+
+        <% elsif @field == "person[death_by_accident]" %>
+
+        		<%= select_tag("person[death_by_accident]", options_for_select(['Motor vehicle(driver)', ' Motor vehicle(passenger)',
+                             ' Motor', 'Drowning',
+                             'Other'], @person[:death_by_accident]),:helpText =>"How did injury/accident occur?") %>
+
+            	<%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other')") rescue "" %>
+
+
+		<% else %>
+
+ 				<%= text_field_tag @field ,params[@field] , {:helpText => params[:field].humanize, :optional => true} %>
+
+ 		<%end%>
+
+<%end %>

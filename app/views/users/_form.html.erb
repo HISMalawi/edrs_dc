@@ -1,0 +1,178 @@
+
+<%= form_for(@user) do |f| %>
+
+      <% if @user.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+            <ul>
+              <% @user.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+      <% end %>
+      <% if request.path.match(/new/) %>
+
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username"%>
+
+      <%else %>
+
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username" %>
+
+      <% end %>
+
+            <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name" %>
+
+        
+            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Last Name", :required => true, :helpText => "Last Name" %>
+
+            <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles" %>
+      
+        <% if request.path.match(/new/) %>
+
+                <%= f.password_field :password, 
+                                     :class => "input_cell", 
+                                     :placeholder => "Password", 
+                                     :required => true, 
+                                     :textCase => "lower",
+                                     :absolute_min => 6,
+                										 :absolute_max => 20 ,:helpText => "Password"%>
+          
+                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password" %>
+        
+        <% else %>
+
+                <%= f.password_field :password, :class => "input_cell", :placeholder => "Password", :optional => true, :textCase => "lower", :helpText => "Password" %>
+
+        <% end %>
+
+            <%= f.text_field :email, :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>
+       
+        <%#= f.hidden_field :_rev %>
+        <%#= f.hidden_field :created_at %>
+        <%#= f.hidden_field :updated_at %>
+<% end %>
+
+<!--button id="btnAction" class="blue" style="position: absolute; right: 160px; bottom: 20px;" onclick="submitForm()">
+  <%#= request.path.match(/new/) ? "Save" : "Update" %> User
+</button-->
+
+<script>
+
+    var timerHnd;
+
+    var good = <%= request.path.match(/new/) ? false : true %>
+
+            function submitForm() {
+                if (validateForm() && good) {
+                    document.getElementsByTagName('form')[0].submit();
+                }
+            }
+
+    function validateForm() {
+        username = document.getElementById('user_username');
+        first_name = document.getElementById('user_first_name');
+        last_name = document.getElementById('user_last_name');
+        user_role = document.getElementById('user_role');
+        password = document.getElementById('user_password');
+        password_confirm = document.getElementById('user_confirm_password');
+
+        if (username.value == '') {
+            showMsg("Please enter username ...");
+            return false;
+        } else if (first_name.value == '') {
+            showMsg("Please enter user first name ...");
+            return false;
+        } else if (last_name.value == '') {
+            showMsg("Please enter user last name ...");
+            return false;
+        } else if (password.value == '') {
+            showMsg("Please password ...");
+            return false;
+        } else if (password.value.length < 6) {
+            showMsg("Please password should be atleast six characters ....");
+            return false;
+        } else if (password.value != password_confirm.value) {
+            showMsg("The two passwords you enter do not match ...");
+            return false;
+        } else if (user_role.value == '') {
+            showMsg("Please select user role ...");
+            return false;
+        }
+
+        return true;
+    }
+
+    var timeSpacing = 500;
+
+    function checkUsername() {
+
+        clearTimeout(timerHnd);
+
+        username = document.getElementById('user_username').value;
+
+        if (username == "Username" || username.trim().length == 0) {
+            timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+            return;
+        }
+
+        if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else {// code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                var results = xmlhttp.responseText;
+
+                timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+                if (results == 'undefined' || results == '' || results == '"not validate"') {
+                    return;
+                } else {
+                    if (results == 'available') {
+                        good = true;
+
+                        document.getElementById('notice').innerHTML = 'Username ' + results;
+                        document.getElementById('notice').style.color = 'green';
+
+                        if(document.getElementById('btnAction')) {
+                            document.getElementById('btnAction').disabled = false;
+                            document.getElementById('btnAction').className = "blue";
+                        }
+                    } else {
+                        good = false;
+
+                        document.getElementById('notice').innerHTML = 'Username ' + results + "!";
+                        document.getElementById('notice').style.color = 'red';
+
+                        if(document.getElementById('btnAction')) {
+                            document.getElementById('btnAction').disabled = 'disabled';
+                            document.getElementById('btnAction').className = "gray";
+                        }
+                    }
+                }
+            }
+        }
+        xmlhttp.open("GET", "/username_availability?search_str=" + username, true);
+        xmlhttp.send();
+
+    }
+
+    <% if request.path.match(/new/) %>
+
+    // timerHnd = setTimeout("checkUsername()", timeSpacing);
+
+    <% else %>
+
+    if (document.getElementById("user_username")) {
+
+        document.getElementById("user_username").disabled = true;
+
+    }
+
+    <% end %>
+
+</script>

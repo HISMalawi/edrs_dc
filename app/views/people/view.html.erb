@@ -1,0 +1,474 @@
+
+<style type="text/css">
+	
+	#table_container{
+
+			height: 800px;
+
+			overflow-y: scroll;
+
+	}
+
+
+</style>
+<div id="table_container">
+	
+</div>
+<script type="text/javascript">
+
+		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
+
+		    Object.defineProperty(Date.prototype, "format", {
+		        value: function (format) {
+		            var date = this;
+
+		            var result = "";
+
+		            if (!format) {
+
+		                format = ""
+
+		            }
+
+		            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+		            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+		                "October", "November", "December"];
+
+		            if (format.match(/YYYY\-mm\-dd\sHH\:\MM\:SS/)) {
+
+		                result = date.getFullYear() + "-" + stock;
+		                padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                stock.padZeros(date.getDate(), 2) + " " + stock.padZeros(date.getHours(), 2) + ":" +
+		                stock.padZeros(date.getMinutes(), 2) + ":" + stock.padZeros(date.getSeconds(), 2);
+
+		            } else if (format.match(/YYYY\-mm\-dd/)) {
+
+		                result = date.getFullYear() + "-" + stock.padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                    stock.padZeros(date.getDate(), 2);
+
+		            } else if (format.match(/mmm\/d\/YYYY/)) {
+
+		                result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+		            } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+		                result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+		            } else {
+
+		                result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+		            }
+
+		            return result;
+		        }
+		    });
+
+		}
+
+		function ajaxRequest(url, callback, optionalControl) {
+
+	        var httpRequest = new XMLHttpRequest();
+
+	        httpRequest.onreadystatechange = function () {
+
+	            if (httpRequest.readyState == 4 && (httpRequest.status == 200 ||
+	                httpRequest.status == 304)) {
+
+	                if (httpRequest.responseText.trim().length > 0) {
+	                    var result = httpRequest.responseText;
+
+	                    callback(result, optionalControl);
+
+	                } else {
+
+	                    callback(undefined);
+
+	                }
+
+	            }
+
+	        };
+	        try {
+	            httpRequest.open("GET", url, true);
+	            httpRequest.send(null);
+	        } catch (e) {
+	        }
+
+	    }
+
+		function __$(id){
+
+			return document.getElementById(id)
+
+		}
+
+		function loadTable(){
+
+					var content = __$("table_container")
+	
+					var table = document.createElement("table");
+
+					content.appendChild(table)
+
+					table.style.borderCollapse = "collapse";
+					table.style.margin = "auto";
+					table.style.top = "15%";
+					table.style.color = "#333";
+					table.cellPadding = "10px";
+					table.border = 0;
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "#";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th)
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Name";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th)
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Gender";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th)
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Date of death";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Place of death";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Home address";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Informant";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Status";
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "Operation";
+
+					th.colSpan ="3"
+
+					th.style.borderRight= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th)
+
+
+					var th = document.createElement("th");
+
+					th.innerHTML = "";
+
+					th.style.borderLeft= "1px solid black";
+
+					th.style.borderBottom= "1px solid black";
+
+
+					tr.appendChild(th);
+
+
+					ajaxRequest("/people/all",function(data){
+
+								var data = JSON.parse(data);
+
+							for(var i = 0 ; i < data.length ; i++){
+
+								var tr = document.createElement("tr");
+
+								table.appendChild(tr);
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = i + 1;
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i]["first_name"] +" "+ data[i]["middle_name"] + " "+ data[i]["last_name"]
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i].gender
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = new Date(data[i].date_of_death).format()
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								if(data[i].place_of_death =="Hospital"){
+
+									td.innerHTML = data[i].hospital_of_death_name;
+
+								}else if(data[i].place_of_death =="Other"){
+
+									td.innerHTML = data[i].other_place_of_death;
+
+
+								}else if(data[i].place_of_death =="Home"){
+
+									td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+
+								} 
+
+								tr.appendChild(td);
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = td.innerHTML = data[i].informant_first_name +" " + data[i].informant_last_name
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderBottom= "1px solid black";
+
+
+								td.style.borderRight= "1px solid black";
+
+								var imgView = document.createElement("img");
+
+                                imgView.height = 40;
+
+                                imgView.setAttribute("src", icoView);
+
+                                imgView.style.marginLeft = "30px";
+
+                                imgView.style.marginRight = "30px";
+
+                                imgView.style.cursor = "pointer";
+
+                               imgView.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"'");
+
+								td.appendChild(imgView);
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								var imgView = document.createElement("img");
+
+                                imgView.height = 40;
+
+                                imgView.setAttribute("src", icoEdit);
+
+                                imgView.style.marginLeft = "30px";
+
+                                imgView.style.marginRight = "30px";
+
+                                imgView.style.cursor = "pointer";
+
+                                imgView.setAttribute("onclick","window.location = '/people/edit/" +data[i]["_id"]+"'");
+
+
+								td.appendChild(imgView);
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								var imgView = document.createElement("img");
+
+                                imgView.height = 40;
+
+                                imgView.setAttribute("src", print);
+
+                                imgView.style.marginLeft = "30px";
+
+                                imgView.style.marginRight = "30px";
+
+                                imgView.style.cursor = "pointer";
+
+                                imgView.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
+
+
+								td.appendChild(imgView);
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderLeft= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								tr.appendChild(td);
+
+
+
+							}
+
+					});
+
+		}
+
+
+		loadTable();
+
+
+</script>
