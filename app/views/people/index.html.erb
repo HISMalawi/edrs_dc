@@ -1,5 +1,5 @@
 <div id="default" style="width: 100%; height: 400px; text-align: center; vertical-align: top;">
-  <% if User.current_user.activities_by_level("Facility").include?("Register a record") %>
+  <% if true || User.current_user.activities_by_level("Facility").include?("Register a record") %>
       <div class="button" onmousedown="window.location = '/people/new'" tag=0>
 
         <!--div>

@@ -131,7 +131,7 @@ user = User.find('admin')
 
 if user.blank?
 
-	User.create(username: "admin", password_hash: "password", last_password_date: Time.now,
+	User.create(username: "admin", plain_password: "password", last_password_date: Time.now,
 							password_attempt: 0, login_attempt: 0, first_name: "EBRS",
 							last_name: "Administrator", role: "System Administrator",
 							email: "admin@baobabhealth.org")

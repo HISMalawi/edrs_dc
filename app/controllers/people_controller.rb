@@ -20,7 +20,7 @@ class PeopleController < ApplicationController
 
   	def new
 
-	    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
+	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
 
 	    if !params[:id].blank?
 
