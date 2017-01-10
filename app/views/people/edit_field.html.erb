@@ -23,51 +23,51 @@
 
 		<% elsif @field  == "person[first_name]" %>
 
-					<%= (f.text_field :first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+					<%= (f.text_field :first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[last_name]" %>
 
-					<%= (f.text_field :last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[middle_name]" %>
 
-					<%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[father_first_name]" %>
 
-					<%= (f.text_field :father_first_name, :helpText => "Father First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+					<%= (f.text_field :father_first_name, :helpText => "Father First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[father_last_name]" %>
 
-					<%= (f.text_field :father_last_name, :helpText => "Father Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :father_last_name, :helpText => "Father Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[father_middle_name]" %>
 
-					<%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[mother_first_name]" %>
 
-					<%= (f.text_field :mother_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+					<%= (f.text_field :mother_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[mother_last_name]" %>
 
-					<%= (f.text_field :mother_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :mother_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[mother_middle_name]" %>
 
-					<%= (f.text_field :mother_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :mother_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[informant_first_name]" %>
 
-					<%= (f.text_field :informant_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names") rescue "" %>
+					<%= (f.text_field :informant_first_name, :helpText => "First Name",:allowFreeText =>true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[informant_last_name]" %>
 
-					<%= (f.text_field :informant_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :informant_last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[informant_middle_name]" %>
 
-					<%= (f.text_field :informant_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names") rescue "" %>
+					<%= (f.text_field :informant_middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[date_of_date]" %>
 
@@ -79,7 +79,7 @@
 
 		<% elsif @field.include? "place_of_death" or @field == "person[hospital_of_death_name]"  %>
 
-				<%= select_tag("person[:place_of_death]", options_for_select(["","Hospital", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death") %>
+				<%= select_tag("person[place_of_death]", options_for_select(["","Hospital", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death") %>
 
 			    <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" ,:optional=>true,  :ajaxURL => "/districts" , :tt_onUnLoad => "setAjaxUrl(0)") rescue "" %>
 
@@ -108,10 +108,34 @@
 
             	<%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other')") rescue "" %>
 
+       <% elsif @field == "person[date_of_death]" %>
+
+       			 <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ) rescue "" %>
+
+       <% elsif @field =="person[citizenship]" %>
+
+       			<%= (f.text_field :citizenship,:helpText => "Nationality",:ajaxURL => "/nationalities", :allowFreeText =>true) rescue "" %>
+
+       <% elsif @field == "person[home_country]" || @field == "person[home_district]" || @field == "person[home_ta]" || @field == "person[home_village]"%>
+
+       			<%= (f.text_field :home_country,:helpText => "Home Country",:ajaxURL => "/nationalities",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :allowFreeText => true) rescue "" %>
+
+		    	<%= (f.text_field :home_district,:helpText => "Home district",
+		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",:optional=>true, 
+		    				:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(2)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :allowFreeText => true) rescue "" %>
+
+		    	<%= (f.text_field :home_ta,:helpText => "Home TA",:optional=>true,
+		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')", :tt_onUnLoad => "setAjaxUrl(3)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:allowFreeText => true) rescue "" %>
+
+		    	<%= (f.text_field :home_village,:helpText => "Home Village",:optional=>true,
+		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:allowFreeText => true) rescue "" %> 
+		<% elsif @field.include? "date" %>
+
+				<%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date"} %>
 
 		<% else %>
 
- 				<%= text_field_tag @field ,params[@field] , {:helpText => params[:field].humanize, :optional => true} %>
+ 				<%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
 
  		<%end%>
 

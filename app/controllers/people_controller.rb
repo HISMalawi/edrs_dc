@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
 
-	before_filter :find_person, :except => [:index, :query, :create, :new, :child_label]
+	before_filter :find_person, :except => [:index, :query, :create, :new, :person_label]
 
   	before_filter :check_if_user_admin
 
@@ -82,6 +82,30 @@ class PeopleController < ApplicationController
   	
   end
 
+  def finalize_create
+
+      person = Person.find(params[:id])
+
+      if CONFIG['facility_code'] && !CONFIG['facility_code'].blank? && person.facility_serial_number.blank?
+
+          NationalIdNumberCounter.assign_serial_number(person,facility.facility_code)
+          
+          sleep 1
+
+          person.reload
+
+          print_registration(person) and return
+
+          raise person.to_yaml
+
+          redirect_to "/people/view"
+
+      end
+
+      redirect_to "/people/view"
+    
+  end
+
   def view
 
        render :layout => "touch"
@@ -96,16 +120,29 @@ class PeopleController < ApplicationController
     
   end
 
+  def search_by_status
+
+          status = params[:status]
+
+          people = PersonRecordStatus.by_status.key(params[:status]).collect{ |status| status.person}
+
+          render  :text => people.to_json
+
+  end
+
   def show
 
       @person = Person.find(params[:id])
 
       excludes = ["first_name_code","last_name_code", "middle_name_code",
+                  "mother_first_name_code","mother_last_name_code", "mother_middle_name_code",
+                  "father_first_name_code","father_last_name_code", "father_middle_name_code",
+                  "informant_first_name_code","informant_last_name_code", "informant_middle_name_code",
                   "birthdate_estimated", "created_by", "date_created", 
                   "updated_by","voided_by", "voided", "voided_date",
                   "status_changed_by","approved_by","approved_at","creator",
                   "cahnged_by","id","_rev","created_at","updated_at","type",
-                  "changed_by","_deleted","_id"]
+                  "changed_by","_deleted","_id","acknowledgement_of_receipt_date"]
 
       @keys = @person.keys - excludes
   	
@@ -225,13 +262,54 @@ class PeopleController < ApplicationController
 
   end
 
+  def print_id_label
+
+
+
+    print_string = person_label(params[:person_id]) #rescue (raise "Unable to find child (#{params[:child_id]}) or generate a national id label for that patient")
+    send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:person_id]}#{rand(10000)}.lbl", :disposition => "inline")
+  end
+
+
+  def person_label(person_id)
+
+    @person = Person.find(person_id)
+    sex =  @person.gender.match(/F/i) ? "(F)" : "(M)"
+
+    place_of_death = @person.hospital_of_death_name  rescue ""
+    place_of_death = @person.place_of_death if place_of_death.blank?
+
+    label = ZebraPrinter::StandardLabel.new
+    label.font_size = 2
+    label.font_horizontal_multiplier = 1
+    label.font_vertical_multiplier = 1
+    label.left_margin = 50
+    label.draw_barcode(50,180,0,1,5,15,120,false,"#{@person.facility_serial_number}")
+    label.draw_multi_text("ID Number: #{@person.facility_serial_number}")
+    label.draw_multi_text("Deceased: #{@person.first_name + ' ' + @person.last_name} #{sex}")
+    label.draw_multi_text("DOB: #{@person.birthdate}")
+    label.draw_multi_text("DOD: #{@person.date_of_death}")
+    label.draw_multi_text("Death Place: #{place_of_death + '/' + @person.place_of_death_district}")
+    label.draw_multi_text("Informant: #{@person.informant_first_name + ' ' + @person.informant_last_name}")
+    label.draw_multi_text("Date of Reporting: #{@person.acknowledgement_of_receipt_date.strftime('%d/%B/%Y')}")
+    label.print(1)
+  end
+
+  def print_registration(person)
+
+    redirect = "/people/view"
+
+    print_and_redirect("/people/print_id_label?person_id=#{person.id}", redirect)
+    
+  end
+
   protected
 
   def find_person
 
     @person = Person.find(params[:id]) rescue nil
 
-    @person = Person.new if @child.nil?
+    @person = Person.new if @person.nil?
 
   end
 

@@ -279,6 +279,8 @@ class Person < CouchRest::Model::Base
 
   property :acknowledgement_of_receipt_date, Time
 
+  property :facility_serial_number, String
+
   property :creator, String
   property :changed_by, String
 

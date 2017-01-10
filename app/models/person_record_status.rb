@@ -22,6 +22,14 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 		view :by_creator
 
+		view :by_record_status,
+         	 :map => "function(doc) {
+                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+
+                    	emit(doc['status'], 1);
+                  }
+                }"
+
 	end
 
 	def person

@@ -66,9 +66,13 @@ Rails.application.routes.draw do
 
   get '/people/edit/:id/:field' => "people#edit_field"
 
+  get '/people/print_id_label' =>"people#print_id_label"
+
   post 'update_field' => "people#update_field"
 
   get '/people/all' => "people#all"
+
+  get '/people/finalize_create/:id' => "people#finalize_create"
 
   get "/get_first_names" => "people#get_first_names"
   
