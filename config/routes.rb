@@ -58,6 +58,8 @@ Rails.application.routes.draw do
 
   get 'people/new' => "people#new"
 
+  get 'people/new_split' => "people#new_split"
+
   post 'people/create' => "people#create"
 
   get '/people/view' => "people#view"

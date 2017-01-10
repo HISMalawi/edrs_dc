@@ -2,23 +2,27 @@ class PeopleController < ApplicationController
 
 	before_filter :find_person, :except => [:index, :query, :create, :new, :person_label]
 
-  	before_filter :check_if_user_admin
+  before_filter :check_if_user_admin
+
+  def new_split
+
+  end
 
 	def index
 
-		    @icoFolder = icoFolder("icoFolder")
+      @icoFolder = icoFolder("icoFolder")
 
-		    @section = "Home"
+      @section = "Home"
 
-		    @targeturl = "/logout"
+      @targeturl = "/logout"
 
-		    @targettext = "Logout"
+      @targettext = "Logout"
 
-		    render :layout => "facility"
+      render :layout => "facility"
 
-  	end
+  end
 
-  	def new
+  def new
 
 	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
 
@@ -32,7 +36,7 @@ class PeopleController < ApplicationController
 
 	    @section = "New Person"
 
-	    render :layout => "touch"
+	    render :layout => "registration"
 
   end
 

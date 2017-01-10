@@ -539,7 +539,8 @@
 		     <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>                     
 
 		    <%= (f.text_field :headman_verification_date,:helpText => "Date Headman verified",
-		                          :field_type => "date",:condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes',:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
+		                          :field_type => "date",:condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                                  :tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
 
 		    <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),:helpText =>"Church leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %> 
 
