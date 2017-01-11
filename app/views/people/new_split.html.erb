@@ -8,6 +8,7 @@
                 padding-right: 0px;
                 border-bottom: 1px solid lightgray;
                 cursor: pointer;
+                color: gray;;
             }
             .sub-pane{
                 font-size: 1.1em;
@@ -16,7 +17,6 @@
                 background: white;
                 border: none;
                 border-bottom: 0.1px dotted lightgray;
-                cursor: pointer;
                 display: none;
             }
             .current{
@@ -60,8 +60,24 @@
 
                     var td = document.createElement("td");
                     td.innerHTML = sections[i].getAttribute("name");
+                    td.id = sections[i].getAttribute("name");
+                    td.setAttribute("name", sections[i].getAttribute("name"));
                     td.className = "side-pane";
                     tr.appendChild(td);
+
+                    td.onmousedown = function(){
+                        var nodes = document.getElementsByClassName("sub-pane");
+                        for(var o=0; o<nodes.length; o++){
+
+                            if(jQuery(nodes[o]).attr("section") == this.getAttribute("name")){
+                                var tst_cur_page = jQuery(nodes[o]).attr("tstcurrentpage");
+                                if(typeof(tst_cur_page) != "undefined" && parseInt(tst_cur_page) >= 0) {
+                                    loadInnerPage(parseInt(tst_cur_page));
+                                }
+                                break;
+                            }
+                        }
+                    }
 
                     var sub_nodes = sections[i].getElementsByTagName("sub");
                     if(sub_nodes.length > 0){
@@ -100,8 +116,10 @@
             var cur_page = document.getElementById("iframe").contentWindow.tstCurrentPage;
             if(form){
                 var cur_input_id = jQuery(form).find("[touchscreeninputid='" + cur_page + "']").attr("tstpagestyleclass");
-                if(cur_input_id){form
+                if(cur_input_id){
                     var sub_node = document.getElementById(cur_input_id);
+                    var parent_node = document.getElementById(sub_node.getAttribute("section"));
+                    parent_node.style.color = "black";
                     highlight(sub_node);
                 }
             }
@@ -119,6 +137,16 @@
             }
 
             node.className += " active";
+            node.setAttribute('visited', "true");
+            if( !node.getAttribute('tstcurrentpage')) {
+                node.setAttribute('tstcurrentpage', document.getElementById("iframe").contentWindow.tstCurrentPage);
+            }
+        }
+
+        function loadInnerPage(pos){
+
+           document.getElementById("iframe").contentWindow.gotoPage(pos);
+
         }
 
         setTimeout("setup()", 200);
