@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, :only => [:show, :edit, :edit_account, :update, :destroy]
 
-  #before_filter :check_if_user_admin
+  before_filter :check_if_user_admin
 
   # GET /users
   # GET /users.json
@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
     @targettext = "Finish"
 
-    render :layout => false#render :layout => "facility"
+    render  :layout => "facility"
 
   end
 
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-    render :layout => false#render :layout => "facility"
+    render :layout => "facility"
 
   end
 
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
 
     @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
 
-    render :layout => "touch"
+    render :layout => "facility"
 
   end
 
@@ -84,17 +84,34 @@ class UsersController < ApplicationController
       user = User.find(params[:user]['username'])
       
       if user.present?
+
         flash["notice"] = "User already already exists"
+
         redirect_to "/users/new" and return
+
       end   
        
       @user = User.new()
+
       @user.username = params[:user]['username']
-      @user.password_hash = params[:user]['password']
+
+      @user.plain_password = params[:user]['password']
+
       @user.first_name = params[:user]['first_name']
+
       @user.last_name = params[:user]['last_name']
+
       @user.role = params[:user]['role']
+
       @user.email = params[:user]['email']
+
+      @user.district_code = CONFIG['district_code']
+
+      if !CONFIG['facility_code'].nil? && !CONFIG['facility_code'].blank?       
+
+         @user.site_code = CONFIG['facility_code']
+
+      end
       
     respond_to do |format|
     
@@ -223,7 +240,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    render :layout => false#render :layout => "facility"
+    render :layout => "facility"
 
   end
 
@@ -388,7 +405,13 @@ class UsersController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_user
+
     @user = User.find(params[:id])
+
+    @facility = facility
+
+    @district = district
+
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
@@ -399,6 +422,10 @@ class UsersController < ApplicationController
   def check_if_user_admin
 
     @search = icoFolder("search")
+
+    @facility = facility
+
+    @district = district
 
     @admin = ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
 

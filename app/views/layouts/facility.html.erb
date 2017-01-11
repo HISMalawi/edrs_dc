@@ -21,20 +21,520 @@
     <script type="text/javascript" language="javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" language="javascript" src="/javascripts/icons.js" defer="true"></script>
   </head>
+
+  <link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
+
+  <style type="text/css">
+              #app_header{
+
+                      width: 100%;
+
+                      border-bottom: 1px solid #959595;
+
+                      height: 70px;
+
+                      text-align: bottom;
+
+                      background:#dcdbdb;
+              }
+              #signout{
+
+                    background: #f4e4e8;
+
+                    font-size: 3.8em;
+
+                    min-width: 20px;
+
+                    position: absolute;
+
+                    border : 0.005em solid #b3b1b1;
+
+                    right: 1%;
+
+                    bottom:60px;
+
+                    box-shadow: 2.5px 2.5px 1px #888888;
+
+                    padding: 0.1%;
+
+                    text-align: center;
+              }
+
+               #back{
+                    font-size: 3.8em;
+
+                    min-width: 20px;
+
+                    position: absolute;
+
+                    right: 1%;
+
+                    bottom:58px;
+
+                    padding: 0.1%;
+
+                    text-align: center;
+              }
+
+              #home_button{
+
+                    background: #bed5de;
+
+                    border : 0.005em solid #b3b1b1;
+
+                    font-size: 3.8em;
+
+                    min-width: 20px;
+
+                    float: left;
+
+                    margin: 0.3%;
+
+                    box-shadow: 2.5px 2.5px 1px #888888;
+
+                    padding: 0.1%;
+
+                    text-align: center;
+
+              }
+
+               .touch_btn{
+                  color: #1c1c21;
+                  padding: 0.5%;
+                  padding-left: 5%;
+                  padding-right: 5%;
+                  border : 0.005em solid #b3b1b1;
+                  border-radius: 0;
+                  margin : 1.5%;
+                  width: 125px;
+                  height: 125px;
+                  box-shadow: 3.5px 3.5px 1.5px #888888;
+                  float: left;
+
+              }
+              .icon{
+
+                    width: 100%;
+                    height: 80px;
+              }
+              .icon img {
+
+                    width: 50%;
+              }
+              .icon i {
+
+                    font-size: 5em
+              }
+              .button_label{
+
+                      text-align: center;
+                      font-size: 1.1em;
+                      font-weight: bold;
+                      width:100%;
+              }
+              .button_description{
+
+                   text-align: center;
+                      font-size: 12px;
+                      font-style: italic;
+                      width:100%;
+
+              }
+              #stats{
+
+                  width: 95%;
+
+                  border-collapse :collapse;
+
+                  margin: auto;
+
+                  margin-top: 7%;
+
+                  border: 1px solid  #1c1c21;
+
+                  box-shadow: 2.5px 2.5px 1px #888888;
+
+              }
+
+              #stats th {
+
+                        padding: 0.5em;
+
+                        font-size: 1.1em;
+
+                        background: #9f9d9d;
+
+              }
+
+              #stats th {
+
+                        padding: 0.5em;
+
+                        font-size: 1.1em;
+
+                        background: #8a8a8a;
+
+              }
+              #stats td{
+
+                    padding: 0.5em;
+              }
+              #stats tr td:nth-child(1){
+
+                   text-align: left;
+
+              }
+              #stats tr:nth-child(odd) {
+
+                background-color:#eee;
+
+              }
+              #section{
+
+                    font-size:1.6em; 
+                    text-align:center;
+                    background :#ffffff; 
+                    float:left;
+                    height: 25px;
+                    min-width:15%;
+                    font-weight: bold;
+                    padding: 0.45em; 
+                    border : 0.005em solid #b3b1b1;
+                    border-radius: 10px;
+                    position: absolute;
+                    left :1%;
+                    bottom: 2%;
+
+
+              }
+              #table_container{
+
+              }
+              #table_container table{
+
+                  width:  90%;
+                  border-collapse :collapse;
+                  margin : auto;
+                  margin-top : 1%;
+
+              }
+
+              #table_container table th {
+
+                    background: #424244;
+
+                    color: #ffffff;
+
+                    border : 1px solid #424244;
+
+                    padding: 0.5em;
+
+              }
+              #table_container table td {
+
+                    border : 1px solid #424244;
+
+                    text-align: center;
+
+              }
+
+              #table_container table tr:nth-child(even) {
+
+                background-color:#dbdada;
+
+              }
+
+              #pagination{
+
+                width: 40%;
+
+                margin: auto;
+
+                border: 1px solid  #a09d9d;
+
+                position: absolute; 
+
+                bottom :60px;
+
+                left:30%;
+
+                background: #dbdada;
+
+              }
+              .prev {
+
+                float: left;
+              }
+              .next {
+
+                float:right;
+              }
+
+              .blue{
+
+                height: 20px !important;
+              }
+
+
+  </style>
+
+  <script type="text/javascript">
+
+    
+              function showPopupMessage(msg, topic) {
+
+                if (!topic) {
+
+                    topic = "Message";
+
+                }
+
+                var shield = document.createElement("div");
+                shield.style.position = "absolute";
+                shield.style.top = "0px";
+                shield.style.left = "0px";
+                shield.style.width = "100%";
+                shield.style.height = "100%";
+                shield.id = "msg.shield";
+                shield.style.backgroundColor = "rgba(128,128,128,0.75)";
+                shield.style.zIndex = 1050;
+
+                document.body.appendChild(shield);
+
+                var width = 560;
+                var height = 390;
+
+                var div = document.createElement("div");
+                div.id = "msg.popup";
+                div.style.position = "absolute";
+                div.style.width = width + "px";
+                div.style.height = height + "px";
+                div.style.backgroundColor = "#eee";
+                div.style.border = "1px solid #26262b"
+                div.style.borderRadius = "1px";
+                div.style.left = "calc(50% - " + (width / 2) + "px)";
+                div.style.top = "calc(50% - " + (height * 0.7) + "px)";
+                div.style.border = "1px outset #fff";
+                div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+                div.style.fontFamily = "arial, helvetica, sans-serif";
+                div.style.MozUserSelect = "none";
+
+                shield.appendChild(div);
+
+                var table = document.createElement("table");
+                table.width = "100%";
+                table.cellSpacing = 0;
+
+                div.appendChild(table);
+
+                var trh = document.createElement("tr");
+
+                table.appendChild(trh);
+
+                var th = document.createElement("th");
+                th.style.padding = "5px";
+                th.style.borderTopRightRadius = "1px";
+                th.style.borderTopLeftRadius = "1px";
+                th.style.fontSize = "20px";
+                th.style.backgroundColor = "#345db5";
+                th.style.color = "#fff";
+                th.innerHTML = topic;
+                th.style.border = "2px outset #345db5";
+
+                trh.appendChild(th);
+
+                var tr2 = document.createElement("tr");
+
+                table.appendChild(tr2);
+
+                var td2 = document.createElement("td");
+
+                td2.id = "msg.td";
+
+                tr2.appendChild(td2);
+
+                var content = document.createElement("div");
+                content.id = "msg.content";
+                content.style.width = "calc(100% - 30px)";
+                content.style.height = (height - 105 - 30) + "px";
+                content.style.border = "1px inset #eee";
+                content.style.overflow = "auto";
+                content.style.textAlign = "center";
+                content.style.verticalAlign = "middle";
+                content.style.padding = "15px";
+                content.style.fontSize = "22px";
+
+                content.innerHTML = msg;
+
+                td2.appendChild(content);
+
+                var trf = document.createElement("tr");
+
+                table.appendChild(trf);
+
+                var tdf = document.createElement("td");
+                tdf.align = "center";
+                tdf.id = "pop_button_panel"
+
+                trf.appendChild(tdf);
+
+                var btn = document.createElement("button");
+                btn.className = "blue";
+                btn.id = "ok_button";
+                btn.innerHTML = "OK";
+
+                btn.onclick = function () {
+
+                    if (__$("msg.shield")) {
+
+                        document.body.removeChild(__$("msg.shield"));
+
+                    }
+
+                }
+
+                tdf.appendChild(btn);
+
+            }
+
+            function showConfirmMessage(msg, topic, nextURL) {
+
+                  if (!topic) {
+
+                      topic = "Confirm";
+
+                  }
+
+                  var shield = document.createElement("div");
+                  shield.style.position = "absolute";
+                  shield.style.top = "0px";
+                  shield.style.left = "0px";
+                  shield.style.width = "100%";
+                  shield.style.height = "100%";
+                  shield.id = "msg.shield";
+                  shield.style.backgroundColor = "rgba(128,128,128,0.75)";
+                  shield.style.zIndex = 1050;
+
+                  document.body.appendChild(shield);
+
+                  var width = 420;
+                  var height = 280;
+
+                  var div = document.createElement("div");
+                  div.id = "msg.popup";
+                  div.style.position = "absolute";
+                  div.style.width = width + "px";
+                  div.style.height = height + "px";
+                  div.style.backgroundColor = "#eee";
+                  div.style.borderRadius = "5px";
+                  div.style.left = "calc(50% - " + (width / 2) + "px)";
+                  div.style.top = "calc(50% - " + (height * 0.7) + "px)";
+                  div.style.border = "1px outset #fff";
+                  div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+                  div.style.fontFamily = "arial, helvetica, sans-serif";
+                  div.style.MozUserSelect = "none";
+
+                  shield.appendChild(div);
+
+                  var table = document.createElement("table");
+                  table.width = "100%";
+                  table.cellSpacing = 0;
+
+                  div.appendChild(table);
+
+                  var trh = document.createElement("tr");
+
+                  table.appendChild(trh);
+
+                  var th = document.createElement("th");
+                  th.style.padding = "5px";
+                  th.style.borderTopRightRadius = "1px";
+                  th.style.borderTopLeftRadius = "1px";
+                  th.style.fontSize = "20px";
+                  th.style.backgroundColor = "red";
+                  th.style.color = "#fff";
+                  th.innerHTML = topic;
+                  th.style.border = "2px outset red";
+
+                  trh.appendChild(th);
+
+                  var tr2 = document.createElement("tr");
+
+                  table.appendChild(tr2);
+
+                  var td2 = document.createElement("td");
+
+                  tr2.appendChild(td2);
+
+                  var content = document.createElement("div");
+                  content.id = "msg.content";
+                  content.style.width = "calc(100% - 30px)";
+                  content.style.height = (height - 105 - 30) + "px";
+                  content.style.border = "1px inset #eee";
+                  content.style.overflow = "auto";
+                  content.style.textAlign = "center";
+                  content.style.verticalAlign = "middle";
+                  content.style.padding = "15px";
+                  content.style.fontSize = "22px";
+
+                  content.innerHTML = msg;
+
+                  td2.appendChild(content);
+
+                  var trf = document.createElement("tr");
+
+                  table.appendChild(trf);
+
+                  var tdf = document.createElement("td");
+                  tdf.align = "center";
+
+                  trf.appendChild(tdf);
+
+                  var btnCancel = document.createElement("button");
+                  btnCancel.className = "blue";
+                  btnCancel.innerHTML = "Cancel";
+                  btnCancel.style.minWidth = "100px";
+
+                  btnCancel.onclick = function () {
+
+                      if (__$("msg.shield")) {
+
+                          document.body.removeChild(__$("msg.shield"));
+
+                      }
+
+                  }
+
+                  tdf.appendChild(btnCancel);
+
+                  var btnOK = document.createElement("button");
+                  btnOK.className = "red";
+                  btnOK.innerHTML = "OK";
+                  btnOK.style.minWidth = "100px";
+
+                  if (nextURL)
+                      btnOK.setAttribute("nextURL", nextURL);
+
+                  btnOK.onclick = function () {
+
+                      if (__$("msg.shield")) {
+
+                          document.body.removeChild(__$("msg.shield"));
+
+                          if (this.getAttribute("nextURL"))
+                              window.location = this.getAttribute("nextURL");
+
+                      }
+
+                  }
+
+                  tdf.appendChild(btnOK);
+
+              }
+
+            </script>
   <body id="container">
     <div id="content">
-        <div id="description" style="color:#777;position:absolute;margin-top:-70px;">
-          <%
-          show_intro_text = false
-          if show_intro_text %>
-            This demonstration site contains the work of <a href="http://pih.org" style="color:white">Partners In Health</a>
-            and <a href="http://baobabhealth.org" style="color:white">Baobab Health.</a>
-            This EMR is built on top of OpenMRS 1.4 and is currently being used in Neno and Ngoni, Malawi.
-            It is designed for an 800 by 600 pixel touch screen at the point of patient contact.
-            <br/><a href="mailto:jeff@baobabhealth.org" style="color:white">Email</a> with questions.
-            Login using the sample login "demo", password "demo" and location "7".
-          <% end %>
-        </div>
         <% unless flash[:notice].nil? %>
           <p id="flash_notice" style="color: green"><%= flash[:notice] %></p>
         <% end %>
@@ -44,10 +544,83 @@
         <% unless flash[:error].nil? %>
           <p id="flash_alert" style="color: green"><%= flash[:alert] %></p>
         <% end %>
-        <%= yield %>
-        <div id="footer">
+        <div style="width: 99%; margin :auto; margin-top: 0.5%; border: 1px solid #959595; height : calc(100% - 20px);">
+
+              <div id="app_header">
+
+                 <div id="home_button" onmousedown="window.location ='/'">
+                        <i class=" fa fa-home"></i>
+                  </div>
+
+                <table style="width :20%; margin-top : 0.5em ;float:right">
+
+                  <tr>
+                    <td style="text-align:right; "><font style="font-size:2em;vertical-align:bottom">NRB eDRS </font></td>
+                    <td><img src="/images/coa.png" style="width :3.5em; float: right; margin-right : 0.6em"></td>
+                  </tr>         
+                </table>
+                       
+              </div>
+              <div style="width:100;height:calc(90% - 35px);">
+                    
+                    <%= yield %>
+
+              </div>
+              
+              <div id="footer" style="border-top: 1px solid  #959595; min-height:21px; bottom : 10px">
+
+              <% if@section=="Home" %>
+                 <div id="signout" onmousedown="window.location ='/logout'">
+                        <i class=" fa fa-sign-out"></i>
+                  </div>
+
+              <%else%>
+
+                  <% if params[:next_url] %>
+
+                      <div id="back" onmousedown="window.location= '<%= params[:next_url] %>'">
+
+                  <%else %>
+
+                      <div id="back" onmousedown="window.location= '/'">
+                  <%end %>
+                      
+                          <button class="blue">Back</button>
+                      </div>
+
+              <% end %>
+
+                <div id="section" >
+                    <%= @section rescue "Home" %>
+                </div>
+                <table style="min-width :20%;margin:auto; margin-top : 0.5em ; font-weight:bold; font-style:italic">
+
+                    <tr>
+                        <td>
+                               <%= User.current_user.id %>@
+                          </td>
+                          <td>
+                              <%= @facility.name rescue "" %>
+                          </td>
+                          <td>
+                             <%= ", #{@district.name}" rescue "" %>
+                          </td>
+                          <td>
+                             on <%= Time.now.strftime("%d/%b/%Y") %>
+                          </td>
+                    </tr>
+        
+                </table>
+                   
+              </div>
         </div>
       </div>
     </div>
   </body>
+
+  <script type="text/javascript">
+    
+            //showConfirmMessage("Hello World","It's alive",'/');
+
+  </script>
 </html>

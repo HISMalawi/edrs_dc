@@ -1,20 +1,55 @@
 
 <style type="text/css">
 	
-	#table_container{
 
-			height: 800px;
-
-			overflow-y: scroll;
-
-	}
 
 
 </style>
 <div id="table_container">
+
+		<table>
+				<thead>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							Name
+						</th>
+						<th>
+							Gender
+						</th>
+						<th>
+							Date of Death
+						</th>
+						<th>
+							Place of Birth
+						</th>
+						<th>
+							Home address
+						</th>
+						<th>
+							Informant
+						</th>
+						<th colspan="3">
+							Operations
+						</th>
+					</tr>
+				</thead>
+				<tbody id="table_body">
+					
+				</tbody>
+		</table>
 	
 </div>
+<div id="pagination">
+	<button id="prev" class="gray prev" onmousedown="navPrevPage()">|<<</button>
+	<button id="next" class="gray next" onmousedown="navNextPage()">>>|</button>
+		
+</div>
 <script type="text/javascript">
+
+		var url ="/search_by_status?status=NEW"
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
@@ -67,7 +102,7 @@
 
 		}
 
-		function ajaxRequest(url, callback, optionalControl) {
+		function ajaxGETRequest(url, callback, optionalControl) {
 
 	        var httpRequest = new XMLHttpRequest();
 
@@ -98,180 +133,54 @@
 
 	    }
 
+	    var page = 1 ;
+
+	    var estimatesize = 0;
+
+	    function navNextPage(){
+
+	    	page ++;
+
+	    	loadTable(page);
+
+	    }
+
+	    function navPrevPage(){
+
+	    	if(page > 1){
+
+	    		page--
+
+	    		loadTable(page);
+
+	    	}
+
+	    }
+
 		function __$(id){
 
 			return document.getElementById(id)
 
 		}
 
-		function loadTable(){
+		function loadTable(page){
 
 					var content = __$("table_container")
 	
-					var table = document.createElement("table");
+					var table = __$("table_body");
 
-					content.appendChild(table)
 
-					table.style.borderCollapse = "collapse";
-					table.style.margin = "auto";
-					table.style.top = "15%";
-					table.style.color = "#333";
-					table.cellPadding = "10px";
-					table.border = 0;
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "#";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th)
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Name";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th)
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Gender";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th)
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Date of death";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Place of death";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Home address";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Informant";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Status";
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "Operation";
-
-					th.colSpan ="3"
-
-					th.style.borderRight= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th)
-
-
-					var th = document.createElement("th");
-
-					th.innerHTML = "";
-
-					th.style.borderLeft= "1px solid black";
-
-					th.style.borderBottom= "1px solid black";
-
-
-					tr.appendChild(th);
-
-
-					ajaxRequest("/people/all",function(data){
+					ajaxGETRequest(url+"&page="+page+"&size=8",function(data){
 
 								var data = JSON.parse(data);
 
 							for(var i = 0 ; i < data.length ; i++){
 
+								estimatesize = i + 1;
+
 								var tr = document.createElement("tr");
 
 								table.appendChild(tr);
-
-								var td = document.createElement("td");
-
-								td.style.borderRight= "1px solid black";
-
-								td.style.borderBottom= "1px solid black";
-
-								tr.appendChild(td);
 
 
 								var td = document.createElement("td");
@@ -365,35 +274,22 @@
 
 								var td = document.createElement("td");
 
-								td.style.borderRight= "1px solid black";
-
-								td.style.borderBottom= "1px solid black";
-
-								tr.appendChild(td);
-
-
-								var td = document.createElement("td");
-
 								td.style.borderBottom= "1px solid black";
 
 
 								td.style.borderRight= "1px solid black";
 
-								var imgView = document.createElement("img");
+								var button = document.createElement("button");
 
-                                imgView.height = 40;
+								button.className = "blue";
 
-                                imgView.setAttribute("src", icoView);
+								button.innerHTML = "View";
 
-                                imgView.style.marginLeft = "30px";
+								button.style.width = "90%";
 
-                                imgView.style.marginRight = "30px";
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=/people/view?page="+page+"'");
 
-                                imgView.style.cursor = "pointer";
-
-                               imgView.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"'");
-
-								td.appendChild(imgView);
+								td.appendChild(button);
 
 								tr.appendChild(td);
 
@@ -404,62 +300,61 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								var imgView = document.createElement("img");
+								var button = document.createElement("button");
 
-                                imgView.height = 40;
+								button.className = "green";
 
-                                imgView.setAttribute("src", icoEdit);
+								button.innerHTML = "Edit";
 
-                                imgView.style.marginLeft = "30px";
+								button.style.width = "90%";
 
-                                imgView.style.marginRight = "30px";
+                                button.setAttribute("onclick","window.location = '/people/edit/" +data[i]["_id"]+"'");
 
-                                imgView.style.cursor = "pointer";
-
-                                imgView.setAttribute("onclick","window.location = '/people/edit/" +data[i]["_id"]+"'");
-
-
-								td.appendChild(imgView);
+								td.appendChild(button);
 
 								tr.appendChild(td);
 
 
 								var td = document.createElement("td");
-
 
 								td.style.borderRight= "1px solid black";
 
 								td.style.borderBottom= "1px solid black";
 
-								var imgView = document.createElement("img");
+								var button = document.createElement("button");
 
-                                imgView.height = 40;
+								button.className = "blue";
 
-                                imgView.setAttribute("src", print);
+								button.style.width = "90%";
 
-                                imgView.style.marginLeft = "30px";
+								button.innerHTML = "Print";
 
-                                imgView.style.marginRight = "30px";
-
-                                imgView.style.cursor = "pointer";
-
-                                imgView.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
+                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
 
 
-								td.appendChild(imgView);
+								td.appendChild(button);
 
 								tr.appendChild(td);
 
+							}
 
-								var td = document.createElement("td");
+							if(estimatesize >= 8){
 
-								td.style.borderLeft= "1px solid black";
+								__$("next").className = __$("next").className.replace("gray","blue");
 
-								td.style.borderBottom= "1px solid black";
+							}else{
 
-								tr.appendChild(td);
+								__$("next").className = __$("next").className.replace("blue","gray");
 
+							}
 
+							if(page == 1 ){
+
+								__$("prev").className = __$("prev").className.replace("blue","gray");
+
+							}else{
+
+								__$("prev").className = __$("prev").className.replace("gray","blue");
 
 							}
 
@@ -467,8 +362,18 @@
 
 		}
 
+		<% if params[:page] %>
 
-		loadTable();
+				page = parseInt("<%= params[:page] %>")
+
+		<%else %>
+
+				page = 1;
+
+		<% end %>
+
+
+		loadTable(page);
 
 
 </script>
