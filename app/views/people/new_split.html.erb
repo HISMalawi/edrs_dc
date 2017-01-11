@@ -1,0 +1,131 @@
+<html>
+	<head>
+		<style>
+            .side-pane{
+                font-size: 1.3em;
+                padding: 18px;
+                padding-left: 11px;
+                padding-right: 0px;
+                border-bottom: 1px solid lightgray;
+                cursor: pointer;
+            }
+            .sub-pane{
+                font-size: 1.1em;
+                padding: 9px;
+                text-align: right;
+                background: white;
+                border: none;
+                border-bottom: 0.1px dotted lightgray;
+                cursor: pointer;
+                display: none;
+            }
+            .current{
+                display: table-cell;
+            }
+            .active{
+                background: lightblue;
+            }
+		</style>
+	</head>
+
+	<body style="margin: 0.5vh; padding:0px;">
+		<table id="main" style="width: 100%;">
+			<tr>
+				<td valign="top" style="width: 20%; height: 98.5vh;border: 1px solid gray; background: #f8f8ff; border-right: 4px solid #333333;padding: 0px;">
+					<table id="table" style="width: 100%;">
+
+					</table>
+				</td>	
+				<td style="width: 78%; height: 98.5vh;background: ghostwhite;">
+                    <iframe id="iframe" src="/people/new" style="width: 100%; height: 100%;border: none;">
+
+                    </iframe>
+				</td>
+			</tr>
+		</table>
+	</body>
+
+    <script>
+        function setup(active_id){
+            form =  window.frames['iframe'].contentDocument.getElementById("new_person");
+            if(!form){
+                setTimeout("setup()", 400);
+            }else {
+                var sections = form.getElementsByTagName("section")
+                var table = document.getElementById("table");
+
+                for (var i = 0; i < sections.length; i++) {
+                    var tr = document.createElement("tr");
+                    table.appendChild(tr);
+
+                    var td = document.createElement("td");
+                    td.innerHTML = sections[i].getAttribute("name");
+                    td.className = "side-pane";
+                    tr.appendChild(td);
+
+                    var sub_nodes = sections[i].getElementsByTagName("sub");
+                    if(sub_nodes.length > 0){
+                        for(var s = 0; s < sub_nodes.length; s++){
+                            var tr = document.createElement("tr");
+                            table.appendChild(tr);
+
+                            var td = document.createElement("td");
+                            td.innerHTML = sub_nodes[s].getAttribute("name");
+                            td.className = "sub-pane";
+                            td.setAttribute("section", sections[i].getAttribute("name"));
+                            td.id = sub_nodes[s].id;
+                            if(active_id && sub_nodes[s].id == active_id){
+                                td.className += " active";
+                            }
+                            tr.appendChild(td);
+
+                            //get all input field for the sub section
+                            var input_nodes = sub_nodes[s].childNodes;
+                            for(var k = 0; k < input_nodes.length; k++){
+                                try{
+                                    input_nodes[k].setAttribute("tstpagestyleclass", sub_nodes[s].id);
+                                }catch(e){
+                                    //ignore irrelevant node
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function checkCurPos(){
+
+            form =  window.frames['iframe'].contentDocument.getElementById("new_person");
+            var cur_page = document.getElementById("iframe").contentWindow.tstCurrentPage;
+            if(form){
+                var cur_input_id = jQuery(form).find("[touchscreeninputid='" + cur_page + "']").attr("tstpagestyleclass");
+                if(cur_input_id){form
+                    var sub_node = document.getElementById(cur_input_id);
+                    highlight(sub_node);
+                }
+            }
+        }
+
+        function highlight(node){
+            var nodes = document.getElementsByClassName("sub-pane");
+            var section = node.getAttribute("section");
+            for(var j in nodes){
+                if(jQuery(nodes[j]).attr("section") == section){
+                    nodes[j].className = "sub-pane current";
+                }else {
+                    nodes[j].className = "sub-pane";
+                }
+            }
+
+            node.className += " active";
+        }
+
+        setTimeout("setup()", 200);
+
+        interval = window.setInterval(function(){
+            checkCurPos();
+        }, 350);
+    </script>
+
+</html>
