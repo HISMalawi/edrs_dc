@@ -99,16 +99,37 @@ class User < CouchRest::Model::Base
   end
 
   def self.create(params)
+
+    return if params.blank?
+
     user = User.new()
+
     user.username = (params[:username] rescue nil || params[:user]['username'] rescue nil) 
-    user.plain_password = params[:plain_password] rescue nil || params[:user]['password'] rescue nil
+
+    user.plain_password = params[:plain_password] rescue nil || params[:user]['password'] rescue 
+
     user.plain_password = params[:user]['password'] if params[:plain_password].blank?   
+
     user.first_name = (params[:first_name] rescue nil || params[:user]['first_name'] rescue nil)
+
     user.last_name = (params[:last_name] rescue nil || params[:user]['last_name'] rescue nil)
+
     user.role = (params[:role] rescue nil || params[:user]['role'] rescue nil)
-    user.site_code = CONFIG['district_code']
+
+
+
+    if !CONFIG['facility_code'].nil? && !CONFIG['facility_code'].blank?       
+
+         user.site_code = CONFIG['facility_code']
+
+    end
+
+    user.district_code = CONFIG['district_code']
+   
     user.email = (params[:email] rescue nil || params[:user]['email'] rescue nil)
+
     user.save
+
     return user
   end
 

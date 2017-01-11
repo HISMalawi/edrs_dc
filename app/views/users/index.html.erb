@@ -1,81 +1,51 @@
-<div id="default" style="width: 100%; height: 400px; text-align: center; vertical-align: top;">
+<div id="default" style="width: 84%; height: 400px; text-align: center; vertical-align: top;margin:auto">
  <% if User.current_user.activities_by_level("Facility").include?("Create User")  %>
-  <div class="button" onclick="window.location = '<%= new_user_path %>'" tag=0>
-    <table style="text-align: left;">
-      <tr>
-        <td rowspan="2">
-          <img src="<%= @icoFolder %>" height="60"/>
-        </td>
-        <td style="height: 30px;">
-          Add User
-        </td>
-      </tr>
-      <tr>
-        <td style="font-size: 11px; font-style: italic;">
-          Add new system user at facility.
-        </td>
-      </tr>
-    </table>
+
+    <div class="touch_btn" onmousedown="window.location = '<%= new_user_path%>'" >
+                                <div class="icon">
+                                       <i class="fa fa-user-plus"></i>
+                                </div>
+                                <div class="button_label">Add User</div>
+                                <div class="button_description">  Add New User.</div>
+
+                                
   </div>
  <%end %>
 
  <% if User.current_user.activities_by_level("Facility").include?("Deactivate User")  %>
-  <div class="button" onclick="window.location = '/block'" tag=5>
-    <table style="text-align: left;">
-      <tr>
-        <td rowspan="2">
-          <img src="<%= @icoFolder %>" height="60"/>
-        </td>
-        <td style="height: 30px;">
-          Block User
-        </td>
-      </tr>
-      <tr>
-        <td style="font-size: 11px; font-style: italic;">
-          Revoke user access rights at facility.
-        </td>
-      </tr>
-    </table>
-  </div>
+     <div class="touch_btn" onmousedown="window.location = '/block'" >
+              <div class="icon">
+                                       <i class="fa fa-ban"></i>
+              </div>
+              <div class="button_label">Block User</div>
+              <div class="button_description">  Block existing users.</div>
+
+                                
+    </div>
  <% end %>
 
   <% if User.current_user.activities_by_level("Facility").include?("Activate User")  %>
-  <div class="button" onclick="window.location = '/unblock'" tag=5>
-    <table style="text-align: left;">
-      <tr>
-        <td rowspan="2">
-          <img src="<%= @icoFolder %>" height="60"/>
-        </td>
-        <td style="height: 30px;">
-          Unblock User
-        </td>
-      </tr>
-      <tr>
-        <td style="font-size: 11px; font-style: italic;">
-          Give back access rights to blocked user at facility.
-        </td>
-      </tr>
-    </table>
+     <div class="touch_btn" onmousedown="window.location = '/unblock'" >
+                                <div class="icon">
+                                       <i class="fa fa-unlock-alt"></i>
+                                </div>
+                                <div class="button_label">Unblock</div>
+                                <div class="button_description">  Give back access rights to blocked user</div>
+
+                                
   </div>
 <% end %>
 
 <% if User.current_user.activities_by_level("Facility").include?("View Users")  %>
-  <div class="button" onclick="window.location = '/view_users'" tag=1>
-    <table style="text-align: left;">
-      <tr>
-        <td rowspan="2">
-          <img src="<%= @icoFolder %>" height="60"/>
-        </td>
-        <td style="height: 30px;">
-          View Users
-        </td>
-      </tr>
-      <tr>
-        <td style="font-size: 11px; font-style: italic;">
-          View all users, their roles and access rights at facility.
-        </td>
-      </tr>
-    </table>
+
+  <div class="touch_btn" onmousedown="window.location = '/view_users'" >
+                                <div class="icon">
+                                       <i class="fa fa-users"></i>
+                                </div>
+                                <div class="button_label">View Users</div>
+                                <div class="button_description">  View system users</div>
+
+                                
   </div>
 <% end %>
 </div>

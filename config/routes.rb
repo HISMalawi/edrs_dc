@@ -70,6 +70,8 @@ Rails.application.routes.draw do
 
   get '/people/print_id_label' =>"people#print_id_label"
 
+  get '/search_by_status' => "people#search_by_status"
+
   post 'update_field' => "people#update_field"
 
   get '/people/all' => "people#all"

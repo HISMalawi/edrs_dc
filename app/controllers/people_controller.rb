@@ -10,13 +10,11 @@ class PeopleController < ApplicationController
 
 	def index
 
-      @icoFolder = icoFolder("icoFolder")
+      @facility = facility
+
+      @district = district
 
       @section = "Home"
-
-      @targeturl = "/logout"
-
-      @targettext = "Logout"
 
       render :layout => "facility"
 
@@ -36,7 +34,7 @@ class PeopleController < ApplicationController
 
 	    @section = "New Person"
 
-	    render :layout => "registration"
+	    render :layout => "touch"
 
   end
 
@@ -112,7 +110,9 @@ class PeopleController < ApplicationController
 
   def view
 
-       render :layout => "touch"
+      @section = "View"
+
+       render :layout => "facility"
       
   end
 
@@ -128,7 +128,11 @@ class PeopleController < ApplicationController
 
           status = params[:status]
 
-          people = PersonRecordStatus.by_status.key(params[:status]).collect{ |status| status.person}
+          page = params[:page] rescue 1
+
+          size = params[:size] rescue 7
+
+          people = PersonRecordStatus.by_status.key(params[:status]).page(page).per(size).collect{ |status| status.person}
 
           render  :text => people.to_json
 
@@ -314,6 +318,10 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id]) rescue nil
 
     @person = Person.new if @person.nil?
+
+    @facility = facility
+
+    @district = district
 
   end
 
