@@ -13,6 +13,14 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
 
+  def configs
+    YAML.load_file("#{Rails.root}/config/couchdb.yml")["#{Rails.env}"]
+  end
+
+  def site_type
+    configs['site_type']
+  end
+
   def facility
     
       return HealthFacility.find(CONFIG['facility_code'].to_s) rescue nil
