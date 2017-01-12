@@ -1,11 +1,21 @@
-<%= form_for @person, :url => '/update_cause_of_death', :method => :post do |f| %>
+<%= form_for @person, :url => '/update_cause_of_death',:id=>"cause_of_death", :method => :post do |f| %>
         <section name="Cause of death">
                     <sub id="cause_of_death" name="Cause of death">
-                        <%= (f.text_field :cause_of_death1,:helpText => "Immediate Cause of Death", :optional=>true,:condition => true ,:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
+                        <%= (f.text_field :cause_of_death1,:helpText => "Cause of Death 1", :optional=>true,:condition => true ,:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
 
-                        <%= (f.text_field :cause_of_death2,:helpText => "Other Cause of Death 1", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+                         <%= (f.text_field :onset_death_interval1,:helpText => "Cause of Death 1 onset to death Interval", :optional=>true,:condition => "__$('person_cause_of_death1').value.length > 1",:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
 
-                        <%= (f.text_field :cause_of_death3,:helpText => "Other Cause of Death 2", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+                        <%= (f.text_field :cause_of_death2,:helpText => "Cause of Death 2", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= (f.text_field :onset_death_interval2,:helpText => "Cause of Death 2 onset to death Interval", :optional=>true,:condition => "__$('person_cause_of_death2').value.length > 1",:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
+
+                        <%= (f.text_field :cause_of_death3,:helpText => "Cause of Death 3", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                         <%= (f.text_field :onset_death_interval3,:helpText => "Cause of Death 3 onset to death Interval", :optional=>true,:condition => "__$('person_cause_of_death3').value.length > 1",:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
+
+                         <%= (f.text_field :cause_of_death4,:helpText => "Cause of Death 4", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                         <%= (f.text_field :onset_death_interval4,:helpText => "Cause of Death 4 onset to death Interval", :optional=>true,:condition => "__$('person_cause_of_death4').value.length > 1",:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
 
                         <%= (f.text_field :cause_of_death_conditions,:helpText => "Other significant conditions contributing  to the death, but not related to the disease or condition causing it.", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
                     </sub>

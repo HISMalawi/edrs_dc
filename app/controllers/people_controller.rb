@@ -38,6 +38,10 @@ class PeopleController < ApplicationController
 
   end
 
+  def render_cause_of_death_page
+    
+  end
+
   def add_cause_of_death
 
         @person = Person.find(params[:id])
@@ -105,8 +109,11 @@ class PeopleController < ApplicationController
 
 
 
-      redirect_to "/people/view/#{person.id.to_s}" and return
-  	
+      #redirect_to "/people/view/#{person.id.to_s}" and return
+
+      redirect_to "/people/finalize_create/#{person.id}" and return
+
+        	
   end
 
   def finalize_create
@@ -178,6 +185,8 @@ class PeopleController < ApplicationController
                   "changed_by","_deleted","_id","acknowledgement_of_receipt_date"]
 
       @keys = @person.keys - excludes
+
+      render :layout => "facility"
   	
   end
 

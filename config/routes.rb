@@ -68,6 +68,8 @@ Rails.application.routes.draw do
 
   get '/people/edit/:id/:field' => "people#edit_field"
 
+  get '/cause_of_death/:id' => "people#render_cause_of_death_page"
+
   get '/add_cause_of_death/:id' => "people#add_cause_of_death"
 
   post '/update_cause_of_death'  => "people#update_cause_of_death"
