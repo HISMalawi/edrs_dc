@@ -218,7 +218,7 @@ class PeopleController < ApplicationController
   end
 
   def get_first_names
-      entry = params["search"].soundex
+      entry = params["search"].soundex rescue nil
         data = Person.by_first_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
 		  		render :text => data.collect{ |w| "<li>#{w.first_name}" }.uniq.join("</li>")+"</li>"
@@ -228,7 +228,7 @@ class PeopleController < ApplicationController
   end
 
   def get_last_names
-        entry = params["search"].soundex
+        entry = params["search"].soundex rescue nil
         data = Person.by_last_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
           render :text => data.collect{ |w| "<li>#{w.last_name}" }.uniq.join("</li>")+"</li>"
@@ -250,7 +250,11 @@ class PeopleController < ApplicationController
         #data = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.push("Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City").sort
     
     end
-    
+
+    if !params[:search_string].blank?
+      data = data.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+    end
+
     render :text => data.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
   end
 
@@ -264,11 +268,19 @@ class PeopleController < ApplicationController
       facilities = HealthFacility.all.collect(&:name).sort
     end
 
+    if !params[:search_string].blank?
+      facilities = facilities.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+    end
+
     render :text => facilities.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
   end
 
   def nationalities
     nationalities = Nationality.all.collect(&:nationality).sort
+
+    if !params[:search_string].blank?
+      nationalities = nationalities.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+    end
     render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
   end
 
@@ -283,6 +295,10 @@ class PeopleController < ApplicationController
     end
 
     result = result.sort
+
+    if !params[:search_string].blank?
+      result = result.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+    end
 
     render :text => result.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
   end
@@ -299,6 +315,10 @@ class PeopleController < ApplicationController
     end
 
     result = result.sort
+
+    if !params[:search_string].blank?
+      result = result.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+    end
 
     render :text => result.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
 

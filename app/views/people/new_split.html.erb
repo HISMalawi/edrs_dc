@@ -108,6 +108,17 @@
                     }
                 }
             }
+
+            setTimeout("updateNavButtons()", 1000);
+        }
+
+        function updateNavButtons(){
+            form.setAttribute("target", "_parent");
+            //window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
+               // confirmCancelEntry();
+            //}
+            //window.frames['iframe'].contentDocument.getElementById("nextButton").onmousedown = function(){
+            //}
         }
 
         function checkCurPos(){

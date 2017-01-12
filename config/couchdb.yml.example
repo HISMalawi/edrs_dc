@@ -2,16 +2,17 @@ development: &development
   protocol: 'http'
   host: localhost
   port: 5984
-  prefix: 
-  suffix: 
-  username: 
-  password: 
+  prefix: edrs 
+  suffix: facility
+  username: root
+  password: password
   crtkey:
-  #facility_code: 
-  district_code:
+  district_code: LL
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'
-
+  site_type: facility
+  district: Lilongwe
+  facility_name: Kawale Health Center
 test:
   <<: *development
   suffix: test
