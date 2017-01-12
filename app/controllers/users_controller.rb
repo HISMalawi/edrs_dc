@@ -6,8 +6,6 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-
-    @icoFolder = icoFolder("icoFolder")
     
     @section = "User Management"
 
@@ -15,7 +13,14 @@ class UsersController < ApplicationController
 
     @targettext = "Finish"
 
-    render  :layout => "facility"
+    if @facility.present?
+
+        render :layout => "facility"
+
+    else
+
+        render :layout => "dc"
+    end
 
   end
 
@@ -30,7 +35,14 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-    render :layout => "facility"
+    if @facility.present?
+
+        render :layout => "facility"
+
+    else
+
+        render :layout => "dc"
+    end
 
   end
 
@@ -45,9 +57,26 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    @roles = Role.by_level.keys(["#{CONFIG['site_type'].humanize}"]).each.collect{|x| x.role}.uniq
+    if CONFIG['site_type']=="facility"
 
-    render :layout => "facility"
+        @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
+
+    else
+
+        @roles = Role.by_level.keys(["DC"]).each.collect{|x| x.role}.uniq
+      
+    end
+
+    
+
+    if @facility.present?
+
+        render :layout => "facility"
+
+    else
+
+        render :layout => "dc"
+    end
 
   end
 
@@ -60,7 +89,15 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-    @roles = Role.by_level.keys(["#{CONFIG['site_type'].humanize}"]).each.collect{|x| x.role}.uniq
+     if CONFIG['site_type']=="facility"
+
+        @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
+
+    else
+
+        @roles = Role.by_level.keys(["DC"]).each.collect{|x| x.role}.uniq
+      
+    end
 
     render :layout => "touch"
 
@@ -245,7 +282,14 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    render :layout => "facility"
+    if @facility.present?
+
+        render :layout => "facility"
+
+    else
+
+        render :layout => "dc"
+    end
 
   end
 
@@ -426,8 +470,6 @@ class UsersController < ApplicationController
   end
 
   def check_if_user_admin
-
-    @search = icoFolder("search")
 
     @facility = facility
 

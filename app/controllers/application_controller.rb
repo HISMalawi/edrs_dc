@@ -27,7 +27,16 @@ class ApplicationController < ActionController::Base
   end
   
   def district
-      return District.find(facility.district_code) rescue nil
+      if facility.present?
+
+           return District.find(facility.district_code) rescue nil
+
+      else
+
+           return District.find(CONFIG['district_code'].to_s) rescue nil
+
+      end
+     
   end
   
   def check_if_user_admin
@@ -57,16 +66,33 @@ class ApplicationController < ActionController::Base
 
         if person.first_name.blank? || person.last_name.blank? 
 
-              complete = false
+              return false
 
         end
 
         if person.place_of_death.blank?
-              complete = false
+
+              return false
 
         end
 
         return complete
+    
+  end
+
+
+  #Root index of app
+  def index
+
+        if CONFIG['site_type'] =="facility"
+
+          redirect_to "/people/"
+
+        else
+
+           redirect_to "/dc/"
+
+        end
     
   end
 

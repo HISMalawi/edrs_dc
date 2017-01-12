@@ -54,7 +54,11 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
 
-  root 'people#index'
+  root 'application#index'
+
+  get '/people/' => "people#index"
+
+  get '/dc/' => "dc#index"
 
   get 'people/new' => "people#new"
 
