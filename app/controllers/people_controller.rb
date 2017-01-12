@@ -186,6 +186,8 @@ class PeopleController < ApplicationController
 
       @keys = @person.keys - excludes
 
+      @section = "Show"
+
       render :layout => "facility"
   	
   end

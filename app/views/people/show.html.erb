@@ -1,18 +1,40 @@
-<table>
-	<tr><th colspan="10">Section 1: Particulars of the Deceased / Mbiri ya Omwalira</th></tr>
-	<tr>
-			<th>Part 1</th>
-			<td >1</td>
-			<td>Surname</td>
-			<td></td>
-			<td></td>
-			<td ></td>
-			<td>Other names</td>
-			<td></td>
-	</tr>
-	<tr>
-		<th rowspan="7">
-			PERSONAL DETAILS OF DECEASED
-		</th>
-	</tr>
-</table>
+<style type="text/css">
+		
+		#table_container{
+
+				height: calc(88% - 20px);
+
+				overflow-y: scroll;
+
+				margin-bottom : 0.3em
+
+		}
+</style>
+<div id="table_container">
+
+		<table>
+			<% @keys.each do |key| %>
+
+					<tr>
+						
+						<td style= "border : none; font-weight: bold " ><%= key.humanize %> &nbsp :</td>
+
+						<% if key.include? "date" %>
+
+								<td style= "border : none;"><%= Date.parse(@person[key]).strftime("%d/%b/%Y")  rescue @person[key] %></td>
+
+						<%else %>
+
+							<td style= "border : none;"><%= @person[key] %></td>
+
+						<%end%>
+
+						<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Edit</button></td>
+
+					</tr>
+
+			<%end %>
+
+		</table>
+
+</div>
