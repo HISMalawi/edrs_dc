@@ -114,11 +114,9 @@
 
         function updateNavButtons(){
             form.setAttribute("target", "_parent");
-            //window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
-               // confirmCancelEntry();
-            //}
-            //window.frames['iframe'].contentDocument.getElementById("nextButton").onmousedown = function(){
-            //}
+            window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
+                cancelEntry();
+            }
         }
 
         function checkCurPos(){
