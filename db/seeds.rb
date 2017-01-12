@@ -132,7 +132,7 @@ user = User.find('admin')
 if user.blank?
 
 	User.create(username: "admin", plain_password: "password", last_password_date: Time.now,
-							password_attempt: 0, login_attempt: 0, first_name: "EBRS",
+							password_attempt: 0, login_attempt: 0, first_name: "EDRS",
 							last_name: "Administrator", role: "System Administrator",
 							email: "admin@baobabhealth.org")
 							
@@ -260,6 +260,4 @@ Person.count rescue nil
 puts "Created Person database"
 Audit.count rescue nil
 puts "Created audit database"
-Sync.count
-puts "Created Sync database"
 puts "Application setup succesfully!!!"

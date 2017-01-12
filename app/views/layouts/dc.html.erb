@@ -619,10 +619,10 @@
                                <%= User.current_user.username %>@
                           </td>
                           <td>
-                              <%= @facility.name rescue "" %>
+                             <%= "#{@district.name}" rescue "" %>
                           </td>
-                          <td>
-                             <%= ", #{@district.name}" rescue "" %>
+                           <td>
+                              DC
                           </td>
                           <td>
                              on <%= Time.now.strftime("%d/%b/%Y") %>

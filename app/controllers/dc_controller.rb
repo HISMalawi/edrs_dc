@@ -1,0 +1,2 @@
+class DcController < ApplicationController
+end

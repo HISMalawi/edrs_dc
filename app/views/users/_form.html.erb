@@ -39,7 +39,7 @@
                                      :absolute_min => 6,
                 										 :absolute_max => 20 ,:helpText => "Password"%>
           
-                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password" %>
+                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password", :tt_onUnLoad=>"comfirmPassword()"%>
         
         <% else %>
 
@@ -60,6 +60,22 @@
 
 <script>
 
-   
+        function comfirmPassword(){
+
+                    var confirm_password = __$('touchscreenInput' + tstCurrentPage).value.trim()
+
+                    var password = __$("user_password").value.trim();
+
+                    if(confirm_password != password){
+
+                          setTimeout(function(){ 
+
+                              gotoPage(tstCurrentPage - 1, false, true); 
+                              showPopupMessage("Password don't match", "Message")
+
+                            })
+
+                    }
+        }
 
 </script>
