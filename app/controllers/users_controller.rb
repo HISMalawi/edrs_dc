@@ -22,7 +22,10 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+
+
     @section = "View User"
 
     @targeturl = "/view_users"
@@ -42,7 +45,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
+    @roles = Role.by_level.keys(["#{CONFIG['site_type'].humanize}"]).each.collect{|x| x.role}.uniq
 
     render :layout => "facility"
 
@@ -56,6 +59,8 @@ class UsersController < ApplicationController
     @section = "Edit User"
 
     @targeturl = "/view_users"
+
+    @roles = Role.by_level.keys(["#{CONFIG['site_type'].humanize}"]).each.collect{|x| x.role}.uniq
 
     render :layout => "touch"
 
@@ -81,7 +86,7 @@ class UsersController < ApplicationController
 
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Create User"))
      
-      user = User.find(params[:user]['username'])
+      user = User.by_username.key(params[:user]['username']).first
       
       if user.present?
 
@@ -255,6 +260,7 @@ class UsersController < ApplicationController
     users.each do |user|
 
       record = {
+          "id"  => "#{user.id}",
           "username" => "#{user.username}",
           "name" => "#{user.first_name} #{user.last_name}",
           "roles" => "#{user.role}",

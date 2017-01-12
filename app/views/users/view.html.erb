@@ -248,7 +248,7 @@
 
                                 button.innerHTML = "View";
 
-                                button.setAttribute("onclick", "window.location ='/users/"+data[i].username+"?next_url=/view_users?page="+page+"'");
+                                button.setAttribute("onclick", "window.location ='/users/"+data[i].id+"?next_url=/view_users?page="+page+"'");
 
                                 button.style.width ="90%";
 
@@ -269,7 +269,7 @@
 
                                 button.innerHTML = "Edit";
 
-                                button.setAttribute("onclick", "window.location='/users/" + data[i].username + "/edit?next_url=/view_users?page="+page+"'");
+                                button.setAttribute("onclick", "window.location='/users/" + data[i].id+ "/edit?next_url=/view_users?page="+page+"'");
 
                                 button.style.width ="90%";
 

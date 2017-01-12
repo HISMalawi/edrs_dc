@@ -1,19 +1,10 @@
 require 'couchrest_model'
 
 class User < CouchRest::Model::Base
-
-  use_database "local"
   
   after_create :create_audit
-  
-  def username
-    self['_id']
-  end
 
-  def username=(value)
-    self['_id'] = value
-  end
-  
+  property :username, String
   property :first_name, String
   property :last_name, String
   property :password_hash, String
@@ -46,6 +37,7 @@ class User < CouchRest::Model::Base
 
   design do
     view :by_active
+    view :by_username
     view :by_username_and_active
     view :by_role
     view :by_created_at
@@ -55,19 +47,11 @@ class User < CouchRest::Model::Base
     view :active_users,
          :map => "function(doc){
             if (doc['type'] == 'User' && doc['active'] == true){
-              emit(doc._id, {username: doc._id ,first_name: doc.first_name,
+              emit(doc.username, {username: doc.username,first_name: doc.first_name,
               last_name: doc.last_name, email: doc.email,role: doc.role,
               creator: doc.creator, notify: doc.notify, updated_at: doc.updated_at});
             }
           }"
-
-
-    view :by_username,
-         :map => "function(doc) {
-                  if ((doc['type'] == 'User')) {
-                    emit(doc['_id'], 1);
-                  }
-                }"
                 
      filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"    
              
@@ -106,9 +90,19 @@ class User < CouchRest::Model::Base
 
     user.username = (params[:username] rescue nil || params[:user]['username'] rescue nil) 
 
-    user.plain_password = params[:plain_password] rescue nil || params[:user]['password'] rescue 
+    if params[:plain_password].present?
 
-    user.plain_password = params[:user]['password'] if params[:plain_password].blank?   
+          user.plain_password = params[:plain_password]    
+
+    elsif params[:user]['password'].present?
+
+          user.plain_password = params[:user]['password']
+
+    else
+
+          user.plain_password  = nil  
+
+    end 
 
     user.first_name = (params[:first_name] rescue nil || params[:user]['first_name'] rescue nil)
 
@@ -151,10 +145,15 @@ class User < CouchRest::Model::Base
   end
 
   def self.get_active_user(username)
+
     user_hash = User.active_users.keys [username]
+
     return if user_hash.blank?
+
     username = user_hash.rows.first['value']['username']
-    User.find username
+
+    User.by_username.key(username).first
+    
   end
 
   def confirm_password
@@ -166,7 +165,7 @@ class User < CouchRest::Model::Base
   end
   
   def create_audit
-    Audit.create(record_id: self.id, audit_type: "Audit", level: "User", reason: "Created user record")
+    Audit.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
   end
 
 end

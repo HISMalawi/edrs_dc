@@ -10,9 +10,7 @@ development: &development
   district_code: LL
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'
-  site_type: facility
-  district: Lilongwe
-  facility_name: Kawale Health Center
+  site_type: facility #facility | dc
 test:
   <<: *development
   suffix: test
