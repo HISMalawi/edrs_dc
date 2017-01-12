@@ -130,7 +130,7 @@
 
 
 		            
-		            tr.appendChild(td);
+		            //tr.appendChild(td);
 
 
 
@@ -561,12 +561,11 @@
 
                 <%= (f.text_field :other_position_of_certifier,:helpText => "Other Designation of medical certifier", :condition => "__$('person_position_of_certifier').value.match('Other') && __$('person_place_of_death').value.match('Hospital')",:tt_onLoad =>"showCategory('Section 2 : For hospital deathe')") rescue "" %>
 
-                <%= (f.text_field :acknowledgement_of_receipt_date,:helpText => "Acknowledgement of receipt date",
-                                  :field_type => "date",:tt_onLoad =>"showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
             </sub>
         </section>
 
     <% if site_type == "dc" %>
+
         <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">
                 <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>
@@ -583,6 +582,13 @@
             </sub>
         </section>
     <% end %>
+
+        <section name="Acknowledgement of Receipt">
+        	<sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
+        		<%= (f.text_field :acknowledgement_of_receipt_date,:helpText => "Acknowledgement of receipt date",
+                                  :field_type => "date",:tt_onLoad =>"showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
+        	</sub>
+        </section>
 
         <section name="Summary">
             <sub id="summary" name="Summary">

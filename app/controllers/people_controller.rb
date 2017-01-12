@@ -38,6 +38,31 @@ class PeopleController < ApplicationController
 
   end
 
+  def add_cause_of_death
+
+        @person = Person.find(params[:id])
+
+        render :layout => "touch"
+    
+  end
+
+  def update_cause_of_death
+
+      person = Person.find(params[:id])
+
+      if person.update_attributes(params[:person])
+
+          render :text => "Saved"
+
+      else
+
+          render :text => "Not Saved"
+
+      end
+
+
+  end
+
   def create
 
       person_params = params[:person]

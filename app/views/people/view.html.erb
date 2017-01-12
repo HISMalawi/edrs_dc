@@ -139,9 +139,13 @@
 
 	    function navNextPage(){
 
-	    	page ++;
+	    	if(estimatesize >= 8){
 
-	    	loadTable(page);
+	    			page ++;
+
+			    	loadTable(page);
+
+	    	}
 
 	    }
 
@@ -150,7 +154,6 @@
 	    	if(page > 1){
 
 	    		page--
-
 	    		loadTable(page);
 
 	    	}
@@ -342,9 +345,13 @@
 
 								__$("next").className = __$("next").className.replace("gray","blue");
 
+								__$("next").setAttribute("onmousedown","navNextPage()");
+
 							}else{
 
 								__$("next").className = __$("next").className.replace("blue","gray");
+
+								__$("next").removeAttribute("onmousedown");
 
 							}
 
@@ -352,9 +359,13 @@
 
 								__$("prev").className = __$("prev").className.replace("blue","gray");
 
+								__$("prev").removeAttribute("onmousedown");
+
 							}else{
 
 								__$("prev").className = __$("prev").className.replace("gray","blue");
+
+								__$("prev").setAttribute("onmousedown","navPrevPage()");
 
 							}
 
