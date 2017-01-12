@@ -145,6 +145,7 @@ class Person < CouchRest::Model::Base
   property :cause_of_death1, String
   property :cause_of_death2, String
   property :cause_of_death3, String
+  property :cause_of_death4, String
   property :cause_of_death_conditions, String
   property :manner_of_death, String
   property :other_manner_of_death, String

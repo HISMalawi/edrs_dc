@@ -1,0 +1,44 @@
+<%= form_for @person, :url => '/update_cause_of_death', :method => :post do |f| %>
+        <section name="Cause of death">
+                    <sub id="cause_of_death" name="Cause of death">
+                        <%= (f.text_field :cause_of_death1,:helpText => "Immediate Cause of Death", :optional=>true,:condition => true ,:tt_onLoad =>"showCategory('Section 2 : For Hospital death')") rescue "" %>
+
+                        <%= (f.text_field :cause_of_death2,:helpText => "Other Cause of Death 1", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= (f.text_field :cause_of_death3,:helpText => "Other Cause of Death 2", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= (f.text_field :cause_of_death_conditions,:helpText => "Other significant conditions contributing  to the death, but not related to the disease or condition causing it.", :optional=>true,:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+                    </sub>
+                    <sub id="manner_of_death" name="Manner of Death" >
+                        <%= select_tag("person[manner_of_death]", options_for_select(['Natural', 'Accident',
+                                         'Suicide', 'Pending Investigation',
+                                         'Could not be determined',
+                                         'Other'], @person[:manner_of_death]),:helpText =>"Manner of death",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") %>
+                        <%= (f.text_field :other_manner_of_death,:helpText => "Other manners of death", :optional=>true, :condition => "__$('person_manner_of_death').value.match('Other') &&__$('person_place_of_death').value.match('Hospital')",:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= select_tag("person[death_by_accident]", options_for_select(['Motor vehicle(driver)', ' Motor vehicle(passenger)',
+                                     ' Motor', 'Drowning',
+                                     'Other'], @person[:death_by_accident]),:helpText =>"How did injury/accident occur?",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") %>
+
+                        <%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other') && __$('person_place_of_death').value.match('Hospital')",:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+                    </sub>
+        </section>
+        <section name="Verification">
+                    <sub id="hospital_certification" name="Hospital Certification">
+                        <%= select_tag("person[certifier_signed]", options_for_select(['Yes','No'], @person[:certifier_signed]),:helpText =>"Certifier Signed",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital deathe')") %>
+
+                        <%= (f.text_field :date_certifier_signed,:helpText => "Date Certifier signed",
+                                          :field_type => "date",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital deathe')") rescue "" %>
+
+                        <%= (f.text_field :certifier_last_name, :helpText => "Certifier Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?start=",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= (f.text_field :certifier_first_name,:helpText => "Certifier First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?start=",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital death')") rescue "" %>
+
+                        <%= select_tag("person[position_of_certifier]", options_for_select(['Physician', 'Clinic Officer',
+                                     'Medical Assistant','Other'], @person[:position_of_certifier]),:helpText =>"Designation of medical certifier:",:condition => true,:tt_onLoad =>"showCategory('Section 2 : For hospital deathe')") %>
+
+                        <%= (f.text_field :other_position_of_certifier,:helpText => "Other Designation of medical certifier", :condition => "__$('person_position_of_certifier').value.match('Other') && true",:tt_onLoad =>"showCategory('Section 2 : For hospital deathe')") rescue "" %>
+                    </sub>
+        </section>
+        <input type="hidden" name="id" value="<%= params[:id] %>">
+<% end %>

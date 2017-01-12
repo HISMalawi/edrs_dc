@@ -130,9 +130,13 @@
 
         function navNextPage(){
 
-            page++;
+            if(estimatesize >= 8){
 
-            loadTable(page);
+                    page ++;
+
+                    loadTable(page);
+
+            }
 
         }
 
