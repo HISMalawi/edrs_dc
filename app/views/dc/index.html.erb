@@ -10,27 +10,27 @@
                     <td style="width:80%">
                         <div id="buttons" style="display: inline ">
 
-                        <% if true || User.current_user.activities_by_level("Facility").include?("Register a record") %>
+                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
 
                               <div class="touch_btn" onmousedown="window.location = '/people/new_split'" >
                                 <div class="icon">
                                        <i class="fa fa-edit"></i>
                                 </div>
                                 <div class="button_label">Register Person</div>
-                                <div class="button_description">  Register person at facility.</div>
+                                <div class="button_description">  Register record at DC's office</div>
 
                                 
                               </div>
                           <%end%>
 
-                             <% if User.current_user.activities_by_level("Facility").include?("View a record") %>
+                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
-                                  <div class="touch_btn" onmousedown="window.location = '/people/view'" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_cases'" >
                                     <div class="icon">
-                                           <i class="fa fa-users"></i>
+                                           <i class="fa fa-folder-open"></i>
                                     </div>
-                                    <div class="button_label">View Records</div>
-                                    <div class="button_description">  View registered record.</div>
+                                    <div class="button_label">Manage Cases</div>
+                                    <div class="button_description">  Manage cases </div>
 
                                     
                                   </div>
@@ -47,10 +47,10 @@
                               </div>
 
 
-                              <% if User.current_user.activities_by_level("Facility").include?("Activate User") or
-                                      User.current_user.activities_by_level("Facility").include?("Deactivate User") or
-                                      User.current_user.activities_by_level("Facility").include?("Create User") or
-                                      User.current_user.activities_by_level("Facility").include?("Update User") %>
+                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
 
                                     <div class="touch_btn"  onclick="window.location = '/users'"   >
                                           <div class="icon">
@@ -64,7 +64,7 @@
 
                               <%end%>
 
-                                <% if User.current_user.activities_by_level("Facility").include?("Change own password") %>
+                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/users/my_account';" >
                                         <div class="icon">

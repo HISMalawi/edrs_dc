@@ -63,7 +63,7 @@
   <%end%>
 <script type="text/javascript">
 
-		var url ="/search_by_status?status=NEW"
+		var url ="/search_by_status?status=DC COMPLETE"
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
@@ -175,7 +175,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = (page - 1)* 8 + (i + 1);
+								td.innerHTML = i + 1;
 
 								tr.appendChild(td);
 

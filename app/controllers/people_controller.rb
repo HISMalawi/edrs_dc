@@ -4,6 +4,8 @@ class PeopleController < ApplicationController
 
   before_filter :check_if_user_admin
 
+  before_filter :facility_info
+
   def new_split
 
   end
@@ -164,7 +166,7 @@ class PeopleController < ApplicationController
 
           size = params[:size] rescue 7
 
-          people = PersonRecordStatus.by_status.key(params[:status]).page(page).per(size).collect{ |status| status.person}
+          people = PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).collect{ |status| status.person}
 
           render  :text => people.to_json
 
@@ -173,6 +175,8 @@ class PeopleController < ApplicationController
   def show
 
       @person = Person.find(params[:id])
+
+      @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
       excludes = ["first_name_code","last_name_code", "middle_name_code",
                   "mother_first_name_code","mother_last_name_code", "mother_middle_name_code",
@@ -242,8 +246,10 @@ class PeopleController < ApplicationController
   def districts
   
     if params[:place].present? && params[:place] == "Hospital/Institution"
+
+        cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
     
-        data = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sort rescue []
+        data = (JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys-cities).sort rescue []
     
     else
 
@@ -378,6 +384,16 @@ class PeopleController < ApplicationController
     @facility = facility
 
     @district = district
+
+    if CONFIG['site_type'] =="facility"
+
+          @facility_type = "Facility"
+
+    else
+
+            @facility_type = "DC"
+
+    end
 
   end
 

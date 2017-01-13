@@ -146,6 +146,12 @@
 		function setAjaxUrl(case_number){
 
 				switch(case_number) {
+						case -1:
+							var place = __$('touchscreenInput' + tstCurrentPage).value;
+
+					      	__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
+
+					        break;
 					    case 0:
 					      	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -391,7 +397,7 @@
 
         <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
-                <%= (f.text_field :last_name, :helpText => "Last Name",
+                <%= (f.text_field :last_name, :helpText => "Surname",
                                   :allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
 
                 <%= (f.text_field :first_name,:helpText => "First Name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
@@ -427,8 +433,8 @@
                     <%= (f.hidden_field "place_of_death_district", :value => configs['district'], :id => "place_of_death_district") %>
                     <%= (f.hidden_field "hospital_of_death_name", :value => configs['facility_name']) %>
                 <% else %>
-                    <%= select_tag("person[place_of_death]", options_for_select(["","Hospital/Institution", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
-                    <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" , :ajaxURL => "/districts?search_string=" , :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                    <%= select_tag("person[place_of_death]", options_for_select(["","Hospital/Institution", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :tt_onUnLoad =>"setAjaxUrl(-1)") %>
+                    <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
                     <%= (f.text_field :hospital_of_death_name,:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.match('Hospital')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
                 <% end %>
 

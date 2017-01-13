@@ -102,6 +102,18 @@ Rails.application.routes.draw do
 
   get "/villages" => "people#villages"
 
+
+
+  get "/check_completeness/:id" =>"dc#check_completeness"
+
+  get "/dc/manage_cases" =>"dc#manage_cases"
+
+  get "/dc/approve_cases" => "dc#approve_cases"
+
+  get "/dc/approve_record/:id" => "dc#approve_record"
+
+
+
   get "/logout" => "logins#logout"
   
   get "/change_password" => "users#change_password"

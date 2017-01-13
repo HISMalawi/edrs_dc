@@ -96,6 +96,24 @@ class ApplicationController < ActionController::Base
     
   end
 
+  def facility_info
+
+      @facility = facility
+
+      @district = district
+
+      if CONFIG['site_type'] =="facility"
+
+            @facility_type = "Facility"
+
+      else
+
+              @facility_type = "DC"
+
+      end
+
+  end
+
   protected
 
    def login!(user)

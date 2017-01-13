@@ -10,7 +10,7 @@
                     <td style="width:80%">-->
                         <div id="buttons" style="display: inline ">
 
-                        <% if true || User.current_user.activities_by_level("Facility").include?("Register a record") %>
+                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
 
                               <div class="touch_btn" onmousedown="window.location = '/people/new_split'" >
                                 <div class="icon">
@@ -23,7 +23,7 @@
                               </div>
                           <%end%>
 
-                             <% if User.current_user.activities_by_level("Facility").include?("View a record") %>
+                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                     <div class="icon">
@@ -47,10 +47,10 @@
                               </div>
 
 
-                              <% if User.current_user.activities_by_level("Facility").include?("Activate User") or
-                                      User.current_user.activities_by_level("Facility").include?("Deactivate User") or
-                                      User.current_user.activities_by_level("Facility").include?("Create User") or
-                                      User.current_user.activities_by_level("Facility").include?("Update User") %>
+                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
+                                      User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
 
                                     <div class="touch_btn"  onclick="window.location = '/users'"   >
                                           <div class="icon">
@@ -64,7 +64,7 @@
 
                               <%end%>
 
-                                <% if User.current_user.activities_by_level("Facility").include?("Change own password") %>
+                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/users/my_account';" >
                                         <div class="icon">

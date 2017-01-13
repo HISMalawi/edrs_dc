@@ -42,8 +42,8 @@ roles = {
             "Edit a record",
             "Check completeness",
             "Manage duplicates",
-            "Approve a child record",
-            "Void a child record",
+            "Approve a record",
+            "Void a record",
             "Request to open a closed case",
             "View closed cases",
             "Change own password"
@@ -77,7 +77,7 @@ roles = {
         ],
         "Data Manager" => [
             "View a record",
-            "Approve/Reject a child record",
+            "Approve/Reject a record",
             "Reject a record",
             "Authorise printing",
             "Authorise reprinting of a certificate",

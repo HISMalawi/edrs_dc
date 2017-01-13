@@ -20,6 +20,7 @@
     <%#= javascript_include_tag "ToolKit/standard" %>
     <script type="text/javascript" language="javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" language="javascript" src="/javascripts/icons.js" defer="true"></script>
+    <script type="text/javascript" src="/javascripts/spin.min.js"></script>
   </head>
 
   <link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">
@@ -37,7 +38,7 @@
 
                       background:#dcdbdb;
               }
-              #signout{
+               #signout{
 
                     background: #f4e4e8;
 
@@ -108,6 +109,33 @@
 
               }
 
+              #home_button{
+
+                    background: #bed5de;
+
+                    border : 0.005em solid #b3b1b1;
+
+                    font-size: 3.8em;
+
+                    min-width: 20px;
+
+                    float: left;
+
+                    margin: 0.3%;
+
+                    box-shadow: 2.5px 2.5px 1px #888888;
+
+                    padding: 0.1%;
+
+                    text-align: center;
+
+              }
+              #home_button:hover{
+
+                  cursor: pointer;
+
+              }
+
                .touch_btn{
                   color: #1c1c21;
                   padding: 0.5%;
@@ -145,14 +173,17 @@
                       text-align: center;
                       font-size: 1.1em;
                       font-weight: bold;
-                      width:100%;
+                      width:125px;
               }
               .button_description{
 
-                   text-align: center;
-                      font-size: 12px;
-                      font-style: italic;
-                      width:100%;
+                    text-align: center;
+                    font-size: 12px;
+                    font-style: italic;
+                    width:100%;
+                    display: none
+
+
 
               }
               #stats{
@@ -296,7 +327,7 @@
   <script type="text/javascript">
 
     
-              function showPopupMessage(msg, topic) {
+          function showPopupMessage(msg, topic,targeturl) {
 
                 if (!topic) {
 
@@ -402,7 +433,16 @@
 
                     if (__$("msg.shield")) {
 
-                        document.body.removeChild(__$("msg.shield"));
+
+                        if(targeturl){
+
+                              window.location = url
+
+                        }else{
+
+                              document.body.removeChild(__$("msg.shield"));
+
+                        }
 
                     }
 
@@ -544,6 +584,90 @@
                   }
 
                   tdf.appendChild(btnOK);
+
+              }
+
+              function ajaxGETRequest(url, callback, optionalControl) {
+
+                  var shield = document.createElement("div");
+
+                  shield.style.position = "absolute";
+
+                  shield.style.position = "absolute";
+
+                  shield.style.top = "20%";
+
+                  shield.style.left = "20%";
+
+                  shield.style.width = "60%";
+
+                  shield.style.height = "60%";
+
+                  shield.id = "msg.shield";
+
+                  shield.style.backgroundColor = "rgba(128,128,128,0.1)";
+
+                  shield.style.zIndex = 1050;
+
+                  document.body.appendChild(shield);
+
+                  var opts = {
+                        lines: 15             // The number of lines to draw
+                      , length: 56            // The length of each line
+                      , width: 4              // The line thickness
+                      , radius: 40            // The radius of the inner circle
+                      , scale: 1.0            // Scales overall size of the spinner
+                      , corners: 1            // Roundness (0..1)
+                      , color: '#000'         // #rgb or #rrggbb
+                      , opacity: 1/4          // Opacity of the lines
+                      , rotate: 0             // Rotation offset
+                      , direction: 1          // 1: clockwise, -1: counterclockwise
+                      , speed: 1              // Rounds per second
+                      , trail: 100            // Afterglow percentage
+                      , fps: 20               // Frames per second when using setTimeout()
+                      , zIndex: 2e9           // Use a high z-index by default
+                      , className: 'spinner'  // CSS class to assign to the element
+                      , top: '50%'            // center vertically
+                      , left: '50%'           // center horizontally
+                      , shadow: false         // Whether to render a shadow
+                      , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
+                      , position: 'absolute'  // Element positioning
+                    }
+
+                  var spinner = new Spinner(opts).spin(shield)
+
+                  var httpRequest = new XMLHttpRequest();
+
+                  httpRequest.onreadystatechange = function () {
+
+                      if (httpRequest.readyState == 4 && (httpRequest.status == 200 ||
+                          httpRequest.status == 304)) {
+
+                          if (httpRequest.responseText.trim().length > 0) {
+                              var result = httpRequest.responseText;
+
+                              callback(result, optionalControl);
+
+                              setTimeout(function(){
+
+                                document.body.removeChild(shield);
+
+                              },100)
+
+                          } else {
+
+                              callback(undefined);
+
+                          }
+
+                      }
+
+                  };
+                  try {
+                      httpRequest.open("GET", url, true);
+                      httpRequest.send(null);
+                  } catch (e) {
+                  }
 
               }
 

@@ -9,7 +9,32 @@
 				margin-bottom : 0.3em
 
 		}
+
 </style>
+
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
+
+	<% if @status.status=="NEW" %>
+
+		<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="checkCompleteness()">Completeness Check</button>
+
+	<%else%>
+
+		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Completeness Check</button>
+
+	<%end%>
+
+		<button class="green" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="markAsPending()">Mark Pending</button>
+
+
+		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;" onmousedown="viewPersonComment()">View Comment</button>
+<% end %>
+
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+
+		<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="approveRecord()">Approve</button>
+<%end%>
+
 <div id="table_container">
 
 		<table>
@@ -28,8 +53,17 @@
 							<td style= "border : none;"><%= @person[key] %></td>
 
 						<%end%>
+						
 
-						<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Edit</button></td>
+						<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+
+								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Edit</button></td>
+
+						<% else %>
+
+								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="gray">Edit</button></td>
+
+						<%end %>
 
 					</tr>
 
@@ -38,3 +72,74 @@
 		</table>
 
 </div>
+<script type="text/javascript">
+	
+			function checkCompleteness(){
+
+							var url ="/check_completeness/<%= @person.id %>";
+
+							
+
+							ajaxGETRequest(url,function(data){
+
+									var data = JSON.parse(data);
+
+									showPopupMessage(data.response,"Data Completeness Check")
+
+							});
+			
+
+			}
+
+			function approveRecord(){
+
+					showPopupMessage("","Approve record","/dc/approve_record/<%= @person.id%>")
+
+					var control = __$("msg.content")
+
+					var table = document.createElement("table");
+
+					table.style.width = "80%";
+
+					table.style.margin ="auto";
+
+					control.appendChild(table);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Surnaame";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.last_name %>";
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "First Name";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.first_name %>";
+
+					tr.appendChild(td);
+
+			}
+
+
+
+
+</script>
