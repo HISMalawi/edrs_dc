@@ -161,17 +161,21 @@ class PeopleController < ApplicationController
   end
 
   def search_by_status
-
-          status = params[:status]
-
-          page = params[:page] rescue 1
-
-          size = params[:size] rescue 7
-
-          people = PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).collect{ |status| status.person}
-
-          render  :text => people.to_json
-
+    status = params[:status]
+    page = params[:page] rescue 1
+    size = params[:size] rescue 7
+    people = PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).collect do |status|
+      person = status.person 
+      {
+        first_name: person.first_name.decrypt,
+        last_name:  person.first_name.decrypt,
+        gender:     person.gender,
+        date_of_death:  person.,
+        first_name: person.first_name,
+      }
+      #status.person
+    end
+    render  :text => people.to_json
   end
 
   def show

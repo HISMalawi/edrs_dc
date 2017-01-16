@@ -26,68 +26,18 @@ class Person < CouchRest::Model::Base
 
   before_save NameCodes.new("informant_middle_name")
 
-  before_save EncryptionWrapper.new("first_name")
-  after_save EncryptionWrapper.new("first_name")
-  after_initialize EncryptionWrapper.new("first_name")
-
-  before_save EncryptionWrapper.new("middle_name")
-  after_save EncryptionWrapper.new("middle_name")
-  after_initialize EncryptionWrapper.new("middle_name")
-
-  before_save EncryptionWrapper.new("last_name")
-  after_save EncryptionWrapper.new("last_name")
-  after_initialize EncryptionWrapper.new("last_name")
-
-
-  before_save EncryptionWrapper.new("mother_first_name")
-  after_save EncryptionWrapper.new("mother_first_name")
-  after_initialize EncryptionWrapper.new("mother_first_name")
-
-  before_save EncryptionWrapper.new("mother_middle_name")
-  after_save EncryptionWrapper.new("mother_middle_name")
-  after_initialize EncryptionWrapper.new("mother_middle_name")
-
-  before_save EncryptionWrapper.new("mother_last_name")
-  after_save EncryptionWrapper.new("mother_last_name")
-  after_initialize EncryptionWrapper.new("mother_last_name")
-
-  before_save EncryptionWrapper.new("mother_id_number")
-  after_save EncryptionWrapper.new("mother_id_number")
-  after_initialize EncryptionWrapper.new("mother_id_number")
-
-
-  before_save EncryptionWrapper.new("father_first_name")
-  after_save EncryptionWrapper.new("father_first_name")
-  after_initialize EncryptionWrapper.new("father_first_name")
-
-  before_save EncryptionWrapper.new("father_middle_name")
-  after_save EncryptionWrapper.new("father_middle_name")
-  after_initialize EncryptionWrapper.new("father_middle_name")
-
-  before_save EncryptionWrapper.new("father_last_name")
-  after_save EncryptionWrapper.new("father_last_name")
-  after_initialize EncryptionWrapper.new("father_last_name")
-
-  before_save EncryptionWrapper.new("father_id_number")
-  after_save EncryptionWrapper.new("father_id_number")
-  after_initialize EncryptionWrapper.new("father_id_number")
-
-
-  before_save EncryptionWrapper.new("informant_first_name")
-  after_save EncryptionWrapper.new("informant_first_name")
-  after_initialize EncryptionWrapper.new("informant_first_name")
-
-  before_save EncryptionWrapper.new("informant_middle_name")
-  after_save EncryptionWrapper.new("informant_middle_name")
-  after_initialize EncryptionWrapper.new("informant_middle_name")
-
-  before_save EncryptionWrapper.new("informant_last_name")
-  after_save EncryptionWrapper.new("informant_last_name")
-  after_initialize EncryptionWrapper.new("informant_last_name")
-
-  before_save EncryptionWrapper.new("informant_id_number")
-  after_save EncryptionWrapper.new("informant_id_number")
-  after_initialize EncryptionWrapper.new("informant_id_number")
+  before_save :encrypt_data
+  
+  def encrypt_data
+    (self.attributes || []).each do |attribute|
+      next if attribute[0].match(/birthdate/i)
+      next if attribute[0].match(/gender/i)
+      next if attribute[0].match(/nationality/i)
+      next if attribute[0].match(/place_of_death/i)
+      
+      self.send("#{attribute[0]}=", attribute[1].encrypt) unless attribute[1].blank?
+    end
+  end
 
   before_save :set_facility_code,:set_district_code
 
