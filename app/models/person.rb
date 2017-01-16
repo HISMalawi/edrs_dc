@@ -89,6 +89,8 @@ class Person < CouchRest::Model::Base
   after_save EncryptionWrapper.new("informant_id_number")
   after_initialize EncryptionWrapper.new("informant_id_number")
 
+  before_save :set_facility_code,:set_district_code
+
   #Person methods
   def person_id=(value)
     self['_id']=value.to_s
@@ -98,27 +100,46 @@ class Person < CouchRest::Model::Base
     self['_id']
   end
 
+
   def self.update_state(id, status, audit_status) 
 	 
-	person = Person.find(id)
-	raise "Person with ID: #{id} not found".to_s if person.blank?
+    	person = Person.find(id)
+    	raise "Person with ID: #{id} not found".to_s if person.blank?
 
-	status = status
-	audit_status = audit_status
-	audit_reason = "Admin request"
+    	status = status
+    	audit_status = audit_status
+    	audit_reason = "Admin request"
 
-	user = User.find("admin") 
-	name = user.first_name + " " + user.last_name
+    	user = User.find("admin") 
+    	name = user.first_name + " " + user.last_name
 
-	person.status = status
-	person.status_changed_by = name
-	person.save
+    	person.status = status
+    	person.status_changed_by = name
+    	person.save
 
-	audit = Audit.new()
-	audit["record_id"] = person.id
-	audit["audit_type"] = audit_status
-	audit["reason"] = audit_reason
-	audit.save
+    	audit = Audit.new()
+    	audit["record_id"] = person.id
+    	audit["audit_type"] = audit_status
+    	audit["reason"] = audit_reason
+    	audit.save
+  end
+
+  def set_facility_code
+
+      if CONFIG['site_type'] =="facility"
+
+            self.facility_code = CONFIG["facility_code"]
+
+      else
+            self.facility_code = nil
+      end
+
+  end
+
+  def set_district_code
+
+      self.district_code = CONFIG["district_code"]
+
   end
 
   #Person properties
@@ -133,8 +154,6 @@ class Person < CouchRest::Model::Base
   property :birthdate_estimated, String
   property :date_of_death, String
   property :birth_certificate_number, String
-  property :created_by, String
-  property :date_created, String
   property :citizenship, String
   property :place_of_death, String
   property :hospital_of_death_name, String
@@ -284,9 +303,12 @@ class Person < CouchRest::Model::Base
 
   property :acknowledgement_of_receipt_date, Time
 
-  property :facility_serial_number, String
+  #facility related information
+  property :facility_code, String
+  property :district_code, String
 
-  property :creator, String
+  property :date_created, String
+  property :created_by, String
   property :changed_by, String
 
   property :_deleted, TrueClass, :default => false
@@ -612,6 +634,10 @@ class Person < CouchRest::Model::Base
                 }"
 
     view :by_approved
+
+    filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
+
+    filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 
   end
 

@@ -422,7 +422,7 @@
 
             }
 
-            function showConfirmMessage(msg, topic, nextURL) {
+            function showConfirmMessage(msg, topic, nextURL,color) {
 
                   if (!topic) {
 
@@ -476,10 +476,15 @@
                   th.style.borderTopRightRadius = "1px";
                   th.style.borderTopLeftRadius = "1px";
                   th.style.fontSize = "20px";
-                  th.style.backgroundColor = "red";
+                  if (color){
+                      th.style.backgroundColor = color;
+                      th.style.border = "2px outset "+color;
+                  }else{
+                      th.style.backgroundColor = "red";
+                      th.style.border = "2px outset red";
+                  }
                   th.style.color = "#fff";
                   th.innerHTML = topic;
-                  th.style.border = "2px outset red";
 
                   trh.appendChild(th);
 

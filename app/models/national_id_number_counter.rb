@@ -11,9 +11,9 @@ class NationalIdNumberCounter < CouchRest::Model::Base
 
   timestamps!
 
-  def self.assign_serial_number(child,facility_code)
+  def self.assign_serial_number(person,facility_code)
 
-    return false if (child.class.name.to_s.downcase != "person" rescue true)
+    return false if (person.class.name.to_s.downcase != "person" rescue true)
 
     @mutex = Mutex.new if @mutex.blank?
 
@@ -27,9 +27,9 @@ class NationalIdNumberCounter < CouchRest::Model::Base
 
       next_number = counter.auto_increment_count + 1
 
-      @mutex.unlock if !child.facility_serial_number.blank?
+      @mutex.unlock if !person.facility_serial_number.blank?
 
-      return false if !child.facility_serial_number.blank?
+      return false if !person.facility_serial_number.blank?
 
       counter.update_attributes(:auto_increment_count => next_number)
 
@@ -43,7 +43,11 @@ class NationalIdNumberCounter < CouchRest::Model::Base
       												:district_id => CONFIG["district_code"],
       												:facility_serial_number => npid)
       
-      child.update_attributes(:facility_serial_number => npid)
+      #person.update_attributes(:facility_serial_number => npid)
+      PersonIdentifier.create({
+                            :person_record_id =>person.id,
+                            :identifier_type =>"FACILITY NUMBER",
+                            :identifier => npid})
 
       @mutex.unlock
 

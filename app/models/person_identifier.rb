@@ -1,5 +1,7 @@
 class PersonIdentifier < CouchRest::Model::Base
 
+    before_save :set_site_code,:set_distict_code
+
 	property :person_record_id, String
 
 	property :identifier_type, String #Entry Number|Registration Number|Death Certificate Number| National ID Number
@@ -35,11 +37,33 @@ class PersonIdentifier < CouchRest::Model::Base
     	view :by_creator
 
     	view :by_created_at
+
+        view :by_person_record_id_and_identifier_type
     end
 
     def person
-
     	return Person.find(self.person_record_id)
     	
     end
+
+    def set_site_code
+
+        if CONFIG['site_type'] =="facility"
+
+            self.site_code = CONFIG["facility_code"]
+
+        else
+
+            self.site_code = nil
+
+        end
+    end  
+  
+    def set_distict_code
+
+            person = Person.find(self.person_record_id)
+
+            self.district_code = person.district_code
+        
+    end 
 end

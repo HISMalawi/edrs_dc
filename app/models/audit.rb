@@ -1,18 +1,17 @@
 require 'couchrest_model'
 
 class Audit < CouchRest::Model::Base
-
-  use_database "audit"
   
   before_save :set_site_id, :set_site_type, :set_user_id
 
   property :record_id, String # Certificate/Child id
   property :audit_type, String # Quality Control | Reprint | Audit
-  property :level, String # Child | User
+  property :level, String # Person | User
   property :reason, String
   property :user_id, String # User id
   property :site_id, String
   property :site_type, String  #FACILITY, DC, HQ
+  property :change_log, [], :default => []
   property :voided, TrueClass, :default => false
   
   timestamps!
@@ -40,11 +39,29 @@ class Audit < CouchRest::Model::Base
   end
   
   def set_site_id
-    self.site_id = CONFIG["facility_code"]
+
+    if CONFIG['site_type'] =="facility"
+
+        self.site_id = CONFIG["facility_code"]
+
+    else
+
+        self.site_id = CONFIG["district_code"]
+
+    end
   end  
   
   def set_site_type
-    self.site_type = "FACILITY"
+
+     if CONFIG['site_type'] =="facility"
+
+        self.site_type = "facility"
+
+    else
+
+         self.site_type = "DC"
+
+    end
   end 
  
 end
