@@ -77,13 +77,7 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      person = Person.create(person_params);
-
-      PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "NEW",
-                                  :district_code => CONFIG['district_code'],
-                                  :created_by => User.current_user.id});
+      person = Person.create(person_params)
 
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
@@ -186,7 +180,7 @@ class PeopleController < ApplicationController
         :home_country => person.home_country,
         :informant_first_name => person.informant_first_name.decrypt,
         :informant_last_name => person.informant_last_name.decrypt,
-        :informant_middle_name => person.informant_middle_name.decrypt
+        :informant_middle_name => (person.informant_middle_name.decrypt unless person.informant_middle_name.blank?)
         
       }
     end

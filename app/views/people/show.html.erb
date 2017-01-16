@@ -67,11 +67,19 @@
 
 						<% if key.include? "date" %>
 
-								<td style= "border : none;"><%= Date.parse(@person[key]).strftime("%d/%b/%Y")  rescue @person[key] %></td>
+								<td style= "border : none;"><%= DateTime.parse("#{@person[key]}").strftime("%d/%b/%Y")  rescue @person[key] %></td>
 
 						<%else %>
 
-							<td style= "border : none;"><%= @person[key] %></td>
+							<% if (key.match(/first_name/i) || key.match(/last_name/i) || key.match(/middle_name/i)) && !@person[key].blank? %>
+
+									<td style= "border : none;"><%= @person[key].decrypt %></td>
+
+							<%else %>
+
+								<td style= "border : none;"><%= @person[key] %></td>
+
+							<%end%>
 
 						<%end%>
 						
