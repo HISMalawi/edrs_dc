@@ -29,11 +29,17 @@ class Person < CouchRest::Model::Base
   before_save :encrypt_data
   
   def encrypt_data
+     encryptable = ["first_name","last_name",
+                    "middle_name","last_name",
+                    "mother_first_name","mother_last_name",
+                    "mother_middle_name","mother_id_number",
+                    "father_id_number","father_first_name",
+                    "father_last_name","father_middle_name",
+                    "father_id_number","informant_first_name","informant_last_name",
+                    "informant_middle_name"]
     (self.attributes || []).each do |attribute|
-      next if attribute[0].match(/birthdate/i)
-      next if attribute[0].match(/gender/i)
-      next if attribute[0].match(/nationality/i)
-      next if attribute[0].match(/place_of_death/i)
+
+      next unless encryptable.include? attribute[0]
       
       self.send("#{attribute[0]}=", attribute[1].encrypt) unless attribute[1].blank?
     end
@@ -100,9 +106,9 @@ class Person < CouchRest::Model::Base
   property :last_name_code, String
   property :middle_name_code, String
   property :gender, String
-  property :birthdate, String
+  property :birthdate, Time
   property :birthdate_estimated, String
-  property :date_of_death, String
+  property :date_of_death, Time
   property :birth_certificate_number, String
   property :citizenship, String
   property :place_of_death, String

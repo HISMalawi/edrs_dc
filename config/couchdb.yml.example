@@ -7,6 +7,7 @@ development: &development
   username: root
   password: password
   crtkey:
+  facility_code:  
   district_code: LL
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'

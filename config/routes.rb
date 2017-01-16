@@ -118,6 +118,14 @@ Rails.application.routes.draw do
 
   post "/reject_record" => "dc#reject_record"
 
+  get "/dc/approved_cases" => "dc#approved_cases"
+
+  get "/dc/rejected_cases" =>"dc#rejected_cases"
+
+  get "dc/closed_cases" => "dc#closed_cases"
+
+   get "dc/closed_cases" => "dc#closed_cases"
+
 
 
   get "/logout" => "logins#logout"
