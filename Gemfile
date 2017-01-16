@@ -66,3 +66,4 @@ gem 'thin'
 
 gem 'aescrypt'
 
+gem "faker", "~> 1.6.6"
