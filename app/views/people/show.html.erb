@@ -71,15 +71,8 @@
 
 						<%else %>
 
-							<% if (key.match(/first_name/i) || key.match(/last_name/i) || key.match(/middle_name/i)) && !@person[key].blank? %>
-
-									<td style= "border : none;"><%= @person[key].decrypt %></td>
-
-							<%else %>
 
 								<td style= "border : none;"><%= @person[key] %></td>
-
-							<%end%>
 
 						<%end%>
 						
@@ -164,7 +157,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.last_name.decrypt %>";
+					td.innerHTML = "<%= @person.last_name %>";
 
 					tr.appendChild(td);
 
@@ -180,7 +173,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.first_name.decrypt %>";
+					td.innerHTML = "<%= @person.first_name %>";
 
 					tr.appendChild(td);
 
