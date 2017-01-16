@@ -2,9 +2,9 @@
 User.current_user = User.first
 
 def create
-  gender = 'M'
-
+  
   (1.upto(101)).each do |n|
+    gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
     person.last_name =  Faker::Name.last_name
@@ -14,6 +14,9 @@ def create
     person.date_of_death = Date.today
     person.citizenship = 'Malawian'
     person.place_of_death = 'Lilongwe'
+    person.informant_first_name = Faker::Name.first_name
+    person.informant_last_name = Faker::Name.first_name
+
 =begin
     person.hospital_of_death_name = 
     person.other_place_of_death = 
