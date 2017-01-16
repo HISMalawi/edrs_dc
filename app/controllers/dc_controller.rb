@@ -28,15 +28,24 @@ class DcController < ApplicationController
                                   :person_record_id => person.id.to_s,
                                   :status => "DC COMPLETE",
                                   :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id});
+                                  :creator => User.current_user.id})
 
-				 render :text => {:response => "Complete" , :person =>person}.to_json
+
+				 redirect_to "#{params[:next_url].to_s}"
 
 
 		else
+				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-				render :text => {:response => "Incomplete" , :person =>person}.to_json
+				status.update_attributes({:voided => true})
 
+				PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => "DC INCOMPLETE",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => User.current_user.id})
+
+				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
 		
 	end
@@ -67,18 +76,72 @@ class DcController < ApplicationController
 
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
-                                  :status => "DC APPROVE",
+                                  :status => "DC APPROVED",
                                   :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id});
+                                  :creator => User.current_user.id})
 
-				 redirect_to '/dc/approve_cases'
+				person.update_attributes({:approved =>"Yes"})
 
+			    redirect_to "#{params[:next_url].to_s}"
+
+		else
+				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+				status.update_attributes({:voided => true})
+
+				PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => "DC INCOMPLETE",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => User.current_user.id})
+
+				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
+		end
+		
+	end
+
+	def add_rejection_comment
+
+		
+	end
+
+	def reject_record
+
+			status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+			status.update_attributes({:voided => true})
+
+			PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC REJECTED",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => User.current_user.id})
+
+			redirect_to "#{params[:next_url].to_s}"
+
+			Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC REJECT",
+							:level => "Person",
+							:reason => params[:reason]})
+
+	end
+
+	def counts_by_status
+
+		status = params[:status]
+
+		if status == "REPORTED"
+
+			count = Person.count
 
 		else
 
-				render :text => {:response => "Not approved" , :person =>person}.to_json
+			count = PersonRecordStatus.by_record_status.key(status).each.count
 
 		end
+
+		render :text => {:count => count}.to_json
 		
 	end
 

@@ -31,8 +31,29 @@
 <% end %>
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+	
+	<%if  @status.present? && @status.status == "DC APPROVED" %>
 
-		<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="approveRecord()">Approve</button>
+			<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Approve</button>
+	<%else %>
+
+			<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="approveRecord()">Approve</button>
+
+	<%end%>
+
+<%end%>
+
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+
+	<%if  @status.present? && @status.status == "DC REJECTED" %>
+
+		<button class="gray" style="position:absolute; right : 295px;  bottom:58px;">Reject</button>
+	<%else%>
+
+		<button class="red" style="position:absolute; right : 295px;  bottom:58px;" onmousedown="rejectRecord()">Reject</button>
+
+	<%end%>
+
 <%end%>
 
 <div id="table_container">
@@ -73,27 +94,45 @@
 
 </div>
 <script type="text/javascript">
+			<% if params[:error] %>
+
+					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
+
+			<% end %>
 	
 			function checkCompleteness(){
 
-							var url ="/check_completeness/<%= @person.id %>";
+					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
 
 							
+					showConfirmMessage("","Data Completeness check",url,"#79a3c1")
 
-							ajaxGETRequest(url,function(data){
-
-									var data = JSON.parse(data);
-
-									showPopupMessage(data.response,"Data Completeness Check")
-
-							});
+					popUpRecordDetails();
 			
 
 			}
 
 			function approveRecord(){
 
-					showPopupMessage("","Approve record","/dc/approve_record/<%= @person.id%>")
+					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Approve record",url,"#79a3c1")
+
+					popUpRecordDetails();
+
+			}
+
+			function rejectRecord(){
+
+					var url = "/dc/add_rejection_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Proceed to reject a record?",url,"red")
+
+					popUpRecordDetails();
+
+			}
+
+			function popUpRecordDetails(){
 
 					var control = __$("msg.content")
 

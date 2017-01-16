@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
    skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
   before_filter :perform_basic_auth, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
-                                                 'search_by_district', 'search_by_ta', 'search_by_village',"update_field"]
+                                                 'search_by_district', 'search_by_ta', 'search_by_village',"update_field","reject_record"]
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied

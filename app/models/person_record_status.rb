@@ -1,5 +1,7 @@
 class PersonRecordStatus < CouchRest::Model::Base
 
+	before_save :set_district_code
+
 	property :person_record_id, String
 
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...
@@ -38,6 +40,14 @@ class PersonRecordStatus < CouchRest::Model::Base
                   }
                 }"
 
+        filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
+
+	end
+
+	def set_district_code
+
+		self.district_code = CONFIG["district_code"]
+		
 	end
 
 	def person

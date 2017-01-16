@@ -73,7 +73,7 @@ class PeopleController < ApplicationController
 
       person_params = params[:person]
 
-      person_params[:creator] = User.current_user.id
+      person_params[:created_by] = User.current_user.id
 
       person_params[:changed_by] = User.current_user.id
 
@@ -83,7 +83,7 @@ class PeopleController < ApplicationController
                                   :person_record_id => person.id.to_s,
                                   :status => "NEW",
                                   :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id});
+                                  :created_by => User.current_user.id});
 
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
@@ -122,7 +122,9 @@ class PeopleController < ApplicationController
 
       person = Person.find(params[:id])
 
-      if CONFIG['facility_code'] && !CONFIG['facility_code'].blank? && person.facility_serial_number.blank?
+      status = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id],"FACILITY NUMBER"]).first
+
+      if CONFIG['facility_code'] && !CONFIG['facility_code'].blank?  && !status.present?
 
           NationalIdNumberCounter.assign_serial_number(person,facility.facility_code)
           

@@ -83,7 +83,6 @@
                               <tr><th colspan="3">Statistics</th></tr>
                               <tr><td>Reported</td><td> :</td> <td id="reported">1000</td></tr>
                               <tr><td>Approved</td><td> :</td> <td id="approved">1000</td></tr>
-                              <tr><td>Printed</td><td> :</td> <td id="approved">1000</td></tr>
                               <tr><td>Rejected</td><td> :</td> <td id="rejected">1000</td></tr>
                               <tr><td>Incomplete</td><td> :</td> <td id="incomplete">1000</td></tr>
                         </table>
@@ -92,4 +91,45 @@
 
       </table>
 </div>
+<script type="text/javascript">
+  
+            var stats = {
+                        Reported     : "REPORTED",
+                        Approved     : "DC APPROVED",
+                        Rejected     : "DC REJECTED",
+                        Incomplete   : "DC INCOMPLETE"
+          }
+
+            simpleAjaxRequest("/dc/counts_by_status?status=REPORTED", function(data){
+
+                  var data =JSON.parse(data);
+
+                   __$("reported").innerHTML = data.count     
+
+            });  
+
+            simpleAjaxRequest("/dc/counts_by_status?status=DC APPROVED", function(data){
+
+                  var data =JSON.parse(data);
+
+                   __$("approved").innerHTML = data.count     
+
+            });
+
+            simpleAjaxRequest("/dc/counts_by_status?status=DC REJECTED", function(data){
+
+                  var data =JSON.parse(data);
+
+                   __$("rejected").innerHTML = data.count     
+
+            });
+            simpleAjaxRequest("/dc/counts_by_status?status=DC INCOMPLETE", function(data){
+
+                  var data =JSON.parse(data);
+
+                   __$("incomplete").innerHTML = data.count     
+
+            });
+
+</script>
 
