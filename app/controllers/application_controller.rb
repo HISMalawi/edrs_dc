@@ -70,12 +70,6 @@ class ApplicationController < ActionController::Base
 
         end
 
-        if person.place_of_death.blank?
-
-              return false
-
-        end
-
         return complete
     
   end
