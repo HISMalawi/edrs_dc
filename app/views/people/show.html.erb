@@ -65,7 +65,7 @@
 						
 						<td style= "border : none; font-weight: bold " ><%= key.humanize %> &nbsp :</td>
 
-						<% if key.include? "date" %>
+						<% if key.match(/date/i)%>
 
 								<td style= "border : none;"><%= DateTime.parse("#{@person[key]}").strftime("%d/%b/%Y")  rescue @person[key] %></td>
 
@@ -164,7 +164,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.last_name %>";
+					td.innerHTML = "<%= @person.last_name.decrypt %>";
 
 					tr.appendChild(td);
 
@@ -180,7 +180,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.first_name %>";
+					td.innerHTML = "<%= @person.first_name.decrypt %>";
 
 					tr.appendChild(td);
 

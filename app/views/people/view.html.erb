@@ -58,7 +58,7 @@
 </div>
   <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
 
-		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Add New</button>
+		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Register New</button>
 
   <%end%>
 <script type="text/javascript">
@@ -188,7 +188,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = data[i]["first_name"] +" "+ data[i]["middle_name"] + " "+ data[i]["last_name"]
+								td.innerHTML = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
 
 								tr.appendChild(td);
 
