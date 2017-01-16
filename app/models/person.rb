@@ -26,21 +26,40 @@ class Person < CouchRest::Model::Base
 
   before_save NameCodes.new("informant_middle_name")
 
+  after_initialize :decrypt_data
+
   before_create :encrypt_data
-  
-  def encrypt_data
-     encryptable = ["first_name","last_name",
-                    "middle_name","last_name",
-                    "mother_first_name","mother_last_name",
-                    "mother_middle_name","mother_id_number",
-                    "father_id_number","father_first_name",
-                    "father_last_name","father_middle_name",
-                    "father_id_number","informant_first_name","informant_last_name",
-                    "informant_middle_name"]
+
+  def decrypt_data
+    encryptable = ["first_name","last_name",
+                   "middle_name","last_name",
+                   "mother_first_name","mother_last_name",
+                   "mother_middle_name","mother_id_number",
+                   "father_id_number","father_first_name",
+                   "father_last_name","father_middle_name",
+                   "father_id_number","informant_first_name","informant_last_name",
+                   "informant_middle_name"]
     (self.attributes || []).each do |attribute|
 
       next unless encryptable.include? attribute[0]
-      
+
+      self.send("#{attribute[0]}=", (attribute[1].decrypt rescue attribute[1])) unless attribute[1].blank?
+    end
+  end
+
+  def encrypt_data
+    encryptable = ["first_name","last_name",
+                   "middle_name","last_name",
+                   "mother_first_name","mother_last_name",
+                   "mother_middle_name","mother_id_number",
+                   "father_id_number","father_first_name",
+                   "father_last_name","father_middle_name",
+                   "father_id_number","informant_first_name","informant_last_name",
+                   "informant_middle_name"]
+    (self.attributes || []).each do |attribute|
+
+      next unless encryptable.include? attribute[0]
+
       self.send("#{attribute[0]}=", attribute[1].encrypt) unless attribute[1].blank?
     end
   end
@@ -57,44 +76,44 @@ class Person < CouchRest::Model::Base
   end
 
 
-  def self.update_state(id, status, audit_status) 
-	 
-    	person = Person.find(id)
-    	raise "Person with ID: #{id} not found".to_s if person.blank?
+  def self.update_state(id, status, audit_status)
 
-    	status = status
-    	audit_status = audit_status
-    	audit_reason = "Admin request"
+    person = Person.find(id)
+    raise "Person with ID: #{id} not found".to_s if person.blank?
 
-    	user = User.find("admin") 
-    	name = user.first_name + " " + user.last_name
+    status = status
+    audit_status = audit_status
+    audit_reason = "Admin request"
 
-    	person.status = status
-    	person.status_changed_by = name
-    	person.save
+    user = User.find("admin")
+    name = user.first_name + " " + user.last_name
 
-    	audit = Audit.new()
-    	audit["record_id"] = person.id
-    	audit["audit_type"] = audit_status
-    	audit["reason"] = audit_reason
-    	audit.save
+    person.status = status
+    person.status_changed_by = name
+    person.save
+
+    audit = Audit.new()
+    audit["record_id"] = person.id
+    audit["audit_type"] = audit_status
+    audit["reason"] = audit_reason
+    audit.save
   end
 
   def set_facility_code
 
-      if CONFIG['site_type'] =="facility"
+    if CONFIG['site_type'] =="facility"
 
-            self.facility_code = CONFIG["facility_code"]
+      self.facility_code = CONFIG["facility_code"]
 
-      else
-            self.facility_code = nil
-      end
+    else
+      self.facility_code = nil
+    end
 
   end
 
   def set_district_code
 
-      self.district_code = CONFIG["district_code"]
+    self.district_code = CONFIG["district_code"]
 
   end
 
@@ -274,9 +293,9 @@ class Person < CouchRest::Model::Base
 
   design do
     view :by__id
-    
+
     view :by_created_at
-    
+
     view :by_updated_at
 
     view :by_name,
@@ -289,7 +308,7 @@ class Person < CouchRest::Model::Base
     view :by_first_name_code
 
     view :by_last_name_code
-    
+
 
     view :by_specific_birthdate,
          :map => "function(doc) {
