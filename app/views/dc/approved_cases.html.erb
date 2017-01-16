@@ -63,7 +63,7 @@
   <%end%>
 <script type="text/javascript">
 
-		var url ="/search_by_status?status=NEW"
+		var url ="/search_by_status?status=DC APPROVED"
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
@@ -175,7 +175,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = (page - 1)* 8 + (i + 1);
+								td.innerHTML = i + 1;
 
 								tr.appendChild(td);
 
@@ -273,7 +273,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=/people/view?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=/dc/approved?page="+page+"'");
 
 								td.appendChild(button);
 
@@ -315,7 +315,7 @@
 
 								button.innerHTML = "Print";
 
-                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["id"]+"'");
+                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
 
 
 								td.appendChild(button);

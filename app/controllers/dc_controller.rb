@@ -64,6 +64,7 @@ class DcController < ApplicationController
 	
 	end
 
+
 	def approve_record
 
 		person = Person.find(params[:id])
@@ -125,6 +126,18 @@ class DcController < ApplicationController
 							:level => "Person",
 							:reason => params[:reason]})
 
+	end
+
+	def  approved_cases
+
+		@section ="Approved Cases"
+		
+	end
+
+	def rejected_cases
+
+		@section = "Rejected Cases"
+		
 	end
 
 	def counts_by_status

@@ -166,14 +166,29 @@ class PeopleController < ApplicationController
     size = params[:size] rescue 7
     people = PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).collect do |status|
       person = status.person 
+      
+
       {
-        first_name: person.first_name.decrypt,
-        last_name:  person.first_name.decrypt,
-        gender:     person.gender,
-        date_of_death:  person.,
-        first_name: person.first_name,
+        :id =>person.id,
+        :first_name => person.first_name.decrypt,
+        :last_name => person.last_name.decrypt,
+        :gender =>  person.gender,
+        :date_of_death => person.date_of_death,
+        :place_of_death =>person.place_of_death,
+        :hospital_of_death_name => person.hospital_of_death_name,
+        :other_place_of_death => person.other_place_of_death,
+        :place_of_death_village => person.place_of_death_village,
+        :place_of_death_ta => person.place_of_death_ta,
+        :place_of_death_district => person.place_of_death_district,
+        :home_village => person.home_village,
+        :home_ta => person.home_ta,
+        :home_district => person.home_district,
+        :home_country => person.home_country,
+        :informant_first_name => person.informant_first_name.decrypt,
+        :informant_last_name => person.informant_last_name.decrypt,
+        :informant_middle_name => person.informant_middle_name.decrypt
+        
       }
-      #status.person
     end
     render  :text => people.to_json
   end
@@ -233,7 +248,7 @@ class PeopleController < ApplicationController
       entry = params["search"].soundex rescue nil
         data = Person.by_first_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
-		  		render :text => data.collect{ |w| "<li>#{w.first_name}" }.uniq.join("</li>")+"</li>"
+		  		render :text => data.collect{ |w| "<li>#{w.first_name.decrypt}" }.uniq.join("</li>")+"</li>"
 		  	else
 		    	render :text => "<li></li>"
       	end
@@ -243,7 +258,7 @@ class PeopleController < ApplicationController
         entry = params["search"].soundex rescue nil
         data = Person.by_last_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
-          render :text => data.collect{ |w| "<li>#{w.last_name}" }.uniq.join("</li>")+"</li>"
+          render :text => data.collect{ |w| "<li>#{w.last_name.decrypt}" }.uniq.join("</li>")+"</li>"
         else
           render :text => "<li></li>"
         end
