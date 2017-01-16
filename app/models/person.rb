@@ -26,7 +26,7 @@ class Person < CouchRest::Model::Base
 
   before_save NameCodes.new("informant_middle_name")
 
-  before_save :encrypt_data
+  before_create :encrypt_data
   
   def encrypt_data
      encryptable = ["first_name","last_name",
