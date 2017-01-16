@@ -63,3 +63,6 @@ gem 'chronic', '0.10.2'
 gem 'whenever',  :require => false 
 
 gem 'thin'
+
+gem 'aescrypt'
+
