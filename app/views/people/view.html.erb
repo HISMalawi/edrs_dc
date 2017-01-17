@@ -58,7 +58,7 @@
 </div>
   <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
 
-		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Add New</button>
+		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Register New</button>
 
   <%end%>
 <script type="text/javascript">
@@ -155,6 +155,8 @@
 	
 					var table = __$("table_body");
 
+					table.innerHTML ="";
+
 
 					ajaxGETRequest(url+"&page="+page+"&size=8",function(data){
 
@@ -186,7 +188,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = data[i]["first_name"] +" "+ data[i]["middle_name"] + " "+ data[i]["last_name"]
+								td.innerHTML = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
 
 								tr.appendChild(td);
 
@@ -273,7 +275,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=/people/view?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=/people/view?page="+page+"'");
 
 								td.appendChild(button);
 
@@ -315,7 +317,7 @@
 
 								button.innerHTML = "Print";
 
-                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["id"]+"'");
+                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
 
 
 								td.appendChild(button);

@@ -30,6 +30,10 @@ class Person < CouchRest::Model::Base
 
   before_create :encrypt_data
 
+  before_save :set_facility_code,:set_district_code
+
+  after_create :create_status
+  
   def decrypt_data
     encryptable = ["first_name","last_name",
                    "middle_name","last_name",
@@ -46,7 +50,7 @@ class Person < CouchRest::Model::Base
       self.send("#{attribute[0]}=", (attribute[1].decrypt rescue attribute[1])) unless attribute[1].blank?
     end
   end
-
+  
   def encrypt_data
     encryptable = ["first_name","last_name",
                    "middle_name","last_name",
@@ -64,7 +68,15 @@ class Person < CouchRest::Model::Base
     end
   end
 
-  before_save :set_facility_code,:set_district_code
+  def create_status
+
+         PersonRecordStatus.create({
+                                  :person_record_id => self.id.to_s,
+                                  :status => "NEW",
+                                  :district_code => CONFIG['district_code'],
+                                  :created_by => User.current_user.id});
+    
+  end
 
   #Person methods
   def person_id=(value)

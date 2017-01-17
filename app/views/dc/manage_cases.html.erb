@@ -10,7 +10,7 @@
                     <td style="width:80%">-->
                         <div id="buttons" style="display: inline ">
 
-                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                             <% if !User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                     <div class="icon">
