@@ -429,9 +429,9 @@
                 <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
 
                 <% if site_type == "facility" %>
-                    <%= (f.hidden_field "person[place_of_death]", :value => "Hospital/Institution", :id => "person_place_of_death" )  %>
-                    <%= (f.hidden_field "place_of_death_district", :value => configs['district'], :id => "place_of_death_district") %>
-                    <%= (f.hidden_field "hospital_of_death_name", :value => configs['facility_name']) %>
+                    <%= (f.hidden_field "person[place_of_death]", :value => "Hospital/Institution")  %>
+                    <%= (f.hidden_field "person[place_of_death_district]", :value => configs['district']) %>
+                    <%= (f.hidden_field "person[hospital_of_death_name]", :value => configs['facility_name']) %>
                 <% else %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Hospital/Institution", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :tt_onUnLoad =>"setAjaxUrl(-1)") %>
                     <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
