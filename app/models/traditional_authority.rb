@@ -1,7 +1,7 @@
 require 'couchrest_model'
 
 class TraditionalAuthority < CouchRest::Model::Base
-  property :district_id,String
+  property :district_id, String
   property :name, String
   
   timestamps!
@@ -10,6 +10,8 @@ class TraditionalAuthority < CouchRest::Model::Base
       view :by__id
       view :by_district_id
       view :by_name
+      view :by_district_id_and_name
+
   end
   
 end
