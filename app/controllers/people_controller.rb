@@ -166,6 +166,7 @@ class PeopleController < ApplicationController
         den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
 
         people << {
+                    id: person.id,
                     first_name: person.first_name, 
                     last_name: person.last_name ,
                     middle_name: "",
@@ -184,7 +185,7 @@ class PeopleController < ApplicationController
                     home_ta:  person.home_ta,
                     home_district: person.home_district,
                     home_country:  person.home_country,
-                    den: den.identifier
+                    den: (den.identifier rescue "")
                    }
       
     end
