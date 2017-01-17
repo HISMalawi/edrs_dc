@@ -11,9 +11,16 @@ class DeathEntryNumber < CouchRest::Model::Base
 
 	design do
 		view :by_district_code
+		view :by_district_unassigned,
+			 :map => "function(doc) {
+                  if (doc['type'] == 'DeathEntryNumber' && doc['assigned'] ==false) {
+
+                    	emit(doc['district_code'], doc['created_at']);
+                  }
+                }"
 	end
 
-	def self.generate_numbers(number = 20, year = Date.today.year)
+	def self.generate_numbers(number = 10000, year = Date.today.year)
 
 			District.all.map(&:district_code).each do |code|
 				1.upto(number).each do |n|

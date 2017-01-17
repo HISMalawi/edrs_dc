@@ -1,6 +1,6 @@
 class PersonIdentifier < CouchRest::Model::Base
 
-    before_save :set_site_code,:set_distict_code
+    before_save :set_site_code,:set_distict_code,:set_creator
 
 	property :person_record_id, String
 
@@ -42,8 +42,16 @@ class PersonIdentifier < CouchRest::Model::Base
     end
 
     def person
-    	return Person.find(self.person_record_id)
+    	person = Person.find(self.person_record_id)
+
+        return person
     	
+    end
+
+    def set_creator
+        
+        self.creator =  User.current_user.id
+
     end
 
     def set_site_code
@@ -66,4 +74,18 @@ class PersonIdentifier < CouchRest::Model::Base
             self.district_code = person.district_code
         
     end 
+
+    def self.assign_den(person)
+        
+        den = DeathEntryNumber.by_district_unassigned.key(CONFIG['district_code']).last
+
+        self.create({
+                    :person_record_id=>person.id.to_s,
+                    :identifier_type =>"DEATH ENTRY NUMBER",
+                    :identifier => den.number,
+                    :district_code => CONFIG['district_code']
+            })
+        den.update_attributes({:assigned => true})
+
+    end
 end

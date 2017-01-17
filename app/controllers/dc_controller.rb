@@ -83,6 +83,8 @@ class DcController < ApplicationController
 
 				person.update_attributes({:approved =>"Yes"})
 
+				PersonIdentifier.assign_den(person)
+
 			    redirect_to "#{params[:next_url].to_s}"
 
 		else

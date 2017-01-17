@@ -17,6 +17,9 @@
 							Name
 						</th>
 						<th>
+							DEN
+						</th>
+						<th>
 							Gender
 						</th>
 						<th>
@@ -190,6 +193,15 @@
 
 								tr.appendChild(td);
 
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i].den
+
+								tr.appendChild(td);
 
 								var td = document.createElement("td");
 
@@ -242,7 +254,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+								td.innerHTML = td.innerHTML = (data[i].home_district? data[i].home_district : "") + (data[i].home_ta ?  ","+data[i].home_ta: "") +  (data[i].home_village ? ","+data[i].home_village :"");
 
 								tr.appendChild(td);
 
