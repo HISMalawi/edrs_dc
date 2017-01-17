@@ -158,11 +158,38 @@ class PeopleController < ApplicationController
     status = params[:status]
     page = params[:page] rescue 1
     size = params[:size] rescue 7
-    people = PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).collect do |status|
+    people = []
+    PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).each do |status|
       
-      status.person 
+        person = status.person
+
+        den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
+
+        people << {
+                    id: person.id,
+                    first_name: person.first_name, 
+                    last_name: person.last_name ,
+                    middle_name: "",
+                    gender: person.gender,
+                    date_of_death: person.date_of_death,
+                    place_of_death: person.place_of_death,
+                    hospital_of_death_name: person.hospital_of_death_name,
+                    other_place_of_death: person.other_place_of_death,
+                    place_of_death_village: person.place_of_death_village,
+                    place_of_death_ta: person.place_of_death_ta,
+                    place_of_death_district: person.place_of_death_district,
+                    informant_first_name: person.informant_first_name,
+                    informant_last_name: person.informant_last_name,
+                    informant_middle_name: person.informant_middle_name,
+                    home_village: person.home_village,
+                    home_ta:  person.home_ta,
+                    home_district: person.home_district,
+                    home_country:  person.home_country,
+                    den: (den.identifier rescue "")
+                   }
       
     end
+
     render  :text => people.to_json
   end
 

@@ -242,7 +242,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+								td.innerHTML = td.innerHTML = (data[i].home_district? data[i].home_district : "") + (data[i].home_ta ?  ","+data[i].home_ta: "") +  (data[i].home_village ? ","+data[i].home_village :"");
 
 								tr.appendChild(td);
 
@@ -273,7 +273,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=/dc/approve_cases?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=/dc/approve_cases?page="+page+"'");
 
 								td.appendChild(button);
 
@@ -315,7 +315,7 @@
 
 								button.innerHTML = "Print";
 
-                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["_id"]+"'");
+                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["id"]+"'");
 
 
 								td.appendChild(button);
