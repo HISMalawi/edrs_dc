@@ -16,6 +16,7 @@ class HealthFacility < CouchRest::Model::Base
   design do
       view :by__id
       view :by_name
+      view :by_facility_code
       view :by_facility_type
       view :by_f_type
       view :by_district_id

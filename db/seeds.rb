@@ -131,7 +131,17 @@ user = User.find('admin')
 
 if user.blank?
 
-	User.create(username: "admin", plain_password: "password", last_password_date: Time.now,
+    if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
+
+        username = "admin#{CONFIG['facility_code']}"
+
+    else
+
+        username = "admin#{CONFIG['district_code'].downcase}"
+
+    end
+
+	user = User.create(username: username, plain_password: "password", last_password_date: Time.now,
 							password_attempt: 0, login_attempt: 0, first_name: "EDRS",
 							last_name: "Administrator", role: "System Administrator",
 							email: "admin@baobabhealth.org")

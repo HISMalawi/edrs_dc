@@ -23,17 +23,17 @@ class ApplicationController < ActionController::Base
 
   def facility
     
-      return HealthFacility.find(CONFIG['facility_code'].to_s) rescue nil
+      return HealthFacility.by_facility_code.key(CONFIG['facility_code'].to_s).first rescue nil
   end
   
   def district
       if facility.present?
 
-           return District.find(facility.district_code) rescue nil
+           return District.find(facility.district_id) rescue nil
 
       else
 
-           return District.find(CONFIG['district_code'].to_s) rescue nil
+           return District.by_code.key(CONFIG['district_code'].to_s).first rescue nil
 
       end
      
