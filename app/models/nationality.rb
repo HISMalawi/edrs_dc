@@ -1,17 +1,10 @@
 require 'couchrest_model'
 class Nationality < CouchRest::Model::Base
 
-  def nationality=(value)
-    self['_id'] = value
-  end
-
-  def nationality
-    self['_id']
-  end
-
+  property :nationality, String
   design do
     view :by__id
-    view :all
+    view :by_nationality
   end
 
 end

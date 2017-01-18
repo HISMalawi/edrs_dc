@@ -1,6 +1,7 @@
 DistrictCode,DistrictName,Region
 BLK,Balaka,South
 BT,Blantyre,South
+BTC,Blantyre City,South
 CK,Chikwawa,South
 CZ,Chiradzulu,South
 CP,Chitipa,North
@@ -10,12 +11,14 @@ KA,Karonga,North
 KU,Kasungu,Centre
 LA,Likoma,North
 LL,Lilongwe,Centre
+LLC,Lilongwe City,Centre
 MHG,Machinga,South
 MH,Mangochi,South
 MC,Mchinji,Centre
 MJ,Mulanje,South
 MN,Mwanza,South
 MZ,Mzimba,North
+MZC,Mzuzu City,North
 NN,Neno,South
 NB,Nkhata Bay,North
 KK,Nkhotakota,Centre
@@ -27,3 +30,4 @@ RU,Rumphi,South
 SA,Salima,Centre
 TO,Thyolo,South
 ZA,Zomba,South
+ZAC,Zomba City,South

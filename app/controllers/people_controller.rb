@@ -269,22 +269,20 @@ class PeopleController < ApplicationController
     if params[:place].present? && params[:place] == "Hospital/Institution"
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
-    
-        data = (JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys-cities).sort rescue []
+
+        district = District.by_name.each
+
+        render :text => district.collect { |w| "<li value='#{w.id}'>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
     
     else
 
         data = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sort rescue []
     
-        #data = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.push("Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City").sort
+        district = District.by_name.each
+
+        render :text => district.collect { |w| "<li value = '#{w.id}'>#{w.name}" }.join("</li>")+"</li>"
     
     end
-
-    if !params[:search_string].blank?
-      data = data.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
-    end
-
-    render :text => data.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
   end
 
   def facilities
@@ -292,25 +290,27 @@ class PeopleController < ApplicationController
     district = params[:district] || '';
 
     if !district.blank?
-      facilities = HealthFacility.by_district.keys([district]).all.collect(&:name).sort
+      facilities = HealthFacility.by_district_id.keys([district]).each
     else
-      facilities = HealthFacility.all.collect(&:name).sort
+      facilities = HealthFacility.by_name.each
     end
 
     if !params[:search_string].blank?
-      facilities = facilities.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+      facilities = facilities.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
     end
 
-    render :text => facilities.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
+    render :text => facilities.collect { |w| "<li value ='#{w.id}'>#{w.name}" }.join("</li>")+"</li>"
   end
 
   def nationalities
-    nationalities = Nationality.all.collect(&:nationality).sort
+    nationalities = Nationality.by_nationality.each.collect{|w| w}
 
     if !params[:search_string].blank?
-      nationalities = nationalities.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+      nationalities = nationalities.delete_if{|n| !n.nationality.match(/#{params[:search_string]}/i)}
     end
-    render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
+
+    render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li value ='#{w.id}'>#{w.nationality}" }.join("</li>")+"</li>"
+
   end
 
   def tas
@@ -319,7 +319,7 @@ class PeopleController < ApplicationController
 
     if !params[:district].blank?
 
-      result = Village.by_district.key([params[:district].strip]).collect(&:ta).uniq
+      result = Village.by_district.key([params[:district].strip]).collect{|w| w}.uniq
 
     end
 
