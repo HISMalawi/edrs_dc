@@ -9,6 +9,12 @@
 				margin-bottom : 0.3em
 
 		}
+		#summary td {
+
+				background: #ffffff;
+				text-align: left !important;
+				padding-left: 10px;
+		}
 
 </style>
 
@@ -58,39 +64,177 @@
 
 <div id="table_container">
 
-		<table>
-			<% @keys.each do |key| %>
+		<table id="summary">
+			
+			<tr>
+				<th colspan="11">Section 1 : Particulars of the deased</th>
+			</tr>
 
-					<tr>
-						
-						<td style= "border : none; font-weight: bold " ><%= key.humanize %> &nbsp :</td>
+			<tr>
+				<td rowspan="10" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td>1</td>
+				<td>Surname</td>
+				<td colspan="2"></td>
+				<td>First name</td>
+				<td colspan="2"></td>
+				<td>Other</td>
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>ID No.</td>
+				<td style="border-bottom :1.5px solid black"></td>
+				<td>2</td>
+				<td>Nationality</td>
+				<td colspan="2" style="border-bottom :1.5px solid black"></td>
+				<td>4</td>
+				<td>Sex</td>
+				<td style="border-bottom:1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td>Day</td>
+				<td style="border-bottom: 1.5px solid black"></td>
+				<td>Month</td>
+				<td style="border-border: 1.5px solid black"></td>
+				<td>Year</td>
+				<td style="border-bottom: 1.5px solid black"></td>
+				<td>6</td>
+				<td>Birth certificate No.</td>
+				<td style="border-bottom :1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td rowspan="4">8</td>
+				<td colspan="10">Place of birth</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>Health Facility</td>
+				<td>Name</td>
+				<td colspan="6" style="border-bottom: 1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>Home</td>
+				<td>Address</td>
+				<td>District</td>
+				<td style="border-bottom:1.5px solid black"></td>
+				<td>TA</td>
+				<td style="border-bottom:1.5px solid black"></td>
+				<td>Village</td>
+				<td style="border-bottom:1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>Other</td>
+				<td colspan="7"></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td colspan="3">Physical residential address</td>
+				<td>District </td>
+				<td></td>
+				<td>TA</td>
+				<td></td>
+				<td>Village</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td rowspan="2">11</td>
+				<td colspan="9">In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
+			</tr>
+			<tr>
+				<td>Yes</td>
+				<td></td>
+				<td>No</td>
+				<td></td>
+				<td colspan="5"></td>
+			</tr>
+			<tr>
+				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
+				<td rowspan="3">1</td>
+				<td colspan="6">Mother's name</td>
+				<td rowspan="3">2</td>
+				<td rowspan="3">ID No.</td>
+				<td rowspan ="3" style="border-bottom:1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td>Surname</td>
+				<td colspan="2"></td>
+				<td>First name</td>
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td>Other names</td>
+				<td colspan="5"></td>
+			</tr>
+			<tr>
+				<td rowspan="3">3</td>
+				<td colspan="6">Father's name</td>
+				<td rowspan="3">4</td>
+				<td rowspan="3">ID No.</td>
+				<td rowspan ="3" style="border-bottom:1.5px solid black"></td>
+			</tr>
+			<tr>
+				<td>Surname</td>
+				<td colspan="2"></td>
+				<td>First name</td>
+				<td colspan="2"></td>
+			</tr>
+			<tr>
+				<td>Other names</td>
+				<td colspan="5"></td>
+			</tr>
 
-						<% if key.match(/date/i)%>
-
-								<td style= "border : none;"><%= DateTime.parse("#{@person[key]}").strftime("%d/%b/%Y")  rescue @person[key] %></td>
-
-						<%else %>
-
-
-								<td style= "border : none;"><%= @person[key] %></td>
-
-						<%end%>
-						
-
-						<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
-
-								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Edit</button></td>
-
-						<% else %>
-
-								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="gray">Edit</button></td>
-
-						<%end %>
-
-					</tr>
-
-			<%end %>
-
+			<tr>
+				<td rowspan="7" style="background-color:#dbdada;">PART 3 <br/>INFORMANTS DETAILS</td>
+				<td rowspan="2">1</td>
+				<td>Surname</td>
+				<td colspan="2"></td>
+				<td>First name</td>
+				<td colspan="2"> </td>
+				<td rowspan="2">2</td>
+				<td rowspan="2">ID No.</td>
+				<td rowspan="2"></td>
+			</tr>
+			<tr>
+				<td>Other name</td>
+				<td colspan="5"></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>Relation to the deceased</td>
+				<td colspan="8"></td>
+			</tr>
+			<tr>
+				<td rowspan="2">4</td>
+				<td>Adress</td>
+				<td>District</td>
+				<td colspan="2"></td>
+				<td>TA</td>
+				<td colspan="2"></td>
+				<td>Vllage</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>Postal address :</td>
+				<td colspan="6"></td>
+				<td>Telephone Number</td>
+				<td></td>
+			</tr>
+			<tr>
+				<td rowspan="2">5</td>
+				<th colspan="9" style="background: #ffffff; color:black">I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.</th>
+			</tr>
+			<tr>
+				<td>Date:</td>
+				<td>Day</td>
+				<td></td>
+				<td>Month</td>
+				<td></td>
+				<td>Year</td>
+				<td colspan="3"></td>
+			</tr>
 		</table>
 
 </div>

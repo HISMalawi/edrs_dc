@@ -26,6 +26,8 @@ class PeopleController < ApplicationController
 
 	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
 
+     @current_nationality = Nationality.by_nationality.key("Malawian").first
+
 	    if !params[:id].blank?
 
 	    else
@@ -77,7 +79,7 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      person = Person.create(person_params)
+      person = Person.create_person(person_params)
 
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
@@ -173,18 +175,18 @@ class PeopleController < ApplicationController
                     gender: person.gender,
                     date_of_death: person.date_of_death,
                     place_of_death: person.place_of_death,
-                    hospital_of_death_name: person.hospital_of_death_name,
+                    hospital_of_death_name: (HealthFacility.find(person.hospital_of_death_id).name rescue ""),
                     other_place_of_death: person.other_place_of_death,
-                    place_of_death_village: person.place_of_death_village,
-                    place_of_death_ta: person.place_of_death_ta,
-                    place_of_death_district: person.place_of_death_district,
+                    place_of_death_village: (Village.find(person.place_of_death_village_id).name rescue ""),
+                    place_of_death_ta: (TraditionalAuthority.find(person.place_of_death_ta_id).name rescue ""),
+                    place_of_death_district: (District.find(person.place_of_death_district_id).name rescue ""),
                     informant_first_name: person.informant_first_name,
                     informant_last_name: person.informant_last_name,
                     informant_middle_name: person.informant_middle_name,
-                    home_village: person.home_village,
-                    home_ta:  person.home_ta,
-                    home_district: person.home_district,
-                    home_country:  person.home_country,
+                    home_village: (Village.find(person.home_village_id).name rescue ""),
+                    home_ta:  (TraditionalAuthority.find(person.home_ta_id).name rescue ""),
+                    home_district: (District.find(person.home_district_id).name rescue ""),
+                    home_country:  (Nationality.find(person.home_country_id).nationality rescue ""),
                     den: (den.identifier rescue "")
                    }
       
@@ -236,9 +238,9 @@ class PeopleController < ApplicationController
 
   def update_field
 
-      person = Person.find(params[:id])
+      #person = Person.find(params[:id])
 
-      person.update_attributes(params[:person])
+      person.update_person(params[:id],params[:person])
 
       redirect_to "/people/view/#{params[:id]}"
     
@@ -272,25 +274,25 @@ class PeopleController < ApplicationController
 
         district = District.by_name.each
 
-        render :text => district.collect { |w| "<li value='#{w.id}'>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
+        render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
     
     else
-
-        data = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sort rescue []
-    
         district = District.by_name.each
 
-        render :text => district.collect { |w| "<li value = '#{w.id}'>#{w.name}" }.join("</li>")+"</li>"
+        render :text => district.collect { |w| "<li >#{w.name}" }.join("</li>")+"</li>"
     
     end
   end
 
   def facilities
 
-    district = params[:district] || '';
+    district_param = params[:district] || '';
 
-    if !district.blank?
-      facilities = HealthFacility.by_district_id.keys([district]).each
+    if !district_param.blank?
+
+      district = District.by_name.key(district_param.to_s).first
+
+      facilities = HealthFacility.by_district_id.keys([district.id]).each
     else
       facilities = HealthFacility.by_name.each
     end
@@ -299,7 +301,7 @@ class PeopleController < ApplicationController
       facilities = facilities.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
     end
 
-    render :text => facilities.collect { |w| "<li value ='#{w.id}'>#{w.name}" }.join("</li>")+"</li>"
+    render :text => facilities.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
   def nationalities
@@ -309,7 +311,7 @@ class PeopleController < ApplicationController
       nationalities = nationalities.delete_if{|n| !n.nationality.match(/#{params[:search_string]}/i)}
     end
 
-    render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li value ='#{w.id}'>#{w.nationality}" }.join("</li>")+"</li>"
+    render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
 
   end
 
@@ -319,17 +321,20 @@ class PeopleController < ApplicationController
 
     if !params[:district].blank?
 
-      result = Village.by_district.key([params[:district].strip]).collect{|w| w}.uniq
+      district = District.by_name.key(params[:district].strip).first
+
+      result = TraditionalAuthority.by_district_id.key(district.id)
+    else
+
+       result = TraditionalAuthority.by_district_id.each
 
     end
-
-    result = result.sort
 
     if !params[:search_string].blank?
-      result = result.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+      result = result.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
     end
 
-    render :text => result.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
+    render :text => result.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
 
@@ -339,17 +344,22 @@ class PeopleController < ApplicationController
 
     if !params[:district].blank? and !params[:ta].blank?
 
-     result = Village.by_district_and_ta.key([params[:district].strip, params[:ta].strip]).collect(&:village).uniq
+      district = District.by_name.key(params[:district].strip).first
+
+      ta =TraditionalAuthority.by_district_id_and_name.key([district.id, params[:ta]]).first
+
+      result = Village.by_ta_id.key(ta.id.strip)
+
+    else
+       result = Village.by_ta_id.each
 
     end
-
-    result = result.sort
 
     if !params[:search_string].blank?
-      result = result.delete_if{|n| !n.match(/#{params[:search_string]}/i)}
+      result = result.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
     end
 
-    render :text => result.collect { |w| "<li>#{w}" }.join("</li>")+"</li>"
+    render :text => result.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
 
   end
 
@@ -405,6 +415,8 @@ class PeopleController < ApplicationController
     @facility = facility
 
     @district = district
+
+    @current_nation = current_nationality
 
     if CONFIG['site_type'] =="facility"
 

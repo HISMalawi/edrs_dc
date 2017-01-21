@@ -149,7 +149,7 @@
 						case -1:
 							var place = __$('touchscreenInput' + tstCurrentPage).value;
 
-					      	__$("person_place_of_death_district_id").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
+					      	__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
 
 					        break;
 					    case 0:
@@ -157,23 +157,23 @@
 
 					      	__$("person_hospital_of_death_name").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
 
-					      	__$("person_place_of_death_ta_id").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
+					      	__$("person_place_of_death_ta").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
 
 					        break;
 					    case 1:
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
-					    	var district = __$('person_place_of_death_district_id').value
+					    	var district = __$('person_place_of_death_district').value
 
-					    	__$("person_place_of_death_village_id").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+					    	__$("person_place_of_death_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
 					    case 2:
 
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
-					      	__$("person_home_ta_id").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
+					      	__$("person_home_ta").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
 
 					    	break;
 
@@ -181,16 +181,16 @@
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
-					    	var district = __$('person_home_district_id').value
+					    	var district = __$('person_home_district').value
 
-					    	__$("person_home_village_id").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+					    	__$("person_home_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
 					    case 4:
 
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
-					      	__$("person_informant_current_ta_id").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
+					      	__$("person_informant_current_ta").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
 
 					    	break;
 
@@ -198,9 +198,9 @@
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
-					    	var district = __$('person_informant_current_district_id').value
+					    	var district = __$('person_informant_current_district').value
 
-					    	__$("person_informant_current_village_id").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+					    	__$("person_informant_current_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
 				} 
@@ -430,36 +430,37 @@
 
                 <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Hospital/Institution")  %>
-                    <%= (f.hidden_field :place_of_death_district_id, :value => @facility.district_id) %>
-                    <%= (f.hidden_field :hospital_of_death, :value => @facility.id) %>
+                    <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
+                    <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
                 <% else %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Hospital/Institution", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :tt_onUnLoad =>"setAjaxUrl(-1)") %>
-                    <%= (f.text_field :place_of_death_district_id,:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
-                    <%= (f.text_field :hospital_of_death_id,:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.match('Hospital')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                    <%= (f.text_field :place_of_death_district,:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                    <%= (f.text_field :hospital_of_death_name,:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.match('Hospital')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
                 <% end %>
 
 
-                <%= (f.text_field :place_of_death_ta_id,:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= (f.text_field :place_of_death_ta,:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
 
-                <%= (f.text_field :place_of_death_village_id,:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= (f.text_field :place_of_death_village,:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
 
                 <%= (f.text_field :other_place_of_death,:helpText => "Other place of death specify",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
             </sub>
 
             <sub id="home_address" name="Home address">
-                <%= (f.text_field :home_country_id,:helpText => "Home Country",:ajaxURL => "/nationalities?search_string=",
-                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')" ) rescue "" %>
 
-                <%= (f.text_field :home_district_id,:helpText => "Home district",
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home Country",:ajaxURL => "/nationalities?search_string=",
+                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+
+   				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
-                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)") rescue "" %>
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
-                <%= (f.text_field :home_ta_id,:helpText => "Home TA",
+                  <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
-                                :tt_onUnLoad => "setAjaxUrl(3)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                                :tt_onUnLoad => "setAjaxUrl(3)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                <%= (f.text_field :home_village_id,:helpText => "Home Village",
-                                :condition => "__$('person_home_country').value.toLowerCase().match('malawi')" ) rescue "" %>
+               	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
+                                :condition => "__$('person_home_country').value.toLowerCase().match('malawi')"} %>
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
@@ -505,11 +506,12 @@
                 <%= (f.text_field :informant_relationship_to_deceased_other,:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",:helpText => "Relationship to Deceased specify",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
             </sub>
             <sub id="info_home_address" name="Address">
-                <%= (f.text_field :informant_current_district_id,:helpText => "Informant current district",:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(4)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
-                <%= (f.text_field :informant_current_ta_id,:helpText => "Informant current TA",:tt_onUnLoad => "setAjaxUrl(5)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant current district",:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(4)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
 
-                <%= (f.text_field :informant_current_village_id,:helpText => "Informant current village",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                  <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant current TA",:tt_onUnLoad => "setAjaxUrl(5)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
+    			
+    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
 
                 <%= (f.text_field :informant_addressline1,:helpText => "Informant Address Line 1",:placeholder => "P.O. box 200",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 

@@ -32,11 +32,16 @@ class ApplicationController < ActionController::Base
            return District.find(facility.district_id) rescue nil
 
       else
-            
+
            return District.by_code.key(CONFIG['district_code'].to_s).first rescue nil
 
       end
      
+  end
+  def current_nationality
+
+      return Nationality.by_nationality.key("Malawian").first
+
   end
   
   def check_if_user_admin

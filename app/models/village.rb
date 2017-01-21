@@ -9,7 +9,14 @@ class Village < CouchRest::Model::Base
 
   design do
       view :by__id
+      view :by_ta_id,
+      	   :map => "function(doc){
+      	   				if(doc.type=='Village'){
+      	   					emit(doc.ta_id,{name : doc.name})
+      	   				}
+      	   		   }"
       view :by_name
+      view :by_ta_id_and_name
   end
 
 end

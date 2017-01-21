@@ -25,6 +25,7 @@ class HealthFacility < CouchRest::Model::Base
                         emit(doc.district_id,{name : doc.name, created_at : doc.created_at})
                     }
            }"
+      view :by_district_id_and_name
       view :by_zone
       view :by_latitude_and_longitude
   end

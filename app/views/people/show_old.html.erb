@@ -1,90 +1,185 @@
 <style type="text/css">
-	
-	table{
-
-		width: 98%;
-
-		margin: auto;
-
-		border-collapse :collapse;
-
-		//border : 1px solid black;
-
-	}
-
-	th{
-		font-size:2em;
-		text-align :left;
-		padding : 20px;
-		border-bottom :1px solid #ccc;
-	}
-
-	td{
 		
-		width :40%;
-		text-align :right;
-		border-bottom :1px dotted #ccc;
-		color :#333;
-		vertical-align :bottom;
-		font-size: 1.5em
+		#table_container{
 
+				height: calc(88% - 20px);
 
-	}
+				overflow-y: scroll;
 
-	#table_container{
+				margin-bottom : 0.3em
 
-			height: calc(88% - 40px);
-
-			overflow-y: scroll;
-
-			margin-bottom : 0.3em
-
-	}
-
-	table tr:nth-child(odd) {
-
-		background-color:#eee;
-
-	}
+		}
 
 </style>
 
-<div style="font-size:2.2em; text-align:center; width: 100%; font-weight: bold;height:50px;background : #5d87ba; color:#ffffff ; margin-bottom : 0.1em; padding : 0.2em">
-	
-		Deceased person's Summary
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
-</div>
+	<% if @status.status=="NEW" %>
+
+		<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="checkCompleteness()">Completeness Check</button>
+
+	<%else%>
+
+		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Completeness Check</button>
+
+	<%end%>
+
+		<button class="green" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="markAsPending()">Mark Pending</button>
+
+
+		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;" onmousedown="viewPersonComment()">View Comment</button>
+<% end %>
+
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+	
+	<%if  @status.present? && @status.status == "DC APPROVED" %>
+
+			<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Approve</button>
+	<%else %>
+
+			<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="approveRecord()">Approve</button>
+
+	<%end%>
+
+<%end%>
+
+<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+
+	<%if  @status.present? && @status.status == "DC REJECTED" %>
+
+		<button class="gray" style="position:absolute; right : 295px;  bottom:58px;">Reject</button>
+	<%else%>
+
+		<button class="red" style="position:absolute; right : 295px;  bottom:58px;" onmousedown="rejectRecord()">Reject</button>
+
+	<%end%>
+
+<%end%>
 
 <div id="table_container">
-	
-		<!--table >
+
+		<table>
 			<% @keys.each do |key| %>
 
 					<tr>
 						
-						<td style= "border : none" ><%= key.humanize %> &nbsp :</td>
+						<td style= "border : none; font-weight: bold " ><%= key.humanize %> &nbsp :</td>
 
-						<% if key.include? "date" %>
+						<% if key.match(/date/i)%>
 
-								<td style="text-align :left; font-weight : bold; padding-left : 5%" ><%= Date.parse(@person[key]).strftime("%d/%b/%Y")  rescue @person[key] %></td>
+								<td style= "border : none;"><%= DateTime.parse("#{@person[key]}").strftime("%d/%b/%Y")  rescue @person[key] %></td>
 
 						<%else %>
 
-							<td style="text-align :left; font-weight : bold; padding-left : 5%" ><%= @person[key] %></td>
+
+								<td style= "border : none;"><%= @person[key] %></td>
 
 						<%end%>
+						
 
-						<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Change</button></td>
+						<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+
+								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="blue" onclick="window.location = '/people/edit/<%= @person.id %>/<%= key %>'">Edit</button></td>
+
+						<% else %>
+
+								<td style= "border : none; text-align :right; padding-left : 5%" ><button class="gray">Edit</button></td>
+
+						<%end %>
 
 					</tr>
 
 			<%end %>
-		</table-->
+
+		</table>
 
 </div>
-<div style="background :#333434;width:100%;padding:0.2em">
-			<button class="red" style="width : 10%" onclick="window.location= '/'" >Cancel</button>
+<script type="text/javascript">
+			<% if params[:error] %>
 
-			<button class="green" style="float:right; width : 10%" onclick="window.location= '/people/finalize_create/<%= @person.id %>'">Finish</button>
+					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
 
-</div>
+			<% end %>
+	
+			function checkCompleteness(){
+
+					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
+
+							
+					showConfirmMessage("","Data Completeness check",url,"#79a3c1")
+
+					popUpRecordDetails();
+			
+
+			}
+
+			function approveRecord(){
+
+					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Approve record",url,"#79a3c1")
+
+					popUpRecordDetails();
+
+			}
+
+			function rejectRecord(){
+
+					var url = "/dc/add_rejection_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Proceed to reject a record?",url,"red")
+
+					popUpRecordDetails();
+
+			}
+
+			function popUpRecordDetails(){
+
+					var control = __$("msg.content")
+
+					var table = document.createElement("table");
+
+					table.style.width = "80%";
+
+					table.style.margin ="auto";
+
+					control.appendChild(table);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Surnaame";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.last_name %>";
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "First Name";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.first_name %>";
+
+					tr.appendChild(td);
+
+			}
+
+
+
+
+</script>
