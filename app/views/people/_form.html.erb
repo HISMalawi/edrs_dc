@@ -203,6 +203,24 @@
 					    	__$("person_informant_current_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
+
+					     case 6:
+
+					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
+
+					      	__$("person_current_ta").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
+
+					    	break;
+
+					    case 7:
+
+					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
+
+					    	var district = __$('person_current_district').value
+
+					    	__$("person_current_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+
+					        break;
 				} 
 
 		}
@@ -463,9 +481,26 @@
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')"} %>
             </sub>
 
+            <sub id="physical_address" name="Physical address">
+
+            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Country of Residence",:ajaxURL => "/nationalities?search_string=",
+                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+
+   				<%= text_field_tag "person[current_district]", nil, {:helpText => "Dstrict of Residence",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
+
+                  <%= text_field_tag "person[current_ta]", nil, {:helpText => "Traditional Authority of Residence",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
+                                :tt_onUnLoad => "setAjaxUrl(7)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+
+               	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village of Residence",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')"} %>
+            </sub>
+
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[death_by_pregnancy]", options_for_select(['Yes', 'No'], @person[:death_by_pregnancy]),
-                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"__$('person_gender').value.trim().toLowerCase()=='female'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
+               <%= select_tag("person[died_while_pegnant]", options_for_select(['Yes', 'No'], @person[:died_while_pegnant]),
+                        :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"__$('person_gender').value.trim().toLowerCase()=='female'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
             </sub>
         </section>
 

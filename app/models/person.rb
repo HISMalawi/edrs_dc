@@ -277,6 +277,29 @@ class Person < CouchRest::Model::Base
           end
       end
 
+      if !params[:current_district].blank?
+        
+          current_district = District.by_name.key(params[:current_district]).first
+
+          params[:current_district_id] = current_district.id
+
+          if !params[:current_ta].blank?
+
+               current_ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:current_ta]]).first
+
+               params[:current_ta_id] = current_ta.id
+
+               if !params[:current_village].blank?
+
+                  current_village = Village.by_ta_id_and_name.key([ta.id,params[:current_village]]).first
+
+                  params[:current_village_id] = current_village.id
+                 
+               end
+            
+          end
+      end
+
       if !params[:informant_current_district].blank?
         
           informant_district = District.by_name.key(params[:informant_current_district]).first
@@ -339,7 +362,10 @@ class Person < CouchRest::Model::Base
   property :home_ta_id, String
   property :home_district_id, String
   property :home_country_id, String
-  property :death_by_pregnancy, String
+  property :current_village_id, String
+  property :current_ta_id, String
+  property :current_district_id, String
+  property :died_while_pegnant, String
   property :updated_by, String
   property :voided_by, String
   property :voided_date, String
@@ -451,7 +477,7 @@ class Person < CouchRest::Model::Base
   property :informant_city, String
   property :informant_phone_number, String
   property :informant_signed, String
-  property :informant_signature_date, String
+  property :informant_signature_date, Time
   #end
 
   property :certifier_first_name, String

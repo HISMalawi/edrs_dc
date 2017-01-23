@@ -201,17 +201,7 @@ class PeopleController < ApplicationController
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-      excludes = ["first_name_code","last_name_code", "middle_name_code",
-                  "mother_first_name_code","mother_last_name_code", "mother_middle_name_code",
-                  "father_first_name_code","father_last_name_code", "father_middle_name_code",
-                  "informant_first_name_code","informant_last_name_code", "informant_middle_name_code",
-                  "birthdate_estimated", "created_by", "date_created", 
-                  "updated_by","voided_by", "voided", "voided_date",
-                  "status_changed_by","approved_by","approved_at","creator",
-                  "cahnged_by","id","_rev","created_at","updated_at","type",
-                  "changed_by","_deleted","_id","acknowledgement_of_receipt_date"]
-
-      @keys = @person.keys - excludes
+      @person_place_details = place_details(@person)
 
       @section = "Show"
 

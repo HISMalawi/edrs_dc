@@ -67,15 +67,15 @@ class ApplicationController < ActionController::Base
 
   def record_complete?(person)
 
-        complete  = true
+    complete  = true
 
-        if person.first_name.blank? || person.last_name.blank? 
+    if person.first_name.blank? || person.last_name.blank? 
 
-              return false
+      return false
 
-        end
+    end
 
-        return complete
+    return complete
     
   end
 
@@ -83,80 +83,139 @@ class ApplicationController < ActionController::Base
   #Root index of app
   def index
 
-        if CONFIG['site_type'] =="facility"
+    if CONFIG['site_type'] =="facility"
 
-          redirect_to "/people/"
+      redirect_to "/people/"
 
-        else
+    else
 
-           redirect_to "/dc/"
+      redirect_to "/dc/"
 
-        end
+    end
     
   end
 
   def facility_info
 
-      @facility = facility
+    @facility = facility
 
-      @district = district
+    @district = district
 
-      if CONFIG['site_type'] =="facility"
+    if CONFIG['site_type'] =="facility"
 
-            @facility_type = "Facility"
+      @facility_type = "Facility"
 
-      else
+    else
 
-              @facility_type = "DC"
+      @facility_type = "DC"
 
-      end
+    end
+
+  end
+
+  def place_details(person)
+
+    places = {}
+
+    places['home_country'] = Nationality.find(person.nationality_id).nationality rescue ""
+
+    places['place_of_death_district'] = District.find(person.place_of_death_district_id).name rescue ""
+
+    places['hospital_of_death'] = HealthFacility.find(person.hospital_of_death_id).name rescue ""
+
+    places['place_of_death_ta'] = TraditionalAuthority.find(person.place_of_death_ta_id).name rescue ""
+
+    places['place_of_death_village'] = Village.find(person.place_of_death_village_id).name rescue ""
+
+    places['current_district'] = District.find(person.current_district_id).name rescue ""
+
+    places['current_ta'] = TraditionalAuthority.find(person.current_ta_id).name rescue ""
+
+    places['current_village'] = Village.find(person.current_village_id).name rescue ""
+
+    places['home_district'] = District.find(person.home_district_id).name rescue ""
+
+    places['home_ta'] = TraditionalAuthority.find(person.home_ta_id).name rescue ""
+
+    places['home_village'] = Village.find(person.home_village_id).name rescue ""
+
+    places['informant_current_district'] = District.find(person.informant_current_district_id).name rescue ""
+
+    places['informant_current_ta'] = TraditionalAuthority.find(person.informant_current_ta_id).name rescue ""
+
+    places['informant_current_village'] = Village.find(person.informant_current_village_id).name rescue ""
+
+    return places
 
   end
 
   protected
 
-   def login!(user)
+  def login!(user)
+
     session[:current_user_id] = user.username
+
     @current_user = user
   end
 
   def logout!
+
     session[:current_user_id] = nil
+
     @current_user = nil
   end
 
   def current_user
+
     unless @current_user == false # meaning a user has previously been established as not logged in
+
       @current_user ||= authenticate_from_session || authenticate_from_basic_auth || false
+
       User.current_user = @current_user
+
     end
   end
 
   def authenticate_from_basic_auth
+
     authenticate_with_http_basic do |user_name, password|
+
       user = User.get_active_user(user_name)
+
       if user and user.password_matches?(password)
+
         return user
+
       else
+
         return false
+
       end
     end
   end
 
   def authenticate_from_session
+
     unless session[:current_user_id].blank?
+
       user = User.get_active_user(session[:current_user_id])
+
       return user
     end
   end
 
   def perform_basic_auth
+
     authorize! :access, :anything
+
   end
 
   def access_denied
+
     respond_to do |format|
+
       format.html { redirect_to login_path(referrer_param => current_path) }
+
       format.any  { head :unauthorized }
     end
   end
