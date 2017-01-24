@@ -8,7 +8,6 @@ class Village < CouchRest::Model::Base
   timestamps!
 
   design do
-      view :by__id
       view :by_ta_id,
       	   :map => "function(doc){
       	   				if(doc.type=='Village'){
