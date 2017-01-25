@@ -26,7 +26,7 @@ class PeopleController < ApplicationController
 
 	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
 
-     @current_nationality = Nationality.find("Malawian")
+     @current_nationality = Nationality.by_nationality.key("Malawian").last
 
 	    if !params[:id].blank?
 
@@ -301,6 +301,7 @@ class PeopleController < ApplicationController
 
   def nationalities
     nationalities = Nationality.all
+    malawi = Nationality.by_nationality.key("Malawian").last
     list = []
     nationalities.each do |n|
       if !params[:search_string].blank?
@@ -310,7 +311,11 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
+    if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
+      list = [malawi] + list
+    end
+
+    render :text => list.uniq.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
 
   end
 
@@ -353,7 +358,7 @@ class PeopleController < ApplicationController
       ta =TraditionalAuthority.by_district_id_and_name.key([district.id, params[:ta]]).first
 
       result = Village.by_ta_id.key(ta.id.strip)
-raise result.each.count.to_s
+
     else
        result = Village.by_ta_id
 
