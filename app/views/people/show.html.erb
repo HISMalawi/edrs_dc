@@ -84,7 +84,7 @@
 			</tr>
 
 			<tr>
-				<td rowspan="10" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td rowspan="11" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
 				<td>1</td>
 				<td  class="clickable" onclick="editField('last_name')">Surname</td>
 				<td colspan="2" ><%= @person.last_name %></td>
@@ -97,7 +97,7 @@
 				<td>2</td>
 				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
 				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
-				<td>2</td>
+				<td>3</td>
 				<td class="clickable" onclick="editField('nationality_id')">Nationality</td>
 				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
 				<td>4</td>
@@ -108,9 +108,14 @@
 				<td>5</td>
 				<td class="clickable" onclick="editField('birthdate')" >Birth Date</td>
 				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
-				<td>6</td>
-				<td class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
-				<td style="border-bottom :1.5px solid black"><%= @person.birth_certificate_number %></td>
+				<td rowspan="2">6</td>
+				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
+				<td rowspan="2" style="border-bottom :1.5px solid black"><%= @person.birth_certificate_number %></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
+				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
 			</tr>
 			<tr>
 				<td rowspan="4">8</td>
@@ -238,7 +243,7 @@
 			</tr>
 			<tr>
 				<td>Date:</td>
-				<td colspan="8"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") %></td>
+				<td colspan="8"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
 			</tr>
 		</table>
 
@@ -330,7 +335,11 @@
 
 			function editField(field){
 
-					alert(field);
+					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+
+							showConfirmMessage("Are you sure u want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
+
+					<%end%>
 
 			}
 
