@@ -276,6 +276,14 @@
 					popUpRecordDetails();
 
 			}
+			function markAsPending(){
+
+					var url = "/dc/mark_as_pending/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Are you sure to mark the record as Pending?",url,"#e2a648")
+
+					popUpRecordDetails();
+			}
 
 			function rejectRecord(){
 
@@ -289,7 +297,19 @@
 
 			function popUpRecordDetails(){
 
-					var control = __$("msg.content")
+					var popup_container = __$("msg.popup")
+
+					popup_container.style.width = "40%";
+
+					popup_container.style.left =  "calc(45% - 210px)";
+
+					popup_container.style.top =  "10%";
+
+					popup_container.style.height= "500px";
+
+					var control = __$("msg.content");
+
+					control.style.height = "350px"
 
 					var table = document.createElement("table");
 
@@ -330,6 +350,88 @@
 					td.innerHTML = "<%= @person.first_name %>";
 
 					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Nationality";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.nationality %>";
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Sex";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.gender %>";
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Date of Birth";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.birthdate.to_date.strftime('%d/%b/%Y') %>";
+
+					tr.appendChild(td);
+
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Date of Death";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.date_of_death.to_date.strftime('%d/%b/%Y') %>";
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "Place of Death";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @person.place_of_death %>";
+
+					tr.appendChild(td);
+
 
 			}
 

@@ -69,15 +69,36 @@ class ApplicationController < ActionController::Base
 
     complete  = true
 
-    if person.first_name.blank? || person.last_name.blank? 
+    if person.first_name.blank?
 
       return false
 
     end
 
-    if person.birthdate.blank?
-        return false 
+    if person.last_name.blank? 
+
+      return false
+      
     end
+
+    if person.birthdate.blank?
+
+        return false 
+
+    end
+
+    if person.date_of_death.blank?
+
+      return false
+      
+    end
+
+    if person.place_of_death.blank?
+
+      return false
+      
+    end
+
     return complete
     
   end
