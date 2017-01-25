@@ -85,6 +85,12 @@ class DcController < ApplicationController
 
 				PersonIdentifier.assign_den(person)
 
+				Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC APPROVED",
+							:level => "Person",
+							:reason => "Approve record"})
+
 			    redirect_to "#{params[:next_url].to_s}"
 
 		else
@@ -97,6 +103,11 @@ class DcController < ApplicationController
                                   :status => "DC INCOMPLETE",
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
+				Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC INCOMPLETE",
+							:level => "Person",
+							:reason => "Approve record not successful"})
 
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
 		end
@@ -120,14 +131,38 @@ class DcController < ApplicationController
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
-			redirect_to "#{params[:next_url].to_s}"
-
+			
 			Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECT",
 							:level => "Person",
 							:reason => params[:reason]})
 
+			redirect_to "#{params[:next_url].to_s}"
+
+
+	end
+	def mark_as_pending
+
+		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+		status.update_attributes({:voided => true})
+
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC PENDING",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => User.current_user.id})
+
+		Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC PENDING",
+							:level => "Person",
+							:reason => "Mark record as pending"})
+
+		redirect_to "#{params[:next_url].to_s}"
+
+		
 	end
 
 	def  approved_cases
