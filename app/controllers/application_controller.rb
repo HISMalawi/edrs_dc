@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   end
   def current_nationality
 
-      return Nationality.by_nationality.key("Malawian").first
+      return Nationality.find("Malawian")
 
   end
   

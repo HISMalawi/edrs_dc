@@ -26,7 +26,7 @@ class PeopleController < ApplicationController
 
 	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
 
-     @current_nationality = Nationality.by_nationality.key("Malawian").first
+     @current_nationality = Nationality.find("Malawian")
 
 	    if !params[:id].blank?
 
@@ -287,21 +287,30 @@ class PeopleController < ApplicationController
       facilities = HealthFacility.by_name.each
     end
 
-    if !params[:search_string].blank?
-      facilities = facilities.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
+    list = []
+    facilities.each do |f|
+      if !params[:search_string].blank?
+        list << f if f.name.match(/#{params[:search_string]}/i)
+      else
+        list << f
+      end
     end
 
-    render :text => facilities.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
   def nationalities
-    nationalities = Nationality.by_nationality.each.collect{|w| w}
-
-    if !params[:search_string].blank?
-      nationalities = nationalities.delete_if{|n| !n.nationality.match(/#{params[:search_string]}/i)}
+    nationalities = Nationality.all
+    list = []
+    nationalities.each do |n|
+      if !params[:search_string].blank?
+        list << n if n.nationality.match(/#{params[:search_string]}/i)
+      else
+        list << n
+      end
     end
 
-    render :text => nationalities.insert(0, nationalities.delete_at(107)).uniq.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
 
   end
 
@@ -316,15 +325,20 @@ class PeopleController < ApplicationController
       result = TraditionalAuthority.by_district_id.key(district.id)
     else
 
-       result = TraditionalAuthority.by_district_id.each
+       result = TraditionalAuthority.by_district_id
 
     end
 
-    if !params[:search_string].blank?
-      result = result.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
+    list = []
+    result.each do |r|
+      if !params[:search_string].blank?
+        list << r if r.name.match(/#{params[:search_string]}/i)
+      else
+        list << r
+      end
     end
 
-    render :text => result.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
 
@@ -339,23 +353,26 @@ class PeopleController < ApplicationController
       ta =TraditionalAuthority.by_district_id_and_name.key([district.id, params[:ta]]).first
 
       result = Village.by_ta_id.key(ta.id.strip)
-
+raise result.each.count.to_s
     else
-       result = Village.by_ta_id.each
+       result = Village.by_ta_id
 
     end
 
-    if !params[:search_string].blank?
-      result = result.delete_if{|n| !n.name.match(/#{params[:search_string]}/i)}
+    list = []
+    result.each do |r|
+      if !params[:search_string].blank?
+        list << r if r.name.match(/#{params[:search_string]}/i)
+      else
+        list << r
+      end
     end
 
-    render :text => result.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
 
   end
 
   def print_id_label
-
-
 
     print_string = person_label(params[:person_id]) #rescue (raise "Unable to find child (#{params[:child_id]}) or generate a national id label for that patient")
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:person_id]}#{rand(10000)}.lbl", :disposition => "inline")
