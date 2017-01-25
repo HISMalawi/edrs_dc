@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-	function loadSummary() {
+	function loadPersonSummary(){
 
 		    if (__$("keyboard")) {
 
@@ -25,11 +25,11 @@
 		        table.appendChild(tr);
 
 		        var th = document.createElement("th");
-		        th.style.fontSize = "2em";
+		        th.style.fontSize = "1.2em";
 		        th.style.textAlign = "left";
 		        th.style.padding = "20px";
 		        th.style.borderBottom = "1px solid #ccc";
-		        th.innerHTML = "Person details Summary";
+		        th.innerHTML = "Particulars of the deceased";
 
 		        tr.appendChild(th);
 
@@ -49,95 +49,587 @@
 		        td.appendChild(div);
 
 		        var tableContent = document.createElement("table");
-		        tableContent.style.width = "100%";
+		        tableContent.style.width = "98%";
 		        tableContent.style.borderCollapse = "collapse";
-		        tableContent.cellPadding = "10";
-		        tableContent.style.fontSize = "2em";
+		        tableContent.cellPadding = "3";
+		        tableContent.style.border = "1px solid black"
+		        tableContent.style.fontSize = "1.1em";
+		        tableContent.style.margin = "auto";
 
 		        div.appendChild(tableContent);
 
-		        var k = 0;
 
-		        for (var i = 0; i < tstFormElements.length; i++) {
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("th")
+		        td.innerHTML = "Part 1 <br/> PERSONAL DETAILS OF DECEASED";
+		        td.rowSpan ="11";
+		        td.style.width ="10%";
+		        td.style.border = "1px solid black";
+		        tr.appendChild(td)
+		        var td = document.createElement("td")
+		        td.innerHTML = "1";
+		        td.style.border = "1px solid black";
+		        tr.appendChild(td);
+		        var td = document.createElement("td")
+		        td.innerHTML = "Surname";
+		        td.style.border = "1px solid black";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan = "2";
+		        td.innerHTML = __$('person_last_name').value ? __$("person_last_name").value : "";
+		        tr.appendChild(td)
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "First name";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan = "2";
+		        td.innerHTML = __$('person_first_name').value ? __$("person_first_name").value : "";
+		        tr.appendChild(td)
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Other names";
+		        td.colSpan = "2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan = "2";
+		        td.innerHTML = __$('person_middle_name').value ? __$("person_middle_name").value : "";
+		        tr.appendChild(td);
 
-		            if (tstFormElements[i].value.trim().length <= 0)
-		                continue;
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "ID No.";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_id_number').value ? __$("person_id_number").value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "3";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Nationality";
+		        td.colSpan ="2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_nationality').value ? __$("person_nationality").value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "4";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Sex";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_gender').value ? __$("person_gender").value : "";
+		        tr.appendChild(td);
 
-		            if (tstFormElements[i].getAttribute("ignore"))
-		                continue;
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "5";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Date of Birth";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Year";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_birth_year').value ? __$("person_birth_year").value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Month";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_birth_month').value ? __$("person_birth_month").value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Day";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$('person_birth_day').value ? __$("person_birth_day").value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "6";
+		        td.rowSpan="2"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Birth Certificate No.";
+		        td.rowSpan="2"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.rowSpan="2"
+		        td.innerHTML = __$('person_birth_certificate_number').value ? __$("person_birth_certificate_number").value : "";
+		        tr.appendChild(td);
 
-		            if (tstFormElements[i].type == "password")
-		                continue;
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "7";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Date of death";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="6";
+		        td.innerHTML = __$("person_date_of_death").value ? __$('person_date_of_death').value : "";
+		        tr.appendChild(td);
 
-		            var tr = document.createElement("tr");
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.rowSpan ="4";
+		        td.innerHTML = "8";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Place of Death";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="9";
+		        td.innerHTML =__$("person_place_of_death").value ? __$('person_place_of_death').value : "";
+		        tr.appendChild(td);
 
-		            if (k % 2 > 0)
-		                tr.style.backgroundColor = "#eee";
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Health Facility";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="9";
+		        td.innerHTML =__$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "";
+		        tr.appendChild(td);
 
-		            tableContent.appendChild(tr);
-
-		            var td = document.createElement("td");
-		            td.style.width = "40%";
-		            td.style.textAlign = "right";
-		            td.style.borderRight = "1px dotted #ccc";
-		            td.style.borderBottom = "1px dotted #ccc";
-		            td.style.color = "#333";
-		            td.style.verticalAlign = "top";
-		            td.innerHTML = tstFormElements[i].getAttribute("helpText").beautify("0.9em", "0.55em");
-
-		            tr.appendChild(td);
-
-		            var td = document.createElement("td");
-		            td.style.textAlign = "left";
-		            td.style.borderBottom = "1px dotted #ccc";
-		            td.style.verticalAlign = "top";
-
-		            if (tstFormElements[i].tagName.toLowerCase() == "select") {
-
-		                var opts = tstFormElements[i].selectedOptions;
-
-		                var arr = [];
-
-		                for (var j = 0; j < opts.length; j++) {
-
-		                    arr.push(opts[j].innerHTML);
-
-		                }
-
-		                td.innerHTML = arr.join(",");
-
-		            } else {
-
-		                td.innerHTML = tstFormElements[i].value;
-
-		            }
-
-		            tr.appendChild(td);
-
-		            var td = document.createElement("td");
-		            td.style.textAlign = "right";
-		            td.style.borderBottom = "1px dotted #ccc";
-
-		            var button = document.createElement("button");
-
-		            button.innerHTML = "Change";
-
-		            button.className = "blue";
-
-		            button.setAttribute("onclick","gotoPage("+i+")");
-
-		            td.appendChild(button);
-
-
-		            
-		            //tr.appendChild(td);
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Home";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "District";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_place_of_death_district").value ? __$('person_place_of_death_district').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "TA";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_place_of_death_ta").value ? __$('person_place_of_death_ta').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Village";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		         td.colSpan ="4";
+		        td.innerHTML =__$("person_place_of_death_village").value ? __$('person_place_of_death_village').value : "";
+		        tr.appendChild(td);
 
 
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Other";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="9";
+		        td.innerHTML =__$("person_other_place_of_death").value ? __$('person_other_place_of_death').value : "";
+		        tr.appendChild(td);
 
+		         var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "9";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Physical address";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_current_district").value ? __$('person_current_district').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "TA";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_current_ta").value ? __$('person_current_ta').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Village";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		         td.colSpan ="5";
+		        td.innerHTML =__$("person_current_village").value ? __$('person_current_village').value : "";
+		        tr.appendChild(td);
 
-		            k++;
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "10";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Home address";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "District";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_home_district").value ? __$('person_home_district').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "TA";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_home_ta").value ? __$('person_home_ta').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Village";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="4";
+		        td.innerHTML =__$("person_home_village").value ? __$('person_home_village').value : "";
+		        tr.appendChild(td);
 
-		        }
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "11";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.colSpan ="9";
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_died_while_pegnant").value ? __$('person_died_while_pegnant').value : "";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("th");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Part 2 <br/> DETAILS OF PARENTS";
+		        td.rowSpan ="4"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "1";
+		         td.rowSpan ="2"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Mother's name";
+		        td.colSpan ="11";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Surname";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "First name ";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "";
+		        tr.appendChild(td);
+		         var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Other names ";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_mother_middle_name").value ? __$('person_mother_middle_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "ID No.";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_mother_id_number").value ? __$('person_mother_id_number').value : "";
+		        tr.appendChild(td);
+
+		         var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "3";
+		        td.rowSpan ="2"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Father's name";
+		        td.colSpan ="11";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Surname";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_father_last_name").value ? __$('person_father_last_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "First name ";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_father_first_name").value ? __$('person_father_first_name').value : "";
+		        tr.appendChild(td);
+		         var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Other names";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_father_middle_name").value ? __$('person_father_middle_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "4";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "ID No.";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_father_id_number").value ? __$('person_father_id_number').value : "";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("th");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Part 3 <br/> DETAILS OF INFORMANT";
+		        td.rowSpan ="7"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "1";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Surname";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "First name ";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "";
+		        tr.appendChild(td);
+		         var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Other names";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_informant_middle_name").value ? __$('person_informant_middle_name').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "ID No.";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = __$("person_informant_id_number").value ? __$('person_informant_id_number').value : "";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "3";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Relationship to the deceased";
+		        td.colSpan ="8";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="2";
+		        td.innerHTML = __$("person_informant_relationship_to_deceased").value ? __$('person_informant_relationship_to_deceased').value : "";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "4";
+		        td.rowSpan ="2";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Address";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "District";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_informant_current_district").value ? __$('person_informant_current_district').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "TA";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML =__$("person_informant_current_ta").value ? __$('person_informant_current_ta').value : "";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Village";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan ="5";
+		        td.innerHTML =__$("person_informant_current_village").value ? __$('person_informant_current_village').value : "";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Postal address";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        var address = __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "";
+		        address = __$('person_informant_addressline2').value ? address + __$('person_informant_addressline2').value : address;
+
+		        address = __$('person_informant_city').value ? address + __$('person_informant_city').value : address;
+		        td.innerHTML = address;
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Telephone number";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "5";
+		        td.rowSpan = "3"
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan= "10"
+		        td.innerHTML = "I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Informant Signed";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan= "10"
+		        td.innerHTML = __$("person_informant_signed").value ? __$('person_informant_signed').value : "No";
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Date informant signed";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.colSpan= "10"
+		        td.innerHTML = __$("person_informant_signature_date").value ? __$('person_informant_signature_date').value : "";
+		        tr.appendChild(td);
 
 		    }
 
@@ -412,8 +904,7 @@
 
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
-
-        <section name="Personal details of deceased">
+    <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",
                                   :allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
@@ -424,7 +915,7 @@
 
                 <%= text_field_tag "person[id_number]",nil , {:helpText => "ID Number", :optional => true, :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                <%= (f.text_field :nationality_id,:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
 
@@ -457,9 +948,9 @@
                 <% end %>
 
 
-                <%= (f.text_field :place_of_death_ta,:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                <%= (f.text_field :place_of_death_village,:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+               	<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
                 <%= (f.text_field :other_place_of_death,:helpText => "Other place of death specify",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
             </sub>
@@ -499,18 +990,20 @@
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[died_while_pegnant]", options_for_select(['Yes', 'No'], @person[:died_while_pegnant]),
+               <%= select_tag("person[died_while_pegnant]", options_for_select(['No', 'Yes'], @person[:died_while_pegnant]),
                         :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"__$('person_gender').value.trim().toLowerCase()=='female'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
             </sub>
-        </section>
+  	</section>
 
-        <section name="Details of parents">
+    <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
                 <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
 
                 <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
 
                 <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=" ,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
+
+                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
                 <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
@@ -518,16 +1011,20 @@
                 <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
 
                 <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')" ) rescue "" %>
-            </sub>
-        </section>
 
-        <section name="Informant's details">
+                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
+            </sub>
+    </section>
+
+    <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
                 <%= (f.text_field :informant_last_name, :helpText => "Informant Last Name",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
                 <%= (f.text_field :informant_middle_name, :helpText => "Informant Middle Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+
+                <%= (f.text_field :informant_id_number, :helpText => "Informant ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
 
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
@@ -563,11 +1060,11 @@
                 <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
                                       :field_type => "date",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
             </sub>
-        </section>
+    </section>
 
     <% if site_type == "dc" %>
 
-        <section name="Verification">
+    <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">
                 <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>
 
@@ -581,25 +1078,25 @@
                 <%= (f.text_field :church_verification_date,:helpText => "Date Church leader verified",
 		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
             </sub>
-        </section>
+    </section>
     <% end %>
 
     <% if false %>
 
-        <section name="Acknowledgement of Receipt">
+    <section name="Acknowledgement of Receipt">
         	<sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
         		<%= (f.text_field :acknowledgement_of_receipt_date,:helpText => "Acknowledgement of receipt date",
                                   :field_type => "date",:tt_onLoad =>"showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
         	</sub>
-        </section>
+    </section>
 
 
-     <% end %>
+    <% end %>
 
-        <section name="Summary">
-            <sub id="summary" name="Summary">
-		        <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"loadSummary()"} %>
-            </sub>
-        </section>
+    <section name="Summary">
+        <sub id="summary" name="Summary">
+		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"loadPersonSummary()"} %>
+        </sub>
+    </section>  
 
 <% end %>

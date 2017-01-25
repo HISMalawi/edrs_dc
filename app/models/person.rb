@@ -130,6 +130,11 @@ class Person < CouchRest::Model::Base
   end
 
   def self.create_person(params)
+      if !params[:nationality].blank?
+
+        params[:nationality_id] = Nationality.by_nationality.key(params[:nationality]).first.id
+
+      end
       if !params[:place_of_death_district].blank?
 
             district = District.by_name.key(params[:place_of_death_district]).first
@@ -161,9 +166,9 @@ class Person < CouchRest::Model::Base
 
       end
 
-      if !params[:home_country].blank?
+      if !params[:current_country].blank?
 
-          params[:home_country_id] = Nationality.by_nationality.key(params[:home_country]).first.id
+          params[:current_country_id] = Nationality.by_nationality.key(params[:current_country]).first.id
 
       end
 
@@ -182,6 +187,35 @@ class Person < CouchRest::Model::Base
                if !params[:home_village].blank?
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
                   params[:home_village_id] = village.id
+                 
+               end
+            
+          end
+      end
+
+    if !params[:home_country].blank?
+
+          params[:home_country_id] = Nationality.by_nationality.key(params[:home_country]).first.id
+
+      end
+
+      if !params[:current_district].blank?
+        
+          current_district = District.by_name.key(params[:current_district]).first
+
+          params[:current_district_id] = current_district.id
+
+          if !params[:current_ta].blank?
+
+               current_ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:current_ta]]).first
+
+               params[:current_ta_id] = current_ta.id
+
+               if !params[:current_village].blank?
+
+                  current_village = Village.by_ta_id_and_name.key([ta.id,params[:current_village]]).first
+
+                  params[:current_village_id] = current_village.id
                  
                end
             
@@ -324,6 +358,63 @@ class Person < CouchRest::Model::Base
 
       person.update_attributes(params)
 
+  end
+
+  #places person methon
+  def place_of_death_district   
+    return District.find(self.place_of_death_district_id).name
+  end
+
+  def hospital_of_death
+    return  HealthFacility.find(self.hospital_of_death_id).name    
+  end
+  
+  def place_of_death_ta
+    return TraditionalAuthority.find(self.place_of_death_ta_id).name
+  end
+
+  def place_of_death_village
+    return Village.find(self.place_of_death_village_id).name  
+  end
+
+  def home_country   
+    return Nationality.find(self.home_country_id).name
+  end
+
+  def home_district
+    return District.find(self.home_district_id).name
+  end
+
+  def home_ta
+    return TraditionalAuthority.find(self.home_ta_id).name
+  end
+
+  def home_village
+    return Village.find(self.home_village_id).name
+  end
+
+  def current_district
+    return District.find(self.current_district_id).name
+  end
+
+  def current_ta
+    return TraditionalAuthority.find(self.current_ta_id).name
+  end
+
+  def current_village
+    return Village.find(self.current_village_id).name
+  end
+
+  def informant_current_district
+    return District.find(self.informant_current_district_id).name
+  end
+
+  def informant_current_ta
+    return TraditionalAuthority.find(self.informant_current_ta_id).name    
+  end
+
+  def informant_current_village
+    return Village.find(self.informant_current_village_id).name 
   end
 
   #Person properties

@@ -75,6 +75,9 @@ class ApplicationController < ActionController::Base
 
     end
 
+    if person.birthdate.blank?
+        return false 
+    end
     return complete
     
   end
