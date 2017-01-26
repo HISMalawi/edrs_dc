@@ -129,6 +129,12 @@ class Person < CouchRest::Model::Base
 
   end
 
+  def status
+
+    PersonRecordStatus.by_person_recent_status.key(self.id).last.status
+
+  end
+
   def self.create_person(params)
       if !params[:nationality].blank?
 

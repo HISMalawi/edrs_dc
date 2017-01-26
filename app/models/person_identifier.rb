@@ -10,6 +10,8 @@ class PersonIdentifier < CouchRest::Model::Base
 
 	property :site_code, String
 
+  property :sort_value, String
+
 	property :district_code, String
 
 	property :creator, String
@@ -31,6 +33,8 @@ class PersonIdentifier < CouchRest::Model::Base
     	view :by_identifier
 
     	view :by_site_code
+
+      view :by_sort_value_and_identifier_type_and_identifier
 
     	view :by_district_code
 
@@ -77,15 +81,28 @@ class PersonIdentifier < CouchRest::Model::Base
 
     def self.assign_den(person)
         
-        den = DeathEntryNumber.by_district_unassigned.key(CONFIG['district_code']).last
+        #den = DeathEntryNumber.by_district_unassigned.key(CONFIG['district_code']).last
+        den = PatientIdentifier.by_sort_value_and_identifier_type_and_district_code.last.identifier rescue nil
+
+        if den.blank?
+          n = 1
+        else
+          n = den.scan(/\/\d+\//).last.scan(/\d+/).last.to_i + 1
+        end
+
+        year = Date.today.year
+
+        code = CONFIG['district_code']
+        num = n.to_s.rjust(7,"0")
+        den = "#{code}/#{num}/#{year}"
 
         self.create({
                     :person_record_id=>person.id.to_s,
                     :identifier_type =>"DEATH ENTRY NUMBER",
-                    :identifier => den.number,
+                    :identifier => den,
+                    :sort_value => (year.to_s + num).to_i,
                     :district_code => CONFIG['district_code']
             })
-        den.update_attributes({:assigned => true})
 
     end
 end
