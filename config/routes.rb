@@ -124,10 +124,13 @@ Rails.application.routes.draw do
 
   get "/dc/rejected_cases" =>"dc#rejected_cases"
 
-  get "dc/closed_cases" => "dc#closed_cases"
+  get "dc/closed" => "dc#closed"
 
-   get "dc/closed_cases" => "dc#closed_cases"
+  get "dc/dispatched" => "dc#dispatched"
 
+  get "/dc/voided" => "dc#voided"
+
+  get "/dc/pending_cases" => "dc#pending_cases"
 
 
   get "/logout" => "logins#logout"

@@ -10,7 +10,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
 	property :site_code, String
 
-  property :sort_value, String
+    property :sort_value, String
 
 	property :district_code, String
 
@@ -34,7 +34,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
     	view :by_site_code
 
-      view :by_sort_value_and_identifier_type_and_identifier
+        view :by_sort_value_and_identifier_type_and_identifier
 
     	view :by_district_code
 

@@ -42,9 +42,11 @@
 		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Completeness Check</button>
 
 	<%end%>
-
+	<%if  @status.present? && @status.status == "DC APPROVED" %>
 		<button class="green" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="markAsPending()">Mark Pending</button>
-
+	<%else %>
+		<button class="gray" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="">Mark Pending</button>
+	<%end%>
 
 		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;" onmousedown="viewPersonComment()">View Comment</button>
 <% end %>

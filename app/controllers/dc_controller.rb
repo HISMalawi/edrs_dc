@@ -168,13 +168,60 @@ class DcController < ApplicationController
 	def  approved_cases
 
 		@section ="Approved Cases"
+
+		@status = "DC APPROVED"
+
+		render :template =>"/dc/dc_view_cases"
 		
 	end
 
 	def rejected_cases
 
 		@section = "Rejected Cases"
+
+		@status = "DC REJECTED"
+
+		render :template =>"/dc/dc_view_cases"
 		
+	end
+	def voided
+
+		@section = "voided Records"
+
+		@status = "HQ VOIDED"
+
+		render :template =>"/dc/dc_view_cases"
+		
+	end
+
+	def closed
+
+		@section = "Printed Records"
+
+		@status = "HQ CLOSED"
+
+		render :template =>"/dc/dc_view_cases"
+		
+	end
+
+	def dispatched
+
+		@section = "Dispatched"
+
+		@status = "HQ DISPATCHED"
+
+		render :template =>"/dc/dc_view_cases"
+		
+	end
+
+	def pending_cases
+		
+		@section = "Pending Record"
+
+		@status = "DC PENDING"
+
+		render :template =>"/dc/dc_view_cases"
+
 	end
 
 	def counts_by_status

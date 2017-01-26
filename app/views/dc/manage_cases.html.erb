@@ -36,7 +36,7 @@
                                   </div>
                             <%end%>
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                  <div class="touch_btn" onmousedown="window.location = '/dc/approved_cases?next_url=/dc/manage_cases'" >
                                       <div class="icon">
@@ -47,11 +47,24 @@
 
                                     
                                   </div>
+                            <%end %>
+
+                            <% if User.current_user.activities_by_level("DC").include?("Check completeness") %>
+
+                                 <div class="touch_btn" onmousedown="window.location = '/dc/pending_cases?next_url=/dc/manage_cases'" >
+                                      <div class="icon">
+                                             <i class="fa fa-folder-open"></i>
+                                      </div>
+                                      <div class="button_label">View Pending Cases</div>
+                                      <div class="button_description">  Approved registered record.</div>
+
+                                    
+                                  </div>
                               <%end %>
 
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
-                                  <div class="touch_btn" onmousedown="window.location = ''" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases'" >
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>
@@ -63,19 +76,7 @@
                               <%end %>
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
-                                   <div class="touch_btn" onmousedown="window.location = ''" >
-                                      <div class="icon">
-                                             <i class="fa fa-folder-open"></i>
-                                      </div>
-                                      <div class="button_label">View  Printed Cases</div>
-                                      <div class="button_description">  Approved registered record.</div>
-
-                                    
-                                  </div>
-                              <%end%>
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
-
-                                  <div class="touch_btn" onmousedown="window.location = ''" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/voided?next_url=/dc/manage_cases'" >
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>
@@ -85,10 +86,23 @@
                                     
                                   </div>
                               <%end%>
+                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
+
+                                   <div class="touch_btn" onmousedown="window.location = '/dc/closed?next_url=/dc/manage_cases'" >
+                                      <div class="icon">
+                                             <i class="fa fa-folder-open"></i>
+                                      </div>
+                                      <div class="button_label">View  Printed Cases</div>
+                                      <div class="button_description">  Approved registered record.</div>
+
+                                    
+                                  </div>
+                              <%end%>
+                           
 
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
-                                  <div class="touch_btn" onmousedown="window.location = ''" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/dispatched?next_url=/dc/manage_cases'" >
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>

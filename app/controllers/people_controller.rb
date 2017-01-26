@@ -144,7 +144,9 @@ class PeopleController < ApplicationController
 
       @section = "View"
 
-       render :layout => "facility"
+      @status = "NEW"
+
+      render :layout => "facility"
       
   end
 
