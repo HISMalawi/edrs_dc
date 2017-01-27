@@ -10,7 +10,7 @@
 
 				box-shadow: 3.5px 3.5px 1.5px #888888;
 
-				width: 1000px;
+				width: 1024px;
 				margin: auto;
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
@@ -79,31 +79,31 @@
 
 	<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
 
-		<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="checkCompleteness()">Completeness Check</button>
+		<button class="green" style="position:absolute; right : 170px;  bottom:58px; margin-right:10px" onmousedown="checkCompleteness()">Completeness Check</button>
 
 	<%else%>
 
-		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Completeness Check</button>
+		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px">Completeness Check</button>
 
 	<%end%>
 	<%if ["DC APPROVED" , "DC COMPLETE", "DC APPROVED","DC PENDING"].include? @status.status %>
-		<button class="gray" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="">Mark Pending</button>
+		<button class="gray" style="position:absolute; right : 415px;  bottom:58px;margin-right:10px" onmousedown="">Mark Pending</button>
 		
 	<%else %>
-		<button class="green" style="position:absolute; right : 415px;  bottom:58px;" onmousedown="markAsPending()">Mark Pending</button>
+		<button class="green" style="position:absolute; right : 415px;  bottom:58px;margin-right:10px" onmousedown="markAsPending()">Mark Pending</button>
 	<%end%>
 
-		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;" onmousedown="viewPersonComment()">View Comment</button>
+		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;margin-right:10px" onmousedown="viewPersonComment()">View Comment</button>
 <% end %>
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 	
 	<%if  @status.present? && @status.status == "DC APPROVED" %>
 
-			<button class="gray" style="position:absolute; right : 170px;  bottom:58px;">Approve</button>
+			<button class="gray" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px">Approve</button>
 	<%else %>
 
-			<button class="green" style="position:absolute; right : 170px;  bottom:58px;" onmousedown="approveRecord()">Approve</button>
+			<button class="green" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px" onmousedown="approveRecord()">Approve</button>
 
 	<%end%>
 
@@ -113,10 +113,10 @@
 
 	<%if  @status.present? && @status.status == "DC REJECTED" %>
 
-		<button class="gray" style="position:absolute; right : 295px;  bottom:58px;">Reject</button>
+		<button class="gray" style="position:absolute; right : 295px;  bottom:58px;margin-right:10px">Reject</button>
 	<%else%>
 
-		<button class="red" style="position:absolute; right : 295px;  bottom:58px;" onmousedown="rejectRecord()">Reject</button>
+		<button class="red" style="position:absolute; right : 295px;  bottom:58px;margin-right:10px" onmousedown="rejectRecord()">Reject</button>
 
 	<%end%>
 
@@ -295,10 +295,10 @@
 		</table>
 
 </div>
-  <div id="up" class="scroll">
+  <div id="up" class="scroll" onmousedown="up()">
      <i class=" fa fa-arrow-up"></i>
  </div>
- <div id="down" class="scroll">
+ <div id="down" class="scroll" onmousedown="down()">
      <i class=" fa fa-arrow-down"></i>
  </div>
 <script type="text/javascript">
@@ -497,6 +497,20 @@
 					<%end%>
 
 			}
+
+			function up(){
+
+				//alert("Yeeeeeei up")
+				__$("table_container").scrollBy(0, -100);
+				
+			}
+
+			function down(){
+
+				__$("table_container").scrollBy(0,100);
+
+			}
+
 
 
 </script>
