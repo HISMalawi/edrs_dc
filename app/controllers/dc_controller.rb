@@ -248,8 +248,10 @@ class DcController < ApplicationController
 
 		@status = "DC POTENTIAL DUPLICATE"
 
-		@next_url = "/dc/dispatched"
+		@next_url = "/dc/potential_duplicates"
 
+		@duplicate = true
+ 
 		render :template =>"/dc/dc_view_cases"
 	end
 
@@ -257,6 +259,23 @@ class DcController < ApplicationController
 
 		@setion = "Manage Requests"
 		
+	end
+
+	def show_duplicate
+
+		@person = Person.find(params[:id])
+
+		@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+	    @person_place_details = place_details(@person)
+
+	    @existing_record = []
+
+	    Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).each do |audit|
+	    	
+	    end
+
+	    @section = "Resolve Duplicate"
 	end
 
 	def counts_by_status

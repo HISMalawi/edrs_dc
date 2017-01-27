@@ -285,7 +285,12 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+								<% unless @duplicate.blank? %>
+
+										button.setAttribute("onclick","window.location = '/dc/show_duplicate/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+								<%else%>
+									button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+								<%end%>
 
 								td.appendChild(button);
 

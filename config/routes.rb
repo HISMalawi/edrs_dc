@@ -142,6 +142,8 @@ Rails.application.routes.draw do
 
   get "/dc/potential_duplicates" => "dc#potential_duplicates"
 
+  get "/dc/show_duplicate/:id" =>"dc#show_duplicate"
+
 
   get "/logout" => "logins#logout"
   
