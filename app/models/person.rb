@@ -880,7 +880,7 @@ class Person < CouchRest::Model::Base
     view :by_demographics,
          :map => "function(doc) {
                   if (doc['type'] == 'Person') {
-                    emit([doc['first_name_code'], doc['last_name_code'], doc['gender'], doc['date_of_death'], doc['mother_first_name_code'], doc['mother_last_name_code']], 1);
+                    emit([doc['first_name_code'], doc['last_name_code'], doc['gender'], doc['date_of_death'], doc['place_of_death']], 1);
                   }
                 }"
     view :by_demographics_with_place,
