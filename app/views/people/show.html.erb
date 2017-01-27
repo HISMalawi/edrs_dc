@@ -60,40 +60,41 @@
 		#up {
 			position: absolute;
 
-			right: 5%;
+			right: 3%;
 
-			top :15%;
+			top :13%;
 		}
 
 		#down {
 			position: absolute;
 
-			right: 5%;
+			right: 3%;
 
 			bottom :20%;
 		}
 
 </style>
 
+<div style="position : absolute; width : 80%; bottom:58px;; right :10%">
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 	<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
 
-		<button class="green" style="position:absolute; right : 170px;  bottom:58px; margin-right:10px" onmousedown="checkCompleteness()">Completeness Check</button>
+		<button class="green" style="float: right; margin-right:3%" onmousedown="checkCompleteness()">Completeness Check</button>
 
 	<%else%>
 
-		<button class="gray" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px">Completeness Check</button>
+		<button class="gray" style="float: right; margin-right:3%">Completeness Check</button>
 
 	<%end%>
 	<%if ["DC APPROVED" , "DC COMPLETE", "DC APPROVED","DC PENDING"].include? @status.status %>
-		<button class="gray" style="position:absolute; right : 415px;  bottom:58px;margin-right:10px" onmousedown="">Mark Pending</button>
+		<button class="gray" style="float: right; margin-right:3%" onmousedown="">Mark Pending</button>
 		
 	<%else %>
-		<button class="green" style="position:absolute; right : 415px;  bottom:58px;margin-right:10px" onmousedown="markAsPending()">Mark Pending</button>
+		<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
 	<%end%>
 
-		<button class="blue" style="position:absolute; right : 590px;  bottom:58px;margin-right:10px" onmousedown="viewPersonComment()">View Comment</button>
+		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 <% end %>
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
@@ -121,6 +122,8 @@
 	<%end%>
 
 <%end%>
+
+</div>
 
 <div id="table_container">
 
@@ -354,7 +357,7 @@
 
 					popup_container.style.width = "40%";
 
-					popup_container.style.left =  "calc(45% - 210px)";
+					popup_container.style.left =  "calc(43% - 210px)";
 
 					popup_container.style.top =  "10%";
 
