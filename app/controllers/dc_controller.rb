@@ -230,6 +230,21 @@ class DcController < ApplicationController
 		
 	end
 
+	def potential_duplicates
+
+		@section = "Potential Duplicate"
+
+		@status = "DC POTENTIAL DUPLICATE"
+
+		render :template =>"/dc/dc_view_cases"
+	end
+
+	def manage_requests
+
+		@setion = "Manage Requests"
+		
+	end
+
 	def counts_by_status
 
 		status = params[:status]

@@ -23,7 +23,7 @@
                               </div>
                           <%end%>
 
-                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/manage_cases'" >
                                     <div class="icon">
@@ -34,8 +34,20 @@
 
                                     
                                   </div>
-                            <%end%>
-                            <% if  User.current_user.activities_by_level("DC").include?("Manage duplicates") %>
+                          <%end%>
+                         <% if User.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
+                                 <div class="touch_btn" onmousedown="window.location = '/dc/manage_requests'" >
+                                    <div class="icon">
+                                           <i class="fa fa-folder-open"></i>
+                                    </div>
+                                    <div class="button_label">Ammendment Requests</div>
+                                    <div class="button_description">  Manage cases </div>
+
+                                    
+                                  </div>
+                          <%end%>
+                         
+                          <% if  User.current_user.activities_by_level("DC").include?("Manage duplicates") %>
                                   <div class="touch_btn" onmousedown="window.location = '/dc/manage_duplicates'" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
@@ -45,7 +57,7 @@
 
                                     
                                   </div>
-                            <%end%>
+                          <%end%>
 
                             <div class="touch_btn"  onclick="window.location = '/reports/'"   >
                                           <div class="icon">

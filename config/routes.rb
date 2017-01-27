@@ -138,6 +138,10 @@ Rails.application.routes.draw do
 
   get "/dc/manage_duplicates" => "dc#manage_duplicates"
 
+  get "/dc/manage_requests" => "dc#manage_requests"
+
+  get "/dc/potential_duplicates" => "dc#potential_duplicates"
+
 
   get "/logout" => "logins#logout"
   

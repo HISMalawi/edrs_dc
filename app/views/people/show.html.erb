@@ -4,9 +4,21 @@
 
 				height: calc(88% - 20px);
 
-				overflow-y: scroll;
+				overflow-y: hidden;
 
-				margin-bottom : 0.3em
+				margin-bottom : 0.3em;
+
+				box-shadow: 3.5px 3.5px 1.5px #888888;
+
+				width: 1000px;
+				margin: auto;
+				border: 1px solid #bcb5b5;
+				margin-top: 1%;
+
+		}
+		#summary{
+
+
 
 		}
 		#summary td {
@@ -27,6 +39,38 @@
 
 				cursor: pointer;
 
+		}
+		.scroll{
+			background: #bed5de;
+
+            border : 0.005em solid #b3b1b1;
+
+            font-size: 3.8em;
+
+            min-width: 20px;
+
+            margin: 0.3%;
+
+            box-shadow: 2.5px 2.5px 1px #888888;
+
+           	padding: 0.1%;
+
+           	text-align: center
+		}
+		#up {
+			position: absolute;
+
+			right: 5%;
+
+			top :15%;
+		}
+
+		#down {
+			position: absolute;
+
+			right: 5%;
+
+			bottom :20%;
 		}
 
 </style>
@@ -251,6 +295,12 @@
 		</table>
 
 </div>
+  <div id="up" class="scroll">
+     <i class=" fa fa-arrow-up"></i>
+ </div>
+ <div id="down" class="scroll">
+     <i class=" fa fa-arrow-down"></i>
+ </div>
 <script type="text/javascript">
 			<% if params[:error] %>
 
