@@ -33,6 +33,8 @@ class Person < CouchRest::Model::Base
   before_save :set_facility_code,:set_district_code
 
   after_create :create_status
+
+  cattr_accessor :duplicate
   
   def decrypt_data
     encryptable = ["first_name","last_name",
@@ -69,12 +71,32 @@ class Person < CouchRest::Model::Base
   end
 
   def create_status
-
-         PersonRecordStatus.create({
+    
+    if self.duplicate.nil?
+      PersonRecordStatus.create({
                                   :person_record_id => self.id.to_s,
                                   :status => "NEW",
                                   :district_code => CONFIG['district_code'],
-                                  :created_by => User.current_user.id});
+                                  :created_by => User.current_user.id})
+    else
+      
+      change_log = [{:duplicates => self.duplicate.to_s}]
+
+      Audit.create({
+                      :record_id  => self.id.to_s,
+                      :audit_type => "POTENTIAL DUPLICATE",
+                      :reason     => "Record is a potential",
+                      :change_log => change_log
+      })
+      PersonRecordStatus.create({
+                                  :person_record_id => self.id.to_s,
+                                  :status => "DC POTENTIAL DUPLICATE",
+                                  :district_code => CONFIG['district_code'],
+                                  :created_by => User.current_user.id})
+
+      self.duplicate = nil
+
+    end
     
   end
 
@@ -135,7 +157,10 @@ class Person < CouchRest::Model::Base
 
   end
 
-  def self.create_person(params)
+  def self.create_person(parameters)
+
+      params = parameters[:person]
+
       if !params[:nationality].blank?
 
         params[:nationality_id] = Nationality.by_nationality.key(params[:nationality]).first.id
@@ -249,6 +274,8 @@ class Person < CouchRest::Model::Base
             
           end
       end
+
+      Person.duplicate = parameters[:potential_duplicate]
 
       Person.create(params)
     
@@ -880,7 +907,7 @@ class Person < CouchRest::Model::Base
     view :by_demographics,
          :map => "function(doc) {
                   if (doc['type'] == 'Person') {
-                    emit([doc['first_name_code'], doc['last_name_code'], doc['gender'], doc['date_of_death'], doc['place_of_death']], 1);
+                    emit([doc['first_name_code'], doc['last_name_code'], doc['gender'],doc['birthdate'],doc['date_of_death'], doc['place_of_death']], 1);
                   }
                 }"
     view :by_demographics_with_place,

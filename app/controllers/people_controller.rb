@@ -79,7 +79,10 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      person = Person.create_person(person_params)
+      @duplicate = params[:potential_duplicate]
+
+
+      person = Person.create_person(params)
 
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
@@ -112,6 +115,21 @@ class PeopleController < ApplicationController
       redirect_to "/people/finalize_create/#{person.id}" and return
 
         	
+  end
+
+  def search_similar_record
+
+      values = [params[:first_name].encrypt.soundex, params[:last_name].encrypt.soundex, params[:gender],params[:birthdate],params[:date_of_death],params[:place_of_death]]
+
+      people = Person.by_demographics.key(values).each
+
+      if people.count == 0
+
+        render :text => {:response => false}.to_json
+      else
+
+        render :text => {:response => people}.to_json
+      end 
   end
 
   def finalize_create

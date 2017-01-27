@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
 
 	function loadPersonSummary(){
@@ -909,6 +910,43 @@
 
 		}
 
+		function checkForDuplicate(){
+
+				var data = {
+								first_name    : __$("person_first_name").value,
+								last_name 	  : __$("person_last_name").value,
+								gender 		  : __$("person_gender").value,
+								birthdate 	  : __$("person_birthdate").value,
+								date_of_death : __$("person_date_of_death").value,
+								place_of_death: __$("person_place_of_death").value
+				}
+
+				postAjax("/search_similar_record", data, function(response){
+
+					var people = JSON.parse(response).response;
+					if(people){
+
+						showConfirmMessage("","Potential duplicate to "+people.length +" other record(s)","","#e2a648");
+
+						var ids = [];
+
+						for(var i = 0 ; i < people.length ; i++){
+
+							ids[i] = people[i]['_id'];
+
+						}
+						__$("potential_duplicate").setAttribute("condition",true);
+						__$("potential_duplicate").value = ids.toString();
+
+					}
+
+				})
+
+
+		}
+
+
+
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
     <section name="Personal details of deceased">
@@ -1103,10 +1141,11 @@
 
 
     <% end %>
+    <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false">
 
     <section name="Summary">
         <sub id="summary" name="Summary">
-		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"loadPersonSummary()"} %>
+		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"checkForDuplicate();loadPersonSummary()"} %>
         </sub>
     </section>  
 

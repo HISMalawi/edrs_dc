@@ -35,6 +35,17 @@
                                     
                                   </div>
                             <%end%>
+                            <% if  User.current_user.activities_by_level("DC").include?("Manage duplicates") %>
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_duplicates'" >
+                                    <div class="icon">
+                                           <i class="fa fa-folder-open"></i>
+                                    </div>
+                                    <div class="button_label">Manage Duplicates</div>
+                                    <div class="button_description">  Manage duplicates </div>
+
+                                    
+                                  </div>
+                            <%end%>
 
                             <div class="touch_btn"  onclick="window.location = '/reports/'"   >
                                           <div class="icon">

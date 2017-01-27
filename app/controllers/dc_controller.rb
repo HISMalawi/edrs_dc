@@ -224,6 +224,12 @@ class DcController < ApplicationController
 
 	end
 
+	def manage_duplicates
+
+		@section = "Manage Duplicates"
+		
+	end
+
 	def counts_by_status
 
 		status = params[:status]

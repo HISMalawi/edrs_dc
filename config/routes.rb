@@ -66,6 +66,10 @@ Rails.application.routes.draw do
 
   post 'people/create' => "people#create"
 
+  post "/search_similar_record" => "people#search_similar_record"
+
+  get "/search_similar_record" => "people#search_similar_record"
+
   get '/people/view' => "people#view"
 
   get '/people/view/:id' => "people#show"
@@ -131,6 +135,8 @@ Rails.application.routes.draw do
   get "/dc/voided" => "dc#voided"
 
   get "/dc/pending_cases" => "dc#pending_cases"
+
+  get "/dc/manage_duplicates" => "dc#manage_duplicates"
 
 
   get "/logout" => "logins#logout"
