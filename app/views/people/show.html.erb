@@ -14,11 +14,12 @@
 				margin: auto;
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
+				
 
 		}
 		#summary{
 
-
+			margin-bottom: 1%;
 
 		}
 		#summary td {
@@ -75,7 +76,7 @@
 
 </style>
 
-<div style="position : absolute; width : 80%; bottom:58px;; right :10%">
+<div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 3%">
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 	<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
@@ -101,10 +102,10 @@
 	
 	<%if  @status.present? && @status.status == "DC APPROVED" %>
 
-			<button class="gray" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px">Approve</button>
+			<button class="gray" style="float: right; margin-right:3%">Approve</button>
 	<%else %>
 
-			<button class="green" style="position:absolute; right : 170px;  bottom:58px;margin-right:10px" onmousedown="approveRecord()">Approve</button>
+			<button class="green" style="float: right; margin-right:3%" onmousedown="approveRecord()">Approve</button>
 
 	<%end%>
 
@@ -114,10 +115,10 @@
 
 	<%if  @status.present? && @status.status == "DC REJECTED" %>
 
-		<button class="gray" style="position:absolute; right : 295px;  bottom:58px;margin-right:10px">Reject</button>
+		<button class="gray" style="float: right; margin-right:3%">Reject</button>
 	<%else%>
 
-		<button class="red" style="position:absolute; right : 295px;  bottom:58px;margin-right:10px" onmousedown="rejectRecord()">Reject</button>
+		<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()">Reject</button>
 
 	<%end%>
 
