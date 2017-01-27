@@ -14,7 +14,7 @@
 				margin: auto;
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
-				
+
 
 		}
 		#summary{
@@ -76,16 +76,16 @@
 
 </style>
 
-<div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 3%">
+<div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 	<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
 
-		<button class="green" style="float: right; margin-right:3%" onmousedown="checkCompleteness()">Completeness Check</button>
+		<button class="green" style="float: right; margin-right:1%" onmousedown="checkCompleteness()">Completeness Check</button>
 
 	<%else%>
 
-		<button class="gray" style="float: right; margin-right:3%">Completeness Check</button>
+		<button class="gray" style="float: right; margin-right:1%">Completeness Check</button>
 
 	<%end%>
 	<%if ["DC APPROVED" , "DC COMPLETE", "DC APPROVED","DC PENDING"].include? @status.status %>

@@ -285,7 +285,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=/dc/approved?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
 
 								td.appendChild(button);
 

@@ -171,6 +171,8 @@ class DcController < ApplicationController
 
 		@status = "DC APPROVED"
 
+		@next_url = "/dc/approved_cases"
+
 		render :template =>"/dc/dc_view_cases"
 		
 	end
@@ -181,6 +183,8 @@ class DcController < ApplicationController
 
 		@status = "DC REJECTED"
 
+		@next_url = "/dc/rejected_cases"
+
 		render :template =>"/dc/dc_view_cases"
 		
 	end
@@ -189,6 +193,8 @@ class DcController < ApplicationController
 		@section = "voided Records"
 
 		@status = "HQ VOIDED"
+
+		@next_url = "/dc/voided"
 
 		render :template =>"/dc/dc_view_cases"
 		
@@ -200,6 +206,8 @@ class DcController < ApplicationController
 
 		@status = "HQ CLOSED"
 
+		@next_url = "/dc/closed"
+
 		render :template =>"/dc/dc_view_cases"
 		
 	end
@@ -210,6 +218,8 @@ class DcController < ApplicationController
 
 		@status = "HQ DISPATCHED"
 
+		@next_url = "/dc/dispatched"
+
 		render :template =>"/dc/dc_view_cases"
 		
 	end
@@ -219,6 +229,8 @@ class DcController < ApplicationController
 		@section = "Pending Record"
 
 		@status = "DC PENDING"
+
+		@next_url = "/dc/dispatched"
 
 		render :template =>"/dc/dc_view_cases"
 
@@ -235,6 +247,8 @@ class DcController < ApplicationController
 		@section = "Potential Duplicate"
 
 		@status = "DC POTENTIAL DUPLICATE"
+
+		@next_url = "/dc/dispatched"
 
 		render :template =>"/dc/dc_view_cases"
 	end
