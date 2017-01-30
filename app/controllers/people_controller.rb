@@ -228,6 +228,8 @@ class PeopleController < ApplicationController
 
       @section = "Show"
 
+      @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+
       render :layout => "facility"
   	
   end

@@ -1,11 +1,12 @@
-<form action="/dc/create_burial_report" method="post">
-	<input type="hidden" name="id" value="<%= params[:id] %>">
+<form action="/create_burial_report" method="post">
+	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+	<input type="hidden" name="person_record_id" value="<%= params[:id] %>">
 	<input type="" name="cemetery_authority_first_name" helpText ="Cemetery Authority Last Name">
 	<input type="" name="cemetery_authority_first_name" helpText ="Cemetery Authority First Name">
 	<input type="" name="cemetery_name" helpText="Name of the Cemetery">
 	<input type="" name="district" helpText ="District" condition="false">
 	<input type="" name="ta" helpText ="Traditional Authority" condition="false">
 	<input type="" name="village" helpText ="Village" condition="false">
-	<input type="date" name="date_burried" helpText ="Date Burried">
-	<input type="date" name="date_report_signed" helpText ="Date Report Signed">
+	<input type="date" field_type="date" name="date_of_burial" helpText ="Date Burried">
+	<input type="date" field_type="date" name="date_report_signed" helpText ="Date Report Signed">
 </form>

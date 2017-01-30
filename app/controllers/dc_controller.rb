@@ -378,6 +378,10 @@ class DcController < ApplicationController
 	end
 
 	def create_burial_report
+
+		BurialReport.create(params)
+
+		redirect_to "/people/view/#{params[:person_record_id]}?next_url=#{params[:next_url]}"
 		
 	end
 

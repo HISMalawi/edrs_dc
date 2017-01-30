@@ -154,7 +154,7 @@ Rails.application.routes.draw do
 
   get "/dc/new_burial_report/:id" => "dc#new_burial_report"
 
-  post "/dc/create_burial_report" => "dc#create_burial_report"
+  post "/create_burial_report" => "dc#create_burial_report"
 
 
   get "/logout" => "logins#logout"

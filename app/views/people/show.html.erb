@@ -126,9 +126,16 @@
 
 <button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 
-<% if  if CONFIG['site_type'] =="dc" %>
+<% if CONFIG['site_type'] == "dc"%>
 
-	<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>'">Add Burial Report</button>
+	<% if @burial_report.blank? %>
+
+		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'">Add Burial Report</button>
+	<%else%>
+	
+		<button class="blue" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'">View Burial Report</button>
+
+	<% end %>
 <%end%>
 
 </div>

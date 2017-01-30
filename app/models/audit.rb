@@ -13,6 +13,7 @@ class Audit < CouchRest::Model::Base
   property :site_type, String  #FACILITY, DC, HQ
   property :change_log, [], :default => []
   property :voided, TrueClass, :default => false
+  timestamps!
 
   cattr_accessor :user
   
