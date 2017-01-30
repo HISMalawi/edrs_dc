@@ -275,7 +275,10 @@ class Person < CouchRest::Model::Base
           end
       end
 
-      Person.duplicate = parameters[:potential_duplicate]
+      if parameters[:potential_duplicate].present?
+
+            Person.duplicate = parameters[:potential_duplicate]
+      end
 
       Person.create(params)
     

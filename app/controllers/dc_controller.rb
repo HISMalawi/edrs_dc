@@ -373,6 +373,14 @@ class DcController < ApplicationController
 		
 	end
 
+	def new_burial_report
+		
+	end
+
+	def create_burial_report
+		
+	end
+
 	protected
 
 	

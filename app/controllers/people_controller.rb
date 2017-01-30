@@ -79,8 +79,11 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      @duplicate = params[:potential_duplicate]
+      if params[:potential_duplicate].present?
 
+          @duplicate = params[:potential_duplicate]
+
+      end
 
       person = Person.create_person(params)
 

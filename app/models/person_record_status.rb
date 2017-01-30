@@ -24,6 +24,8 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 		view :by_creator
 
+		view :by_created_at
+
 		view :by_person_record_id
 
 	    view :by_person_recent_status,

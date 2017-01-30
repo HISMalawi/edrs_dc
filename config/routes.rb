@@ -152,6 +152,11 @@ Rails.application.routes.draw do
 
   post "/confirm_not_duplicate" => "dc#confirm_not_duplicate"
 
+  get "/dc/new_burial_report/:id" => "dc#new_burial_report"
+
+  post "/dc/create_burial_report" => "dc#create_burial_report"
+
+
   get "/logout" => "logins#logout"
   
   get "/change_password" => "users#change_password"

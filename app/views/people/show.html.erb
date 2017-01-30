@@ -95,7 +95,7 @@
 		<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
 	<%end%>
 
-		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+		
 <% end %>
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
@@ -124,6 +124,10 @@
 
 <%end%>
 
+<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+
+<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>'">Add Burial Report</button>
+
 </div>
 
 <div id="table_container">
@@ -131,7 +135,7 @@
 		<table id="summary">
 			
 			<tr>
-				<th colspan="11">Section 1 : Particulars of the deased</th>
+				<th colspan="11">Section 1 : Particulars of the deceased</th>
 			</tr>
 
 			<tr>
@@ -382,7 +386,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "Surnaame";
+					td.innerHTML = "Surname";
 
 					tr.appendChild(td);
 
@@ -430,7 +434,7 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "Sex";
+					td.innerHTML = "Gender";
 
 					tr.appendChild(td);
 
@@ -496,7 +500,7 @@
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 
-							showConfirmMessage("Are you sure u want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
+							showConfirmMessage("Are you sure you want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
 
 					<%end%>
 
