@@ -395,62 +395,62 @@ class Person < CouchRest::Model::Base
 
   #places person methon
   def nationality
-    return Nationality.find(self.nationality_id).nationality
+    return Nationality.find(self.nationality_id).nationality rescue ""
   end
   def place_of_death_district   
-    return District.find(self.place_of_death_district_id).name
+    return District.find(self.place_of_death_district_id).name rescue ""
   end
 
   def hospital_of_death
-    return  HealthFacility.find(self.hospital_of_death_id).name    
+    return  HealthFacility.find(self.hospital_of_death_id).name rescue "" 
   end
   
   def place_of_death_ta
-    return TraditionalAuthority.find(self.place_of_death_ta_id).name
+    return TraditionalAuthority.find(self.place_of_death_ta_id).name rescue ""
   end
 
   def place_of_death_village
-    return Village.find(self.place_of_death_village_id).name  
+    return Village.find(self.place_of_death_village_id).name  rescue ""
   end
 
   def home_country   
-    return Nationality.find(self.home_country_id).name
+    return Nationality.find(self.home_country_id).name rescue ""
   end
 
   def home_district
-    return District.find(self.home_district_id).name
+    return District.find(self.home_district_id).name rescue ""
   end
 
   def home_ta
-    return TraditionalAuthority.find(self.home_ta_id).name
+    return TraditionalAuthority.find(self.home_ta_id).name rescue ""
   end
 
   def home_village
-    return Village.find(self.home_village_id).name
+    return Village.find(self.home_village_id).name rescue ""
   end
 
   def current_district
-    return District.find(self.current_district_id).name
+    return District.find(self.current_district_id).name rescue ""
   end
 
   def current_ta
-    return TraditionalAuthority.find(self.current_ta_id).name
+    return TraditionalAuthority.find(self.current_ta_id).name rescue ""
   end
 
   def current_village
-    return Village.find(self.current_village_id).name
+    return Village.find(self.current_village_id).name rescue ""
   end
 
   def informant_current_district
-    return District.find(self.informant_current_district_id).name
+    return District.find(self.informant_current_district_id).name rescue ""
   end
 
   def informant_current_ta
-    return TraditionalAuthority.find(self.informant_current_ta_id).name    
+    return TraditionalAuthority.find(self.informant_current_ta_id).name   rescue "" 
   end
 
   def informant_current_village
-    return Village.find(self.informant_current_village_id).name 
+    return Village.find(self.informant_current_village_id).name rescue ""
   end
 
   #Person properties

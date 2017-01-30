@@ -144,6 +144,13 @@ Rails.application.routes.draw do
 
   get "/dc/show_duplicate/:id" =>"dc#show_duplicate"
 
+  get "/confirm_record_not_duplicate_comment/:id/:audit_id" => "dc#confirm_record_not_duplicate_comment"
+
+  get "/confirm_duplicate_comment/:id/:audit_id" => "dc#confirm_duplicate_comment"
+
+  post "/confirm_duplicate" => "dc#confirm_duplicate"
+
+  post "/confirm_not_duplicate" => "dc#confirm_not_duplicate"
 
   get "/logout" => "logins#logout"
   

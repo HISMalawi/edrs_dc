@@ -4,7 +4,7 @@ class Audit < CouchRest::Model::Base
   
   before_save :set_site_id, :set_site_type, :set_user_id
 
-  property :record_id, String # Certificate/Child id
+  property :record_id, String # Person/Audit...
   property :audit_type, String # Quality Control | Reprint | Audit
   property :level, String # Person | User
   property :reason, String

@@ -10,7 +10,7 @@
 
 				box-shadow: 3.5px 3.5px 1.5px #888888;
 
-				width: 90%;
+				width: 96%;
 				margin: auto;
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
@@ -20,7 +20,7 @@
 		#summary1{
 
 			margin-bottom: 1%;
-			width:40% !important;
+			width:80% !important;
 			float: left;
 
 		}
@@ -96,8 +96,8 @@
 		<table id="summary1">
 			
 			<tr>
-				<th colspan="11" style="background:#f9d0d1 ; color : black; border-right:3px solid black">Potential Duplicate</th>
-				<th colspan="11" style="background: #d0ddf9; color: black">Existing Record</th>
+				<th colspan="11" style="background:#fbc2c7 ; color : black; border-right:3px solid black">Potential Duplicate</th>
+				<th colspan="11" style="background: #79a3c1; color: black">Existing Record</th>
 			</tr>
 
 			<tr>
@@ -109,6 +109,13 @@
 				<td  colspan="2"><%= @person.first_name %></td>
 				<td class="clickable" onclick="editField('middle_name')" >Other</td>
 				<td colspan="2" style="border-right:3px solid black"><%= @person.middle_name rescue "" %></td>
+				<td>1</td>
+				<td  class="clickable" onclick="editField('last_name')">Surname</td>
+				<td colspan="2" ><%= @existing_record[0].last_name %></td>
+				<td class="clickable" onclick="editField('first_name')" >First name</td>
+				<td  colspan="2"><%= @existing_record[0].first_name %></td>
+				<td class="clickable" onclick="editField('middle_name')" >Other</td>
+				<td colspan="2"><%= @existing_record[0].middle_name rescue "" %></td>
 			</tr>
 			<tr>
 				<td>2</td>
@@ -120,6 +127,16 @@
 				<td>4</td>
 				<td class="clickable" onclick="editField('gender')">Sex</td>
 				<td style="border-right:3px solid black"> <%= @person.gender %></td>
+
+				<td>2</td>
+				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
+				<td style="border-bottom :1.5px solid black"><%= @existing_record[0].id_number rescue ""%></td>
+				<td>3</td>
+				<td class="clickable" onclick="editField('nationality_id')">Nationality</td>
+				<td colspan="2" style="border-bottom :1.5px solid black"><%= @existing_record[0].nationality rescue ""%></td>
+				<td>4</td>
+				<td class="clickable" onclick="editField('gender')">Sex</td>
+				<td> <%= @existing_record[0].gender %></td>
 			</tr>
 			<tr>
 				<td>5</td>
@@ -128,20 +145,39 @@
 				<td rowspan="2">6</td>
 				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
 				<td rowspan="2" style="border-right:3px solid black"><%= @person.birth_certificate_number %></td>
+
+				<td>5</td>
+				<td class="clickable" onclick="editField('birthdate')" >Birth Date</td>
+				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@existing_record[0].birthdate.to_s).strftime("%d/%b/%Y") %></td>
+				<td rowspan="2">6</td>
+				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
+				<td rowspan="2"><%= @existing_record[0].birth_certificate_number %></td>
 			</tr>
 			<tr>
 				<td>7</td>
 				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
 				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
+
+				<td>7</td>
+				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
+				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@existing_record[0].date_of_death.to_s).strftime("%d/%b/%Y") %></td>
 			</tr>
 			<tr>
 				<td rowspan="4">8</td>
 				<td class="clickable" onclick="editField('place_of_death')" >Place of birth</td>
 				<td colspan="8" style="border-right:3px solid black"><%= @person.place_of_death %></td>
+
+				<td rowspan="4">8</td>
+				<td class="clickable" onclick="editField('place_of_death')" >Place of birth</td>
+				<td colspan="8"><%= @existing_record[0].place_of_death %></td>
+
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
 				<td colspan="8" style="border-right:3px solid black"> <%= @person_place_details['hospital_of_death'] %></td>
+
+				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
+				<td colspan="8" > <%= @existing_record[0].hospital_of_death%></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
@@ -152,10 +188,21 @@
 				<td style="border-bottom:1.5px solid black"><%= @person_place_details['home_ta'] %></td>
 				<td class="clickable" onclick="editField('home_district')" >Village</td>
 				<td style="border-right:3px solid black" colspan="2"><%= @person_place_details['home_village'] %></td>
+				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
+				<td>Address</td>
+				<td class="clickable" onclick="editField('home_district')" >District</td>
+				<td style="border-bottom:1.5px solid black"><%= @existing_record[0].home_district %></td>
+				<td class="clickable" onclick="editField('home_district')">TA</td>
+				<td style="border-bottom:1.5px solid black"><%= @existing_record[0].home_ta %></td>
+				<td class="clickable" onclick="editField('home_district')" >Village</td>
+				<td colspan="2"><%= @existing_record[0].home_village %></td>
 			</tr>
 			<tr>
 				<td>Other</td>
 				<td colspan="8" style="border-right:3px solid black"></td>
+
+				<td>Other</td>
+				<td colspan="8""></td>
 			</tr>
 			<tr>
 				<td>9</td>
@@ -166,15 +213,29 @@
 				<td><%= @person_place_details['current_ta'] %></td>
 				<td class="clickable" onclick="editField('current_village')" >Village</td>
 				<td style="border-right:3px solid black"><%= @person_place_details['current_village'] %></td>
+
+				<td>9</td>
+				<td colspan="3">Physical residential address</td>
+				<td class="clickable" onclick="editField('current_district')" >District </td>
+				<td><%= @existing_record[0].current_district %></td>
+				<td class="clickable" onclick="editField('current_ta')">TA</td>
+				<td><%= @existing_record[0].current_ta %></td>
+				<td class="clickable" onclick="editField('current_village')" >Village</td>
+				<td ><%= @existing_record[0].current_village %></td>
 			</tr>
 			<tr>
 				<td rowspan="2">11</td>
 				<td colspan="8" class="clickable" onclick="editField('died_while_pegnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
 				<td style="border-right:3px solid black"><%= @person.died_while_pegnant rescue "No" %></td>
+
+				<td rowspan="2">11</td>
+				<td colspan="8" class="clickable" onclick="editField('died_while_pegnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
+				<td><%= @existing_record[0].died_while_pegnant rescue "No" %></td>
 			</tr>
 			<tr>
 				
 				<td colspan="9" style="border-right:3px solid black"></td>
+				<td colspan="9" ></td>
 			</tr>
 			<tr>
 				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
@@ -183,33 +244,61 @@
 				<td rowspan="3">2</td>
 				<td rowspan="3" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
 				<td rowspan ="3" style="border-right:3px solid black"><%= @person.mother_id_number %></td>
+
+				<td rowspan="3">1</td>
+				<td colspan="6" class="clickable" onclick="editField('mother_name')" >Mother's name</td>
+				<td rowspan="3">2</td>
+				<td rowspan="3" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
+				<td rowspan ="3"><%= @existing_record[0].mother_id_number %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('mother_last_name')" >Surname</td>
 				<td colspan="2"><%= @person.mother_last_name %></td>
 				<td class="clickable" onclick="editField('mother_first_name')" >First name</td>
 				<td colspan="2" ><%= @person.mother_first_name %></td>
+
+				<td class="clickable" onclick="editField('mother_last_name')" >Surname</td>
+				<td colspan="2"><%= @existing_record[0].mother_last_name %></td>
+				<td class="clickable" onclick="editField('mother_first_name')" >First name</td>
+				<td colspan="2" ><%= @existing_record[0].mother_first_name %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('mother_middle_name')">Other names</td>
 				<td colspan="5"><%= @person.mother_middle_name %></td>
+
+				<td class="clickable" onclick="editField('mother_middle_name')">Other names</td>
+				<td colspan="5"><%= @existing_record[0].mother_middle_name %></td>
 			</tr>
 			<tr>
 				<td rowspan="3">3</td>
 				<td colspan="6" class="clickable" onclick="editField('father_id_number')">Father's name</td>
 				<td rowspan="3">4</td>
 				<td rowspan="3" class="clickable" onclick="editField('father_id_number')">ID No.</td>
-				<td rowspan ="3" style="border-right:3px solid black"><%= @person.father_id_number %></td>
+				<td rowspan ="3" ><%= @person.father_id_number %></td>
+
+				<td rowspan="3">3</td>
+				<td colspan="6" class="clickable" onclick="editField('father_id_number')">Father's name</td>
+				<td rowspan="3">4</td>
+				<td rowspan="3" class="clickable" onclick="editField('father_id_number')">ID No.</td>
+				<td rowspan ="3" ><%= @existing_record[0].father_id_number %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('father_last_name')">Surname</td>
 				<td colspan="2"><%= @person.father_last_name %></td>
 				<td class="clickable" onclick="editField('father_first_name')">First name</td>
 				<td colspan="2" ><%= @person.father_first_name %></td>
+
+				<td class="clickable" onclick="editField('father_last_name')">Surname</td>
+				<td colspan="2"><%= @existing_record[0].father_last_name %></td>
+				<td class="clickable" onclick="editField('father_first_name')">First name</td>
+				<td colspan="2" ><%= @existing_record[0].father_first_name %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('father_middle_name')">Other names</td>
 				<td colspan="5" ><%= @person.father_middle_name %></td>
+
+				<td class="clickable" onclick="editField('father_middle_name')">Other names</td>
+				<td colspan="5" ><%= @existing_record[0].father_middle_name %></td>
 			</tr>
 
 			<tr>
@@ -222,16 +311,33 @@
 				<td rowspan="2">2</td>
 				<td rowspan="2" class="clickable" onclick="editField('informant_id_number')">ID No.</td>
 				<td rowspan="2" style="border-right:3px solid black"><%= @person.informant_id_number %></td>
+
+				<td rowspan="2">1</td>
+				<td class="clickable" onclick="editField('informant_last_name')" >Surname</td>
+				<td colspan="2"><%= @existing_record[0].informant_last_name %></td>
+				<td class="clickable" onclick="editField('informant_first_name')">First name</td>
+				<td colspan="2"><%= @existing_record[0].informant_first_name %></td>
+				<td rowspan="2">2</td>
+				<td rowspan="2" class="clickable" onclick="editField('informant_id_number')">ID No.</td>
+				<td rowspan="2" style="border-right:3px solid black"><%= @existing_record[0].informant_id_number %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('informant_middle_name')">Other name</td>
 				<td colspan="5" style="border-right:3px solid black"><%= @person.informant_middle_name %></td>
+
+				<td class="clickable" onclick="editField('informant_middle_name')">Other name</td>
+				<td colspan="5"><%= @existing_record[0].informant_middle_name %></td>
 			</tr>
 			<tr>
 				<td>3</td>
 				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
 				<td colspan="8" style="border-right:3px solid black">
 					<%= @person.informant_relationship_to_deceased rescue @person.informant_relationship_to_deceased_other %>
+				</td>
+				<td>3</td>
+				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
+				<td colspan="8">
+					<%= @existing_record[0].informant_relationship_to_deceased rescue @existing_record[0].informant_relationship_to_deceased_other %>
 				</td>
 			</tr>
 			<tr>
@@ -243,6 +349,15 @@
 				<td colspan="2"><%= @person_place_details['informant_current_ta'] %></td>
 				<td class="clickable" onclick="editField('informant_current_village')">Village</td>
 				<td style="border-right:3px solid black"><%= @person_place_details['informant_current_village'] %></td>
+
+				<td rowspan="2">4</td>
+				<td>Adress</td>
+				<td class="clickable" onclick="editField('informant_current_district')">District</td>
+				<td colspan="2"><%= @existing_record[0].informant_current_district %></td>
+				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
+				<td colspan="2"><%= @existing_record[0].informant_current_ta %></td>
+				<td class="clickable" onclick="editField('informant_current_village')">Village</td>
+				<td ><%= @existing_record[0].informant_current_village %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
@@ -253,183 +368,29 @@
 				</td>
 				<td class="clickable" onclick="editField('informant_phone_number')">Telephone Number</td>
 				<td style="border-right:3px solid black"><%= @person.informant_phone_number %></td>
+
+				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
+				<td colspan="6">
+					<%= @exiting_record[0].informant_addressline1 rescue "" %>
+					<%= " #{@existing_record[0].informant_addressline2}" rescue ""%>
+					<%= " #{@existing_record[0].informant_city}" rescue "" %>	
+				</td>
+				<td class="clickable" onclick="editField('informant_phone_number')">Telephone Number</td>
+				<td ><%= @existing_record[0].informant_phone_number %></td>
 			</tr>
 			<tr>
 				<td rowspan="2">5</td>
 				<th colspan="9" style="background: #ffffff; color:black;border-right:3px solid black">I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.</th>
+
+				<td rowspan="2">5</td>
+				<th colspan="9" style="background: #ffffff; color:black;">I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.</th>
 			</tr>
 			<tr>
 				<td>Date:</td>
 				<td colspan="8" style="border-right:3px solid black"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
-			</tr>
-		</table>
-		<table id="summary2">
-			
-			<tr>
-				<th colspan="11">Section 1 : Particulars of the deased</th>
-			</tr>
 
-			<tr>
-				<td rowspan="11" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
-				<td>1</td>
-				<td  class="clickable" onclick="editField('last_name')">Surname</td>
-				<td colspan="2" ><%= @person.last_name %></td>
-				<td class="clickable" onclick="editField('first_name')" >First name</td>
-				<td  colspan="2"><%= @person.first_name %></td>
-				<td class="clickable" onclick="editField('middle_name')" >Other</td>
-				<td colspan="2"><%= @person.middle_name rescue "" %></td>
-			</tr>
-			<tr>
-				<td>2</td>
-				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
-				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
-				<td>3</td>
-				<td class="clickable" onclick="editField('nationality_id')">Nationality</td>
-				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
-				<td>4</td>
-				<td class="clickable" onclick="editField('gender')">Sex</td>
-				<td style="border-bottom:1.5px solid black"> <%= @person.gender %></td>
-			</tr>
-			<tr>
-				<td>5</td>
-				<td class="clickable" onclick="editField('birthdate')" >Birth Date</td>
-				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
-				<td rowspan="2">6</td>
-				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
-				<td rowspan="2" style="border-bottom :1.5px solid black"><%= @person.birth_certificate_number %></td>
-			</tr>
-			<tr>
-				<td>7</td>
-				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
-				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
-			</tr>
-			<tr>
-				<td rowspan="4">8</td>
-				<td class="clickable" onclick="editField('place_of_death')" >Place of birth</td>
-				<td colspan="9"><%= @person.place_of_death %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
-				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person_place_details['hospital_of_death'] %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
-				<td>Address</td>
-				<td class="clickable" onclick="editField('home_district')" >District</td>
-				<td style="border-bottom:1.5px solid black"><%= @person_place_details['home_district'] %></td>
-				<td class="clickable" onclick="editField('home_district')">TA</td>
-				<td style="border-bottom:1.5px solid black"><%= @person_place_details['home_ta'] %></td>
-				<td class="clickable" onclick="editField('home_district')" >Village</td>
-				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person_place_details['home_village'] %></td>
-			</tr>
-			<tr>
-				<td>Other</td>
-				<td colspan="8"></td>
-			</tr>
-			<tr>
-				<td>9</td>
-				<td colspan="3">Physical residential address</td>
-				<td class="clickable" onclick="editField('current_district')" >District </td>
-				<td><%= @person_place_details['current_district'] %></td>
-				<td class="clickable" onclick="editField('current_ta')">TA</td>
-				<td><%= @person_place_details['current_ta'] %></td>
-				<td class="clickable" onclick="editField('current_village')" >Village</td>
-				<td><%= @person_place_details['current_village'] %></td>
-			</tr>
-			<tr>
-				<td rowspan="2">11</td>
-				<td colspan="8" class="clickable" onclick="editField('died_while_pegnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
-				<td><%= @person.died_while_pegnant rescue "No" %></td>
-			</tr>
-			<tr>
-				
-				<td colspan="9"></td>
-			</tr>
-			<tr>
-				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
-				<td rowspan="3">1</td>
-				<td colspan="6" class="clickable" onclick="editField('mother_name')" >Mother's name</td>
-				<td rowspan="3">2</td>
-				<td rowspan="3" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
-				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.mother_id_number %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('mother_last_name')" >Surname</td>
-				<td colspan="2"><%= @person.mother_last_name %></td>
-				<td class="clickable" onclick="editField('mother_first_name')" >First name</td>
-				<td colspan="2"><%= @person.mother_first_name %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('mother_middle_name')">Other names</td>
-				<td colspan="5"><%= @person.mother_middle_name %></td>
-			</tr>
-			<tr>
-				<td rowspan="3">3</td>
-				<td colspan="6" class="clickable" onclick="editField('father_id_number')">Father's name</td>
-				<td rowspan="3">4</td>
-				<td rowspan="3" class="clickable" onclick="editField('father_id_number')">ID No.</td>
-				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.father_id_number %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('father_last_name')">Surname</td>
-				<td colspan="2"><%= @person.father_last_name %></td>
-				<td class="clickable" onclick="editField('father_first_name')">First name</td>
-				<td colspan="2"><%= @person.father_first_name %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('father_middle_name')">Other names</td>
-				<td colspan="5"><%= @person.father_middle_name %></td>
-			</tr>
-
-			<tr>
-				<td rowspan="7" style="background-color:#dbdada;">PART 3 <br/>INFORMANTS DETAILS</td>
-				<td rowspan="2">1</td>
-				<td class="clickable" onclick="editField('informant_last_name')" >Surname</td>
-				<td colspan="2"><%= @person.informant_last_name %></td>
-				<td class="clickable" onclick="editField('informant_first_name')">First name</td>
-				<td colspan="2"><%= @person.informant_first_name %></td>
-				<td rowspan="2">2</td>
-				<td rowspan="2" class="clickable" onclick="editField('informant_id_number')">ID No.</td>
-				<td rowspan="2"><%= @person.informant_id_number %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('informant_middle_name')">Other name</td>
-				<td colspan="5"><%= @person.informant_middle_name %></td>
-			</tr>
-			<tr>
-				<td>3</td>
-				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
-				<td colspan="8">
-					<%= @person.informant_relationship_to_deceased rescue @person.informant_relationship_to_deceased_other %>
-				</td>
-			</tr>
-			<tr>
-				<td rowspan="2">4</td>
-				<td>Adress</td>
-				<td class="clickable" onclick="editField('informant_current_district')">District</td>
-				<td colspan="2"><%= @person_place_details['informant_current_district'] %></td>
-				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
-				<td colspan="2"><%= @person_place_details['informant_current_ta'] %></td>
-				<td class="clickable" onclick="editField('informant_current_village')">Village</td>
-				<td><%= @person_place_details['informant_current_village'] %></td>
-			</tr>
-			<tr>
-				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
-				<td colspan="6">
-					<%= @person.informant_addressline1 rescue "" %>
-					<%= " #{@person.informant_addressline2}" rescue ""%>
-					<%= " #{@person.informant_city}" rescue "" %>	
-				</td>
-				<td class="clickable" onclick="editField('informant_phone_number')">Telephone Number</td>
-				<td><%= @person.informant_phone_number %></td>
-			</tr>
-			<tr>
-				<td rowspan="2">5</td>
-				<th colspan="9" style="background: #ffffff; color:black">I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.</th>
-			</tr>
-			<tr>
 				<td>Date:</td>
-				<td colspan="8"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
+				<td colspan="8"><%= Date.parse(@existing_record[0].informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
 			</tr>
 		</table>
 
@@ -440,6 +401,14 @@
  <div id="down" class="scroll" onmousedown="down()">
      <i class=" fa fa-arrow-down"></i>
  </div>
+
+ <div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
+
+ 		<button class="green" style="float: right; margin-right:1%" onmousedown="recordNotDuplicate()">Not a duplicate</button>
+
+ 		<button class="red" style="float: right; margin-right:3%" onmousedown="recordIsDuplicate()">Duplicate</button>
+
+</div>
 <script type="text/javascript">
 			<% if params[:error] %>
 
@@ -447,43 +416,27 @@
 
 			<% end %>
 	
-			function checkCompleteness(){
+			function recordNotDuplicate(){
 
-					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
+					var url ="/confirm_record_not_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id%>?next_url=<%=params[:next_url]%>";
 
 							
-					showConfirmMessage("","Data Completeness check",url,"#79a3c1")
+					showConfirmMessage("","Are you sure record is not duplicate <%= @existing_record.length %> other(s)?",url,"#79a3c1")
 
 					popUpRecordDetails();
 			
 
 			}
 
-			function approveRecord(){
+			function recordIsDuplicate(){
 
-					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+					var url ="/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
 
-					showConfirmMessage("","Approve record",url,"#79a3c1")
-
-					popUpRecordDetails();
-
-			}
-			function markAsPending(){
-
-					var url = "/dc/mark_as_pending/<%= @person.id%>?next_url=<%=params[:next_url]%>";
-
-					showConfirmMessage("","Are you sure to mark the record as Pending?",url,"#e2a648")
+							
+					showConfirmMessage("","Are you sure record is dupliacte with <%= @existing_record.length %> other(s)?",url,"#8a0120")
 
 					popUpRecordDetails();
-			}
-
-			function rejectRecord(){
-
-					var url = "/dc/add_rejection_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
-
-					showConfirmMessage("","Proceed to reject a record?",url,"red")
-
-					popUpRecordDetails();
+			
 
 			}
 

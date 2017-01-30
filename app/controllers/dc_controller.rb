@@ -271,11 +271,43 @@ class DcController < ApplicationController
 
 	    @existing_record = []
 
-	    Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).each do |audit|
-	    	
-	    end
+	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
+	    @duplicates_audit.change_log.each do |log|
+	    	unless  log['duplicates'].blank?
 
+	    		@existing_record << Person.find(log['duplicates'])
+
+	    	end
+	    end
 	    @section = "Resolve Duplicate"
+	end
+
+	def confirm_record_not_duplicate_comment
+
+		@section = "Confirm record not Duplicate"
+
+		render :layout =>"plain_with_header"
+		
+	end
+
+	def confirm_not_duplicate
+
+		raise params.inspect
+		
+	end
+
+	def confirm_duplicate_comment
+
+		@section = "Confirm Duplicate"
+
+		render :layout =>"plain_with_header"
+		
+	end
+
+	def confirm_duplicate
+
+		raise params.inspect
+
 	end
 
 	def counts_by_status
