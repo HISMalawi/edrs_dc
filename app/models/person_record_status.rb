@@ -24,36 +24,44 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 		view :by_creator
 
+		view :by_person_record_id
 
-    view :by_person_recent_status,
-			 :map => "function(doc) {
-                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+	    view :by_person_recent_status,
+				 :map => "function(doc) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
 
-                    	emit(doc['person_record_id'], 1);
-                  }
-                }"
+	                    	emit(doc['person_record_id'], 1);
+	                  }
+	                }"
+	    view :by_person_record_id_recent_status,
+				 :map => "function(doc) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+
+	                    	emit([doc['person_record_id'],doc['status']], 1);
+	                  }
+	                }"
 
 		view :by_record_status,
-         	 :map => "function(doc) {
-                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+	         	 :map => "function(doc) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
 
-                    	emit(doc['status'], 1);
-                  }
-                }"
+	                    	emit(doc['status'], 1);
+	                  }
+	                }"
 
-        filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
+	        filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 
-	end
+		end
 
-	def set_district_code
+		def set_district_code
 
-		self.district_code = CONFIG["district_code"]
-		
-	end
+			self.district_code = CONFIG["district_code"]
+			
+		end
 
-	def person
+		def person
 
-    	return Person.find(self.person_record_id)
-    	
-    end
+	    	return Person.find(self.person_record_id)
+	    	
+	    end
 end

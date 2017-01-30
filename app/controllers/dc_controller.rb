@@ -292,7 +292,30 @@ class DcController < ApplicationController
 
 	def confirm_not_duplicate
 
-		raise params.inspect
+		status = PersonRecordStatus.by_person_record_id_recent_status.key([params[:id],"DC POTENTIAL DUPLICATE"]).last
+
+		status.update_attributes({:voided => true})
+
+
+
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC COMPLETE",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => params[:user_id]})
+		Audit.user = params[:user_id].to_s
+		Audit.create({
+
+						:record_id => params[:id],
+						:audit_type => "RESOLVE DUPLICATE",
+						:level => "Person",
+						:reason => params[:comment],
+						:change_log =>[{:audit_id => params[:audit_id]}]
+		})
+
+
+
+		redirect_to "#{params[:next_url].to_s}"
 		
 	end
 
@@ -306,7 +329,29 @@ class DcController < ApplicationController
 
 	def confirm_duplicate
 
-		raise params.inspect
+		status = PersonRecordStatus.by_person_record_id_recent_status.key([params[:id],"DC POTENTIAL DUPLICATE"]).last
+
+		status.update_attributes({:voided => true})
+
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC DUPLICATE",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => params[:user_id]})
+
+		Audit.user = params[:user_id].to_s
+
+		Audit.create({
+
+						:record_id => params[:id],
+						:audit_type => "RESOLVE DUPLICATE",
+						:level => "Person",
+						:reason => params[:comment],
+						:change_log =>[{:audit_id => params[:audit_id]}]
+		})
+
+
+		redirect_to "#{params[:next_url].to_s}"
 
 	end
 

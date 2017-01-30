@@ -13,6 +13,8 @@ class Audit < CouchRest::Model::Base
   property :site_type, String  #FACILITY, DC, HQ
   property :change_log, [], :default => []
   property :voided, TrueClass, :default => false
+
+  cattr_accessor :user
   
   timestamps!
 
@@ -35,7 +37,11 @@ class Audit < CouchRest::Model::Base
   end
   
   def set_user_id
-    self.user_id = User.current_user.id rescue 'admin'
+    if Audit.user.present?
+      self.user_id = Audit.user
+    else
+      self.user_id = User.current_user.id rescue 'admin'
+    end
   end
   
   def set_site_id
