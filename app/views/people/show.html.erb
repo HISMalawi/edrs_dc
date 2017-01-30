@@ -126,7 +126,10 @@
 
 <button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 
-<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>'">Add Burial Report</button>
+<% if  if CONFIG['site_type'] =="dc" %>
+
+	<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>'">Add Burial Report</button>
+<%end%>
 
 </div>
 
