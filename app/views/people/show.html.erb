@@ -126,7 +126,17 @@
 
 <button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 
-<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>'">Add Burial Report</button>
+<% if CONFIG['site_type'] == "dc"%>
+
+	<% if @burial_report.blank? %>
+
+		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'">Add Burial Report</button>
+	<%else  @burial_report.present? %>
+	
+		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewBurialReport()">View Burial Report</button>
+
+	<% end %>
+<%end%>
 
 </div>
 
@@ -492,6 +502,157 @@
 					td.innerHTML = "<%= @person.place_of_death %>";
 
 					tr.appendChild(td);
+
+
+			}
+
+			function viewBurialReport(){
+
+				var shield = document.createElement("div");
+                shield.style.position = "absolute";
+                shield.style.top = "0px";
+                shield.style.left = "0px";
+                shield.style.width = "100%";
+                shield.style.height = "100%";
+                shield.id = "msg.shield";
+                shield.style.backgroundColor = "rgba(128,128,128,0.75)";
+                shield.style.zIndex = 1050;
+
+                shield.onmousedown = function(){
+
+                	 document.body.removeChild(__$("msg.shield"));
+                }
+
+                document.body.appendChild(shield);
+
+                var width = 700;
+                var height = 500;
+
+                var div = document.createElement("div");
+                div.id = "msg.popup";
+                div.style.position = "absolute";
+                div.style.width = width + "px";
+                div.style.height = height + "px";
+                div.style.backgroundColor = "#ffffff";
+                div.style.border = "1px solid #26262b"
+                div.style.borderRadius = "1px";
+                div.style.left = "calc(50% - " + (width / 2) + "px)";
+                div.style.top = "calc(50% - " + (height * 0.6) + "px)";
+                div.style.border = "1px outset #fff";
+                div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+                div.style.fontFamily = "arial, helvetica, sans-serif";
+                div.style.MozUserSelect = "none";
+
+                shield.appendChild(div);
+
+                var sec_head_1 = document.createElement("div");
+                sec_head_1.style.border = "1px solid black";
+                sec_head_1.style.padding = "0.5em";
+                sec_head_1.style.width = "20%";
+                sec_head_1.style.margin= "auto";
+                sec_head_1.style.marginTop= "2%";
+                sec_head_1.style.fontSize ="13px";
+                sec_head_1.style.fontWeight="bold";
+                sec_head_1.style.textAlign = "center"
+                sec_head_1.innerHTML = "Section-1";
+
+                div.appendChild(sec_head_1);
+
+                var sec_body_1 = document.createElement("div");
+                sec_body_1.style.border = "1px solid black";
+                sec_body_1.style.padding = "0.5em";
+                sec_body_1.style.width = "90%";
+               	sec_body_1.style.margin= "auto";
+                sec_body_1.style.marginTop= "1%";
+                sec_body_1.style.fontSize ="14px";
+                sec_body_1.style.textAlign = "justify";
+                sec_body_1.style.textJustify = "inter-word";
+                var string = " Name of the deceased <u><%= @person.first_name %>  <%= @person.last_name%> </u> "+
+                			 " with ID <u><%= @person.national_id rescue '______________' %></u> "+
+                			 " date of birth <u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
+                			 " Sex <u><%=@person.gender%></u> "+
+                			 " has died on <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %></u>"+
+                			 " and the Burial Report has been issued with entry No "+
+                			 " <u><%= @person.den rescue '_______________' %></u><br/>"+
+                			 " Report given to <u><%= @person.informant_first_name %> <%= @person.informant_last_name %></u> "+
+                			 " with ID No <u><%= @person.informant_id_number rescue '_______________' %></u> residence of "+
+                			 " <u><%= @person.informant_current_village %> <%= @person.informant_current_ta %>"+
+                			 " <%= @person.informant_current_district %></u> "+
+                			 " Tel No. <u><%= @person.informant_phone_number rescue '_______________'%></u> "+
+                			 " Date <u><%= @burial_report.date_report_given rescue '_______________' %></u>";
+
+                sec_body_1.innerHTML = string;
+
+                div.appendChild(sec_body_1);
+
+                var sec_head_2 = document.createElement("div");
+                sec_head_2.style.border = "1px solid black";
+                sec_head_2.style.padding = "0.5em";
+                sec_head_2.style.width = "20%";
+                sec_head_2.style.margin= "auto";
+                sec_head_2.style.marginTop= "1%";
+                sec_head_2.style.fontSize ="13px";
+                sec_head_2.style.fontWeight="bold";
+                sec_head_2.style.textAlign = "center"
+                sec_head_2.innerHTML = "Section-2";
+
+                div.appendChild(sec_head_2);
+
+                var sec_head = document.createElement("div");
+                sec_head.style.padding = "0.6em";
+                sec_head.style.width = "50%";
+                sec_head.style.margin= "auto";
+                sec_head.style.marginTop= "0.5%";
+                sec_head.style.fontSize ="15px";
+                sec_head.style.fontWeight="bold";
+                sec_head.style.textAlign = "center"
+                sec_head.innerHTML = "NATIONAL REGISTRATION ACT 2010";
+
+                div.appendChild(sec_head);
+
+                var sec_head = document.createElement("div");
+                sec_head.style.padding = "0.6em";
+                sec_head.style.width = "30%";
+                sec_head.style.margin= "auto";
+                sec_head.style.fontSize ="13px";
+                sec_head.style.fontWeight="bold";
+                sec_head.style.textAlign = "center"
+                sec_head.innerHTML = "BURIAL/CEMATION REPORT";
+
+                div.appendChild(sec_head);
+
+                var sec_body = document.createElement("div");
+                sec_body.style.padding = "1em";
+                sec_body.style.width = "90%";
+                sec_body.style.margin= "auto";
+                sec_body.style.fontSize ="14px";
+                sec_body.style.fontWeight="bold";
+                sec_body.style.textAlign = "center"
+                sec_body.style.textAlign = "justify";
+                sec_body.style.textJustify = "inter-word";
+                var string = " I, the undersigned VHM/Caretaker of Village/Cemetery "+
+                			 " <u><%=  @burial_report.cemetery_authority_first_name%> "+
+                			 "  <%=  @burial_report.cemetery_authority_last_name%></u> "+
+                			 " TA/Town <u><%= @burial_report.ta rescue '_______________'%>"+
+                			 " </u> District <u><%= @burial_report.district rescue '_______________' %></u>, "+
+                			 " hereby certify that the body of<u><%= @person.first_name %>  <%= @person.last_name%> </u>"+
+                			 " (name of deceased), with ID No<u><%= @person.national_id rescue '______________' %></u> "+
+                			 " date of birt<u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
+                			 " sex <u><%=@person.gender%></u>  "+
+                			 " who died on  <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %>at Home, "+
+                			 " <u><%= @person.hospital_of_death rescue @person.place_of_death_village %></u>"+
+                			 " Name of village/Hospital, in <u><%= @person.place_of_death_ta %></u>TA/Town,"+
+                			 " <%= @person.place_of_death_district %>.District,  was interred at"+
+                			 " <u><%=  @burial_report.cemetery_name %></u>"+
+                			 " (name of the cemetery or exact place of burial) "+
+                			 " on<u><%=  Date.parse(@burial_report.date_of_burial).strftime('%d/%b/%Y') rescue ''%></u>,"+
+                			 " with Death Register entry No<u><%= @person.den rescue '_______________' %>"+
+                			 "</u><br/><%= DateDate.parse(@burial_report.date_report_signed.to_s).strftime('%d/%b/%Y') rescue ''%> "+
+                			 " <br/>Signature & Stamp of VHM/Caretaker  <u><%=  @burial_report.cemetery_authority_first_name%> "+
+                			 " <%=  @burial_report.cemetery_authority_last_name%></u> "
+                sec_body.innerHTML = string;
+
+                div.appendChild(sec_body);
 
 
 			}

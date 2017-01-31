@@ -122,7 +122,7 @@ class PeopleController < ApplicationController
 
   def search_similar_record
 
-      values = [params[:first_name].encrypt.soundex, params[:last_name].encrypt.soundex, params[:gender],params[:birthdate],params[:date_of_death],params[:place_of_death]]
+      values = [params[:first_name], params[:last_name], params[:gender],params[:birthdate],params[:date_of_death],params[:place_of_death]]
 
       people = Person.by_demographics.key(values).each
 
@@ -225,6 +225,8 @@ class PeopleController < ApplicationController
       @person_place_details = place_details(@person)
 
       @section = "Show"
+
+      @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
       render :layout => "facility"
   	

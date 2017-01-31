@@ -456,6 +456,14 @@ class Person < CouchRest::Model::Base
     return Village.find(self.informant_current_village_id).name rescue ""
   end
 
+  #Identifiers
+  def den
+    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier
+  end
+  def national_id
+    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"National ID"]).first.identifier 
+  end
+
   #Person properties
   property :first_name, String
   property :middle_name, String

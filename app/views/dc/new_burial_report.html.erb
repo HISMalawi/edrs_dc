@@ -1,10 +1,13 @@
-<form action="/dc/create_burial_report" method="post">
-	<input type="hidden" name="id" value="<%= params[:id] %>">
-	<input type="" name="cementry_authority_first_name" helpText ="Cementry Authority First Name">
-	<input type="" name="cementry_authority_first_name" helpText ="Cementry Authority Last Name">
-	<input type="" name="cementry_district" helpText ="District">
-	<input type="" name="cementry_ta" helpText ="Traditional Authority">
-	<input type="" name="cementry_village" helpText ="Village">
-	<input type="date" name="date_burried" helpText ="Date Burried">
-	<input type="date" name="date_report_signed" helpText ="Date Report Signed">
+<form action="/create_burial_report" method="post">
+	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+	<input type="hidden" name="person_record_id" value="<%= params[:id] %>">
+	<input type="" name="cemetery_authority_first_name" helpText ="Cemetery Authority Last Name">
+	<input type="" name="cemetery_authority_first_name" helpText ="Cemetery Authority First Name">
+	<input type="" name="cemetery_name" helpText="Name of the Cemetery">
+	<input type="" name="ta" helpText ="Cemetery Traditional Authority/Town">
+	<input type="" name="district" helpText ="Cemetery District" ajaxURL = "/districts">
+	<input type="" name="village" helpText ="Village" condition="false">
+	<input type="date" field_type="date" name="date_of_burial" helpText ="Date burried">
+	<input type="date" field_type="date" name="date_report_signed" helpText ="Date Report gigned">
+	<input type="date" field_type="date" name="date_report_given" helpText ="Date Report given">
 </form>

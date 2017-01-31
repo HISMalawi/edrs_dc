@@ -181,7 +181,7 @@ class DcController < ApplicationController
 
 		@section = "Rejected Cases"
 
-		@status = "DC REJECTED"
+		@status = "HQ REJECTED"
 
 		@next_url = "/dc/rejected_cases"
 
@@ -374,10 +374,14 @@ class DcController < ApplicationController
 	end
 
 	def new_burial_report
-		
+		@burial_report = BurialReport.new
 	end
 
 	def create_burial_report
+
+		BurialReport.create(params)
+
+		redirect_to "/people/view/#{params[:person_record_id]}?next_url=#{params[:next_url]}"
 		
 	end
 
