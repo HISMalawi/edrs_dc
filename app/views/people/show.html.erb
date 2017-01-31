@@ -73,6 +73,20 @@
 
 			bottom :20%;
 		}
+		#popup_details{
+			width: 90%;
+			margin: auto;
+		}
+		#popup_details th ,#popup_details td {
+
+			text-align: left;
+			font-size: 0.8em;
+			padding: 0.5em;
+		}
+		#popup_details tr:nth-child(odd){
+				background: #ffffff;
+		}
+
 
 </style>
 
@@ -384,6 +398,8 @@
 
 					var table = document.createElement("table");
 
+					table.id = "popup_details"
+
 					table.style.width = "80%";
 
 					table.style.margin ="auto";
@@ -394,7 +410,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Surname";
 
@@ -410,7 +426,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "First Name";
 
@@ -426,7 +442,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Nationality";
 
@@ -442,7 +458,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Gender";
 
@@ -458,7 +474,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Date of Birth";
 
@@ -475,7 +491,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Date of Death";
 
@@ -491,7 +507,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Place of Death";
 
@@ -631,8 +647,8 @@
                 sec_body.style.textAlign = "justify";
                 sec_body.style.textJustify = "inter-word";
                 var string = " I, the undersigned VHM/Caretaker of Village/Cemetery "+
-                			 " <u><%=  @burial_report.cemetery_authority_first_name%> "+
-                			 "  <%=  @burial_report.cemetery_authority_last_name%></u> "+
+                			 " <u><%=  @burial_report.cemetery_authority_first_name rescue ''%> "+
+                			 "  <%=  @burial_report.cemetery_authority_last_name rescue ''%></u> "+
                 			 " TA/Town <u><%= @burial_report.ta rescue '_______________'%>"+
                 			 " </u> District <u><%= @burial_report.district rescue '_______________' %></u>, "+
                 			 " hereby certify that the body of<u><%= @person.first_name %>  <%= @person.last_name%> </u>"+
@@ -643,13 +659,13 @@
                 			 " <u><%= @person.hospital_of_death rescue @person.place_of_death_village %></u>"+
                 			 " Name of village/Hospital, in <u><%= @person.place_of_death_ta %></u>TA/Town,"+
                 			 " <%= @person.place_of_death_district %>.District,  was interred at"+
-                			 " <u><%=  @burial_report.cemetery_name %></u>"+
+                			 " <u><%=  @burial_report.cemetery_name rescue '' %></u>"+
                 			 " (name of the cemetery or exact place of burial) "+
                 			 " on<u><%=  Date.parse(@burial_report.date_of_burial).strftime('%d/%b/%Y') rescue ''%></u>,"+
                 			 " with Death Register entry No<u><%= @person.den rescue '_______________' %>"+
                 			 "</u><br/><%= DateDate.parse(@burial_report.date_report_signed.to_s).strftime('%d/%b/%Y') rescue ''%> "+
-                			 " <br/>Signature & Stamp of VHM/Caretaker  <u><%=  @burial_report.cemetery_authority_first_name%> "+
-                			 " <%=  @burial_report.cemetery_authority_last_name%></u> "
+                			 " <br/>Signature & Stamp of VHM/Caretaker  <u><%=  @burial_report.cemetery_authority_first_name rescue ''%> "+
+                			 " <%=  @burial_report.cemetery_authority_last_name rescue ''%></u> "
                 sec_body.innerHTML = string;
 
                 div.appendChild(sec_body);
