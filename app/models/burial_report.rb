@@ -14,9 +14,11 @@ class BurialReport < CouchRest::Model::Base
 
 	 property :village, String
 
-	 property :date_of_burial, String
+	 property :date_of_burial, Time
 
-	 property :date_report_signed, String
+	 property :date_report_signed, Time
+
+	 property :date_report_given, Time
 
 	 property :voided,  TrueClass, :default => false
 
