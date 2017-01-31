@@ -1094,9 +1094,9 @@
     			
     			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
 
-                <%= (f.text_field :informant_addressline1,:helpText => "Informant Address Line 1",:placeholder => "P.O. box 200",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "P.O. box 200",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
-                <%= (f.text_field :informant_addressline2,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
                 <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 

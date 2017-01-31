@@ -203,21 +203,21 @@
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
-				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person_place_details['hospital_of_death'] %></td>
+				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
 				<td>Address</td>
 				<td class="clickable" onclick="editField('home_district')" >District</td>
-				<td style="border-bottom:1.5px solid black"><%= @person_place_details['home_district'] %></td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
 				<td class="clickable" onclick="editField('home_district')">TA</td>
-				<td style="border-bottom:1.5px solid black"><%= @person_place_details['home_ta'] %></td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
 				<td class="clickable" onclick="editField('home_district')" >Village</td>
-				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person_place_details['home_village'] %></td>
+				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
 			</tr>
 			<tr>
 				<td>Other</td>
-				<td colspan="8"></td>
+				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
 			</tr>
 			<tr>
 				<td>9</td>
@@ -298,7 +298,7 @@
 			</tr>
 			<tr>
 				<td rowspan="2">4</td>
-				<td>Adress</td>
+				<th>Address</th>
 				<td class="clickable" onclick="editField('informant_current_district')">District</td>
 				<td colspan="2"><%= @person_place_details['informant_current_district'] %></td>
 				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
@@ -310,7 +310,6 @@
 				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
 				<td colspan="6">
 					<%= @person.informant_addressline1 rescue "" %>
-					<%= " #{@person.informant_addressline2}" rescue ""%>
 					<%= " #{@person.informant_city}" rescue "" %>	
 				</td>
 				<td class="clickable" onclick="editField('informant_phone_number')">Telephone Number</td>
@@ -460,7 +459,7 @@
 
 					var td = document.createElement("th");
 
-					td.innerHTML = "Gender";
+					td.innerHTML = "Sex";
 
 					tr.appendChild(td);
 
@@ -515,7 +514,16 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.place_of_death %>";
+					<% if @person.place_of_death == 'Hospital/Institution'%>
+
+					 	td.innerHTML = "<%= @person.hospital_of_death %>";
+
+					<%elsif @person.place_of_death == 'Home'%>
+						 td.innerHTML = "<%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%>,"+
+						 				" <%= @person.place_of_death_village%> District";
+					<%elsif @person.place_of_death == 'Other' %>
+						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
+					<% end %>
 
 					tr.appendChild(td);
 
@@ -566,7 +574,7 @@
                 sec_head_1.style.padding = "0.5em";
                 sec_head_1.style.width = "20%";
                 sec_head_1.style.margin= "auto";
-                sec_head_1.style.marginTop= "2%";
+                sec_head_1.style.marginTop= "3%";
                 sec_head_1.style.fontSize ="13px";
                 sec_head_1.style.fontWeight="bold";
                 sec_head_1.style.textAlign = "center"
@@ -595,7 +603,7 @@
                 			 " <u><%= @person.informant_current_village %> <%= @person.informant_current_ta %>"+
                 			 " <%= @person.informant_current_district %></u> "+
                 			 " Tel No. <u><%= @person.informant_phone_number rescue '_______________'%></u> "+
-                			 " Date <u><%= @burial_report.date_report_given rescue '_______________' %></u>";
+                			 " Date <u><%= Date.parse(@burial_report.date_report_given.to_s).strftime('%d/%b/%Y') rescue '_______________' %></u>";
 
                 sec_body_1.innerHTML = string;
 
@@ -606,7 +614,7 @@
                 sec_head_2.style.padding = "0.5em";
                 sec_head_2.style.width = "20%";
                 sec_head_2.style.margin= "auto";
-                sec_head_2.style.marginTop= "1%";
+                sec_head_2.style.marginTop= "2%";
                 sec_head_2.style.fontSize ="13px";
                 sec_head_2.style.fontWeight="bold";
                 sec_head_2.style.textAlign = "center"
@@ -633,7 +641,7 @@
                 sec_head.style.fontSize ="13px";
                 sec_head.style.fontWeight="bold";
                 sec_head.style.textAlign = "center"
-                sec_head.innerHTML = "BURIAL/CEMATION REPORT";
+                sec_head.innerHTML = "BURIAL/CREMATION REPORT";
 
                 div.appendChild(sec_head);
 
@@ -646,7 +654,7 @@
                 sec_body.style.textAlign = "center"
                 sec_body.style.textAlign = "justify";
                 sec_body.style.textJustify = "inter-word";
-                var string = " I, the undersigned VHM/Caretaker of Village/Cemetery "+
+                var string = "<p> I, the undersigned VHM/Caretaker of Village/Cemetery "+
                 			 " <u><%=  @burial_report.cemetery_authority_first_name rescue ''%> "+
                 			 "  <%=  @burial_report.cemetery_authority_last_name rescue ''%></u> "+
                 			 " TA/Town <u><%= @burial_report.ta rescue '_______________'%>"+
@@ -655,17 +663,17 @@
                 			 " (name of deceased), with ID No<u><%= @person.national_id rescue '______________' %></u> "+
                 			 " date of birt<u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
                 			 " sex <u><%=@person.gender%></u>  "+
-                			 " who died on  <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %>at Home, "+
+                			 " who died on  <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %> </u>at Home, "+
                 			 " <u><%= @person.hospital_of_death rescue @person.place_of_death_village %></u>"+
                 			 " Name of village/Hospital, in <u><%= @person.place_of_death_ta %></u>TA/Town,"+
                 			 " <%= @person.place_of_death_district %>.District,  was interred at"+
                 			 " <u><%=  @burial_report.cemetery_name rescue '' %></u>"+
                 			 " (name of the cemetery or exact place of burial) "+
                 			 " on<u><%=  Date.parse(@burial_report.date_of_burial).strftime('%d/%b/%Y') rescue ''%></u>,"+
-                			 " with Death Register entry No<u><%= @person.den rescue '_______________' %>"+
-                			 "</u><br/><%= DateDate.parse(@burial_report.date_report_signed.to_s).strftime('%d/%b/%Y') rescue ''%> "+
+                			 " with Death Register entry No  <u><%= @person.den rescue '_______________' %></u><br/></p>"+
+                			 " <p>Date <u><%= Date.parse(@burial_report.date_report_signed.to_s).strftime('%d/%b/%Y') rescue ''%></u> "+
                 			 " <br/>Signature & Stamp of VHM/Caretaker  <u><%=  @burial_report.cemetery_authority_first_name rescue ''%> "+
-                			 " <%=  @burial_report.cemetery_authority_last_name rescue ''%></u> "
+                			 " <%=  @burial_report.cemetery_authority_last_name rescue ''%></u></p>"
                 sec_body.innerHTML = string;
 
                 div.appendChild(sec_body);

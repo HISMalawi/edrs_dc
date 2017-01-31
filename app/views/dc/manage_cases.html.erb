@@ -49,7 +49,7 @@
                                   </div>
                             <%end %>
 
-                            <% if User.current_user.activities_by_level("DC").include?("Check completeness") %>
+                            <% if User.current_user.activities_by_level("DC").include?("Check completeness") &&User.current_user.role == "Logistics Officer" %>
 
                                  <div class="touch_btn" onmousedown="window.location = '/dc/pending_cases?next_url=/dc/manage_cases'" >
                                       <div class="icon">
