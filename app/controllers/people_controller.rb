@@ -151,8 +151,6 @@ class PeopleController < ApplicationController
 
           print_registration(person) and return
 
-          raise person.to_yaml
-
           redirect_to "/people/view"
 
       end

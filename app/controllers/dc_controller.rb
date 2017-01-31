@@ -83,7 +83,7 @@ class DcController < ApplicationController
 
 				person.update_attributes({:approved =>"Yes"})
 
-				PersonIdentifier.assign_den(person)
+				PersonIdentifier.assign_den(person, User.current_user.id)
 
 				Audit.create({
 							:record_id => params[:id].to_s    , 

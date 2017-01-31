@@ -120,7 +120,7 @@ class PersonIdentifier < CouchRest::Model::Base
     return check_digit
   end
 
-  def self.assign_den(person)
+  def self.assign_den(person, creator)
 
     den = PersonIdentifier.by_den_sort_value.last.identifier rescue nil
     year = Date.today.year
@@ -140,6 +140,7 @@ class PersonIdentifier < CouchRest::Model::Base
                     :person_record_id=>person.id.to_s,
                     :identifier_type =>"DEATH ENTRY NUMBER",
                     :identifier => new_den,
+                    :creator => creator,
                     :den_sort_value => (year.to_s + num).to_i,
                     :district_code => CONFIG['district_code']
                 })
