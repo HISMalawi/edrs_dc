@@ -28,7 +28,7 @@ class Person < CouchRest::Model::Base
 
   after_initialize :decrypt_data
 
-  before_create :encrypt_data
+  before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
 
@@ -47,7 +47,7 @@ class Person < CouchRest::Model::Base
                    "informant_middle_name"]
     (self.attributes || []).each do |attribute|
 
-      next unless encryptable.include? attribute[0]
+      next unless encryptable.include? attribute[0] || (attribute[1].length > 20 && attribute[1].match(/\=+/))
 
       self.send("#{attribute[0]}=", (attribute[1].decrypt rescue attribute[1])) unless attribute[1].blank?
     end
@@ -64,7 +64,7 @@ class Person < CouchRest::Model::Base
                    "informant_middle_name"]
     (self.attributes || []).each do |attribute|
 
-      next unless encryptable.include? attribute[0]
+      next unless encryptable.include? attribute[0] || (attribute[1].length > 20 && attribute[1].match(/\=+/))
 
       self.send("#{attribute[0]}=", attribute[1].encrypt) unless attribute[1].blank?
     end
