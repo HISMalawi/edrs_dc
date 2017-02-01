@@ -61,6 +61,12 @@ class DcController < ApplicationController
 	def approve_cases
 
 		@section ="Approve Cases"
+
+		@status = "DC COMPLETE"
+
+		@next_url = "/dc/approve_cases"
+
+		render :template =>"/people/view"
 	
 	end
 
@@ -142,6 +148,12 @@ class DcController < ApplicationController
 
 
 	end
+
+	def add_pending_comment
+
+		@action ="/mark_as_pending"
+		
+	end
 	def mark_as_pending
 
 		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -152,13 +164,13 @@ class DcController < ApplicationController
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC PENDING",
                                   :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
+                                  :creator => params[:user_id]})
 
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC PENDING",
 							:level => "Person",
-							:reason => "Mark record as pending"})
+							:reason => params[:reason]})
 
 		redirect_to "#{params[:next_url].to_s}"
 
@@ -230,7 +242,7 @@ class DcController < ApplicationController
 
 		@status = "DC PENDING"
 
-		@next_url = "/dc/dispatched"
+		@next_url = "/dc/pending_cases"
 
 		render :template =>"/dc/dc_view_cases"
 

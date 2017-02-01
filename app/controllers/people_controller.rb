@@ -139,9 +139,9 @@ class PeopleController < ApplicationController
 
       person = Person.find(params[:id])
 
-      status = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id],"FACILITY NUMBER"]).first
+      facility_number = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id],"FACILITY NUMBER"]).first
 
-      if CONFIG['facility_code'] && !CONFIG['facility_code'].blank?  && !status.present?
+      if false && CONFIG['facility_code'] && !CONFIG['facility_code'].blank?  && !facility_number.present?
 
           NationalIdNumberCounter.assign_serial_number(person,facility.facility_code)
           
@@ -164,6 +164,8 @@ class PeopleController < ApplicationController
       @section = "View"
 
       @status = "NEW"
+
+      @next_url = "/people/view"
 
       render :layout => "facility"
       
@@ -192,7 +194,7 @@ class PeopleController < ApplicationController
                     id: person.id,
                     first_name: person.first_name, 
                     last_name: person.last_name ,
-                    middle_name: "",
+                    middle_name:  (person.middle_name rescue ""),
                     gender: person.gender,
                     date_of_death: person.date_of_death,
                     place_of_death: person.place_of_death,
@@ -228,6 +230,8 @@ class PeopleController < ApplicationController
 
       @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
+      @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],[params[:id],"DC REJECTED"],[params[:id],"HQ REJECTED"],[params[:id],"DC REAPPROVED"],[params[:id],"DC DUPLICATE"]]).each
+      
       render :layout => "facility"
   	
   end

@@ -118,8 +118,6 @@ Rails.application.routes.draw do
 
   get "/dc/add_rejection_comment/:id" => "dc#add_rejection_comment"
 
-  get "/dc/mark_as_pending/:id" => "dc#mark_as_pending"
-
   get "/dc/counts_by_status" => "dc#counts_by_status"
 
   post "/reject_record" => "dc#reject_record"
@@ -155,6 +153,12 @@ Rails.application.routes.draw do
   get "/dc/new_burial_report/:id" => "dc#new_burial_report"
 
   post "/create_burial_report" => "dc#create_burial_report"
+
+  get "/dc/add_pending_comment/:id" => "dc#add_pending_comment"
+
+  post "/mark_as_pending" => "dc#mark_as_pending"
+
+
 
 
   get "/logout" => "logins#logout"

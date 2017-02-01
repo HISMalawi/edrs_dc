@@ -112,10 +112,8 @@
 		<button class="gray" style="float: right; margin-right:1%">Completeness Check</button>
 
 	<%end%>
-	<%if ["DC APPROVED" , "DC COMPLETE", "DC APPROVED","DC PENDING"].include? @status.status %>
-		<button class="gray" style="float: right; margin-right:3%" onmousedown="">Mark Pending</button>
-		
-	<%else %>
+	<%if ["NEW"].include? @status.status %>
+	
 		<button class="green orange" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
 	<%end%>
 
@@ -124,10 +122,7 @@
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 	
-	<%if  @status.present? && @status.status == "DC APPROVED" %>
-
-			<button class="gray" style="float: right; margin-right:3%">Approve</button>
-	<%else %>
+	<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
 
 			<button class="green" style="float: right; margin-right:3%" onmousedown="approveRecord()">Approve</button>
 
@@ -137,19 +132,16 @@
 
 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 
-	<%if  @status.present? && @status.status == "DC REJECTED" %>
-
-		<button class="gray" style="float: right; margin-right:3%">Reject</button>
-	<%else%>
+	<%if  @status.present? && @status.status == "DC COMPLETE" %>
 
 		<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()">Reject</button>
 
 	<%end%>
 
 <%end%>
-
-<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
-
+<% if @comments.count > 0 %>
+	<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+<%end%>
 <% if CONFIG['site_type'] == "dc"%>
 
 	<% if @burial_report.blank? %>
@@ -318,7 +310,7 @@
 			</tr>
 			<tr>
 				<td rowspan="2">4</td>
-				<th>Address</th>
+				<th><b>Address<</b>/td>
 				<td class="clickable" onclick="editField('informant_current_district')">District</td>
 				<td colspan="2"><%= @person_place_details['informant_current_district'] %></td>
 				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
@@ -382,9 +374,9 @@
 			}
 			function markAsPending(){
 
-					var url = "/dc/mark_as_pending/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+					var url = "/dc/add_pending_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
 
-					showConfirmMessage("","Are you sure to mark the record as Pending?",url,"#e2a648")
+					showConfirmMessage("","Click \"OK\" to mark the record as pending",url,"#e2a648")
 
 					popUpRecordDetails();
 			}
@@ -725,6 +717,106 @@
 
 			}
 
+			function viewPersonComment(){
 
+				showConfirmMessage("","Comments trail","","#79a3c1");
+
+				var popup_container = __$("msg.popup")
+
+				popup_container.style.width = "40%";
+
+				popup_container.style.left =  "calc(43% - 210px)";
+
+				popup_container.style.top =  "10%";
+
+				popup_container.style.height= "500px";
+
+				var control = __$("msg.content");
+
+				control.style.height = "350px"
+
+				var table = document.createElement("table");
+
+				table.id = "popup_details"
+
+				table.style.width = "100%";
+
+				table.style.margin ="auto";
+
+				control.appendChild(table);
+
+				var tr = document.createElement("tr");
+
+				table.appendChild(tr);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="#";
+
+				td.style.background = "#868687";
+
+				td.style.width = "2%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="Comment";
+
+				td.style.background = "#868687";
+
+				td.style.width = "60%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				td.innerHTML ="Date"
+
+				tr.appendChild(td);
+				<% @i = 0 %>
+
+				<% @comments.each do |comment| %>
+
+					<% @i = @i + 1 %>
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @i %>"
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= comment.reason%>";
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= Date.parse(comment.created_at.to_s).strftime('%d/%b/%Y') rescue '' %>";
+
+				<%end%>
+			}
 
 </script>

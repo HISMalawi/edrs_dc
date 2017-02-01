@@ -242,7 +242,7 @@
 
 								}else if(data[i].place_of_death =="Home"){
 
-									td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+									td.innerHTML = data[i].place_of_death_district +"," + data[i].place_of_death_ta + ","+  data[i].place_of_death_village;
 
 								} 
 
@@ -316,31 +316,6 @@
 								td.appendChild(button);
 
 								tr.appendChild(td);*/
-
-
-								var td = document.createElement("td");
-
-								td.style.borderRight= "1px solid black";
-
-								td.style.borderBottom= "1px solid black";
-
-								var button = document.createElement("button");
-
-								button.className = "green";
-
-								button.style.width = "90%";
-
-								button.innerHTML = "Print";
-
-                                button.setAttribute("onclick","window.location = '/people/print/" +data[i]["id"]+"'");
-
-
-								td.appendChild(button);
-
-								<% if @facility_type !="DC" %>
-
-										tr.appendChild(td);
-								<%end%>
 
 							}
 

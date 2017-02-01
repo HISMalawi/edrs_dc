@@ -8,7 +8,8 @@ class ApplicationController < ActionController::Base
   before_filter :perform_basic_auth, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
-                                                  "confirm_not_duplicate", "confirm_duplicate","create_burial_report"]
+                                                  "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
+                                                  "mark_as_pending"]
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
