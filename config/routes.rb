@@ -90,6 +90,10 @@ Rails.application.routes.draw do
 
   get '/people/all' => "people#all"
 
+  get "/people/search" => "people#search"
+
+  post "/people/search"
+
   get '/people/finalize_create/:id' => "people#finalize_create"
 
   get "/get_first_names" => "people#get_first_names"

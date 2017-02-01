@@ -109,7 +109,7 @@
               }
               .icon i {
 
-                    font-size: 4em
+                    font-size: 4em;
               }
               .button_label{
 
@@ -192,7 +192,7 @@
                     border-radius: 10px;
                     position: absolute;
                     left :1%;
-                    bottom: 2%;
+                    bottom: 3%;
 
 
               }

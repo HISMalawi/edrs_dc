@@ -231,7 +231,7 @@ class PeopleController < ApplicationController
       @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
       @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],[params[:id],"DC REJECTED"],[params[:id],"HQ REJECTED"],[params[:id],"DC REAPPROVED"],[params[:id],"DC DUPLICATE"]]).each
-      
+
       render :layout => "facility"
   	
   end
@@ -255,7 +255,7 @@ class PeopleController < ApplicationController
 
   def update_field
 
-      #person = Person.find(params[:id])
+      person = Person.find(params[:id])
 
       person.update_person(params[:id],params[:person])
 
@@ -441,6 +441,13 @@ class PeopleController < ApplicationController
 
     print_and_redirect("/people/print_id_label?person_id=#{person.id}", redirect)
     
+  end
+
+  def search
+    
+    @section ="Search Criteria"
+
+    render :layout => "facility"
   end
 
   protected
