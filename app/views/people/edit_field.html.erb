@@ -1,4 +1,7 @@
 <script type="text/javascript" language="javascript" src="/javascripts/person_form.js" defer="true"></script>
+<script type="text/javascript">
+	tt_cancel_destination = "/people/view/<%= params[:id]%>?next_url=<%=params[:next_url]%>"
+</script>
 <%= form_for @person, :url => '/update_field', :method => :post do |f| %>
 
 		<input type="hidden" name="id" value="<%= params[:id] %>">

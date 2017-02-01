@@ -10,7 +10,7 @@
 
 				box-shadow: 3.5px 3.5px 1.5px #888888;
 
-				width: 1024px;
+				width: 80%;
 				margin: auto;
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
@@ -86,6 +86,16 @@
 		#popup_details tr:nth-child(odd){
 				background: #ffffff;
 		}
+		.orange{
+			background: #ce731b;
+			border:1px solid #ba6614;
+		}
+
+		.orange:hover{
+
+			background: #d16b07;
+		}
+
 
 
 </style>
@@ -106,7 +116,7 @@
 		<button class="gray" style="float: right; margin-right:3%" onmousedown="">Mark Pending</button>
 		
 	<%else %>
-		<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
+		<button class="green orange" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
 	<%end%>
 
 		
@@ -163,7 +173,7 @@
 			</tr>
 
 			<tr>
-				<td rowspan="11" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td rowspan="12" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
 				<td>1</td>
 				<td  class="clickable" onclick="editField('last_name')">Surname</td>
 				<td colspan="2" ><%= @person.last_name %></td>
@@ -228,6 +238,16 @@
 				<td><%= @person_place_details['current_ta'] %></td>
 				<td class="clickable" onclick="editField('current_village')" >Village</td>
 				<td><%= @person_place_details['current_village'] %></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td colspan="3">Home address</td>
+				<td class="clickable" onclick="editField('home_district')" >District </td>
+				<td><%= @person_place_details['home_district'] %></td>
+				<td class="clickable" onclick="editField('home_ta')">TA</td>
+				<td><%= @person_place_details['home_ta'] %></td>
+				<td class="clickable" onclick="editField('home_village')" >Village</td>
+				<td><%= @person_place_details['home_village'] %></td>
 			</tr>
 			<tr>
 				<td rowspan="2">11</td>
@@ -685,7 +705,8 @@
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 
-							showConfirmMessage("Are you sure you want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
+							window.location = "/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"
+							//showConfirmMessage("Are you sure you want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
 
 					<%end%>
 

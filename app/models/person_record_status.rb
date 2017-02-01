@@ -30,14 +30,14 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 	    view :by_person_recent_status,
 				 :map => "function(doc) {
-	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false) {
 
 	                    	emit(doc['person_record_id'], 1);
 	                  }
 	                }"
 	    view :by_person_record_id_recent_status,
 				 :map => "function(doc) {
-	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false) {
 
 	                    	emit([doc['person_record_id'],doc['status']], 1);
 	                  }
@@ -45,7 +45,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 		view :by_record_status,
 	         	 :map => "function(doc) {
-	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] ==false) {
+	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false) {
 
 	                    	emit(doc['status'], 1);
 	                  }

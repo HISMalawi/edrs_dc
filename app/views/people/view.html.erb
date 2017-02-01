@@ -221,7 +221,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								if(data[i].place_of_death.match("Hospital")){
+								if(data[i].place_of_death =="Hospital"){
 
 									td.innerHTML = data[i].hospital_of_death_name;
 
@@ -234,7 +234,7 @@
 
 									td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
 
-								} 
+								}
 
 								tr.appendChild(td);
 
