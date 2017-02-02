@@ -122,11 +122,16 @@ class PeopleController < ApplicationController
 
   def search_similar_record
 
-      values = [params[:first_name].soundex, params[:last_name].soundex, 
-                params[:gender],params[:birthdate],
-                params[:date_of_death],params[:place_of_death],
-                params[:informant_first_name].soundex,params[:informant_last_name].soundex]
-
+      values = [
+                params[:first_name].soundex, 
+                params[:last_name].soundex, 
+                params[:gender], 
+                params[:date_of_death],
+                params[:birthdate],
+                params[:place_of_death],
+                params[:informant_first_name].soundex,
+                params[:informant_last_name].soundex]
+                
       people = Person.by_demographics_and_informant.key(values).each
 
       if people.count == 0
