@@ -279,7 +279,7 @@ class Person < CouchRest::Model::Base
 
             Person.duplicate = parameters[:potential_duplicate]
       end
-
+      
       Person.create(params)
     
   end

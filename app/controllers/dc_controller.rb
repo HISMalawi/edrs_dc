@@ -312,7 +312,7 @@ class DcController < ApplicationController
 
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
-                                  :status => "DC COMPLETE",
+                                  :status => "DC APPROVED",
                                   :district_code => CONFIG['district_code'],
                                   :creator => params[:user_id]})
 		Audit.user = params[:user_id].to_s

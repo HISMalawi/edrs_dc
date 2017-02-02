@@ -85,6 +85,42 @@
 
 			bottom :20%;
 		}
+		#existing{
+
+				width: 55%;
+				float: left;
+				height: 300px;
+		}
+
+		#duplicates{
+			width: 38%;
+			float: right;
+			height: 300px;
+			margin-right: 5%;
+		}
+		#details td {
+
+			border: none !important;
+			padding: 0.5em !important;
+			text-align: left !important;
+			padding-left:5% !important;
+			font-size: 1.2em;
+
+		}
+		.duplicates_panel{
+
+			width: 90%;
+			padding: 0.8em;
+			font-size: 1.2em;
+			text-align: center;
+			border: 1.5px solid #a2a09d;
+			box-shadow: 3.5px 3.5px 1.5px #888888;
+			border-radius: 5px;
+		}
+		.duplicates_panel:hover{
+
+			background: #fddeb3 !important;
+		}
 
 </style>
 
@@ -93,6 +129,65 @@
 </div>
 
 <div id="table_container">
+	<div id="existing" >
+		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em; background:#96b5c3"><b>Exisiting Record</b></div>
+		<div>
+			<table style="width:100% !important" id="details">
+					<tr>
+						<td><b>Surname</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>First name</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>Date of birth</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>Date of Death</b></td>
+						<td></td>
+					</tr>
+
+					<tr>
+						<td><b>Place of death</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>Home address</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>Informant surname</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><b>Informant firstname</b></td>
+						<td></td>
+					</tr>
+			</table>
+		</div>
+	</div>
+	<div id="duplicates" >
+		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em"><b>Duplicate (s)</b></div>
+		<% @i = 0 %>
+		<% @existing_record.each do |record| %>
+				<% @i = @i + 1 %>
+				<%if @i%2 == 0 %>
+					<div style="background:#fff2df" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<%= record.last_name %> <%= record.first_name %>
+					 died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)	
+					</div>
+				<%else%>
+					<div style="background:#ffe5c0" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<%= record.last_name %> 	<%= record.first_name %> 
+					died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)
+					</div>
+				<%end%>
+		<%end%>
+	</div>
+	<% if false %>
 		<table id="summary1">
 			
 			<tr>
@@ -393,7 +488,7 @@
 				<td colspan="8"><%= Date.parse(@existing_record[0].informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
 			</tr>
 		</table>
-
+	<%end%>
 </div>
   <div id="up" class="scroll" onmousedown="up()">
      <i class=" fa fa-arrow-up"></i>
@@ -604,5 +699,7 @@
 			}
 
 
-
+			function showPerson(pos){
+				alert(pos)
+			}
 </script>

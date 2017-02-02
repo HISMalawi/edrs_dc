@@ -79,12 +79,6 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      if params[:potential_duplicate].present?
-
-          @duplicate = params[:potential_duplicate]
-
-      end
-
       person = Person.create_person(params)
 
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
@@ -131,7 +125,7 @@ class PeopleController < ApplicationController
                 params[:place_of_death],
                 params[:informant_first_name].soundex,
                 params[:informant_last_name].soundex]
-                
+
       people = Person.by_demographics_and_informant.key(values).each
 
       if people.count == 0
@@ -266,7 +260,12 @@ class PeopleController < ApplicationController
 
       @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
-      @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],[params[:id],"DC REJECTED"],[params[:id],"HQ REJECTED"],[params[:id],"DC REAPPROVED"],[params[:id],"DC DUPLICATE"]]).each
+      @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
+                                                          [params[:id],"DC REJECTED"],
+                                                          [params[:id],"HQ REJECTED"],
+                                                          [params[:id],"DC REAPPROVED"],
+                                                          [params[:id],"DC DUPLICATE"],
+                                                          [params[:id],"RESOLVE DUPLICATE"]]).each
 
       render :layout => "facility"
   	
