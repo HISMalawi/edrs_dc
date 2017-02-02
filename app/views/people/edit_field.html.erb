@@ -74,7 +74,7 @@
 
 		<% elsif @field  == "person[date_of_date]" %>
 
-				<%= (f.text_field :date_of_date, :helpText => "Death Date",:fieldtype => "date") rescue "" %>
+				<%= (f.text_field :date_of_date, :helpText => "Death Date",:fieldtype => "date",tt_onLoad=>"removeUnknown()") rescue "" %>
 
 		<% elsif @field  == "person[birth_certificate_number]" %>
 
@@ -113,7 +113,7 @@
 
        <% elsif @field == "person[date_of_death]" %>
 
-       			 <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ) rescue "" %>
+       			 <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date",tt_onLoad=>"removeUnknown()" ) rescue "" %>
 
        <% elsif @field =="person[citizenship]" %>
 
@@ -134,7 +134,7 @@
 		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:allowFreeText => true) rescue "" %> 
 		<% elsif @field.include? "date" %>
 
-				<%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date"} %>
+				<%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date",tt_onLoad=>"removeUnknown()"} %>
 
 		<% else %>
 

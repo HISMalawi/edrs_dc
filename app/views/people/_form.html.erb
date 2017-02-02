@@ -834,7 +834,7 @@
 
 		    unknownButton.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value ="Unknown"');
 
-		    keyboard.appendChild(unknownButton);
+		    //keyboard.appendChild(unknownButton);
 
 		}
 
@@ -945,7 +945,10 @@
 
 		}
 
+		function removeUnknown(){
 
+			__$("Unknown").style.display ="none";
+		}
 
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
@@ -962,7 +965,7 @@
 
                 <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
+                <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender",:tt_requireNextClick => false, :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
 
                 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersOnly", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"}  %>
 
@@ -980,7 +983,7 @@
             </sub>
 
             <sub id="death_details" name="Details of death">
-                <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased');removeUnknown()") rescue "" %>
 
                 <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Hospital/Institution")  %>
@@ -1107,7 +1110,7 @@
                 <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person's Informant')") %>
 
                 <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
-                                      :field_type => "date",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                                      :field_type => "date",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant');removeUnknown()") rescue "" %>
             </sub>
     </section>
 
@@ -1119,13 +1122,13 @@
 
                 <%= (f.text_field :headman_verification_date,:helpText => "Date Headman verified",
                                   :field_type => "date",:condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
-                                  :tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
+                                  :tt_onLoad =>"removeUnknown();showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
             </sub>
             <sub id="church_verification" name="Church verification">
                 <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),:helpText =>"Church leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>
 
                 <%= (f.text_field :church_verification_date,:helpText => "Date Church leader verified",
-		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
+		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"removeUnknown();showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
             </sub>
     </section>
     <% end %>
@@ -1135,7 +1138,7 @@
     <section name="Acknowledgement of Receipt">
         	<sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
         		<%= (f.text_field :acknowledgement_of_receipt_date,:helpText => "Acknowledgement of receipt date",
-                                  :field_type => "date",:tt_onLoad =>"showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
+                                  :field_type => "date",:tt_onLoad =>"removeUnknown();showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
         	</sub>
     </section>
 

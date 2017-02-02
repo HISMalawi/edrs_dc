@@ -1,26 +1,33 @@
-<%= form_tag(:controller => "people", :action => "search") do %>
+<% if params[:search_criteria].present? %>
 
-	<%= select_tag "search_criteria", options_for_select(["By Death Entry Number","By Death Registration Number","By Personal Details of the deceased","By Home Address","By Mother details","By Father details","By Informant details"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+	<%= render :partial => "people_view" %>
 
-	<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'"}  %>
+<%else%>
 
-	<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
+	<%= form_tag("/people/search",:method=>:get) do %>
 
-	<%= text_field_tag "last_name", nil, {:helpText => 'Enter last name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
-	<%= text_field_tag "first_name", nil, {:helpText => 'Enter First name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
-	<%= select_tag "search_criteria", options_for_select(["Female","Male"], " "), {:helpText => 'Sex / Gender',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard",:condition => "__$('search_criteria').value =='By Personal Details of the deceased'" }%>
+		<%= select_tag "search_criteria", options_for_select(["By Death Entry Number","By Death Registration Number","By Personal Details of the deceased","By Home Address","By Mother details","By Father details","By Informant details"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
 
-	<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-	<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-	<%= text_field_tag "home_ta", nil, {:helpText => 'Home TA',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-	<%= text_field_tag "home_village", nil, {:helpText => 'Home Village',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+		<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'"}  %>
 
-	<%= text_field_tag "mother_last_name", nil, {:helpText => 'Mother Last Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
-	<%= text_field_tag "mother_first_name", nil, {:helpText => 'Mother First Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
+		<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
 
-	<%= text_field_tag "father_last_name", nil, {:helpText => 'Father Last Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
-	<%= text_field_tag "father_first_name", nil, {:helpText => 'Father First Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
+		<%= text_field_tag "last_name", nil, {:helpText => 'Enter last name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
+		<%= text_field_tag "first_name", nil, {:helpText => 'Enter First name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
+		<%= select_tag "search_criteria", options_for_select(["Female","Male"], " "), {:helpText => 'Sex / Gender',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard",:condition => "__$('search_criteria').value =='By Personal Details of the deceased'" }%>
 
-	<%= text_field_tag "informant_last_name", nil, {:helpText => 'Informant Last Name',:condition => "__$('search_criteria').value =='By Informant details'"}  %>
-	<%= text_field_tag "informant_first_name", nil, {:helpText => 'Informant First Name',:condition => "__$('search_criteria').value =='By informant details'"}  %>
+		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+		<%= text_field_tag "home_ta", nil, {:helpText => 'Home TA',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+		<%= text_field_tag "home_village", nil, {:helpText => 'Home Village',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+
+		<%= text_field_tag "mother_last_name", nil, {:helpText => 'Mother Last Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
+		<%= text_field_tag "mother_first_name", nil, {:helpText => 'Mother First Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
+
+		<%= text_field_tag "father_last_name", nil, {:helpText => 'Father Last Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
+		<%= text_field_tag "father_first_name", nil, {:helpText => 'Father First Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
+
+		<%= text_field_tag "informant_last_name", nil, {:helpText => 'Informant Last Name',:condition => "__$('search_criteria').value =='By Informant details'"}  %>
+		<%= text_field_tag "informant_first_name", nil, {:helpText => 'Informant First Name',:condition => "__$('search_criteria').value =='By informant details'"}  %>
+	<%end%>
 <%end%>

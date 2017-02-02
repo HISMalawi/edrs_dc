@@ -92,7 +92,7 @@ Rails.application.routes.draw do
 
   get "/people/search" => "people#search"
 
-  post "/people/search"
+  get "/search_by_fields" => "people#search_by_fields"
 
   get '/people/finalize_create/:id' => "people#finalize_create"
 
