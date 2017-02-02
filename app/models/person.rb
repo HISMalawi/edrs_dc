@@ -472,9 +472,9 @@ class Person < CouchRest::Model::Base
   property :last_name_code, String
   property :middle_name_code, String
   property :gender, String
-  property :birthdate, Time
+  property :birthdate, Date
   property :birthdate_estimated, String
-  property :date_of_death, Time
+  property :date_of_death, Date
   property :birth_certificate_number, String
   property :nationality_id, String
   property :place_of_death, String
@@ -507,7 +507,7 @@ class Person < CouchRest::Model::Base
   property :died_while_pegnant, String
   property :updated_by, String
   property :voided_by, String
-  property :voided_date, String
+  property :voided_date, Time
   property :voided, TrueClass, :default => false
   property :form_signed, String
   property :approved, String, :default => 'No'
@@ -527,7 +527,7 @@ class Person < CouchRest::Model::Base
   property :mother_last_name_code, String
   property :mother_middle_name_code, String
   property :mother_gender, String
-  property :mother_birthdate, String
+  property :mother_birthdate, Date
   property :mother_birthdate_estimated, String
   property :mother_current_village_id, String
   property :mother_current_ta_id, String
@@ -563,7 +563,7 @@ class Person < CouchRest::Model::Base
   property :father_last_name_code, String
   property :father_middle_name_code, String
   property :father_gender, String
-  property :father_birthdate, String
+  property :father_birthdate, Date
   property :father_birthdate_estimated, String
   property :father_current_village_id, String
   property :father_current_ta_id, String
@@ -591,11 +591,11 @@ class Person < CouchRest::Model::Base
 
   #Details of senior village member
   property :headman_verified, String
-  property :headman_verification_date, String
+  property :headman_verification_date, Date
 
   #Details of church elder
   property :church_verified, String
-  property :church_verification_date, String
+  property :church_verification_date, Date
 
   #Death informant properties
   #property :informant do
@@ -616,14 +616,14 @@ class Person < CouchRest::Model::Base
   property :informant_city, String
   property :informant_phone_number, String
   property :informant_signed, String
-  property :informant_signature_date, Time
+  property :informant_signature_date, Date
   #end
 
   property :certifier_first_name, String
   property :certifier_middle_name, String
   property :certifier_last_name, String
   property :certifier_signed, String
-  property :date_certifier_signed, String
+  property :date_certifier_signed, Date
   property :position_of_certifier, String
   property :other_position_of_certifier, String
 
@@ -633,7 +633,7 @@ class Person < CouchRest::Model::Base
   property :facility_code, String
   property :district_code, String
 
-  property :date_created, String
+  property :date_created, Date
   property :created_by, String
   property :changed_by, String
 
@@ -922,6 +922,19 @@ class Person < CouchRest::Model::Base
                     emit([doc['first_name_code'], doc['last_name_code'], doc['gender'],doc['birthdate'],doc['date_of_death'], doc['place_of_death']], 1);
                   }
                 }"
+    view :by_demographics_and_informant,
+         :map =>"function(doc){
+                    if(doc['type']=='Person'){
+                        emit([doc['first_name_code'], 
+                              doc['last_name_code'], 
+                              doc['gender'],
+                              doc['date_of_death'], 
+                              doc['birthdate'], 
+                              doc['place_of_death'],
+                              doc['informant_first_name_code'],
+                              doc['informant_last_name_code']], 1);
+                    }
+              }"
     view :by_demographics_with_place,
          :map => "function(doc) {
                   if (doc['type'] == 'Person') {

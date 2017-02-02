@@ -918,9 +918,11 @@
 								gender 		  : __$("person_gender").value,
 								birthdate 	  : __$("person_birthdate").value,
 								date_of_death : __$("person_date_of_death").value,
-								place_of_death: __$("person_place_of_death").value
+								place_of_death: __$("person_place_of_death").value,
+								informant_last_name: __$("person_informant_last_name").value,
+								informant_first_name: __$("person_informant_first_name").value
 				}
-
+				console.log(data)
 				postAjax("/search_similar_record", data, function(response){
 
 					var people = JSON.parse(response).response;
@@ -994,7 +996,7 @@
 
                     <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                    <%= (f.text_field :hospital_of_death_name,:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.match('Hospital')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                    <%= text_field_tag "person[hospital_of_death_name]", nil, {:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.trim()=='Hospital/Institution'", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
                     <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
@@ -1104,10 +1106,10 @@
                 <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
 
                 <%= (f.text_field :informant_phone_number,:helpText => "Informant phone number", :field_type =>"number",
-                                  :tt_pageStyleClass => "Numeric NumbersWithUnknown",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                                  :tt_pageStyleClass => "Numeric NumbersOnly",:validationRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
             </sub>
             <sub id="Informant verification" name="Verification">
-                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person's Informant')") %>
+                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") %>
 
                 <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
                                       :field_type => "date",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant');removeUnknown()") rescue "" %>

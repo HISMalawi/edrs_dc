@@ -122,9 +122,12 @@ class PeopleController < ApplicationController
 
   def search_similar_record
 
-      values = [params[:first_name], params[:last_name], params[:gender],params[:birthdate],params[:date_of_death],params[:place_of_death]]
+      values = [params[:first_name].soundex, params[:last_name].soundex, 
+                params[:gender],params[:birthdate],
+                params[:date_of_death],params[:place_of_death],
+                params[:informant_first_name].soundex,params[:informant_last_name].soundex]
 
-      people = Person.by_demographics.key(values).each
+      people = Person.by_demographics_and_informant.key(values).each
 
       if people.count == 0
 
@@ -184,7 +187,13 @@ class PeopleController < ApplicationController
     page = params[:page] rescue 1
     size = params[:size] rescue 7
     people = []
-    PersonRecordStatus.by_record_status.key(params[:status]).page(page).per(size).each do |status|
+    if params[:status] == "DC PENDING"
+         record_status = [params[:status],"DC REJECTED"]
+    else
+         record_status = [params[:status]]
+    end
+   
+    PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
       
         person = status.person
 
@@ -224,6 +233,17 @@ class PeopleController < ApplicationController
           people << person_selective_fields(person)
       end               
       
+    end
+
+    if params[:death_registration_number].present?
+
+       PersonIdentifier.by_identifier.key(params[:death_registration_number]).page(page).per(size).each do |pid|
+
+          person = pid.person
+
+          people << person_selective_fields(person)
+
+       end
     end
 
     render  :text => people.to_json

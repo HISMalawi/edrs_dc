@@ -10,15 +10,17 @@
 
 				box-shadow: 3.5px 3.5px 1.5px #888888;
 
-				width: 80%;
-				margin: auto;
+				width: 86%;
+				margin-left: 5%;
+
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
 
 
 		}
 		#summary{
-
+			width:96% !important;
+			margin: auto;
 			margin-bottom: 1%;
 
 		}
@@ -158,7 +160,7 @@
 
 <div id="table_container">
 
-		<table id="summary">
+		<table id="summary" style="">
 			
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased</th>
@@ -581,12 +583,24 @@
 
                 shield.appendChild(div);
 
+                var name = document.createElement("div");
+                name.style.padding = "0.5em";
+                name.style.width = "90%";
+                name.style.margin= "auto";
+                name.style.marginTop= "3%";
+                name.style.fontSize ="12px";
+                name.style.fontWeight="bold";
+                name.style.textAlign = "right"
+                name.innerHTML = "NR-11";
+
+                div.appendChild(name);
+
                 var sec_head_1 = document.createElement("div");
                 sec_head_1.style.border = "1px solid black";
                 sec_head_1.style.padding = "0.5em";
                 sec_head_1.style.width = "20%";
                 sec_head_1.style.margin= "auto";
-                sec_head_1.style.marginTop= "3%";
+                sec_head_1.style.marginTop= "1%";
                 sec_head_1.style.fontSize ="13px";
                 sec_head_1.style.fontWeight="bold";
                 sec_head_1.style.textAlign = "center"
@@ -673,7 +687,7 @@
                 			 " </u> District <u><%= @burial_report.district rescue '_______________' %></u>, "+
                 			 " hereby certify that the body of<u><%= @person.first_name %>  <%= @person.last_name%> </u>"+
                 			 " (name of deceased), with ID No<u><%= @person.national_id rescue '______________' %></u> "+
-                			 " date of birt<u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
+                			 " date of birth <u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
                 			 " sex <u><%=@person.gender%></u>  "+
                 			 " who died on  <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %> </u>at Home, "+
                 			 " <u><%= @person.hospital_of_death rescue @person.place_of_death_village %></u>"+
