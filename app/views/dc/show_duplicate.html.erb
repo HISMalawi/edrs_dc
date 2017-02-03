@@ -159,24 +159,36 @@
 			<table style="width:100% !important" id="details">
 					<tr>
 						<td><b>Surname</b></td>
-						<td></td>
+						<td><%= @person.last_name %></td>
 					</tr>
 					<tr>
 						<td><b>First name</b></td>
-						<td></td>
+						<td><%= @person.first_name %></td>
 					</tr>
 					<tr>
 						<td><b>Date of birth</b></td>
-						<td></td>
+						<td><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
 					</tr>
 					<tr>
 						<td><b>Date of Death</b></td>
-						<td></td>
+						<td><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
 					</tr>
 
 					<tr>
 						<td><b>Place of death</b></td>
-						<td></td>
+						<% if @person.place_of_death == 'Hospital/Institution'%>
+
+					 	<td><%= @person.hospital_of_death %></td>
+
+						<%elsif @person.place_of_death == 'Home'%>
+
+							 <td><%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%> , <%= @person.place_of_death_village%> District</td>
+							 
+						<%elsif @person.place_of_death == 'Other' %>
+
+							 <td><%= @person.other_place_of_death rescue '' %></td>
+
+						<% end %>
 					</tr>
 					<tr>
 						<td><b>Home address</b></td>
@@ -877,8 +889,6 @@
 					var td = document.createElement("td");
 
 					if (data.place_of_death == 'Hospital/Institution'){
-
-						console.log( data.hospital_of_death);
 
 					 	td.innerHTML = data.hospital_of_death;
 
