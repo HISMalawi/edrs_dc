@@ -183,7 +183,7 @@
 						<%elsif @person.place_of_death == 'Home'%>
 
 							 <td><%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%> , <%= @person.place_of_death_village%> District</td>
-							 
+
 						<%elsif @person.place_of_death == 'Other' %>
 
 							 <td><%= @person.other_place_of_death rescue '' %></td>
@@ -196,11 +196,11 @@
 					</tr>
 					<tr>
 						<td><b>Informant surname</b></td>
-						<td></td>
+						<td><%= @person.informant_last_name %></td>
 					</tr>
 					<tr>
 						<td><b>Informant firstname</b></td>
-						<td></td>
+						<td><%= @person.informant_first_name %></td>
 					</tr>
 			</table>
 		</div>
