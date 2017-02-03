@@ -1009,7 +1009,7 @@
 
             <sub id="home_address" name="Home address">
 
-            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home Country",:ajaxURL => "/nationalities?search_string=",
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",
                                   :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
    				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
@@ -1026,10 +1026,10 @@
 
             <sub id="physical_address" name="Physical address">
 
-            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Country of Residence",:ajaxURL => "/nationalities?search_string=",
+            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Residence Nationality",:ajaxURL => "/nationalities?search_string=",
                                   :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-   				<%= text_field_tag "person[current_district]", nil, {:helpText => "Dstrict of Residence",
+   				<%= text_field_tag "person[current_district]", nil, {:helpText => "District of Residence",
                                 :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
 
