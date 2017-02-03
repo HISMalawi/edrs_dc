@@ -1,16 +1,16 @@
 #app_header{
 
-                      width: 100%;
+      width: 100%;
 
-                      border-bottom: 1px solid #959595;
+      border-bottom: 1px solid #959595;
 
-                      height: 70px;
+      height: 70px;
 
-                      background:#dcdbdb;
-              }
-               #signout{
+      background:#dcdbdb;
+}
+#signout{
 
-                    background: #f4e4e8;
+    background: #f4e4e8;
 
                     font-size: 3.8em;
 
@@ -58,9 +58,9 @@
 
                     border : 0.005em solid #b3b1b1;
 
-                    font-size: 3.8em;
+                    font-size: 3.2em;
 
-                    min-width: 20px;
+                    min-width: 15px !important;
 
                     float: left;
 
@@ -268,5 +268,5 @@
               }
 
               .fa-home, .fa-signout{
-                  max-height: 55px;
+                  max-height: 40px !important;
               }
