@@ -504,7 +504,7 @@ class Person < CouchRest::Model::Base
   property :current_village_id, String
   property :current_ta_id, String
   property :current_district_id, String
-  property :died_while_pegnant, String
+  property :died_while_pregnant, String
   property :updated_by, String
   property :voided_by, String
   property :voided_date, Time

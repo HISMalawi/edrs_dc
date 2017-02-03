@@ -119,7 +119,9 @@
 		}
 		.duplicates_panel:hover{
 
-			background: #fddeb3 !important;
+			background: #83a8bf !important;
+			font-weight: bold;
+			color: #ffffff;
 		}
 
 </style>
@@ -130,7 +132,7 @@
 
 <div id="table_container">
 	<div id="existing" >
-		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em; background:#96b5c3"><b>Exisiting Record</b></div>
+		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em; background:#ffe1b7; color :#2f4f4f;text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;"><b>Duplicate Record</b></div>
 		<div>
 			<table style="width:100% !important" id="details">
 					<tr>
@@ -170,17 +172,17 @@
 		</div>
 	</div>
 	<div id="duplicates" >
-		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em"><b>Duplicate (s)</b></div>
+		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em"><b>Existing Record(s)</b></div>
 		<% @i = 0 %>
 		<% @existing_record.each do |record| %>
 				<% @i = @i + 1 %>
 				<%if @i%2 == 0 %>
-					<div style="background:#fff2df" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<div style="background:#b6ccda" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
 					<%= record.last_name %> <%= record.first_name %>
 					 died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)	
 					</div>
 				<%else%>
-					<div style="background:#ffe5c0" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<div style="background:#96b6ca" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
 					<%= record.last_name %> 	<%= record.first_name %> 
 					died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)
 					</div>
