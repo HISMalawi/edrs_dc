@@ -417,7 +417,7 @@ class Person < CouchRest::Model::Base
   end
 
   def home_country   
-    return Nationality.find(self.home_country_id).name rescue ""
+    return Nationality.find(self.home_country_id).nationality rescue ""
   end
 
   def home_district
@@ -735,8 +735,8 @@ class Person < CouchRest::Model::Base
 
     view :by_hospital_of_death,
          :map => "function(doc) {
-                  if (doc['type'] == 'Person' && doc['hospital_of_death_name'] != null) {
-                    emit(doc['hospital_of_death_name'], 1);
+                  if (doc['type'] == 'Person' && doc['hospital_of_death'] != null) {
+                    emit(doc['hospital_of_death'], 1);
                   }
                 }"
 

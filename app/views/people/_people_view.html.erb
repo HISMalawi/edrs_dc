@@ -222,7 +222,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								if(data[i].place_of_death =="Hospital"){
+								if(data[i].place_of_death.trim().toLowerCase().match("hospital")){
 
 									td.innerHTML = data[i].hospital_of_death_name;
 
@@ -245,7 +245,14 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = td.innerHTML = data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+								if(data[i].home_country.trim().toLowerCase().match("malawi")){
+
+									td.innerHTML =  data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+
+								}else{
+									td.innerHTML = data[i].home_country;
+
+								}
 
 								tr.appendChild(td);
 

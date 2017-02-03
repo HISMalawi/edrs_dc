@@ -650,8 +650,8 @@
 					    case 0:
 					      	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
-					      	if(__$("person_hospital_of_death_name")){
-								__$("person_hospital_of_death_name").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
+					      	if(__$("person_hospital_of_death")){
+								__$("person_hospital_of_death").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
 					      	}
 					      	if(__$("person_place_of_death_ta")){
 					      		__$("person_place_of_death_ta").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
@@ -994,7 +994,7 @@
 
                     <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-                    <%= text_field_tag "person[hospital_of_death_name]", nil, {:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.trim()=='Hospital/Institution'", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.trim()=='Hospital/Institution'", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
                     <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
