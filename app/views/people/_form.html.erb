@@ -52,9 +52,9 @@
 		        var tableContent = document.createElement("table");
 		        tableContent.style.width = "98%";
 		        tableContent.style.borderCollapse = "collapse";
-		        tableContent.cellPadding = "3";
+		        tableContent.cellPadding = "2";
 		        tableContent.style.border = "1px solid black"
-		        tableContent.style.fontSize = "1.1em";
+		        tableContent.style.fontSize = "1em";
 		        tableContent.style.margin = "auto";
 
 		        div.appendChild(tableContent);
@@ -366,7 +366,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_died_while_pegnant").value ? __$('person_died_while_pegnant').value : "";
+		        td.innerHTML =__$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -589,8 +589,6 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        var address = __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "";
-		        address = __$('person_informant_addressline2').value ? address + __$('person_informant_addressline2').value : address;
-
 		        address = __$('person_informant_city').value ? address + __$('person_informant_city').value : address;
 		        td.innerHTML = address;
 		        tr.appendChild(td);
@@ -1044,7 +1042,7 @@
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pegnant]),
+               <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
                         :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"__$('person_gender').value.trim().toLowerCase()=='female'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
             </sub>
   	</section>

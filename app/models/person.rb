@@ -269,7 +269,7 @@ class Person < CouchRest::Model::Base
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
-                  params[:informant_village_id] = informant_village.id
+                  params[:informant_current_village_id] = informant_village.id
                end
             
           end
