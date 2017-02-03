@@ -123,6 +123,28 @@
 			font-weight: bold;
 			color: #ffffff;
 		}
+		#popup_details{
+			width: 90%;
+			margin: auto;
+		}
+		#popup_details th ,#popup_details td {
+
+			text-align: left;
+			font-size: 0.8em;
+			padding: 0.5em;
+		}
+		#popup_details tr:nth-child(odd){
+				background: #ffffff;
+		}
+		.orange{
+			background: #ce731b;
+			border:1px solid #ba6614;
+		}
+
+		.orange:hover{
+
+			background: #d16b07;
+		}
 
 </style>
 
@@ -175,18 +197,18 @@
 		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding: 0.3em"><b>Existing Record(s)</b></div>
 		<% @i = 0 %>
 		<% @existing_record.each do |record| %>
-				<% @i = @i + 1 %>
 				<%if @i%2 == 0 %>
-					<div style="background:#b6ccda" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<div style="background:#b6ccda" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
 					<%= record.last_name %> <%= record.first_name %>
 					 died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)	
 					</div>
 				<%else%>
-					<div style="background:#96b6ca" onclick="showPerson('<%= @i%>')" class="duplicates_panel">
+					<div style="background:#96b6ca" onclick="showPerson('<%= record.i%>')" class="duplicates_panel">
 					<%= record.last_name %> 	<%= record.first_name %> 
 					died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)
 					</div>
 				<%end%>
+				<% @i = @i + 1 %>
 		<%end%>
 	</div>
 	<% if false %>
@@ -555,6 +577,8 @@
 
 					var table = document.createElement("table");
 
+					table.id = "popup_details"
+
 					table.style.width = "80%";
 
 					table.style.margin ="auto";
@@ -565,9 +589,9 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
-					td.innerHTML = "Surnaame";
+					td.innerHTML = "Surname";
 
 					tr.appendChild(td);
 
@@ -581,7 +605,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "First Name";
 
@@ -597,7 +621,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Nationality";
 
@@ -613,7 +637,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Sex";
 
@@ -629,7 +653,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Date of Birth";
 
@@ -646,7 +670,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Date of Death";
 
@@ -662,7 +686,7 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
+					var td = document.createElement("th");
 
 					td.innerHTML = "Place of Death";
 
@@ -670,7 +694,16 @@
 
 					var td = document.createElement("td");
 
-					td.innerHTML = "<%= @person.place_of_death %>";
+					<% if @person.place_of_death == 'Hospital/Institution'%>
+
+					 	td.innerHTML = "<%= @person.hospital_of_death %>";
+
+					<%elsif @person.place_of_death == 'Home'%>
+						 td.innerHTML = "<%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%>,"+
+						 				" <%= @person.place_of_death_village%> District";
+					<%elsif @person.place_of_death == 'Other' %>
+						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
+					<% end %>
 
 					tr.appendChild(td);
 
@@ -701,7 +734,166 @@
 			}
 
 
-			function showPerson(pos){
-				alert(pos)
+			function showPerson(id){
+
+				var url = "/people/find/"+id
+				ajaxGETRequest(url, function(data){
+
+					showPopupMessage("","Existing record","");
+
+					var data  = JSON.parse(data);
+
+					var popup_container = __$("msg.popup")
+
+					popup_container.style.width = "40%";
+
+					popup_container.style.left = "calc(58% - 50px)";
+
+					popup_container.style.top = "calc(22% - 50px)";
+
+					popup_container.style.height= "500px";
+
+					var control = __$("msg.content");
+
+					control.style.height = "350px"
+
+					var table = document.createElement("table");
+
+					table.id = "popup_details"
+
+					table.style.width = "80%";
+
+					table.style.margin ="auto";
+
+					control.appendChild(table);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Surname";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = data.last_name;
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "First Name";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = data.first_name
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Nationality";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = data.nationality
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Sex";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = data.gender
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Date of Birth";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML =(new Date(data.birthdate)).format();
+
+					tr.appendChild(td);
+
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Date of Death";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = (new Date(data.date_of_death)).format();
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+
+					td.innerHTML = "Place of Death";
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					if (data.place_of_death == 'Hospital/Institution'){
+
+						console.log( data.hospital_of_death);
+
+					 	td.innerHTML = data.hospital_of_death;
+
+					}else if(data.place_of_death == 'Home'){
+						 td.innerHTML = data.place_of_death_village +"Village, TA "+data.place_of_death_ta+
+						 				data.place_of_death_village+" District";
+
+					}else if(data.place_of_death == 'Other'){
+
+						 td.innerHTML = data.other_place_of_death
+					}
+
+					tr.appendChild(td);
+
+
+				})
 			}
 </script>

@@ -110,6 +110,8 @@ Rails.application.routes.draw do
 
   get "/villages" => "people#villages"
 
+  get "/people/find/:id" =>"people#find"
+
 
 
   get "/check_completeness/:id" =>"dc#check_completeness"

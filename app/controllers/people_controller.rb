@@ -270,6 +270,11 @@ class PeopleController < ApplicationController
       render :layout => "facility"
   	
   end
+  def find
+      person = Person.find(params[:id])
+
+      render :text => person_selective_fields(person).to_json
+  end
 
   def edit
 
@@ -451,7 +456,7 @@ class PeopleController < ApplicationController
     @person = Person.find(person_id)
     sex =  @person.gender.match(/F/i) ? "(F)" : "(M)"
 
-    place_of_death = @person.hospital_of_death_name  rescue ""
+    place_of_death = @person.hospital_of_death  rescue ""
     place_of_death = @person.place_of_death if place_of_death.blank?
 
     label = ZebraPrinter::StandardLabel.new
@@ -514,9 +519,10 @@ class PeopleController < ApplicationController
                       last_name: person.last_name ,
                       middle_name:  (person.middle_name rescue ""),
                       gender: person.gender,
+                      birthdate: person.birthdate,
                       date_of_death: person.date_of_death,
                       place_of_death: person.place_of_death,
-                      hospital_of_death_name:(person.hospital_of_death rescue ""),
+                      hospital_of_death:(person.hospital_of_death rescue ""),
                       other_place_of_death: person.other_place_of_death,
                       place_of_death_village: (person.place_of_death_village rescue ""),
                       place_of_death_ta: (person.place_of_death_ta rescue ""),
@@ -528,7 +534,9 @@ class PeopleController < ApplicationController
                       home_ta:  (person.home_ta rescue ""),
                       home_district: (person.home_district rescue ""),
                       home_country:  ( person.home_country rescue ""),
-                      den: (den.identifier rescue "")
+                      den: (den.identifier rescue ""),
+                      status: (person.status),
+                      nationality: person.nationality
                      }
   end
 
