@@ -1,6 +1,5 @@
 <style type="text/css">
-  
-     
+    
 </style>
 <div id="default" style="width: 100%; height: 400px; text-align: center; vertical-align: top;">
 
@@ -129,13 +128,13 @@
 <script type="text/javascript">
   
             var stats = {
-                        Reported     : "REPORTED",
+                        Reported     : "NEW",
                         Approved     : "DC APPROVED",
                         Rejected     : "DC REJECTED",
                         Incomplete   : "DC INCOMPLETE"
           }
 
-            simpleAjaxRequest("/dc/counts_by_status?status=REPORTED", function(data){
+            simpleAjaxRequest("/dc/counts_by_status?status=NEW", function(data){
 
                   var data =JSON.parse(data);
 

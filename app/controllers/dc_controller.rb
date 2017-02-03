@@ -371,15 +371,7 @@ class DcController < ApplicationController
 
 		status = params[:status]
 
-		if status == "REPORTED"
-
-			count = Person.count
-
-		else
-
-			count = PersonRecordStatus.by_record_status.key(status).each.count
-
-		end
+		count = PersonRecordStatus.by_record_status.key(status).each.count
 
 		render :text => {:count => count}.to_json
 		
