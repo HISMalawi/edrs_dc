@@ -204,7 +204,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="6";
-		        td.innerHTML = __$("person_date_of_death").value ? __$('person_date_of_death').value : "";
+		        td.innerHTML = __$("person_date_of_death").value ? (new Date(__$('person_date_of_death').value)).format() : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -233,7 +233,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
-		        td.innerHTML =__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "";
+		        td.innerHTML =(__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -248,7 +248,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_place_of_death_district").value ? __$('person_place_of_death_district').value : "";
+		        td.innerHTML =(__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "");
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -631,7 +631,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
-		        td.innerHTML = __$("person_informant_signature_date").value ? __$('person_informant_signature_date').value : "";
+		        td.innerHTML = __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "";
 		        tr.appendChild(td);
 
 		    }
