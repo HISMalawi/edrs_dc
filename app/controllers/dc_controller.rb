@@ -393,6 +393,26 @@ class DcController < ApplicationController
 
 	end
 
+	def ammendment
+		@person = Person.find(params[:id])
+
+      	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+      	@person_place_details = place_details(@person)
+
+      	@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+
+      	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
+                                                          [params[:id],"DC REJECTED"],
+                                                          [params[:id],"HQ REJECTED"],
+                                                          [params[:id],"DC REAPPROVED"],
+                                                          [params[:id],"DC DUPLICATE"],
+                                                          [params[:id],"RESOLVE DUPLICATE"]]).each
+
+		@section ="Ammendments"
+		
+	end
+
 	def counts_by_status
 
 		status = params[:status]

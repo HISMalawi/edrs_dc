@@ -148,7 +148,7 @@
 		
 		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>'">Request for Reprint</button>
 
-		<button class="orange" style="float: right; margin-right:3%" onmousedown="">Amment Record</button>
+		<button class="orange" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>'">Amment Record</button>
 
 <%end%>
 <% if CONFIG['site_type'] == "dc"%>
@@ -692,7 +692,7 @@
                 			 "  <%=  @burial_report.cemetery_authority_last_name rescue ''%></u> "+
                 			 " TA/Town <u><%= @burial_report.ta rescue '_______________'%>"+
                 			 " </u> District <u><%= @burial_report.district rescue '_______________' %></u>, "+
-                			 " hereby certify that the body of<u><%= @person.first_name %>  <%= @person.last_name%> </u>"+
+                			 " hereby certify that the body of <u><%= @person.first_name %>  <%= @person.last_name%> </u>"+
                 			 " (name of deceased), with ID No<u><%= @person.national_id rescue '______________' %></u> "+
                 			 " date of birth <u><%= Date.parse(@person.birthdate.to_s).strftime('%d/%b/%Y') %></u>"+
                 			 " sex <u><%=@person.gender%></u>  "+

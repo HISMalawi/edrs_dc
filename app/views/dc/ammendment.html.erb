@@ -1,0 +1,474 @@
+<style type="text/css">
+		
+		#table_container{
+
+				height: calc(88% - 20px);
+
+				overflow-y: hidden;
+
+				margin-bottom : 0.3em;
+
+				box-shadow: 3.5px 3.5px 1.5px #888888;
+
+				width: 86%;
+				margin-left: 5%;
+
+				border: 1px solid #bcb5b5;
+				margin-top: 1%;
+
+
+		}
+		#summary{
+			width:96% !important;
+			margin: auto;
+			margin-bottom: 1%;
+
+		}
+		#summary td {
+
+				background: #ffffff;
+				text-align: left !important;
+				padding: 10px;
+				padding-left: 10px;
+
+		}
+		.clickable{
+
+			font-weight: bold;
+		}
+		.clickable:hover{
+
+				color: #3e98c6;
+
+				cursor: pointer;
+
+		}
+		.scroll{
+			background: #bed5de;
+
+            border : 0.005em solid #b3b1b1;
+
+            font-size: 3.8em;
+
+            min-width: 20px;
+
+            margin: 0.3%;
+
+            box-shadow: 2.5px 2.5px 1px #888888;
+
+           	padding: 0.1%;
+
+           	text-align: center
+		}
+		#up {
+			position: absolute;
+
+			right: 3%;
+
+			top :13%;
+		}
+
+		#down {
+			position: absolute;
+
+			right: 3%;
+
+			bottom :20%;
+		}
+		#popup_details{
+			width: 90%;
+			margin: auto;
+		}
+		#popup_details th ,#popup_details td {
+
+			text-align: left;
+			font-size: 0.8em;
+			padding: 0.5em;
+		}
+		#popup_details tr:nth-child(odd){
+				background: #ffffff;
+		}
+		.orange{
+			background: #ce731b;
+			border:1px solid #ba6614;
+		}
+
+		.orange:hover{
+
+			background: #d16b07;
+		}
+
+
+
+</style>
+
+<div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
+
+<% if @comments.count > 0 %>
+	<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+<%end%>
+
+</div>
+
+<div id="table_container">
+
+		
+		<table id="summary" style="">
+			
+			<tr>
+				<th colspan="11">Section 1 : Particulars of the deceased</th>
+			</tr>
+
+			<tr>
+				<td rowspan="12" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td>1</td>
+				<td  class="clickable" onclick="editField('last_name')">Surname</td>
+				<td colspan="2" ><%= @person.last_name %></td>
+				<td class="clickable" onclick="editField('first_name')" >First name</td>
+				<td  colspan="2"><%= @person.first_name %></td>
+				<td class="clickable" onclick="editField('middle_name')" >Other</td>
+				<td colspan="2"><%= @person.middle_name rescue "" %></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
+				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
+				<td>3</td>
+				<td class="clickable" onclick="editField('nationality')">Nationality</td>
+				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
+				<td>4</td>
+				<td class="clickable" onclick="editField('gender')">Sex</td>
+				<td style="border-bottom:1.5px solid black"> <%= @person.gender %></td>
+			</tr>
+			<tr>
+				<td>5</td>
+				<td class="clickable" onclick="editField('birthdate')" >Birth Date</td>
+				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
+				<td rowspan="2">6</td>
+				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
+				<td rowspan="2" style="border-bottom :1.5px solid black"><%= @person.birth_certificate_number %></td>
+			</tr>
+			<tr>
+				<td>7</td>
+				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
+				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
+			</tr>
+			<tr>
+				<td rowspan="4">8</td>
+				<td class="clickable" onclick="editField('place_of_death')" >Place of Death</td>
+				<td colspan="9"><%= @person.place_of_death %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
+				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
+				<td>Address</td>
+				<td class="clickable" onclick="editField('home_district')" >District</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
+				<td class="clickable" onclick="editField('home_district')">TA</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
+				<td class="clickable" onclick="editField('home_district')" >Village</td>
+				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
+			</tr>
+			<tr>
+				<td>Other</td>
+				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
+			</tr>
+			<tr>
+				<td>9</td>
+				<td colspan="3">Physical residential address</td>
+				<td class="clickable" onclick="editField('current_district')" >District </td>
+				<td><%= @person_place_details['current_district'] %></td>
+				<td class="clickable" onclick="editField('current_ta')">TA</td>
+				<td><%= @person_place_details['current_ta'] %></td>
+				<td class="clickable" onclick="editField('current_village')" >Village</td>
+				<td><%= @person_place_details['current_village'] %></td>
+			</tr>
+			<tr>
+				<td>10</td>
+				<td colspan="3">Home address</td>
+				<td class="clickable" onclick="editField('home_district')" >District </td>
+				<td><%= @person_place_details['home_district'] %></td>
+				<td class="clickable" onclick="editField('home_ta')">TA</td>
+				<td><%= @person_place_details['home_ta'] %></td>
+				<td class="clickable" onclick="editField('home_village')" >Village</td>
+				<td><%= @person_place_details['home_village'] %></td>
+			</tr>
+			<tr>
+				<td rowspan="2">11</td>
+				<td colspan="8" class="clickable" onclick="editField('died_while_pregnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
+				<td><%= @person.died_while_pregnant rescue "No" %></td>
+			</tr>
+			<tr>
+				
+				<td colspan="9"></td>
+			</tr>
+			<tr>
+				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
+				<td rowspan="3">1</td>
+				<td colspan="6" class="clickable" onclick="editField('mother_name')" >Mother's name</td>
+				<td rowspan="3">2</td>
+				<td rowspan="3" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
+				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.mother_id_number %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('mother_last_name')" >Surname</td>
+				<td colspan="2"><%= @person.mother_last_name %></td>
+				<td class="clickable" onclick="editField('mother_first_name')" >First name</td>
+				<td colspan="2"><%= @person.mother_first_name %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('mother_middle_name')">Other names</td>
+				<td colspan="5"><%= @person.mother_middle_name %></td>
+			</tr>
+			<tr>
+				<td rowspan="3">3</td>
+				<td colspan="6" class="clickable" onclick="editField('father_id_number')">Father's name</td>
+				<td rowspan="3">4</td>
+				<td rowspan="3" class="clickable" onclick="editField('father_id_number')">ID No.</td>
+				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.father_id_number %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('father_last_name')">Surname</td>
+				<td colspan="2"><%= @person.father_last_name %></td>
+				<td class="clickable" onclick="editField('father_first_name')">First name</td>
+				<td colspan="2"><%= @person.father_first_name %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('father_middle_name')">Other names</td>
+				<td colspan="5"><%= @person.father_middle_name %></td>
+			</tr>
+
+			<tr>
+				<td rowspan="7" style="background-color:#dbdada;">PART 3 <br/>INFORMANTS DETAILS</td>
+				<td rowspan="2">1</td>
+				<td class="clickable" onclick="editField('informant_last_name')" >Surname</td>
+				<td colspan="2"><%= @person.informant_last_name %></td>
+				<td class="clickable" onclick="editField('informant_first_name')">First name</td>
+				<td colspan="2"><%= @person.informant_first_name %></td>
+				<td rowspan="2">2</td>
+				<td rowspan="2" class="clickable" onclick="editField('informant_id_number')">ID No.</td>
+				<td rowspan="2"><%= @person.informant_id_number %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('informant_middle_name')">Other name</td>
+				<td colspan="5"><%= @person.informant_middle_name %></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
+				<td colspan="8">
+					<%= @person.informant_relationship_to_deceased rescue @person.informant_relationship_to_deceased_other %>
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2">4</td>
+				<td><b>Address</b></td>
+				<td class="clickable" onclick="editField('informant_current_district')">District</td>
+				<td colspan="2"><%= @person_place_details['informant_current_district'] %></td>
+				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
+				<td colspan="2"><%= @person_place_details['informant_current_ta'] %></td>
+				<td class="clickable" onclick="editField('informant_current_village')">Village</td>
+				<td><%= @person_place_details['informant_current_village'] %></td>
+			</tr>
+			<tr>
+				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
+				<td colspan="6">
+					<%= @person.informant_addressline1 rescue "" %>
+					<%= " #{@person.informant_city}" rescue "" %>	
+				</td>
+				<td class="clickable" onclick="editField('informant_phone_number')">Telephone Number</td>
+				<td><%= @person.informant_phone_number %></td>
+			</tr>
+			<tr>
+				<td rowspan="2">5</td>
+				<th colspan="9" style="background: #ffffff; color:black">I certify that the above information is correct and I am aware that I could face criminal prosecution if this information is incorrect in material respect.</th>
+			</tr>
+			<tr>
+				<td>Date:</td>
+				<td colspan="8"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
+			</tr>
+		</table>
+
+</div>
+  <div id="up" class="scroll" onmousedown="up()">
+     <i class=" fa fa-arrow-up"></i>
+ </div>
+ <div id="down" class="scroll" onmousedown="down()">
+     <i class=" fa fa-arrow-down"></i>
+ </div>
+<script type="text/javascript">
+			<% if params[:error] %>
+
+					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
+
+			<% end %>
+	
+			function checkCompleteness(){
+
+					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
+
+							
+					showConfirmMessage("","Data Completeness check",url,"#79a3c1")
+
+					popUpRecordDetails();
+			
+
+			}
+
+			function approveRecord(){
+
+					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Approve record",url,"#79a3c1")
+
+					popUpRecordDetails();
+
+			}
+			function markAsPending(){
+
+					var url = "/dc/add_pending_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Click \"OK\" to mark the record as pending",url,"#e2a648")
+
+					popUpRecordDetails();
+			}
+
+			function rejectRecord(){
+
+					var url = "/dc/add_rejection_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Proceed to reject a record?",url,"red")
+
+					popUpRecordDetails();
+
+			}
+			function editField(field){
+
+					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record")%>
+
+							window.location = "/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"
+							//showConfirmMessage("Are you sure you want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
+
+					<%end%>
+
+			}
+
+			function up(){
+
+				//alert("Yeeeeeei up")
+				__$("table_container").scrollBy(0, -100);
+				
+			}
+
+			function down(){
+
+				__$("table_container").scrollBy(0,100);
+
+			}
+
+			function viewPersonComment(){
+
+				showConfirmMessage("","Comments trail","","#79a3c1");
+
+				var popup_container = __$("msg.popup")
+
+				popup_container.style.width = "40%";
+
+				popup_container.style.left =  "calc(43% - 210px)";
+
+				popup_container.style.top =  "10%";
+
+				popup_container.style.height= "500px";
+
+				var control = __$("msg.content");
+
+				control.style.height = "350px"
+
+				var table = document.createElement("table");
+
+				table.id = "popup_details"
+
+				table.style.width = "100%";
+
+				table.style.margin ="auto";
+
+				control.appendChild(table);
+
+				var tr = document.createElement("tr");
+
+				table.appendChild(tr);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="#";
+
+				td.style.background = "#868687";
+
+				td.style.width = "2%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="Comment";
+
+				td.style.background = "#868687";
+
+				td.style.width = "60%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				td.innerHTML ="Date"
+
+				tr.appendChild(td);
+				<% @i = 0 %>
+
+				<% @comments.each do |comment| %>
+
+					<% @i = @i + 1 %>
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @i %>"
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= comment.reason%>";
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= Date.parse(comment.created_at.to_s).strftime('%d/%b/%Y') rescue '' %>";
+
+				<%end%>
+			}
+
+</script>

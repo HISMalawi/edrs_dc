@@ -168,6 +168,8 @@ Rails.application.routes.draw do
 
   post "/mark_for_reprint" => "dc#mark_for_reprint"
 
+  get "/dc/ammendment/:id" => "dc#ammendment"
+
 
   get "/logout" => "logins#logout"
   
