@@ -135,7 +135,7 @@
                 trf.appendChild(tdf);
 
                 var btn = document.createElement("button");
-                btn.className = "blue";
+                btn.className = "button blue";
                 btn.id = "ok_button";
                 btn.innerHTML = "<span>OK</span>";
 
@@ -277,7 +277,7 @@
                   tdf.appendChild(btnCancel);
 
                   var btnOK = document.createElement("button");
-                  btnOK.className = "blue";
+                  //btnOK.className = "blue";
                   btnOK.innerHTML = "<span>OK</span>";
                   btnOK.style.minWidth = "100px";
 

@@ -1180,23 +1180,23 @@
 
             <sub id="home_address" name="Home address">
 
-            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string="} %>
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
 
    				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
-                                :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
                   <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
-                                :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
                                 :tt_onUnLoad => "setAjaxUrl(3)"} %>
 
                	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
-                                :condition => "__$('person_home_country').value.toLowerCase().match('malawi')"} %>
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')"} %>
             </sub>
 
             <sub id="physical_address" name="Physical address">
 
-            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string="} %>
+            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=", :condition =>false} %>
 
    				<%= text_field_tag "person[current_district]", nil, {:helpText => "District of Residence",
                                 :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
@@ -1212,28 +1212,32 @@
 
             <sub id='pregnancy_status' name="Pregnancy status">
                <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
-                        :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"validatePregnancy()") %>
+                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"validatePregnancy()") %>
             </sub>
   	</section>
 
     <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
-                <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
+            	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Mother details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
+                <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+
+                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
-                <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=") rescue "" %>
+            	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Father details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
-                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
+                <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+
+                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
             </sub>
     </section>
 
