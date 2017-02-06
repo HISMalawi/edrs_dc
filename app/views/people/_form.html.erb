@@ -950,8 +950,84 @@
 			__$("Unknown").style.display ="none";
 		}
 
+		var patnum = ""
+		var setFocusTimeout = 5000;
+		var checkForBarcodeTimeout = 1500;
+		var barcodeFocusTimeoutId = null;
+		var barcodeFocusOnce = false;
+		var barcodeId = '';
+		var focusOnce = false;
+		var barcode_element;
+
+		function loadBarcodePage() {
+
+		  focusForBarcodeInput()
+
+		  checkForBarcode()
+
+		}
+
+		function focusForBarcodeInput(){
+
+			if (!barcodeId) {
+				barcodeId = "person_barcode";
+			}
+
+		  	barcode_element = document.getElementById(barcodeId);
+
+			if (barcode_element) {
+				barcode_element.focus();
+				if (!focusOnce) barcodeFocusTimeoutId = window.setTimeout("focusForBarcodeInput()", setFocusTimeout);
+			}
+		}
+
+		function checkForBarcode(validAction){
+
+			var input_element = __$('touchscreenInput' + tstCurrentPage);
+
+			if (input_element && input_element.value.match(/.+\$$/i) != null){
+
+				 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+
+				 setTimeout(function(){
+
+				 		 gotoNextPage();
+				 },500);
+
+				
+					
+			}else{
+				window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+			}
+			console.log(barcode_element.value);
+			
+		}
+
+		function removeDollar(){
+
+			var input_element = __$('touchscreenInput' + tstCurrentPage);
+
+			if (input_element && input_element.value.match(/.+\$$/i) != null){
+
+				 setTimeout(function(){
+
+				 		barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+
+				 },1000);		
+			}
+			else{
+
+				console.log("No dollar");
+			}
+		}
+		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
+	<section name="Barcode">
+		<sub id="person_barcode_section" name="Barcode">
+			<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode", :tt_onLoad =>"showCategory('Barcode')",:tt_onUnLoad=>"removeDollar()"} %>
+		</sub>
+	</section>
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",

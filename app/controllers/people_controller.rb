@@ -81,12 +81,24 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
+      if !person_params[:barcode].blank? && !person_params[:barcode].nil?
+
+            PersonIdentifier.create({
+                                      :person_record_id => person.id.to_s,
+                                      :identifier_type => "Form Barcode", 
+                                      :identifier => person_params[:barcode].to_s,
+                                      :site_code => CONFIG['site_code'],
+                                      :district_code => CONFIG['district_code'],
+                                      :creator => User.current_user.id})
+        
+      end
+
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
             PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "National ID", 
-                                      :indentifier => person_params[:id_number],
+                                      :identifier => person_params[:id_number],
                                       :site_code => CONFIG['site_code'],
                                       :district_code => CONFIG['district_code'],
                                       :creator => User.current_user.id} )
@@ -98,7 +110,7 @@ class PeopleController < ApplicationController
             PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Birth Certificate Number", 
-                                      :indentifier => person_params[:birth_certificate_number],
+                                      :identifier => person_params[:birth_certificate_number],
                                       :site_code => CONFIG['site_code'],
                                       :district_code => CONFIG['district_code'],
                                       :creator => User.current_user.id} )
