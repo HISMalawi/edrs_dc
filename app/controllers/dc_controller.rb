@@ -177,6 +177,32 @@ class DcController < ApplicationController
 		
 	end
 
+	def add_reprint_comment
+		@action ="/mark_for_reprint"
+
+	end
+	def mark_for_reprint
+
+		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+		status.update_attributes({:voided => true})
+
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "HQ REPRINT",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => params[:user_id]})
+
+		Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"HQ REPRINT",
+							:level => "Person",
+							:reason => params[:reason]})
+
+		redirect_to "#{params[:next_url].to_s}"
+
+		
+	end
 	def  approved_cases
 
 		@section ="Approved Cases"

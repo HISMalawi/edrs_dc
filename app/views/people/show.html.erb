@@ -144,6 +144,13 @@
 <% if @comments.count > 0 %>
 	<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 <%end%>
+<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+		
+		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>'">Request for Reprint</button>
+
+		<button class="orange" style="float: right; margin-right:3%" onmousedown="">Amment Record</button>
+
+<%end%>
 <% if CONFIG['site_type'] == "dc"%>
 
 	<% if @burial_report.blank? %>
@@ -181,7 +188,7 @@
 				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
 				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
 				<td>3</td>
-				<td class="clickable" onclick="editField('nationality_id')">Nationality</td>
+				<td class="clickable" onclick="editField('nationality')">Nationality</td>
 				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
 				<td>4</td>
 				<td class="clickable" onclick="editField('gender')">Sex</td>
@@ -202,7 +209,7 @@
 			</tr>
 			<tr>
 				<td rowspan="4">8</td>
-				<td class="clickable" onclick="editField('place_of_death')" >Place of birth</td>
+				<td class="clickable" onclick="editField('place_of_death')" >Place of Death</td>
 				<td colspan="9"><%= @person.place_of_death %></td>
 			</tr>
 			<tr>

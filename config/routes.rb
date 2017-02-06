@@ -164,7 +164,9 @@ Rails.application.routes.draw do
 
   post "/mark_as_pending" => "dc#mark_as_pending"
 
+  get "/dc/add_reprint_comment/:id" => "dc#add_reprint_comment"
 
+  post "/mark_for_reprint" => "dc#mark_for_reprint"
 
 
   get "/logout" => "logins#logout"
