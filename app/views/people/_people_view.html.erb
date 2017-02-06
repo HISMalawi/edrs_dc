@@ -1,10 +1,3 @@
-
-<style type="text/css">
-	
-
-
-
-</style>
 <div id="table_container">
 
 		<table>
@@ -43,16 +36,34 @@
 		</table>
 	
 </div>
+<style type="text/css">
+	#pagination{
+		width: 20% !important;
+		left : 40%;
+	}
+</style>
 <div id="pagination">
-	<button id="prev" class="gray prev" onmousedown="navPrevPage()">|<<</button>
-	<button id="next" class="gray next" onmousedown="navNextPage()">>>|</button>
+	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
+	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
 		
 </div>
+<div style="position : absolute; width : 80%; bottom:58px;; right :1%; margin-right : 1%">
+  <% if params[:next_url] %>
+        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+
+  <% elsif @targeturl.present? %>
+
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
   <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
 
-		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Register New</button>
+		<button class="green" style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_split'" ><span>Register New</span></button>
 
   <%end%>
+</div>
 <script type="text/javascript">
 
 		var url =""

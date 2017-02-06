@@ -91,11 +91,7 @@ class DcController < ApplicationController
 
 				PersonIdentifier.assign_den(person, User.current_user.id)
 
-				Audit.create({
-							:record_id => params[:id].to_s    , 
-							:audit_type=>"DC APPROVED",
-							:level => "Person",
-							:reason => "Approve record"})
+				#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 
 			    redirect_to "#{params[:next_url].to_s}"
 

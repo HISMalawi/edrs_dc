@@ -103,65 +103,75 @@
 </style>
 
 <div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
-<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
+  <% if params[:next_url] %>
+        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
-	<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
+  <% elsif @targeturl.present? %>
 
-		<button class="green" style="float: right; margin-right:1%" onmousedown="checkCompleteness()">Completeness Check</button>
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
 
-	<%else%>
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
+	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
-		<button class="gray" style="float: right; margin-right:1%">Completeness Check</button>
+		<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
 
-	<%end%>
-	<%if ["NEW"].include? @status.status %>
-	
-		<button class="green orange" style="float: right; margin-right:3%" onmousedown="markAsPending()">Mark Pending</button>
-	<%end%>
+			<button class="green" style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
 
+		<%else%>
+
+			<button class="gray" style="float: right; margin-right:1%"><span>Completeness Check</span></button>
+
+		<%end%>
+		<%if ["NEW"].include? @status.status %>
 		
-<% end %>
+			<button class="green orange" style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
+		<%end%>
 
-<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-	
-	<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
-
-			<button class="green" style="float: right; margin-right:3%" onmousedown="approveRecord()">Approve</button>
-
-	<%end%>
-
-<%end%>
-
-<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-
-	<%if  @status.present? && @status.status == "DC COMPLETE" %>
-
-		<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()">Reject</button>
-
-	<%end%>
-
-<%end%>
-<% if @comments.count > 0 %>
-	<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
-<%end%>
-<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
-		
-		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>'">Request for Reprint</button>
-
-		<button class="orange" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>'">Amment Record</button>
-
-<%end%>
-<% if CONFIG['site_type'] == "dc"%>
-
-	<% if @burial_report.blank? %>
-
-		<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'">Add Burial Report</button>
-	<%else  @burial_report.present? %>
-	
-		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewBurialReport()">View Burial Report</button>
-
+			
 	<% end %>
-<%end%>
+
+	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+		
+		<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
+
+				<button class="green" style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
+
+		<%end%>
+
+	<%end%>
+
+	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+
+		<%if  @status.present? && @status.status == "DC COMPLETE" %>
+
+			<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
+
+		<%end%>
+
+	<%end%>
+	<% if @comments.count > 0 %>
+		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+	<%end%>
+	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+			
+			<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>'"><span>Request for Reprint</span></button>
+
+			<button class="orange" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>'"><span>Amment Record</span></button>
+
+	<%end%>
+	<% if CONFIG['site_type'] == "dc"%>
+
+		<% if @burial_report.blank? %>
+
+			<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Add Burial Report</span></button>
+		<%else  @burial_report.present? %>
+		
+			<button style="float: right; margin-right:3%" onmousedown="viewBurialReport()"><span>View Burial Report</span></button>
+
+		<% end %>
+	<%end%>
 
 </div>
 
@@ -699,7 +709,7 @@
                 			 " who died on  <u><%= Date.parse(@person.date_of_death.to_s).strftime('%d/%b/%Y') %> </u>at Home, "+
                 			 " <u><%= @person.hospital_of_death rescue @person.place_of_death_village %></u>"+
                 			 " Name of village/Hospital, in <u><%= @person.place_of_death_ta %></u>TA/Town,"+
-                			 " <%= @person.place_of_death_district %>.District,  was interred at"+
+                			 " <%= @person.place_of_death_district %>.District,  was enterred at"+
                 			 " <u><%=  @burial_report.cemetery_name rescue '' %></u>"+
                 			 " (name of the cemetery or exact place of burial) "+
                 			 " on<u><%=  Date.parse(@burial_report.date_of_burial).strftime('%d/%b/%Y') rescue ''%></u>,"+

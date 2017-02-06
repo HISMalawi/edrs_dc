@@ -68,23 +68,7 @@
                   </div>
 
               <%else%>
-
-                  <% if params[:next_url] %>
-
-                      <div id="back" onmousedown="window.location= '<%= params[:next_url] %>'">
-
-                  <% elsif @targeturl.present? %>
-
-                      <div id="back" onmousedown="window.location= '<%=@targeturl%>'">
-
-                  <%else %>
-
-                      <div id="back" onmousedown="window.location= '/'">
-                  <%end %>
-                      
-                          <button class="blue">Back</button>
-                      </div>
-
+              
               <% end %>
 
                 <div id="section" >

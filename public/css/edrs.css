@@ -37,9 +37,6 @@
               }
 
                #back{
-                    font-size: 3.8em;
-
-                    min-width: 20px;
 
                     position: absolute;
 
@@ -201,7 +198,7 @@
               }
               #table_container table{
 
-                  width:  90%;
+                  width:  96%;
                   border-collapse :collapse;
                   margin : auto;
                   margin-top : 1%;
@@ -245,7 +242,7 @@
 
                 bottom :60px;
 
-                left:30%;
+                left: 30%;
 
                 background: #dbdada;
 
@@ -270,4 +267,6 @@
               .fa-home, .fa-signout{
                   max-height: 40px !important;
               }
-              
+              #content{
+                  width:100%;
+              }

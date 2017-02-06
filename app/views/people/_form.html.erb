@@ -1,6 +1,44 @@
 <script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
 
+ Object.defineProperty(Date.prototype, "format", {
+                value: function (format) {
+                    var date = this;
+
+                    var result = "";
+
+                    if (!format) {
+
+                        format = ""
+
+                    }
+
+                    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                        "October", "November", "December"];
+
+                    if (format.match(/YYYY\-mm\-dd/)) {
+
+                        result = date.getFullYear() + "-" + padZeros((parseInt(date.getMonth()) + 1), 2) + "-" + padZeros(date.getDate(), 2);
+
+                    } else if (format.match(/mmm\/d\/YYYY/)) {
+
+                        result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+                    } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+                        result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+                    } else {
+
+                        result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+                    }
+
+                    return result;
+                }
+    });
 	function loadPersonSummary(){
 
 		    if (__$("keyboard")) {
@@ -79,7 +117,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan = "2";
-		        td.innerHTML = __$('person_last_name').value ? __$("person_last_name").value : "";
+		        td.innerHTML = __$('person_last_name') && __$('person_last_name').value ? __$("person_last_name").value : "";
 		        tr.appendChild(td)
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -88,7 +126,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan = "2";
-		        td.innerHTML = __$('person_first_name').value ? __$("person_first_name").value : "";
+		        td.innerHTML =__$('person_first_name') && __$('person_first_name').value ? __$("person_first_name").value : "";
 		        tr.appendChild(td)
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -98,7 +136,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan = "2";
-		        td.innerHTML = __$('person_middle_name').value ? __$("person_middle_name").value : "";
+		        td.innerHTML = __$('person_middle_name') && __$('person_middle_name').value ? __$("person_middle_name").value : "";;
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -113,7 +151,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_id_number').value ? __$("person_id_number").value : "";
+		        td.innerHTML = __$('person_id_number') && __$('person_id_number').value ? __$("person_id_number").value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -126,7 +164,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_nationality').value ? __$("person_nationality").value : "";
+		        td.innerHTML = __$('person_nationality') && __$('person_nationality').value ? __$("person_nationality").value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -138,7 +176,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_gender').value ? __$("person_gender").value : "";
+		        td.innerHTML = __$('person_gender') && __$('person_gender').value ? __$("person_gender").value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -157,7 +195,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_birth_year').value ? __$("person_birth_year").value : "";
+		        td.innerHTML = __$('person_birth_year') && __$('person_birth_year').value ? __$("person_birth_year").value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -165,7 +203,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_birth_month').value ? __$("person_birth_month").value : "";
+		        td.innerHTML = __$('person_birth_month') && __$('person_birth_month').value ? __$("person_birth_month").value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -173,7 +211,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$('person_birth_day').value ? __$("person_birth_day").value : "";
+		        td.innerHTML = __$('person_birth_day') && __$('person_birth_day').value ? __$("person_birth_day").value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -188,7 +226,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.rowSpan="2"
-		        td.innerHTML = __$('person_birth_certificate_number').value ? __$("person_birth_certificate_number").value : "";
+		        td.innerHTML = __$('person_birth_certificate_number') && __$('person_birth_certificate_number').value ? __$("person_birth_certificate_number").value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -204,7 +242,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="6";
-		        td.innerHTML = __$("person_date_of_death").value ? (new Date(__$('person_date_of_death').value)).format() : "";
+		        td.innerHTML = __$("person_date_of_death") && __$("person_date_of_death").value ? (new Date(__$('person_date_of_death').value)).format() : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -221,7 +259,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
-		        td.innerHTML =__$("person_place_of_death").value ? __$('person_place_of_death').value : "";
+		        td.innerHTML =__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -233,7 +271,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
-		        td.innerHTML =(__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "");
+		        td.innerHTML =__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -248,7 +286,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =(__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "");
+		        td.innerHTML =__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -265,7 +303,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		         td.colSpan ="4";
-		        td.innerHTML =__$("person_place_of_death_village").value ? __$('person_place_of_death_village').value : "";
+		        td.innerHTML =__$("person_place_of_death_village") && __$("person_place_of_death_village").value ? __$('person_place_of_death_village').value : "";
 		        tr.appendChild(td);
 
 
@@ -278,7 +316,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
-		        td.innerHTML =__$("person_other_place_of_death").value ? __$('person_other_place_of_death').value : "";
+		        td.innerHTML =__$("person_other_place_of_death") && __$("person_other_place_of_death").value ? __$('person_other_place_of_death').value : "";
 		        tr.appendChild(td);
 
 		         var tr = document.createElement("tr");
@@ -297,7 +335,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_current_district").value ? __$('person_current_district').value : "";
+		        td.innerHTML =__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -305,7 +343,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_current_ta").value ? __$('person_current_ta').value : "";
+		        td.innerHTML =__$("person_current_ta") && __$("person_current_ta").value ? __$('person_current_ta').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -314,7 +352,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		         td.colSpan ="4";
-		        td.innerHTML =__$("person_current_village").value ? __$('person_current_village').value : "";
+		        td.innerHTML =__$("person_current_village") && __$("person_current_village").value ? __$('person_current_village').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -333,7 +371,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_home_district").value ? __$('person_home_district').value : "";
+		        td.innerHTML =__$("person_home_district") && __$("person_home_district").value ? __$('person_home_district').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -341,7 +379,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_home_ta").value ? __$('person_home_ta').value : "";
+		        td.innerHTML =__$("person_home_ta") && __$("person_home_ta").value ? __$('person_home_ta').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -350,7 +388,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="4";
-		        td.innerHTML =__$("person_home_village").value ? __$('person_home_village').value : "";
+		        td.innerHTML =__$("person_home_village") && __$("person_home_village").value ? __$('person_home_village').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -366,7 +404,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "";
+		        td.innerHTML =__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -395,7 +433,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "";
+		        td.innerHTML = __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -403,7 +441,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "";
+		        td.innerHTML = __$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "";
 		        tr.appendChild(td);
 		         var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -411,7 +449,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_mother_middle_name").value ? __$('person_mother_middle_name').value : "";
+		        td.innerHTML = __$("person_mother_middle_name") && __$("person_mother_middle_name").value ? __$('person_mother_middle_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -423,7 +461,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_mother_id_number").value ? __$('person_mother_id_number').value : "";
+		        td.innerHTML = __$("person_mother_id_number") && __$("person_mother_id_number").value ? __$('person_mother_id_number').value : "";
 		        tr.appendChild(td);
 
 		         var tr = document.createElement("tr");
@@ -447,7 +485,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_father_last_name").value ? __$('person_father_last_name').value : "";
+		        td.innerHTML = __$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -455,7 +493,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_father_first_name").value ? __$('person_father_first_name').value : "";
+		        td.innerHTML = __$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "";
 		        tr.appendChild(td);
 		         var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -463,7 +501,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_father_middle_name").value ? __$('person_father_middle_name').value : "";
+		        td.innerHTML = __$("person_father_middle_name") && __$("person_father_middle_name").value ? __$('person_father_middle_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -475,7 +513,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_father_id_number").value ? __$('person_father_id_number').value : "";
+		        td.innerHTML = __$("person_father_id_number") && __$("person_father_id_number").value ? __$('person_father_id_number').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -495,7 +533,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "";
+		        td.innerHTML = __$("person_informant_last_name") &&__$("person_informant_last_name").value ? __$('person_informant_last_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -503,7 +541,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "";
+		        td.innerHTML = __$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "";
 		        tr.appendChild(td);
 		         var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -511,7 +549,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_informant_middle_name").value ? __$('person_informant_middle_name').value : "";
+		        td.innerHTML = __$("person_informant_middle_name") && __$("person_informant_middle_name").value ? __$('person_informant_middle_name').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -523,7 +561,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML = __$("person_informant_id_number").value ? __$('person_informant_id_number').value : "";
+		        td.innerHTML = __$("person_informant_id_number") && __$("person_informant_id_number").value ? __$('person_informant_id_number').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -540,7 +578,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="2";
-		        td.innerHTML = __$("person_informant_relationship_to_deceased").value ? __$('person_informant_relationship_to_deceased').value : "";
+		        td.innerHTML = __$("person_informant_relationship_to_deceased") && __$("person_informant_relationship_to_deceased").value ? __$('person_informant_relationship_to_deceased').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -560,7 +598,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_informant_current_district").value ? __$('person_informant_current_district').value : "";
+		        td.innerHTML =__$("person_informant_current_district") && __$("person_informant_current_district").value ? __$('person_informant_current_district').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -568,7 +606,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_informant_current_ta").value ? __$('person_informant_current_ta').value : "";
+		        td.innerHTML =__$("person_informant_current_ta") && __$("person_informant_current_ta").value ? __$('person_informant_current_ta').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -577,7 +615,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="5";
-		        td.innerHTML =__$("person_informant_current_village").value ? __$('person_informant_current_village').value : "";
+		        td.innerHTML =__$("person_informant_current_village") && __$("person_informant_current_village").value ? __$('person_informant_current_village').value : "";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -588,8 +626,8 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        var address = __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "";
-		        address = __$('person_informant_city').value ? address + __$('person_informant_city').value : address;
+		        var address = __$('person_informant_addressline1') && __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "";
+		        address = __$('person_informant_city') && __$('person_informant_city').value ? address + __$('person_informant_city').value : address;
 		        td.innerHTML = address;
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
@@ -619,7 +657,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
-		        td.innerHTML = __$("person_informant_signed").value ? __$('person_informant_signed').value : "No";
+		        td.innerHTML = __$("person_informant_signed") && __$("person_informant_signed").value ? __$('person_informant_signed').value : "No";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -631,7 +669,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
-		        td.innerHTML = __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "";
+		        td.innerHTML =__$("person_informant_signature_date") && __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "";
 		        tr.appendChild(td);
 
 		    }
@@ -791,18 +829,20 @@
 
 		        var button = document.createElement("button");
 
+
+
 		        td.appendChild(button);
 
 
 		        if (i <= 9) {
 
-		            button.innerHTML = "0" + i;
+		            button.innerHTML = "<span>0" + i+"</span>";
 
 		            button.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value ="0"+' + i);
 
 		        } else {
 
-		            button.innerHTML = i;
+		            button.innerHTML = "<span>"+i+"</span>";
 
 		            button.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value =' + i);
 
@@ -815,8 +855,6 @@
 		            button.removeAttribute("onclick");
 		        }
 		        else {
-
-		            button.className = "blue";
 
 		        }
 
@@ -875,7 +913,9 @@
 
 		    __$("person_birthdate").value = birthdate;
 
+		    __$("person_date_of_death").setAttribute("minDate", birthdate);
 
+		    __$("person_date_of_death").setAttribute("maxDate", (new Date().format("YYYY-mm-dd")));
 		}
 
 		function setEstimatedAgeValue() {
@@ -983,24 +1023,77 @@
 
 		function checkForBarcode(validAction){
 
-			var input_element = __$('touchscreenInput' + tstCurrentPage);
+			if (__$("person_barcode")){
 
-			if (input_element && input_element.value.match(/.+\$$/i) != null){
+				var input_element = __$('touchscreenInput' + tstCurrentPage);
 
-				 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+				if (input_element && input_element.value.match(/.+\$$/i) != null){
 
-				 setTimeout(function(){
+					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
 
-				 		 gotoNextPage();
-				 },500);
+					 setTimeout(function(){
 
-				
+					 		 gotoNextPage();
+					 },500);
+
 					
-			}else{
-				window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+						
+				}else{
+					window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+				}
 			}
-			console.log(barcode_element.value);
-			
+		}
+
+		function getAge(dateString){
+
+		    var today = new Date();
+
+		    var birthDate = new Date(dateString);
+
+		    var age = today.getFullYear() - birthDate.getFullYear();
+
+		    var m = today.getMonth() - birthDate.getMonth();
+
+		    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+		    {
+		        age--;
+		    }
+		    return age;
+		}
+
+		function validatePregnancy(){
+
+			var valid = true;
+
+			if(__$("person_gender") && __$("person_gender").value == "Male"){
+
+				valid = false;
+			}
+			if (__$('person_birthdate') && parseInt(getAge(__$('person_birthdate').value)) < 13 ){
+				valid =  false;
+			}
+			return valid;
+
+		}
+
+		function validateDeathDate(){
+
+			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+
+			console.log(date);
+
+			console.log(__$("person_birthdate").value);
+
+			if(date < __$("person_birthdate").value){
+
+				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death("+(new Date(__$("person_birthdate").value)).format() +")" ,"Date validation")
+
+				setTimeout(function(){
+
+					gotoPage(tstCurrentPage -1);
+
+				},100)
+			}
 		}
 
 		function removeDollar(){
@@ -1023,43 +1116,45 @@
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
-	<section name="Barcode">
-		<sub id="person_barcode_section" name="Barcode">
-			<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode", :tt_onLoad =>"showCategory('Barcode')",:tt_onUnLoad=>"removeDollar()"} %>
-		</sub>
-	</section>
+	<% if site_type == "dc" %>
+		<section name="Barcode">
+			<sub id="person_barcode_section" name="Barcode">
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_onUnLoad=>"removeDollar()"} %>
+			</sub>
+		</section>
+	<%end%>
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",
-                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :first_name,:helpText => "First Name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") rescue "" %>
+                <%= (f.text_field :first_name,:helpText => "First Name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')" ) rescue "" %>
+                <%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID Number", :optional => true, :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID Number", :optional => true} %>
 
-                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender",:tt_requireNextClick => false) %>
 
-                <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender",:tt_requireNextClick => false, :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
+                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
-                <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersOnly", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"}  %>
+                <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersOnly"}  %>
 
-                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard longSelectList" }%>
 
-                <%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                <%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %>
 
-                <%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';showCategory('Section 1 : Personal Details of deceased')" ,:tt_onUnLoad => "setAgeValues()"%>
+                <%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,:tt_onUnLoad => "setAgeValues()"%>
 
                 <%= (f.hidden_field :birthdate) rescue "" %>
 
                 <%= f.hidden_field :birthdate_estimated rescue "" %>
 
-                <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate ID Number", :optional => true, :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate ID Number", :optional => true} %>
             </sub>
 
             <sub id="death_details" name="Details of death">
-                <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased');removeUnknown()") rescue "" %>
+                <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
 
                 <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Hospital/Institution")  %>
@@ -1068,13 +1163,13 @@
                 <% elsif site_type =="dc" %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Hospital/Institution", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :tt_onUnLoad =>"setAjaxUrl(-1)",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard") %>
 
-                    <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                    <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)"} %>
 
-                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.trim()=='Hospital/Institution'", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Hospital/Instution of death",:condition => "__$('person_place_of_death').value.trim()=='Hospital/Institution'"} %>
 
                     <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
 
-               		<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+               		<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Village of death",:condition => "__$('person_place_of_death').value.match('Home')"} %>
 
                 	<%= (f.text_field :other_place_of_death,:helpText => "Other place of death specify",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
                 <% end %>
@@ -1085,8 +1180,7 @@
 
             <sub id="home_address" name="Home address">
 
-            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",
-                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string="} %>
 
    				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
@@ -1094,7 +1188,7 @@
 
                   <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
-                                :tt_onUnLoad => "setAjaxUrl(3)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                                :tt_onUnLoad => "setAjaxUrl(3)"} %>
 
                	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
                                 :condition => "__$('person_home_country').value.toLowerCase().match('malawi')"} %>
@@ -1102,57 +1196,56 @@
 
             <sub id="physical_address" name="Physical address">
 
-            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=",
-                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+            	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string="} %>
 
    				<%= text_field_tag "person[current_district]", nil, {:helpText => "District of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
 
                   <%= text_field_tag "person[current_ta]", nil, {:helpText => "Traditional Authority of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                                :tt_onUnLoad => "setAjaxUrl(7)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :tt_onUnLoad => "setAjaxUrl(7)"} %>
 
                	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')"} %>
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')"} %>
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
                <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
-                        :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"__$('person_gender').value.trim().toLowerCase()=='female'",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')") %>
+                        :helpText =>"Did the death occur while pregnant?<br/>(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"validatePregnancy()") %>
             </sub>
   	</section>
 
     <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
-                <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=" ,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
-                <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person parents')" ) rescue "" %>
+                <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
+                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
             </sub>
     </section>
 
     <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
-                <%= (f.text_field :informant_last_name, :helpText => "Informant Last Name",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_last_name, :helpText => "Informant Last Name",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :informant_middle_name, :helpText => "Informant Middle Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_middle_name, :helpText => "Informant Middle Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_id_number, :helpText => "Informant ID Number",:optional => :true,:allowFreeText =>true,:tt_onLoad =>"showCategory('Section 1 :Details of deceased person parents')") rescue "" %>
+                <%= (f.text_field :informant_id_number, :helpText => "Informant ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
 
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
@@ -1161,32 +1254,32 @@
                              'Son', 'Daughter',
                              'Nephew', 'Niece',
                              'Uncle', 'Aunt',
-                             'Other'], @person[:informant_relationship_to_deceased]),:helpText =>"Relationship to deceased",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") %>
+                             'Other'], @person[:informant_relationship_to_deceased]),:helpText =>"Relationship to deceased",:tt_pageStyleClass =>"NoKeyboard longSelectList") %>
 
-                <%= (f.text_field :informant_relationship_to_deceased_other,:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",:helpText => "Relationship to Deceased specify",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_relationship_to_deceased_other,:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",:helpText => "Relationship to Deceased specify") rescue "" %>
             </sub>
             <sub id="info_home_address" name="Address">
 
-   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant current district",:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(4)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
+   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant current district",:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(4)"} %>
 
-                  <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant current TA",:tt_onUnLoad => "setAjaxUrl(5)",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
+                  <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant current TA",:tt_onUnLoad => "setAjaxUrl(5)"} %>
     			
-    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')"} %>
+    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village"} %>
 
-                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "P.O. box 200",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "P.O. box 200",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true) rescue "" %>
 
                 <%= (f.text_field :informant_phone_number,:helpText => "Informant phone number", :field_type =>"number",
-                                  :tt_pageStyleClass => "Numeric NumbersOnly",:validationRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true,:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") rescue "" %>
+                                  :tt_pageStyleClass => "Numeric NumbersOnly",:valietionRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true) rescue "" %>
             </sub>
             <sub id="Informant verification" name="Verification">
-                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant')") %>
+                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed") %>
 
                 <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
-                                      :field_type => "date",:tt_onLoad =>"showCategory('Section 1 : Details of deceased person Informant');removeUnknown()") rescue "" %>
+                                      :field_type => "date",:tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
     </section>
 
@@ -1194,17 +1287,17 @@
 
     <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">
-                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>
+                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed") %>
 
                 <%= (f.text_field :headman_verification_date,:helpText => "Date Headman verified",
                                   :field_type => "date",:condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
-                                  :tt_onLoad =>"removeUnknown();showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
+                                  :tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
             <sub id="church_verification" name="Church verification">
-                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),:helpText =>"Church leader Signed",:tt_onLoad =>"showCategory('Verification by Village Headman/Block Leader')") %>
+                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),:helpText =>"Church leader Signed") %>
 
                 <%= (f.text_field :church_verification_date,:helpText => "Date Church leader verified",
-		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"removeUnknown();showCategory('Verification by Village Headman/Block Leader')") rescue "" %>
+		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
     </section>
     <% end %>
@@ -1214,7 +1307,7 @@
     <section name="Acknowledgement of Receipt">
         	<sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
         		<%= (f.text_field :acknowledgement_of_receipt_date,:helpText => "Acknowledgement of receipt date",
-                                  :field_type => "date",:tt_onLoad =>"removeUnknown();showCategory('Section 3 : Acknowledgement of receipt')") rescue "" %>
+                                  :field_type => "date",:tt_onLoad =>"removeUnknown()") rescue "" %>
         	</sub>
     </section>
 

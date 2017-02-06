@@ -1,4 +1,42 @@
 
+              Object.defineProperty(Date.prototype, "format", {
+                value: function (format) {
+                    var date = this;
+
+                    var result = "";
+
+                    if (!format) {
+
+                        format = ""
+
+                    }
+
+                    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                        "October", "November", "December"];
+
+                    if (format.match(/YYYY\-mm\-dd/)) {
+
+                        result = date.getFullYear() + "-" + padZeros((parseInt(date.getMonth()) + 1), 2) + "-" + padZeros(date.getDate(), 2);
+
+                    } else if (format.match(/mmm\/d\/YYYY/)) {
+
+                        result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+                    } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+                        result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+                    } else {
+
+                        result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+                    }
+
+                    return result;
+                }
+            });
               function showPopupMessage(msg, topic,targeturl) {
 
                 if (!topic) {
@@ -99,7 +137,7 @@
                 var btn = document.createElement("button");
                 btn.className = "blue";
                 btn.id = "ok_button";
-                btn.innerHTML = "OK";
+                btn.innerHTML = "<span>OK</span>";
 
                 btn.onclick = function () {
 
@@ -223,7 +261,7 @@
 
                   var btnCancel = document.createElement("button");
                   btnCancel.className = "red";
-                  btnCancel.innerHTML = "Cancel";
+                  btnCancel.innerHTML = "<span>Cancel</span>";
                   btnCancel.style.minWidth = "100px";
 
                   btnCancel.onclick = function () {
@@ -240,7 +278,7 @@
 
                   var btnOK = document.createElement("button");
                   btnOK.className = "blue";
-                  btnOK.innerHTML = "OK";
+                  btnOK.innerHTML = "<span>OK</span>";
                   btnOK.style.minWidth = "100px";
 
                   if (nextURL)
