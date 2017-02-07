@@ -254,11 +254,21 @@
  </div>
 <%end%>
 
- <div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
+ <div style="position : absolute; width : 80%; bottom:58px;; right :2%; margin-right : 2%">
+ 	<% if params[:next_url] %>
+        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
- 		<button class="green" style="float: right; margin-right:1%" onmousedown="recordNotDuplicate()">Not a duplicate</button>
+  <% elsif @targeturl.present? %>
 
- 		<button class="red" style="float: right; margin-right:3%" onmousedown="recordIsDuplicate()">Duplicate</button>
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
+
+ 		<button class="green" style="float: right; margin-right:1%" onmousedown="recordNotDuplicate()"><span>Not a duplicate</span></button>
+
+ 		<button class="red" style="float: right; margin-right:3%" onmousedown="recordIsDuplicate()"><span>Duplicate</span></button>
 
 </div>
 <script type="text/javascript">

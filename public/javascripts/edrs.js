@@ -135,7 +135,6 @@
                 trf.appendChild(tdf);
 
                 var btn = document.createElement("button");
-                btn.className = "button blue";
                 btn.id = "ok_button";
                 btn.innerHTML = "<span>OK</span>";
 

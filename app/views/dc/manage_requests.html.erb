@@ -5,7 +5,7 @@
 <div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
     <div id="buttons" style="display: inline ">
          <% if User.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/request_change'" >
+                                  <div class="touch_btn" onmousedown="window.location = ''" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
@@ -17,7 +17,7 @@
 
                           <%end%>
                           <% if User.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/request_change'" >
+                                  <div class="touch_btn" onmousedown="window.location = ''" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
