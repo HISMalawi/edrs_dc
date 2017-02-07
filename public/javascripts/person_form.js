@@ -124,18 +124,20 @@ function setAjaxUrl(case_number){
 
 		        var button = document.createElement("button");
 
+
+
 		        td.appendChild(button);
 
 
 		        if (i <= 9) {
 
-		            button.innerHTML = "0" + i;
+		            button.innerHTML = "<span>" + i+"</span>";
 
 		            button.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value ="0"+' + i);
 
 		        } else {
 
-		            button.innerHTML = i;
+		            button.innerHTML = "<span>"+i+"</span>";
 
 		            button.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value =' + i);
 
@@ -148,8 +150,6 @@ function setAjaxUrl(case_number){
 		            button.removeAttribute("onclick");
 		        }
 		        else {
-
-		            button.className = "blue";
 
 		        }
 
@@ -165,7 +165,7 @@ function setAjaxUrl(case_number){
 
 		    unknownButton.setAttribute("onclick", '__$("touchscreenInput"+tstCurrentPage).value ="Unknown"');
 
-		    keyboard.appendChild(unknownButton);
+		    //keyboard.appendChild(unknownButton);
 
 		}
 

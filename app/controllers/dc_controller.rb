@@ -166,7 +166,7 @@ class DcController < ApplicationController
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC PENDING",
 							:level => "Person",
-							:reason => params[:reason]})
+							:reason => "Mark pending : #{params[:reason]}"})
 
 		redirect_to "#{params[:next_url].to_s}"
 
