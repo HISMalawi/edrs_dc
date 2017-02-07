@@ -55,15 +55,22 @@
 	
 </div>
 <div id="pagination">
-	<button id="prev" class="gray prev" onmousedown="navPrevPage()">|<<</button>
-	<button id="next" class="gray next" onmousedown="navNextPage()">>>|</button>
+	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
+	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
 		
 </div>
-  <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && false%>
+<div style="position : absolute; width : 80%; bottom:58px;; right :1%; margin-right : 1%">
+  <% if params[:next_url] %>
+        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
-		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Add New</button>
+  <% elsif @targeturl.present? %>
 
-  <%end%>
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
+</div>
 <script type="text/javascript">
 
 		var url ="/search_by_status?status=<%=@status%>"
@@ -125,7 +132,7 @@
 
 	    function navNextPage(){
 
-	    	if(estimatesize >= 8){
+	    	if(estimatesize >= 7){
 
 	    			page ++;
 
@@ -286,9 +293,7 @@
 
 								var button = document.createElement("button");
 
-								button.className = "blue";
-
-								button.innerHTML = "View";
+								button.innerHTML = "<span>View</span>";
 
 								button.style.width = "90%";
 
@@ -326,7 +331,7 @@
 
 							}
 
-							if(estimatesize >= 8){
+							if(estimatesize >= 7){
 
 								__$("next").className = __$("next").className.replace("gray","blue");
 

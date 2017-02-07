@@ -134,7 +134,9 @@
 
 	    function navNextPage(){
 
-	    	if(estimatesize >= 8){
+	    	alert("Hello");
+
+	    	if(estimatesize >= 7){
 
 	    			page ++;
 
@@ -170,7 +172,7 @@
 					table.innerHTML ="";
 
 
-					ajaxGETRequest(url+"&page="+page+"&size=8",function(data){
+					ajaxGETRequest(url+"&page="+page+"&size=7",function(data){
 
 								var data = JSON.parse(data);
 
@@ -189,7 +191,7 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								td.innerHTML = (page - 1)* 8 + (i + 1);
+								td.innerHTML = (page - 1)* 7 + (i + 1);
 
 								tr.appendChild(td);
 
@@ -288,9 +290,7 @@
 
 								var button = document.createElement("button");
 
-								button.className = "blue";
-
-								button.innerHTML = "View";
+								button.innerHTML = "<span>View</span>";
 
 								button.style.width = "90%";
 
@@ -304,15 +304,15 @@
 
 							}
 
-							if(estimatesize >= 8){
+							if(estimatesize >= 7){
 
-								__$("next").className = __$("next").className.replace("gray","blue");
+								__$("next").className = __$("next").className.replace("gray","");
 
 								__$("next").setAttribute("onmousedown","navNextPage()");
 
 							}else{
 
-								__$("next").className = __$("next").className.replace("blue","gray");
+								__$("next").className = "next gray";
 
 								__$("next").removeAttribute("onmousedown");
 
@@ -320,13 +320,13 @@
 
 							if(page == 1 ){
 
-								__$("prev").className = __$("prev").className.replace("blue","gray");
+								__$("prev").className = "prev gray";
 
 								__$("prev").removeAttribute("onmousedown");
 
 							}else{
 
-								__$("prev").className = __$("prev").className.replace("gray","blue");
+								__$("prev").className = __$("prev").className.replace("gray","");
 
 								__$("prev").setAttribute("onmousedown","navPrevPage()");
 
