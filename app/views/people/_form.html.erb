@@ -660,12 +660,12 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Relationship to the deceased";
 		        td.style.fontWeight = "bold";
-		        td.colSpan ="8";
+		        td.colSpan ="2";
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.colSpan ="2";
+		        td.colSpan ="8";
 		        td.innerHTML = __$("person_informant_relationship_to_deceased") && __$("person_informant_relationship_to_deceased").value ? __$('person_informant_relationship_to_deceased').value : "";
 		        tr.appendChild(td);
 
@@ -1056,6 +1056,68 @@
 
 		}
 
+		function validateAndProcessMonth() {
+
+		    var year = __$("person_birth_year").value
+
+		    var month = __$('person_birth_month').value;
+
+		    if (month.trim().toLowerCase() == "unknown") {
+
+
+		        var birthdate = __$("person_birthdate");
+
+		        var estimate_field = (birthdate.getAttribute("estimate_field") != null ?
+		            __$(birthdate.getAttribute("estimate_field")) : undefined);
+
+		        if (estimate_field) {
+
+		            estimate_field.value = 1
+
+		        }
+
+		        var estimateBirthDate = year + "-07-10";
+
+		        birthdate.value = estimateBirthDate
+
+		        __$("estimate").value = 1;
+
+		    } else {
+
+		        var months = {
+		            "January": 0,
+		            "February": 1,
+		            "March": 2,
+		            "April": 3,
+		            "May": 4,
+		            "June": 5,
+		            "Juy": 6,
+		            "August": 7,
+		            "September": 8,
+		            "October": 9,
+		            "November": 10,
+		            "December": 11
+		        }
+
+		        var today = new Date();
+
+		        if (parseInt(year) == parseInt(today.getFullYear()) && parseInt(months[month]) > parseInt(today.getMonth())) {
+
+		            var message = "Month selected is greater than Current Month";
+
+		            setTimeout(function () {
+
+		                gotoPage(tstCurrentPage - 1, false, true);
+
+		                showPopupMessage(message, "Month of Birth Validation")
+
+		            }, 10);
+
+		        }
+
+		    }
+
+		}
 		function checkForDuplicate(){
 
 				var data = {
@@ -1188,13 +1250,24 @@
 
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 
-			console.log(date);
-
-			console.log(__$("person_birthdate").value);
-
 			if(date < __$("person_birthdate").value){
 
-				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death("+(new Date(__$("person_birthdate").value)).format() +")" ,"Date validation")
+				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation")
+
+				setTimeout(function(){
+
+					gotoPage(tstCurrentPage -1);
+
+				},100)
+			}
+		}
+
+		function validateDateInformant(){
+			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+
+			if(date < __$("person_date_of_death").value){
+
+				showPopupMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")" ,"Date validation")
 
 				setTimeout(function(){
 
@@ -1248,7 +1321,7 @@
 
                 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersOnly"}  %>
 
-                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard longSelectList" }%>
+                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_onUnLoad=>"validateAndProcessMonth()" }%>
 
                 <%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %>
 
@@ -1286,22 +1359,6 @@
              
             </sub>
 
-            <sub id="home_address" name="Home address">
-
-            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
-
-   				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
-                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
-
-                  <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
-                                :tt_onUnLoad => "setAjaxUrl(3)"} %>
-
-               	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')"} %>
-            </sub>
-
             <sub id="physical_address" name="Physical address">
 
             	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=", :condition =>false} %>
@@ -1315,6 +1372,22 @@
                                 :tt_onUnLoad => "setAjaxUrl(7)"} %>
 
                	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village of Residence",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')"} %>
+            </sub>
+
+            <sub id="home_address" name="Home address">
+
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
+
+   				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
+
+                  <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :tt_onUnLoad => "setAjaxUrl(3)"} %>
+
+               	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
                                 :condition => "__$('person_nationality').value.toLowerCase().match('malawi')"} %>
             </sub>
 
@@ -1391,7 +1464,7 @@
                 <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed") %>
 
                 <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
-                                      :field_type => "date",:tt_onLoad =>"removeUnknown()") rescue "" %>
+                                      :field_type => "date",:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDateInformant()") rescue "" %>
             </sub>
     </section>
 
