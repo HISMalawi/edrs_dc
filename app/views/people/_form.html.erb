@@ -1,44 +1,6 @@
 <script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
 
- Object.defineProperty(Date.prototype, "format", {
-                value: function (format) {
-                    var date = this;
-
-                    var result = "";
-
-                    if (!format) {
-
-                        format = ""
-
-                    }
-
-                    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
-                        "October", "November", "December"];
-
-                    if (format.match(/YYYY\-mm\-dd/)) {
-
-                        result = date.getFullYear() + "-" + padZeros((parseInt(date.getMonth()) + 1), 2) + "-" + padZeros(date.getDate(), 2);
-
-                    } else if (format.match(/mmm\/d\/YYYY/)) {
-
-                        result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
-
-                    } else if (format.match(/d\smmmm,\sYYYY/)) {
-
-                        result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
-
-                    } else {
-
-                        result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
-
-                    }
-
-                    return result;
-                }
-    });
 	function loadPersonSummary(){
 
 		    if (__$("keyboard")) {
@@ -51,7 +13,9 @@
 
 		    if (tstControl) {
 
-		        tstControl .innerHTML = "";
+		        tstControl.innerHTML = "";
+
+		        tstControl.style.backgroundColor ="#e6e6e6";
 
 		        var table = document.createElement("table");
 		        table.style.width = "100%";
@@ -112,6 +76,7 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td")
 		        td.innerHTML = "Surname";
+		        td.style.fontWeight = "bold";
 		        td.style.border = "1px solid black";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
@@ -122,6 +87,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "First name";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -130,13 +96,22 @@
 		        tr.appendChild(td)
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Other names";
-		        td.colSpan = "2";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.colSpan = "2";
 		        td.innerHTML = __$('person_middle_name') && __$('person_middle_name').value ? __$("person_middle_name").value : "";;
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = "Barcode No";
+		        td.style.fontWeight = "bold";
+		        tr.appendChild(td);
+		        var td = document.createElement("td");
+		        td.style.border = "1px solid black";
+		        td.innerHTML = (__$('person_barcode') && __$('person_barcode').value ? __$("person_barcode").value : "");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -145,10 +120,13 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "2";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "ID No.";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_id_number') && __$('person_id_number').value ? __$("person_id_number").value : "";
@@ -159,21 +137,27 @@
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Nationality";
 		        td.colSpan ="2";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_nationality') && __$('person_nationality').value ? __$("person_nationality").value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "4";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Sex";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_gender') && __$('person_gender').value ? __$("person_gender").value : "";
@@ -185,44 +169,59 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "5";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Date of Birth";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Year";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_birth_year') && __$('person_birth_year').value ? __$("person_birth_year").value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Month";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_birth_month') && __$('person_birth_month').value ? __$("person_birth_month").value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Day";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_birth_day') && __$('person_birth_day').value ? __$("person_birth_day").value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "6";
 		        td.rowSpan="2"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Birth Certificate No.";
 		        td.rowSpan="2"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.rowSpan="2"
@@ -235,10 +234,13 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "7";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Date of death";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="6";
@@ -252,10 +254,13 @@
 		        td.rowSpan ="4";
 		        td.innerHTML = "8";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Place of Death";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
@@ -266,8 +271,10 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Health Facility";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
@@ -278,28 +285,38 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Home";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "District";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "TA";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_place_of_death_ta") && __$("person_place_of_death_ta").value ? __$('person_place_of_death_ta').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Village";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		         td.colSpan ="4";
@@ -311,8 +328,10 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Other";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="9";
@@ -325,30 +344,41 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "9";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Physical address";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "District";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "TA";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_current_ta") && __$("person_current_ta").value ? __$('person_current_ta').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Village";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		         td.colSpan ="4";
@@ -361,30 +391,40 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "10";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Home address";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "District";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_home_district") && __$("person_home_district").value ? __$('person_home_district').value : "";
 		        tr.appendChild(td);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "TA";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_home_ta") && __$("person_home_ta").value ? __$('person_home_ta').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Village";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="4";
@@ -397,11 +437,13 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "11";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.colSpan ="9";
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "";
@@ -414,13 +456,16 @@
 		        td.innerHTML = "Part 2 <br/> DETAILS OF PARENTS";
 		        td.rowSpan ="4"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "1";
 		         td.rowSpan ="2"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Mother's name";
 		        td.colSpan ="11";
 		        tr.appendChild(td);
@@ -429,36 +474,48 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Surname";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "First name ";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "";
 		        tr.appendChild(td);
+
 		         var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Other names ";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_mother_middle_name") && __$("person_mother_middle_name").value ? __$('person_mother_middle_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "2";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "ID No.";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_mother_id_number") && __$("person_mother_id_number").value ? __$('person_mother_id_number').value : "";
@@ -471,8 +528,10 @@
 		        td.innerHTML = "3";
 		        td.rowSpan ="2"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Father's name";
 		        td.colSpan ="11";
 		        tr.appendChild(td);
@@ -481,36 +540,48 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Surname";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "First name ";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "";
 		        tr.appendChild(td);
+
 		         var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Other names";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_father_middle_name") && __$("person_father_middle_name").value ? __$('person_father_middle_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "4";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "ID No.";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_father_id_number") && __$("person_father_id_number").value ? __$('person_father_id_number').value : "";
@@ -523,42 +594,56 @@
 		        td.innerHTML = "Part 3 <br/> DETAILS OF INFORMANT";
 		        td.rowSpan ="7"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "1";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Surname";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_informant_last_name") &&__$("person_informant_last_name").value ? __$('person_informant_last_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "First name ";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "";
 		        tr.appendChild(td);
-		         var td = document.createElement("td");
+
+		        var td = document.createElement("td");
+		        td.style.fontWeight = "bold";
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Other names";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_informant_middle_name") && __$("person_informant_middle_name").value ? __$('person_informant_middle_name').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "2";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "ID No.";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$("person_informant_id_number") && __$("person_informant_id_number").value ? __$('person_informant_id_number').value : "";
@@ -570,11 +655,14 @@
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "3";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Relationship to the deceased";
+		        td.style.fontWeight = "bold";
 		        td.colSpan ="8";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="2";
@@ -588,30 +676,41 @@
 		        td.innerHTML = "4";
 		        td.rowSpan ="2";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Address";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "District";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_informant_current_district") && __$("person_informant_current_district").value ? __$('person_informant_current_district').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "TA";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML =__$("person_informant_current_ta") && __$("person_informant_current_ta").value ? __$('person_informant_current_ta').value : "";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Village";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="5";
@@ -623,16 +722,20 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Postal address";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        var address = __$('person_informant_addressline1') && __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "";
-		        address = __$('person_informant_city') && __$('person_informant_city').value ? address + __$('person_informant_city').value : address;
+		        var address = (__$('person_informant_addressline1') && __$('person_informant_addressline1').value ? __$('person_informant_addressline1').value  : "");
+		        address = (__$('person_informant_city') && __$('person_informant_city').value ? address + __$('person_informant_city').value : address);
 		        td.innerHTML = address;
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Telephone number";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -642,6 +745,7 @@
 		        td.innerHTML = "5";
 		        td.rowSpan = "3"
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
@@ -653,7 +757,9 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = "Informant Signed";
+		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
@@ -664,8 +770,10 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Date informant signed";
 		        tr.appendChild(td);
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan= "10"
@@ -1116,7 +1224,7 @@
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
-	<% if site_type == "dc" %>
+	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
 				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_onUnLoad=>"removeDollar()"} %>
@@ -1128,15 +1236,15 @@
                 <%= (f.text_field :last_name, :helpText => "Surname",
                                   :allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :first_name,:helpText => "First Name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :first_name,:helpText => "First name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
+                <%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID Number", :optional => true} %>
-
-                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender",:tt_requireNextClick => false) %>
+                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true} %>
 
                 <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
+
+                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Sex",:tt_requireNextClick => false) %>
 
                 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersOnly"}  %>
 
@@ -1150,7 +1258,7 @@
 
                 <%= f.hidden_field :birthdate_estimated rescue "" %>
 
-                <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate ID Number", :optional => true} %>
+                <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate No.", :optional => true} %>
             </sub>
 
             <sub id="death_details" name="Details of death">
@@ -1212,7 +1320,7 @@
 
             <sub id='pregnancy_status' name="Pregnancy status">
                <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
-                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 12px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"validatePregnancy()") %>
+                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", :condition =>"validatePregnancy()") %>
             </sub>
   	</section>
 
@@ -1220,24 +1328,24 @@
             <sub id="details_mother" name="Details of mother">
             	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Mother details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :mother_last_name, :helpText => "Mother Last Name",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_last_name, :helpText => "Mother Surname",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
                 <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :mother_middle_name, :helpText => "Mother Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_middle_name, :helpText => "Mother Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :mother_id_number, :helpText => "Mother ID Number",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_id_number, :helpText => "Mother ID No.",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
             	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Father details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :father_last_name,:helpText => "Father Last Name",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :father_last_name,:helpText => "Father Surname",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
                 <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :father_middle_name, :helpText => "Father Middle Name",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :father_middle_name, :helpText => "Father Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
-                 <%= (f.text_field :father_id_number, :helpText => "Father ID Number",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                 <%= (f.text_field :father_id_number, :helpText => "Father ID No.",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
             </sub>
     </section>
 
@@ -1247,9 +1355,9 @@
 
                 <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :informant_middle_name, :helpText => "Informant Middle Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_middle_name, :helpText => "Informant Other Names",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_id_number, :helpText => "Informant ID Number",:optional => :true,:allowFreeText =>true) rescue "" %>
+                <%= (f.text_field :informant_id_number, :helpText => "Informant ID No.",:optional => :true,:allowFreeText =>true) rescue "" %>
 
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
@@ -1258,7 +1366,7 @@
                              'Son', 'Daughter',
                              'Nephew', 'Niece',
                              'Uncle', 'Aunt',
-                             'Other'], @person[:informant_relationship_to_deceased]),:helpText =>"Relationship to deceased",:tt_pageStyleClass =>"NoKeyboard longSelectList") %>
+                             'Other'], @person[:informant_relationship_to_deceased]),:helpText =>"Relationship to deceased",:tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_requireNextClick => false) %>
 
                 <%= (f.text_field :informant_relationship_to_deceased_other,:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",:helpText => "Relationship to Deceased specify") rescue "" %>
             </sub>
@@ -1270,13 +1378,13 @@
     			
     			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village"} %>
 
-                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "P.O. box 200",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "e.g P.O. Box 200 Lilongwe",:optional => :true) rescue "" %>
 
                 <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:condition=>false) rescue "" %>
 
-                <%= (f.text_field :informant_phone_number,:helpText => "Informant phone number", :field_type =>"number",
+                <%= (f.text_field :informant_phone_number,:helpText => "Informant Telephone Number", :field_type =>"number",
                                   :tt_pageStyleClass => "Numeric NumbersOnly",:valietionRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true) rescue "" %>
             </sub>
             <sub id="Informant verification" name="Verification">

@@ -189,9 +189,11 @@
 				<td  class="clickable" onclick="editField('last_name')">Surname</td>
 				<td colspan="2" ><%= @person.last_name %></td>
 				<td class="clickable" onclick="editField('first_name')" >First name</td>
-				<td  colspan="2"><%= @person.first_name %></td>
+				<td  colspan="1"><%= @person.first_name %></td>
 				<td class="clickable" onclick="editField('middle_name')" >Other</td>
-				<td colspan="2"><%= @person.middle_name rescue "" %></td>
+				<td colspan="1"><%= @person.middle_name rescue "" %></td>
+				<td class="clickable" >Barcode No.</td>
+				<td colspan="1"><%= @person.barcode rescue "" %></td>
 			</tr>
 			<tr>
 				<td>2</td>

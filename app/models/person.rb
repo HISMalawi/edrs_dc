@@ -463,6 +463,9 @@ class Person < CouchRest::Model::Base
   def national_id
     return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"National ID"]).first.identifier 
   end
+  def barcode
+      PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier
+  end
 
   #Person properties
   property :first_name, String
