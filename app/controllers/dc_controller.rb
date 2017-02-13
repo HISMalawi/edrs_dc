@@ -136,7 +136,7 @@ class DcController < ApplicationController
 			
 			Audit.create({
 							:record_id => params[:id].to_s    , 
-							:audit_type=>"DC REJECT",
+							:audit_type=>"DC REJECTED",
 							:level => "Person",
 							:reason => params[:reason]})
 

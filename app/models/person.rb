@@ -179,13 +179,13 @@ class Person < CouchRest::Model::Base
                 params[:hospital_of_death_id] = health_facility.id
             else
 
-                if !params[:place_of_death_ta].blank?
+                if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
                      params[:place_of_death_ta_id] = place_ta.id
 
-                     if !params[:place_of_death_village].blank?
+                     if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
                         params[:place_of_death_village_id] = place_village.id
                        
@@ -209,13 +209,13 @@ class Person < CouchRest::Model::Base
 
           params[:home_district_id] = home_district.id
 
-          if !params[:home_ta].blank?
+          if !params[:home_ta].blank? && params[:home_ta] != "Other"
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
                params[:home_ta_id] = ta.id
 
-               if !params[:home_village].blank?
+               if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
                   params[:home_village_id] = village.id
                  
@@ -236,13 +236,13 @@ class Person < CouchRest::Model::Base
 
           params[:current_district_id] = current_district.id
 
-          if !params[:current_ta].blank?
+          if !params[:current_ta].blank? && params[:current_ta] != "Other"
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
                params[:current_ta_id] = current_ta.id
 
-               if !params[:current_village].blank?
+               if !params[:current_village].blank? && params[:current_village] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
@@ -259,13 +259,13 @@ class Person < CouchRest::Model::Base
 
           params[:informant_current_district_id] = informant_district.id
 
-          if !params[:informant_current_ta].blank?
+          if !params[:informant_current_ta].blank? && params[:informant_current_ta] != "Other"
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
                params[:informant_current_ta_id] = informant_ta.id
 
-               if !params[:informant_current_village].blank?
+               if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
@@ -302,13 +302,13 @@ class Person < CouchRest::Model::Base
                 params[:hospital_of_death_id] = health_facility.id
             else
 
-                if !params[:place_of_death_ta].blank?
+                if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
                      params[:place_of_death_ta_id] = place_ta.id
 
-                     if !params[:place_of_death_village].blank?
+                     if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
                         params[:place_of_death_village_id] = place_village.id
                        
@@ -332,13 +332,13 @@ class Person < CouchRest::Model::Base
 
           params[:home_district_id] = home_district.id
 
-          if !params[:home_ta].blank?
+          if !params[:home_ta].blank? && params[:home_ta] != "Other"
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
                params[:home_ta_id] = ta.id
 
-               if !params[:home_village].blank?
+               if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
                   params[:home_village_id] = village.id
                  
@@ -353,13 +353,13 @@ class Person < CouchRest::Model::Base
 
           params[:current_district_id] = current_district.id
 
-          if !params[:current_ta].blank?
+          if !params[:current_ta].blank? && params[:current_ta] != "Other"
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
                params[:current_ta_id] = current_ta.id
 
-               if !params[:current_village].blank?
+               if !params[:current_village].blank? && params[:place_of_death_ta] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
@@ -370,19 +370,19 @@ class Person < CouchRest::Model::Base
           end
       end
 
-      if !params[:informant_current_district].blank?
+      if !params[:informant_current_district].blank? 
         
           informant_district = District.by_name.key(params[:informant_current_district]).first
 
           params[:informant_current_district_id] = informant_district.id
 
-          if !params[:informant_current_ta].blank?
+          if !params[:informant_current_ta].blank? && params[:informant_current_ta] != "Other"
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
                params[:informant_current_ta_id] = informant_ta.id
 
-               if !params[:informant_current_village].blank?
+               if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
@@ -476,14 +476,16 @@ class Person < CouchRest::Model::Base
   property :middle_name_code, String
   property :gender, String
   property :birthdate, Date
-  property :birthdate_estimated, String
+  property :birthdate_estimated, Integer, :default => 0
   property :date_of_death, Date
   property :birth_certificate_number, String
   property :nationality_id, String
   property :place_of_death, String
   property :hospital_of_death_id, String
   property :other_place_of_death, String
+  property :other_place_of_death_village, String
   property :place_of_death_village_id, String
+  property :other_place_of_death_ta, String
   property :place_of_death_ta_id, String
   property :place_of_death_district_id, String
   property :cause_of_death1, String
@@ -500,11 +502,15 @@ class Person < CouchRest::Model::Base
   property :other_manner_of_death, String
   property :death_by_accident, String
   property :other_death_by_accident, String
+  property :other_home_village, String
   property :home_village_id, String
+  property :other_home_ta, String
   property :home_ta_id, String
   property :home_district_id, String
   property :home_country_id, String
+  property :other_current_village, String
   property :current_village_id, String
+  property :other_current_ta, String
   property :current_ta_id, String
   property :current_district_id, String
   property :died_while_pregnant, String

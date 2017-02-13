@@ -268,7 +268,7 @@ class PeopleController < ApplicationController
 
       @person_place_details = place_details(@person)
 
-      @section = "Show"
+      @section = "View"
 
       @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
@@ -422,7 +422,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
   end
 
 
@@ -452,7 +452,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
 
   end
 

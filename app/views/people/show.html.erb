@@ -115,7 +115,7 @@
    <%end %>
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
-		<% if @status.status == "NEW" || @status.status == "DC PENDING" %>
+		<% if @status.status == "NEW" || @status.status == "DC PENDING"  || @status =="DC REJECTED" %>
 
 			<button class="green" style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
 
@@ -124,7 +124,7 @@
 			<!--button class="gray" style="float: right; margin-right:1%"><span>Completeness Check</span></button-->
 
 		<%end%>
-		<%if ["NEW"].include? @status.status %>
+		<%if ["NEW","DC REJECTED"].include? @status.status %>
 		
 			<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
 		<%end%>
@@ -163,7 +163,7 @@
 	<%end%>
 	<% if CONFIG['site_type'] == "dc"%>
 
-		<% if @burial_report.blank? %>
+		<% if @burial_report.blank? && User.current_user.role != "ADR"%>
 
 			<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Add Burial Report</span></button>
 		<%else  @burial_report.present? %>
