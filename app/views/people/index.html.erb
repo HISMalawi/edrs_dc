@@ -3,11 +3,6 @@
      
 </style>
 <div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
-
-     <!-- <table style="width:100%">
-              
-              <tr>
-                    <td style="width:80%">-->
                         <div id="buttons" style="display: inline ">
 
                         <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
@@ -77,21 +72,5 @@
                                     </div>
                                 <% end %>
                         </div>
-
-                    <!--
-                    </td>
-                    <td >      
-                        <table id="stats">
-                              <tr><th colspan="3">Statistics</th></tr>
-                              <tr><td>Reported</td><td> :</td> <td id="reported">1000</td></tr>
-                              <tr><td>Approved</td><td> :</td> <td id="approved">1000</td></tr>
-                              <tr><td>Printed</td><td> :</td> <td id="approved">1000</td></tr>
-                              <tr><td>Rejected</td><td> :</td> <td id="rejected">1000</td></tr>
-                              <tr><td>Incomplete</td><td> :</td> <td id="incomplete">1000</td></tr>
-                        </table>
-                    </td>
-              </tr>
-
-      </table>-->
 </div>
 

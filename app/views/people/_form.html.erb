@@ -14,7 +14,7 @@
 		        table.style.width = "100%";
 		        table.style.borderCollapse = "collapse";
 
-		       tstControl .appendChild(table);
+		       tstControl.appendChild(table);
 
 		        var tr = document.createElement("tr");
 
@@ -822,6 +822,87 @@
 		        tr.appendChild(td);
 
 		    }
+		    <% if site_type == "dc" %>
+		    		var table = document.createElement("table");
+		    		table.style.width = "98%";
+			        table.style.borderCollapse = "collapse";
+			        table.cellPadding = "2";
+			        table.style.border = "1px solid black"
+			        table.style.fontSize = "1em";
+			        table.style.margin = "auto";
+			        table.style.marginTop ="2em";
+			        div.appendChild(table);
+
+			        var tr = document.createElement("tr");
+			        table.appendChild(tr);
+
+			        var td = document.createElement("th");
+			        td.innerHTML = "Verification by Village Headman";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+
+			        var tr = document.createElement("tr");
+			        table.appendChild(tr);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "Villge Headman/Block Leader Signed";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = (__$('person_headman_verified') ? __$('person_headman_verified').value : "");
+			        tr.appendChild(td);
+
+			        if (__$('person_headman_verified') && __$('person_headman_verified').value.match("Yes")){
+			        	var tr = document.createElement("tr");
+			        	var td = document.createElement("td");
+				        td.innerHTML = "Date Signed";
+				        tr.appendChild(td);
+
+				        var td = document.createElement("td");
+				        td.innerHTML = new Date(__$('person_headman_verification_date').value).format();
+				        tr.appendChild(td);
+			        }
+
+			        var table = document.createElement("table");
+		    		table.style.width = "98%";
+			        table.style.borderCollapse = "collapse";
+			        table.cellPadding = "2";
+			        table.style.border = "1px solid black"
+			        table.style.fontSize = "1em";
+			        table.style.margin = "auto";
+			        table.style.marginTop ="2em";
+			        div.appendChild(table);
+			        var tr = document.createElement("tr");
+			        table.appendChild(tr);
+
+			        var td = document.createElement("th");
+			        td.innerHTML = "Verification by Senior member of village/ Religous Institution";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+
+			        var tr = document.createElement("tr");
+			        table.appendChild(tr);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "Signed?";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = (__$('person_church_verified') ? __$('person_church_verified').value : "");
+			        tr.appendChild(td);
+
+			        if (__$('person_church_verified') && __$('person_church_verified').value.match("Yes")){
+			        	var tr = document.createElement("tr");
+			        	var td = document.createElement("td");
+				        td.innerHTML = "Date Signed";
+				        tr.appendChild(td);
+
+				        var td = document.createElement("td");
+				        td.innerHTML = new Date(__$('person_church_verification_date').value).format();
+				        tr.appendChild(td);
+			        }
+
+		   	<%end%>
 
 		}
 	
