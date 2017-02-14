@@ -1,21 +1,14 @@
 <script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
-
 	function loadPersonSummary(){
+		if (__$("keyboard")) {
+			__$("keyboard").style.display = "none";
+		}
 
-		    if (__$("keyboard")) {
-
-		        __$("keyboard").style.display = "none";
-
-		    }
-
-		    var tstControl = __$("tt_page_summary")
-
-		    if (tstControl) {
-
-		        tstControl.innerHTML = "";
-
-		        tstControl.style.backgroundColor ="#e6e6e6";
+		var tstControl = __$("tt_page_summary");
+		if (tstControl) {
+		    tstControl.innerHTML = "";
+		    tstControl.style.backgroundColor ="#e6e6e6";
 
 		        var table = document.createElement("table");
 		        table.style.width = "100%";
@@ -308,7 +301,13 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_place_of_death_ta") && __$("person_place_of_death_ta").value ? __$('person_place_of_death_ta').value : "";
+		        if(__$('person_place_of_death_ta')){
+		        	if(__$("person_place_of_death_ta").value == "Other"){
+		        		td.innerHTML =__$("person_other_place_of_death_ta").value;
+		        	}else{
+		        		td.innerHTML =__$("person_place_of_death_ta").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -319,8 +318,14 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		         td.colSpan ="4";
-		        td.innerHTML =__$("person_place_of_death_village") && __$("person_place_of_death_village").value ? __$('person_place_of_death_village').value : "";
+		        td.colSpan ="4";
+		         if(__$('person_place_of_death_village')){
+		        	if(__$("person_place_of_death_village").value == "Other"){
+		        		td.innerHTML =__$("person_other_place_of_death_village").value;
+		        	}else{
+		        		td.innerHTML =__$("person_place_of_death_village").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 
@@ -370,7 +375,13 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_current_ta") && __$("person_current_ta").value ? __$('person_current_ta').value : "";
+		        if(__$('person_current_ta')){
+		        	if(__$("person_current_ta").value == "Other"){
+		        		td.innerHTML =__$("person_other_current_ta").value;
+		        	}else{
+		        		td.innerHTML =__$("person_current_ta").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -381,8 +392,14 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		         td.colSpan ="4";
-		        td.innerHTML =__$("person_current_village") && __$("person_current_village").value ? __$('person_current_village').value : "";
+		        td.colSpan ="4";
+		        if(__$('person_current_village')){
+		        	if(__$("person_current_village").value == "Other"){
+		        		td.innerHTML =__$("person_other_current_village").value;
+		        	}else{
+		        		td.innerHTML =__$("person_current_village").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -416,7 +433,13 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_home_ta") && __$("person_home_ta").value ? __$('person_home_ta').value : "";
+		        if(__$('person_home_ta')){
+		        	if(__$("person_home_ta").value == "Other"){
+		        		td.innerHTML =__$("person_other_home_ta").value;
+		        	}else{
+		        		td.innerHTML =__$("person_home_ta").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -428,7 +451,13 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="4";
-		        td.innerHTML =__$("person_home_village") && __$("person_home_village").value ? __$('person_home_village').value : "";
+		        if(__$('person_home_village')){
+		        	if(__$("person_home_village").value == "Other"){
+		        		td.innerHTML =__$("person_other_home_village").value;
+		        	}else{
+		        		td.innerHTML =__$("person_home_village").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -702,7 +731,13 @@
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
-		        td.innerHTML =__$("person_informant_current_ta") && __$("person_informant_current_ta").value ? __$('person_informant_current_ta').value : "";
+		        if(__$('person_informant_current_ta')){
+		        	if(__$("person_informant_current_ta").value == "Other"){
+		        		td.innerHTML =__$("person_other_informant_current_ta").value;
+		        	}else{
+		        		td.innerHTML =__$("person_informant_current_ta").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -714,7 +749,13 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.colSpan ="5";
-		        td.innerHTML =__$("person_informant_current_village") && __$("person_informant_current_village").value ? __$('person_informant_current_village').value : "";
+		        if(__$('person_informant_current_village')){
+		        	if(__$("person_informant_current_village").value == "Other"){
+		        		td.innerHTML =__$("person_other_informant_current_village").value;
+		        	}else{
+		        		td.innerHTML =__$("person_informant_current_village").value;
+		        	}
+		        }
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -785,40 +826,31 @@
 		}
 	
 		function setAjaxUrl(case_number){
+			switch(case_number) {
+				case -1:
+					var place = __$('touchscreenInput' + tstCurrentPage).value;
+					__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
+					break;
 
-				switch(case_number) {
-						case -1:
-							var place = __$('touchscreenInput' + tstCurrentPage).value;
+				case 0:
+					var district = __$('touchscreenInput' + tstCurrentPage).value;
+					if(__$("person_hospital_of_death")){
+						__$("person_hospital_of_death").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
+					}
+					if(__$("person_place_of_death_ta")){
+					    __$("person_place_of_death_ta").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
+					}
+					break;
 
-					      	__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
+				case 1:
+					var ta = __$('touchscreenInput' + tstCurrentPage).value;
+					var district = __$('person_place_of_death_district').value
+					__$("person_place_of_death_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+					break;
 
-					        break;
-					    case 0:
-					      	var district = __$('touchscreenInput' + tstCurrentPage).value;
-
-					      	if(__$("person_hospital_of_death")){
-								__$("person_hospital_of_death").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
-					      	}
-					      	if(__$("person_place_of_death_ta")){
-					      		__$("person_place_of_death_ta").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
-					      	}
-
-					        break;
-					    case 1:
-
-					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
-
-					    	var district = __$('person_place_of_death_district').value
-
-					    	__$("person_place_of_death_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
-
-					        break;
 					    case 2:
-
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
-
 					      	__$("person_home_ta").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
-
 					    	break;
 
 					    case 3:
@@ -1247,7 +1279,7 @@
 			if (__$('person_birthdate') && parseInt(getAge(__$('person_birthdate').value)) > 55 ){
 				valid =  false;
 			}
-			if(__$('person_birthdate') && ((age >= 9 && age <= 13) ||  (age >= 50 && age <= 55))){
+			if(__$("person_gender") && __$("person_gender").value == "Female" && __$('person_birthdate') && ((age >= 9 && age <= 13) ||  (age >= 50 && age <= 55))){
 				showPopupMessage("Person is out of the normal child bearing age range <br><b>(13 - 49)</b>","Death while pregnant validation");
 				valid = true;
 			}
@@ -1256,17 +1288,26 @@
 		}
 
 		function validateDeathDate(){
-
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			var site_type = "<%= site_type %>";
 
+			if(site_type == "facility"){
+					var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
+					if (date < min){
+						showPopupMessage("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>","Delayed Record Registration");
+						setTimeout(function(){
+							gotoPage(tstCurrentPage -1);
+						},100)
+
+						__$("ok_button").onclick = function(){
+								 window.top.location.href ="/people/new_split";
+						}
+					}
+			}
 			if(date < __$("person_birthdate").value){
-
-				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation")
-
+				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation");
 				setTimeout(function(){
-
 					gotoPage(tstCurrentPage -1);
-
 				},100)
 			}
 		}
@@ -1317,6 +1358,10 @@
 			}
 		}
 
+		function setOtherTofield(id){
+			__$(id).value = "Other"
+		}
+
 		function removeDollar(){
 			var input_element = __$('touchscreenInput' + tstCurrentPage);
 			if (input_element && input_element.value.match(/.+\$$/i) != null){
@@ -1347,7 +1392,7 @@
 
                 <%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateOtherName()") rescue "" %>
 
-                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true} %>
+                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true, :validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
                 <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
@@ -1414,7 +1459,7 @@
                	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village of Residence",
                                 :condition => "__$('person_current_ta').value.length > 0 && __$('person_current_ta').value != 'Other'"} %>
 
-                <%= text_field_tag "person[other_current_village]", nil, {:helpText => "Other Village of Residence specify",:condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'"} %>
+                <%= text_field_tag "person[other_current_village]", nil, {:helpText => "Other Village of Residence specify",:condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'", :tt_onLoad=>"setOtherTofield('person_current_village')"} %>
             </sub>
 
             <sub id="home_address" name="Home address">
@@ -1434,7 +1479,7 @@
                	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
                                 :condition => "__$('person_home_ta').value.length > 0 && __$('person_home_ta').value != 'Other'"} %>
 
-                <%= text_field_tag "person[other_home_village]", nil, {:helpText => "Other Home Village specify",:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'"} %>
+                <%= text_field_tag "person[other_home_village]", nil, {:helpText => "Other Home Village specify",:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_home_village')"} %>
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
@@ -1453,7 +1498,7 @@
 
                 <%= (f.text_field :mother_middle_name, :helpText => "Mother Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
 
-                <%= (f.text_field :mother_id_number, :helpText => "Mother ID No.",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_id_number, :helpText => "Mother ID No.",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
             	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Father details available?",:tt_requireNextClick => false) %>
@@ -1464,19 +1509,19 @@
 
                 <%= (f.text_field :father_middle_name, :helpText => "Father Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
 
-                 <%= (f.text_field :father_id_number, :helpText => "Father ID No.",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                 <%= (f.text_field :father_id_number, :helpText => "Father ID No.",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
     </section>
 
     <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
-                <%= (f.text_field :informant_last_name, :helpText => "Informant Last Name",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
+                <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
                 <%= (f.text_field :informant_middle_name, :helpText => "Informant Other Names",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_id_number, :helpText => "Informant ID No.",:optional => :true,:allowFreeText =>true) rescue "" %>
+                <%= (f.text_field :informant_id_number, :helpText => "Informant ID No.",:optional => :true,:allowFreeText =>true,:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
 
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
@@ -1495,11 +1540,11 @@
 
                 <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant current Traditional Authority",:tt_onUnLoad => "setAjaxUrl(5)"} %>
 
-                <%= text_field_tag "person[other_informant_current_ta]", nil, {:helpText => "Other Informant Current Traditional Authority specify",:condition => "__$('person_home_ta').value =='Other'"} %>
+                <%= text_field_tag "person[other_informant_current_ta]", nil, {:helpText => "Other Informant Current Traditional Authority specify",:condition => "__$('person_informant_current_ta').value =='Other'"} %>
     			
-    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village"} %>
+    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village", :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
 
-    			<%= text_field_tag "person[other_informant_current_village]", nil, {:helpText => "Other Informant Current Village specify",:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'"} %>
+    			<%= text_field_tag "person[other_informant_current_village]", nil, {:helpText => "Other Informant Current Village specify",:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
 
                 <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "e.g P.O. Box 200 Lilongwe",:optional => :true) rescue "" %>
 
