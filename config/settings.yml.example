@@ -2,20 +2,16 @@
   :protocol: 'http'
   :host: localhost
   :port: '5984'
-  :primary:
-  :secondary:
-  :dashboard:
-  :sync:
-  :username: 
-  :password: 
-:target:
+  :primary: databasename
+:dc:
   :protocol: 'http'
   :host: localhost
   :port: '5984'
-  :primary:
-  :secondary:
-  :dashboard:
-  :sync:
-  :username: 
-  :password: 
+  :primary: databasename
+  :bidirectional: false
+:hq:
+  :protocol: 'http'
+  :host: localhost
+  :port:  '5984'
+  :primary: databasename
   :bidirectional: false

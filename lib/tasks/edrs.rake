@@ -1,9 +1,9 @@
 namespace :edrs do
   desc "Creating default user"
   
-  task setup: :environment do
+  task initsync: :environment do
 
-    require Rails.root.join('db','seeds.rb')
+    require Rails.root.join('bin','initsync.rb')
 
   end
   task sync: :environment do

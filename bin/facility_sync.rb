@@ -7,7 +7,7 @@ source = @settings[:source]
 target = @settings[:target]
 source_to_target = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{target[:protocol]}://#{target[:host]}:#{target[:port]}/#{target[:primary]}",
+              dc: "#{target[:protocol]}://#{target[:host]}:#{target[:port]}/#{target[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -22,10 +22,10 @@ JSON.parse(source_to_target).each do |key, value|
     puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
 end
 
-if target[:bidirectional] == true
+if dc[:bidirectional] == true
     target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
                   source: "#{target[:protocol]}://#{target[:host]}:#{target[:port]}/#{target[:primary]}",
-                  target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
+                  dc: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Person/facility_sync',
               		query_params: {
