@@ -1,1 +1,5 @@
-<%= render 'form' %>
+<% if params[:category] == "Natural" %>
+	<%= render 'form' %>
+<%elsif params[:category]=="Unclaimed"%>
+	<%= render 'special' %>
+<%end%>

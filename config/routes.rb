@@ -104,6 +104,8 @@ Rails.application.routes.draw do
 
   get '/nationalities' => "people#nationalities"
 
+  get '/countries' => "people#countries"
+
   get '/districts' => "people#districts"
 
   get "/tas" => "people#tas"
@@ -111,6 +113,8 @@ Rails.application.routes.draw do
   get "/villages" => "people#villages"
 
   get "/people/find/:id" =>"people#find"
+
+  get "/people/new_person_type" => "people#new_person_type"
 
 
 

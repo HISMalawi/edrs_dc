@@ -1405,7 +1405,7 @@
 			}
 		}
 
-		function validateName(){
+		function validateName(id){
 			var name  = __$('touchscreenInput' + tstCurrentPage).value;
 			var regex = /^[a-zA-Z]{2,42}$/;
 			if(name.length > 0 ){
@@ -1419,6 +1419,8 @@
 							gotoPage(tstCurrentPage -1);
 						},100)
 				  }
+			}else{
+				__$(id).value = "Unknown"
 			}
 		}
 		function validateOtherName(){
@@ -1467,15 +1469,15 @@
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",
-                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName()",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName('person_last_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :first_name,:helpText => "First name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateName()",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :first_name,:helpText => "First name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateName('person_first_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateOtherName()",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateName('person_middle_name')",:optional=> true) rescue "" %>
 
                 <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true, :validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
-                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
+                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=",:allowFreeText => true} %>
 
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Sex",:tt_requireNextClick => false) %>
 
@@ -1573,22 +1575,22 @@
             <sub id="details_mother" name="Details of mother">
             	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Mother details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :mother_last_name, :helpText => "Mother Surname",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onLoad=> "removeUnknown()", :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_last_name, :helpText => "Mother Surname",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_last_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad=> "removeUnknown()",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_first_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :mother_middle_name, :helpText => "Mother Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onLoad=> "removeUnknown()",:condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :mother_middle_name, :helpText => "Mother Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_middle_name')",:optional=> true) rescue "" %>
 
                 <%= (f.text_field :mother_id_number, :helpText => "Mother ID No.",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
             	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Father details available?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :father_last_name,:helpText => "Father Surname",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :father_last_name,:helpText => "Father Surname",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_last_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:tt_onLoad=> "removeUnknown()", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_first_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :father_middle_name, :helpText => "Father Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onLoad=> "removeUnknown()", :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+                <%= (f.text_field :father_middle_name, :helpText => "Father Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_middle_name')",:optional=> true) rescue "" %>
 
                  <%= (f.text_field :father_id_number, :helpText => "Father ID No.",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
@@ -1596,11 +1598,11 @@
 
     <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
-                <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
 
-                <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
 
-                <%= (f.text_field :informant_middle_name, :helpText => "Informant Other Names",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true,:tt_onLoad=> "removeUnknown()") rescue "" %>
+                <%= (f.text_field :informant_middle_name, :helpText => "Informant Other Names",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
 
                 <%= (f.text_field :informant_id_number, :helpText => "Informant ID No.",:optional => :true,:allowFreeText =>true,:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
 

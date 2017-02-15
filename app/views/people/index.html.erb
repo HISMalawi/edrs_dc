@@ -7,7 +7,7 @@
 
                         <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
 
-                              <div class="touch_btn" onmousedown="window.location = '/people/new_split'" >
+                              <div class="touch_btn" onmousedown="window.location = '/people/new_person_type'" >
                                 <div class="icon">
                                        <i class="fa fa-edit"></i>
                                 </div>

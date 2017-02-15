@@ -22,6 +22,13 @@ class PeopleController < ApplicationController
 
   end
 
+   def new_person_type
+      @section = "Registration Categories"
+      @facility = facility
+      @district = district
+      render :layout => "facility"
+      
+  end
   def new
 
 	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
@@ -395,6 +402,26 @@ class PeopleController < ApplicationController
     end
 
     render :text => list.uniq.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
+
+  end
+
+  def countries
+    countries = Country.all
+    malawi = Country.by_country.key("Malawi").last
+    list = []
+    countries.each do |n|
+      if !params[:search_string].blank?
+        list << n if n.name.match(/#{params[:search_string]}/i)
+      else
+        list << n
+      end
+    end
+
+    if "Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?
+      list = [malawi] + list
+    end
+
+    render :text => list.uniq.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
 
   end
 
