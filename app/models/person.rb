@@ -525,6 +525,9 @@ class Person < CouchRest::Model::Base
   property :npid, String
   property :approved_by, String
   property :approved_at, Time
+  property :delayed_registration, String  :default =>"No"
+  property :relationship, String, :default => "Natural Death" # Unnatural Death | Unclaimed bodies | Missing Persons | Death abroad
+  property :court_order, String, :default => "No"
 
   #Person's mother properties
   #property :mother do
@@ -626,6 +629,7 @@ class Person < CouchRest::Model::Base
   property :informant_phone_number, String
   property :informant_signed, String
   property :informant_signature_date, Date
+  property :informant_designation, String
   #end
 
   property :certifier_first_name, String
