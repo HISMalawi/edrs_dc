@@ -126,8 +126,20 @@
       </table>
 </div>
 <script type="text/javascript">
+
+    function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH -(wH*0.15))+"px";
+    }
+
+    resizeDiv();
   
-            var stats = {
+    var stats = {
                         Reported     : "NEW",
                         Approved     : "DC APPROVED",
                         Rejected     : "DC REJECTED",
@@ -164,6 +176,7 @@
                    __$("incomplete").innerHTML = data.count     
 
             });
+            resizeDiv();
 
 </script>
 

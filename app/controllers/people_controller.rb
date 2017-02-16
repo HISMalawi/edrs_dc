@@ -7,7 +7,7 @@ class PeopleController < ApplicationController
   before_filter :facility_info
 
   def new_split
-
+      render :layout => false
   end
 
 	def index
@@ -18,7 +18,7 @@ class PeopleController < ApplicationController
 
       @section = "Home"
 
-      render :layout => "facility"
+      render :layout => "landing"
 
   end
 
@@ -26,7 +26,7 @@ class PeopleController < ApplicationController
       @section = "Registration Categories"
       @facility = facility
       @district = district
-      render :layout => "facility"
+      render :layout => "landing"
       
   end
   def new
@@ -188,7 +188,7 @@ class PeopleController < ApplicationController
 
       @next_url = "/people/view"
 
-      render :layout => "facility"
+      render :layout => "landing"
       
   end
 
@@ -232,7 +232,7 @@ class PeopleController < ApplicationController
       @section ="Search Criteria"
     end
 
-    render :layout => "facility"
+    render :layout => "landing"
   end
 
   def search_by_fields
@@ -286,7 +286,7 @@ class PeopleController < ApplicationController
                                                           [params[:id],"DC DUPLICATE"],
                                                           [params[:id],"RESOLVE DUPLICATE"]]).each
 
-      render :layout => "facility"
+      render :layout => "landing"
   	
   end
   def find
@@ -390,6 +390,9 @@ class PeopleController < ApplicationController
     malawi = Nationality.by_nationality.key("Malawian").last
     list = []
     nationalities.each do |n|
+      if n.nationality =="Unknown"
+          next if params[:special].blank?
+      end
       if !params[:search_string].blank?
         list << n if n.nationality.match(/#{params[:search_string]}/i)
       else
@@ -401,7 +404,7 @@ class PeopleController < ApplicationController
       list = [malawi] + list
     end
 
-    render :text => list.uniq.collect { |w| "<li>#{w.nationality}" }.join("</li>")+"</li>"
+    render :text => list.collect { |w| "<li>#{w.nationality}" }.uniq.join("</li>")+"</li>"
 
   end
 
@@ -410,6 +413,9 @@ class PeopleController < ApplicationController
     malawi = Country.by_country.key("Malawi").last
     list = []
     countries.each do |n|
+      if n.nationality =="Unknown"
+          next if params[:special].blank?
+      end
       if !params[:search_string].blank?
         list << n if n.name.match(/#{params[:search_string]}/i)
       else

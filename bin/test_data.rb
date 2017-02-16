@@ -3,7 +3,7 @@ User.current_user = User.first
 
 def create
   
-  (1.upto(101)).each do |n|
+  (1.upto(20)).each do |n|
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
@@ -12,7 +12,7 @@ def create
     person.birthdate = Faker::Time.between("1964-01-01".to_time, Time.now()).to_date
     person.birthdate_estimated = 1
     person.date_of_death = Date.today
-    person.citizenship = 'Malawian'
+    person.nationality_id=  "0e7ca4944a421f09b247f2987bce19e0"
     person.place_of_death = 'Lilongwe'
     person.informant_first_name = Faker::Name.first_name
     person.informant_last_name = Faker::Name.first_name

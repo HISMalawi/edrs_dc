@@ -1371,9 +1371,9 @@
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			var site_type = "<%= site_type %>";
-
+			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
 			if(site_type == "facility"){
-					var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
+					
 					if (date < min){
 						showPopupMessage("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>","Delayed Record Registration");
 						setTimeout(function(){
@@ -1381,9 +1381,15 @@
 						},100)
 
 						__$("ok_button").onclick = function(){
-								 window.top.location.href ="/people/new_split";
+								 window.top.location.href ="/people/new_person_type";
 						}
 					}
+			}else{
+
+				if(date < min){
+					showPopupMessage("Registration of the record has been delayed by more than 6 weeks","Delayed Record Registration");
+					__$("person_delayed_registration").value ="Yes"
+				}
 			}
 			if(date < __$("person_birthdate").value){
 				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation");
@@ -1443,6 +1449,20 @@
 			__$(id).value = "Other"
 		}
 
+		function courtOrder(){
+			var order = __$('touchscreenInput'+tstCurrentPage).value;
+			if(order=="No"){
+					showPopupMessage("Registering missing person requires a court order","Court order missing");
+						setTimeout(function(){
+							gotoPage(tstCurrentPage -1);
+						},100)
+
+						__$("ok_button").onclick = function(){
+								 window.top.location.href ="/people/new_person_type";
+						}
+			}
+		}
+
 		function removeDollar(){
 			var input_element = __$('touchscreenInput' + tstCurrentPage);
 			if (input_element && input_element.value.match(/.+\$$/i) != null){
@@ -1457,6 +1477,15 @@
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
+	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
+	<input type="hidden" name="person[delayed_registration]" value="No">
+	<% if params[:relationship].include? "Missing" || true%>
+		<section name="Court Order">
+			<sub id="person_court_order_section" name="Court order attached">
+				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Court order attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"courtOrder()") %>
+			</sub>
+		</section>
+	<%end%>
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">

@@ -30,16 +30,33 @@
         </table>
     
 </div>
+<style type="text/css">
+    #pagination{
+        width: 20% !important;
+        left : 40%;
+        z-index: 100000;
+    }
+</style>
 <div id="pagination">
-    <button id="prev" class="gray prev" onmousedown="navPrevPage()">|<<</button>
-    <button id="next" class="gray next" onmousedown="navNextPage()">>>|</button>
+    <button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
+    <button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
         
 </div>
 
 <i class="fa fa-user-plus" style="position: absolute; font-size : 3.5em ;right: 15% ;bottom: 8%;box-shadow: 2.5px 2.5px 1px #888888;border : 0.005em solid #b3b1b1; padding: 0.1%;" onclick="window.location = '<%= new_user_path %>'"></i>
 
 <script>
+    function __$(id){
+        return document.getElementById(id);
+    }
 
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.84)+"px";
+    }
+
+    resizeDiv();
     var query_url = "/query_users?" 
 
     if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
@@ -244,7 +261,7 @@
 
                                 var button = document.createElement("button");
 
-                                button.innerHTML = "View";
+                                button.innerHTML = "<span>View</spa>";
 
                                 button.setAttribute("onclick", "window.location ='/users/"+data[i].id+"?next_url=/view_users?page="+page+"'");
 
@@ -263,9 +280,9 @@
 
                                  var button = document.createElement("button");
 
-                                button.className = "green";
+                                button.className = "yellow";
 
-                                button.innerHTML = "Edit";
+                                button.innerHTML = "<span>Edit</span>";
 
                                 button.setAttribute("onclick", "window.location='/users/" + data[i].id+ "/edit?next_url=/view_users?page="+page+"'");
 
@@ -286,7 +303,7 @@
 
                                 button.className = "red";
 
-                                button.innerHTML = "Block";
+                                button.innerHTML = "<span>Block</span>";
 
                                 button.setAttribute("onclick", "/users/"+data[i].username);
 

@@ -12,15 +12,8 @@ class UsersController < ApplicationController
     @targeturl = "/"
 
     @targettext = "Finish"
-
-    if @facility.present?
-
-        render :layout => "facility"
-
-    else
-
-        render :layout => "dc"
-    end
+    
+    render :layout => "landing"
 
   end
 
@@ -35,14 +28,9 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-    if @facility.present?
+    render :layout => "facility"
 
-        render :layout => "facility"
-
-    else
-
-        render :layout => "dc"
-    end
+    render :layout => "landing"
 
   end
 
@@ -67,17 +55,7 @@ class UsersController < ApplicationController
       
     end
 
-    
-
-    if @facility.present?
-
-        render :layout => "facility"
-
-    else
-
-        render :layout => "dc"
-    end
-
+    render :layout => "landing"
   end
 
   # GET /users/1/edit
@@ -282,14 +260,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    if @facility.present?
-
-        render :layout => "facility"
-
-    else
-
-        render :layout => "dc"
-    end
+    render :layout => "landing"
 
   end
 
@@ -474,6 +445,16 @@ class UsersController < ApplicationController
     @facility = facility
 
     @district = district
+
+    if CONFIG['site_type'] =="facility"
+
+          @facility_type = "Facility"
+
+    else
+
+            @facility_type = "DC"
+
+    end
 
     @admin = ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
 
