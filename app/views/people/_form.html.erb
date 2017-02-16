@@ -1371,9 +1371,9 @@
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			var site_type = "<%= site_type %>";
-
+			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
 			if(site_type == "facility"){
-					var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
+					
 					if (date < min){
 						showPopupMessage("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>","Delayed Record Registration");
 						setTimeout(function(){
@@ -1384,6 +1384,12 @@
 								 window.top.location.href ="/people/new_split";
 						}
 					}
+			}else{
+
+				if(date < min){
+					showPopupMessage("Registration of the record has been delayed by more than 6 weeks","Delayed Record Registration");
+					__$("person_delayed_registration").value ="Yes"
+				}
 			}
 			if(date < __$("person_birthdate").value){
 				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation");
@@ -1457,6 +1463,8 @@
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
+	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
+	<input type="hidden" name="person[delayed_registration]" value="No">
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">

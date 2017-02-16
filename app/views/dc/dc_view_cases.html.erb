@@ -72,10 +72,20 @@
    <%end %>
 </div>
 <script type="text/javascript">
+	 function __$(id){
+	        return document.getElementById(id);
+	    }
 
-		var url ="/search_by_status?status=<%=@status%>"
+	function resizeDiv(){
+	      var wH = window.innerHeight;
+	      
+	      __$("containt").style.height = (wH -(wH*0.18))+"px";
+	}
+  
+	resizeDiv();
+	var url ="/search_by_status?status=<%=@status%>"
 
-		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
+	if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
 		    Object.defineProperty(Date.prototype, "format", {
 		        value: function (format) {

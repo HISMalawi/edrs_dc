@@ -65,6 +65,17 @@
   <%end%>
 </div>
 <script type="text/javascript">
+		 function __$(id){
+	        return document.getElementById(id);
+	    }
+
+	    function resizeDiv(){
+	      var wH = window.innerHeight;
+	      
+	      __$("containt").style.height = (wH -(wH*0.18))+"px";
+	    }
+  
+	    resizeDiv();
 
 		var url =""
 

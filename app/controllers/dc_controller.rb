@@ -10,7 +10,7 @@ class DcController < ApplicationController
 
       @section = "Home"
 
-      render :layout => "dc"
+      render :layout => "landing"
 		
 	end
 
@@ -54,6 +54,8 @@ class DcController < ApplicationController
 	def manage_cases
 
 		@section = "Manage Cases"
+
+		render :layout => "landing"
 		
 	end
 

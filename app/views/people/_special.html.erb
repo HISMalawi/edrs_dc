@@ -1371,9 +1371,9 @@
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			var site_type = "<%= site_type %>";
-
+			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
 			if(site_type == "facility"){
-					var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
+					
 					if (date < min){
 						showPopupMessage("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>","Delayed Record Registration");
 						setTimeout(function(){
@@ -1384,6 +1384,12 @@
 								 window.top.location.href ="/people/new_split";
 						}
 					}
+			}else{
+
+				if(date < min){
+					showPopupMessage("Registration of the record has been delayed by more than 6 weeks","Delayed Record Registration");
+					__$("person_delayed_registration").value ="Yes"
+				}
 			}
 			if(date < __$("person_birthdate").value){
 				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation");
@@ -1459,6 +1465,8 @@
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
+	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
+	<input type="hidden" name="person[delayed_registration]" value="No">
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
@@ -1477,7 +1485,7 @@
 
                 <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true, :validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
-                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=",:allowFreeText => true} %>
+                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?special=Special&search_string=",:allowFreeText => true} %>
 
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Sex",:tt_requireNextClick => false) %>
 
@@ -1527,14 +1535,16 @@
 
             <sub id="physical_address" name="Physical address">
 
+    			<%= select_tag("person[physical_address_check]",options_for_select([" ", "No", "Yes"], nil),:helpText =>"Physical address details available?",:tt_requireNextClick => false) %>
+
             	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=", :condition =>false} %>
 
    				<%= text_field_tag "person[current_district]", nil, {:helpText => "District of Residence",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_physical_address_check').value == 'Yes'",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
 
                 <%= text_field_tag "person[current_ta]", nil, {:helpText => "Traditional Authority of Residence",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_physical_address_check').value == 'Yes'",
                                 :tt_onUnLoad => "setAjaxUrl(7)"} %>
 
                 <%= text_field_tag "person[other_current_ta]", nil, {:helpText => "Other Traditional Authority of Residence specify",:condition => "__$('person_current_ta').value =='Other'"} %>
@@ -1546,15 +1556,16 @@
             </sub>
 
             <sub id="home_address" name="Home address">
+            	 <%= select_tag("person[home_address_check]",options_for_select([" ", "No", "Yes"], nil),:helpText =>"Home address details available?",:tt_requireNextClick => false) %>
 
             	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
 
    				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_home_address_check').value == 'Yes'",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
                   <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_home_address_check').value == 'Yes'",
                                 :tt_onUnLoad => "setAjaxUrl(3)"} %>
 
                  <%= text_field_tag "person[other_home_ta]", nil, {:helpText => "Other Home Traditional Authority specify",:condition => "__$('person_home_ta').value =='Other'"} %>
@@ -1602,7 +1613,7 @@
 	               name="person[informant_designation]"
 	              helpText = "Informant Designation"
 	               value="<%= @person[:informant_designation] rescue nil %>" />
-	               
+
                 <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>

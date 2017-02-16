@@ -1,5 +1,7 @@
-<% if params[:category] == "Natural" %>
+<% if params[:relationship].include? "Natural" %>
 	<%= render 'form' %>
-<%elsif params[:category]=="Unclaimed"%>
+<%elsif params[:relationship].include? "Unclaimed"%>
 	<%= render 'special' %>
+<%else%>
+	<%= render 'form' %>
 <%end%>
