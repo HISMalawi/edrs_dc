@@ -37,6 +37,9 @@ gem 'spring',        group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+#gem 'global_phone'
+gem 'global_phone', :git => 'https://github.com/sstephenson/global_phone.git', :ref => 'dd0894061f58479884e6cfa2d00382542dc77d5a'
+gem 'global_phone_dbgen'
 
 gem 'couchrest_model'
 
