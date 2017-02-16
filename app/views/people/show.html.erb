@@ -2,8 +2,6 @@
 		
 		#table_container{
 
-				height: calc(88% - 20px);
-
 				overflow-y: hidden;
 
 				margin-bottom : 0.3em;
@@ -366,6 +364,17 @@
      <i class=" fa fa-arrow-down"></i>
  </div>
 <script type="text/javascript">
+			function __$(id){
+	        	return document.getElementById(id);
+		    }
+
+		    function resizeDiv(){
+		      var wH = window.innerHeight; 
+		      __$("containt").style.height = (wH *0.83 )+"px";
+		      __$("table_container").style.height = (wH * 0.72) +"px";
+		    }
+	  
+		    resizeDiv();
 			<% if params[:error] %>
 
 					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")

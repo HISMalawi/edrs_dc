@@ -1381,7 +1381,7 @@
 						},100)
 
 						__$("ok_button").onclick = function(){
-								 window.top.location.href ="/people/new_split";
+								 window.top.location.href ="/people/new_person_type";
 						}
 					}
 			}else{
@@ -1449,6 +1449,20 @@
 			__$(id).value = "Other"
 		}
 
+		function courtOrder(){
+			var order = __$('touchscreenInput'+tstCurrentPage).value;
+			if(order=="No"){
+					showPopupMessage("Registering missing person requires a court order","Court order missing");
+						setTimeout(function(){
+							gotoPage(tstCurrentPage -1);
+						},100)
+
+						__$("ok_button").onclick = function(){
+								 window.top.location.href ="/people/new_person_type";
+						}
+			}
+		}
+
 		function removeDollar(){
 			var input_element = __$('touchscreenInput' + tstCurrentPage);
 			if (input_element && input_element.value.match(/.+\$$/i) != null){
@@ -1465,6 +1479,13 @@
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
 	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
 	<input type="hidden" name="person[delayed_registration]" value="No">
+	<% if params[:relationship].include? "Missing" || true%>
+		<section name="Court Order">
+			<sub id="person_court_order_section" name="Court order attached">
+				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Court order attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"courtOrder()") %>
+			</sub>
+		</section>
+	<%end%>
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">

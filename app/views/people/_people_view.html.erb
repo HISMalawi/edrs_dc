@@ -40,6 +40,7 @@
 	#pagination{
 		width: 20% !important;
 		left : 40%;
+		z-index: 100000;
 	}
 </style>
 <div id="pagination">
@@ -47,7 +48,7 @@
 	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
 		
 </div>
-<div style="position : absolute; width : 80%; bottom:58px;; right :1%; margin-right : 1%">
+<div style="position : absolute; min-width : 30%; bottom:58px;; right :1%; margin-right : 1%">
   <% if params[:next_url] %>
         <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
@@ -144,8 +145,6 @@
 	    var estimatesize = 0;
 
 	    function navNextPage(){
-
-	    	alert("Hello");
 
 	    	if(estimatesize >= 7){
 
