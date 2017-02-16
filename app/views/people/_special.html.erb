@@ -1602,6 +1602,7 @@
 	               name="person[informant_designation]"
 	              helpText = "Informant Designation"
 	               value="<%= @person[:informant_designation] rescue nil %>" />
+	               
                 <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
