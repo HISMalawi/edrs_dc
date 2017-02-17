@@ -120,7 +120,7 @@ class DcController < ApplicationController
 
 	def add_rejection_comment
 
-		
+		render :layout =>"touch"
 	end
 
 	def reject_record

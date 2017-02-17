@@ -30,22 +30,14 @@
 							Place of Death
 						</th>
 						<th>
-							Home address
+							Physial address
 						</th>
 						<th>
 							Informant
 						</th>
 
-						<% if @facility_type =="DC" %>
-
-							<th>
-
-						<%else%>
-
-							<th colspan="2">
-
-						<%end%>
-							Operations
+						<th>
+							View Record
 						</th>
 					</tr>
 				</thead>
@@ -72,17 +64,8 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
 </div>
+<%= render :partial => "landing_resize" %>
 <script type="text/javascript">
-	 function __$(id){
-	        return document.getElementById(id);
-	 }
-
-	function resizeDiv(){
-	      var wH = window.innerHeight;  
-	      __$("containt").style.height = (wH -(wH*0.18))+"px";
-	}
-  
-	resizeDiv();
 	var url ="/search_by_status?status=<%=@status%>"
 
 	if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
@@ -271,17 +254,16 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								if(data[i].nationality.trim().toLowerCase().match("malawi")){
+								if(data[i].nationality.trim().toLowerCase().match("malawi") && data[i].current_district.length > 0){
 
-									td.innerHTML =  data[i].home_district +"," + data[i].home_ta + ","+  data[i].home_village;
+									td.innerHTML =  data[i].current_district +"," + data[i].current_ta + ","+  data[i].current_village;
 
-								}else{
+								}else if(data[i].home_country.length > 0) {
 									td.innerHTML = data[i].home_country;
 
 								}
 
-								tr.appendChild(td);
-
+								tr.appendChild(td)
 
 								var td = document.createElement("td");
 

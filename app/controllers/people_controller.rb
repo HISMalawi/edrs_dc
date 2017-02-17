@@ -601,6 +601,10 @@ class PeopleController < ApplicationController
                       home_ta:  (person.home_ta rescue ""),
                       home_district: (person.home_district rescue ""),
                       home_country:  ( person.home_country rescue ""),
+                      current_village: (person.current_village  rescue ""),
+                      current_ta:  (person.current_ta rescue ""),
+                      current_district: (person.current_district rescue ""),
+                      current_country:  ( person.current_country rescue ""),
                       den: (den.identifier rescue ""),
                       status: (person.status),
                       nationality: person.nationality

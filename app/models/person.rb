@@ -172,7 +172,7 @@ class Person < CouchRest::Model::Base
 
             params[:place_of_death_district_id] = district.id
 
-            if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("hospital")
+            if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("health facility")
 
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
@@ -295,7 +295,7 @@ class Person < CouchRest::Model::Base
 
             params[:place_of_death_district_id] = district.id
 
-            if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("hospital")
+            if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("health facility")
 
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 

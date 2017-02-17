@@ -28,8 +28,6 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-    render :layout => "facility"
-
     render :layout => "landing"
 
   end
@@ -55,7 +53,7 @@ class UsersController < ApplicationController
       
     end
 
-    render :layout => "landing"
+    render :layout => "touch"
   end
 
   # GET /users/1/edit

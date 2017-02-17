@@ -1370,6 +1370,7 @@
 
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = (new Date(date)).format("YYYY-mm-dd")
 			var site_type = "<%= site_type %>";
 			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
 			if(site_type == "facility"){
@@ -1381,7 +1382,7 @@
 						},100)
 
 						__$("ok_button").onclick = function(){
-								 window.top.location.href ="/people/new_split";
+								 window.top.location.href ="/people/new_person_type";
 						}
 					}
 			}else{
@@ -1402,7 +1403,11 @@
 		function validateDateInformant(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 
-			if(date < __$("person_date_of_death").value){
+			date = (new Date(date)).format("YYYY-mm-dd");
+
+			var date_of_death = (new Date(__$("person_date_of_death").value)).format("YYYY-mm-dd");
+
+			if(date < date_of_death){
 
 				showPopupMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")" ,"Date validation")
 				setTimeout(function(){
@@ -1413,7 +1418,7 @@
 
 		function validateName(id){
 			var name  = __$('touchscreenInput' + tstCurrentPage).value;
-			var regex = /^[a-zA-Z]{2,42}$/;
+			var regex = /^[a-zA-Z']{2,42}$/;
 			if(name.length > 0 ){
 				 if (regex.test(name)) {
 				        
@@ -1635,17 +1640,17 @@
             </sub>
             <sub id="info_home_address" name="Address">
 
-   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant current district",:ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(4)"} %>
+   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant address district",:ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(4)"} %>
 
-                <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant current Traditional Authority",:tt_onUnLoad => "setAjaxUrl(5)"} %>
+                <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant address Traditional Authority",:tt_onUnLoad => "setAjaxUrl(5)"} %>
 
-                <%= text_field_tag "person[other_informant_current_ta]", nil, {:helpText => "Other Informant Current Traditional Authority specify",:condition => "__$('person_informant_current_ta').value =='Other'"} %>
+                <%= text_field_tag "person[other_informant_current_ta]", nil, {:helpText => "Other Informant address Traditional Authority specify",:condition => "__$('person_informant_current_ta').value =='Other'"} %>
     			
-    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant current village", :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
+    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant address village", :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
 
-    			<%= text_field_tag "person[other_informant_current_village]", nil, {:helpText => "Other Informant Current Village specify",:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
+    			<%= text_field_tag "person[other_informant_current_village]", nil, {:helpText => "Other Informant address Village specify",:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
 
-                <%= (f.text_field :informant_addressline1,:helpText => "Informant address",:placeholder => "e.g P.O. Box 200 Lilongwe",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_addressline1,:helpText => "Informant Postal address",:placeholder => "e.g P.O. Box 200 Lilongwe",:optional => :true) rescue "" %>
 
                 <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true) rescue "" %>
 
