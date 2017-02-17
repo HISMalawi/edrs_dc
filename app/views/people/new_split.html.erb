@@ -31,42 +31,52 @@
 		</style>
 	</head>
 
-	<body style="margin: 0.5vh; padding:0px;">
-       
-		<table id="main" style="width: 100%;">
-            <tr>
-                <td colspan="2" style="border:1px solid lightgray;padding:0" >
-                 <div id="app_header">
+	<body style="padding:0px;">
+        <div id="supercontainer" style="width:100%; overflow-y:hidden;border:1px solid black">
+                <div id="app_header">
+                         <div id="home_button" onmousedown="window.location ='/'">
+                                <i class=" fa fa-home"></i>
+                          </div>
 
-                 <div id="home_button" onmousedown="window.location ='/'">
-                        <i class=" fa fa-home"></i>
-                  </div>
+                        <table style="min-width :20%; margin-top : 0.5em ;float:right">
 
-                <table style="min-width :20%; margin-top : 0.5em ;float:right">
+                          <tr>
+                            <td style="text-align:right; "><font style="font-size:2em;vertical-align:bottom">NRB eDRS </font></td>
+                            <td><img src="/images/coa.png" style="width :3.5em; float: right; margin-right : 0.6em"></td>
+                          </tr>         
+                        </table>
+                               
+                </div>
+                <table id="main" style="width: 100%;">
+                    <tr>
+                        <td valign="top" style="width: 20%;border: 1px solid gray; background: #f8f8ff; border-right: 4px solid #333333;padding: 0px;">
+                            <table id="table" style="width: 100%;">
 
-                  <tr>
-                    <td style="text-align:right; "><font style="font-size:2em;vertical-align:bottom">NRB eDRS </font></td>
-                    <td><img src="/images/coa.png" style="width :3.5em; float: right; margin-right : 0.6em"></td>
-                  </tr>         
+                            </table>
+                        </td>   
+                        <td style="width: 78%;background: ghostwhite;">
+                            <iframe id="iframe" src="/people/new?relationship=<%=params[:relationship]%>" style="width: 100%; margin-bottom: 4%; height: 100%;border: none;">
+
+                            </iframe>
+                        </td>
+                    </tr>
                 </table>
-                       
-        </div></td>
-            </tr>
-			<tr>
-				<td valign="top" style="width: 20%; height: 90vh;border: 1px solid gray; background: #f8f8ff; border-right: 4px solid #333333;padding: 0px;">
-					<table id="table" style="width: 100%;">
-
-					</table>
-				</td>	
-				<td style="width: 78%; height:90vh;background: ghostwhite;">
-                    <iframe id="iframe" src="/people/new?relationship=<%=params[:relationship]%>" style="width: 100%; margin-bottom: 4%; height: 100%;border: none;">
-
-                    </iframe>
-				</td>
-			</tr>
-		</table>
+        </div>
 	</body>
+    <script>
+    function __$(id){
+        return document.getElementById(id);
+    }
 
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("supercontainer").style.height = (wH * 0.97)+"px";
+      __$("main").style.height = (wH * 0.90)+"px";
+    }
+
+    resizeDiv();
+</script>
     <script>
         function setup(active_id){
             form =  window.frames['iframe'].contentDocument.getElementById("new_person");
@@ -137,7 +147,8 @@
         function updateNavButtons(){
             form.setAttribute("target", "_parent");
             window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
-                cancelEntry();
+                //cancelEntry();
+                window.top.location="/people/new_person_type"
             }
         }
 
