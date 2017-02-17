@@ -1479,7 +1479,7 @@
         results = {}
         old_value = "";
         function showPhoneSummary(){
-
+            //variables 'results' and 'old_value' must be predefined above this function
             var input = __$("touchscreenInput" + tstCurrentPage);
             var label = __$("helpText" + tstCurrentPage).innerHTML;
 
@@ -1492,7 +1492,12 @@
                     }
                 }else{
                     __$("nextButton").onmousedown = function () {
-                        showMessage("Invalid Phone Number");
+                        var label = __$("helpText" + tstCurrentPage).innerHTML;
+                        if (label.match(/Phone Number/i)){
+                            showMessage("Invalid Phone Number");
+                        }else{
+                            gotoNextPage();
+                        }
                     }
                 }
 
