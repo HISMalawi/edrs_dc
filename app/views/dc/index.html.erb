@@ -125,19 +125,8 @@
 
       </table>
 </div>
+<%= render :partial => "landing_resize" %>
 <script type="text/javascript">
-
-    function __$(id){
-        return document.getElementById(id);
-    }
-
-    function resizeDiv(){
-      var wH = window.innerHeight;
-      
-      __$("containt").style.height = (wH -(wH*0.15))+"px";
-    }
-
-    resizeDiv();
   
     var stats = {
                         Reported     : "NEW",

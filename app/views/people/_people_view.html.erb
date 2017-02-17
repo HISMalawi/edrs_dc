@@ -61,22 +61,12 @@
    <%end %>
   <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
 
-		<button class="green" style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_split'" ><span>Register New</span></button>
+		<button class="green" style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_person_type'" ><span>Register New</span></button>
 
   <%end%>
 </div>
+<%= render :partial => "/dc/landing_resize" %>
 <script type="text/javascript">
-		 function __$(id){
-	        return document.getElementById(id);
-	    }
-
-	    function resizeDiv(){
-	      var wH = window.innerHeight;
-	      
-	      __$("containt").style.height = (wH -(wH*0.18))+"px";
-	    }
-  
-	    resizeDiv();
 
 		var url =""
 

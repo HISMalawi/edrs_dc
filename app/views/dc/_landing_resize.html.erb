@@ -1,0 +1,13 @@
+<script>
+	function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.83)+"px";
+    }
+
+    resizeDiv();
+</script>

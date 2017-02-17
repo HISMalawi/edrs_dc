@@ -232,7 +232,7 @@ class PeopleController < ApplicationController
       @section ="Search Criteria"
     end
 
-    render :layout => "landing"
+    render :layout => "touch"
   end
 
   def search_by_fields
