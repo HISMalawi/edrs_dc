@@ -14,5 +14,6 @@ class Country < CouchRest::Model::Base
                   }
                 }"
 	    view :by_phonecode
+      view :by_iso
 	end
 end

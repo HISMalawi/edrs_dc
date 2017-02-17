@@ -537,7 +537,7 @@ class PeopleController < ApplicationController
     result = {
         "national_format" => (parsed.national_format rescue ""),
         "international_format" => (parsed.international_format rescue ""),
-        "country" => (Country.by_phonecode.key(parsed.country_code).last.name rescue ""),
+        "country" => (Country.by_iso.key(parsed.territory.name).last.name rescue ""),
         "valid" => (parsed.valid? rescue false)
     }
 
