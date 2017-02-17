@@ -528,6 +528,22 @@ class PeopleController < ApplicationController
     
   end
 
+  def global_phone_validation
+
+    number = params[:value].sub("plus", "+")
+    number = "" if !number.match(/\d/)
+    parsed = GlobalPhone.parse(number) rescue nil
+
+    result = {
+        "national_format" => (parsed.national_format rescue ""),
+        "international_format" => (parsed.international_format rescue ""),
+        "country" => (Country.by_phonecode.key(parsed.country_code).last.name rescue ""),
+        "valid" => (parsed.valid? rescue false)
+    }
+
+    render :text => result.to_json
+  end
+
   protected
 
   def find_person

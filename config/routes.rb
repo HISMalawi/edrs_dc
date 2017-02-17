@@ -174,6 +174,7 @@ Rails.application.routes.draw do
 
   get "/dc/ammendment/:id" => "dc#ammendment"
 
+  get "/global_phone_validation" => "people#global_phone_validation"
 
   get "/logout" => "logins#logout"
   
