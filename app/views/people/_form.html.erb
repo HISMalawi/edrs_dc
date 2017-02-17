@@ -1371,6 +1371,7 @@
 
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = (new Date(date)).format("YYYY-mm-dd")
 			var site_type = "<%= site_type %>";
 			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
 			if(site_type == "facility"){
@@ -1545,8 +1546,8 @@
         window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
-	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
-	<input type="hidden" name="person[delayed_registration]" value="No">
+	<input type="hidden" name="person[relationship]" id="person_relationship"> value="<%params[:relationship]%>">
+	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
 	<% if params[:relationship].include? "Missing" || true%>
 		<section name="Court Order">
 			<sub id="person_court_order_section" name="Court order attached">

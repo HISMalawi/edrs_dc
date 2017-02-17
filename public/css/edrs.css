@@ -1,7 +1,7 @@
 body{
     font-family: "Nimbus Sans L", "Arial Narrow", sans-serif;
 }
-.button, button {
+/*.button, button {
     color: white;
     -moz-user-select:none;
     -moz-user-focus:disabled;
@@ -99,8 +99,8 @@ button:hover.dark {
 }
 button:hover.dark span {
     background:url(/touchscreentoolkit/lib/images/buttons/btn_left_hover_dark.png) left no-repeat;
-}
-/*button {
+}*/
+button {
     font-size: 22px !important;
     min-width: 60px;
     cursor: pointer;
@@ -297,7 +297,7 @@ button:active {
     background-image: -o-linear-gradient(top, #333, #ccc);
     background-image: linear-gradient(to bottom, #333, #ccc);
     filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#333, endColorstr=#ccc);
-}*/
+}
 #app_header{
 
       width: 100%;
