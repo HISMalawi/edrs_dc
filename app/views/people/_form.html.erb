@@ -1,4 +1,5 @@
 <script type="text/javascript" src="/javascripts/edrs.js"></script>
+
 <script type="text/javascript">
 	function loadPersonSummary(){
 		if (__$("keyboard")) {
@@ -1474,7 +1475,74 @@
 				console.log("No dollar");
 			}
 		}
-		window.addEventListener("load", loadBarcodePage, false)
+
+        results = {}
+        old_value = "";
+        function showPhoneSummary(){
+
+            var input = __$("touchscreenInput" + tstCurrentPage);
+            var label = __$("helpText" + tstCurrentPage).innerHTML;
+
+            if (label.match(/Phone Number/i)){
+
+                //Lock Next
+                if (input.value == "Unknown" || results['valid'] == true) {
+                    __$("nextButton").onmousedown = function () {
+                        gotoNextPage();
+                    }
+                }else{
+                    __$("nextButton").onmousedown = function () {
+                        showMessage("Invalid Phone Number");
+                    }
+                }
+
+                if (input.value != "Unknown" && (input.value.trim().length == 0 || !input.value.match(/^\+/))){
+                    input.value = "+265";
+                }
+
+                if(old_value != input.value) {
+
+                    var val = input.value.replace(/\+/, 'plus');
+
+                    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                        xmlhttp = new XMLHttpRequest();
+                    } else {// code for IE6, IE5
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    xmlhttp.onreadystatechange = function () {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                            results = xmlhttp.responseText;
+                            results = JSON.parse(results);
+                            var national_format = results['national_format'] || "<span style='color: red'>?</span>";
+                            var international_format = results['international_format'] || "<span style='color: red'>?</span>";
+                            var country = results['country'] || "<span style='color: red'>?</span>";
+
+                            var div = document.createElement("div");
+                            div.id = "status";
+                            div.className = "statusLabel";
+                            div.style.marginTop = "2%";
+                            div.style.fontSize = "1.7em";
+                            div.style.padding = "12px";
+                            div.style.textAlign = "left";
+                            div.innerHTML = "National format:&nbsp;&nbsp;&nbsp;<i style='color: green;'> " + national_format + "</i>" +
+                                    "<br />International format: &nbsp;&nbsp;&nbsp;<i style='color: green;'>" + international_format + "</i>" +
+                                     "<br />Country: &nbsp;&nbsp;&nbsp;<i style='color: green;'>" + country + "</i> "
+                            __$("inputFrame" + tstCurrentPage).appendChild(div);
+                        }
+                    }
+
+                    xmlhttp.open("GET", ("/global_phone_validation?value="+val), true);
+                    xmlhttp.send();
+                }
+
+                old_value = input.value;
+
+                setTimeout("showPhoneSummary()",500);
+            }
+        }
+
+        window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
 	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
@@ -1495,6 +1563,7 @@
 	<%end%>
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
+
                 <%= (f.text_field :last_name, :helpText => "Surname",
                                   :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName()",:tt_onLoad=> "removeUnknown()") rescue "" %>
 
@@ -1662,8 +1731,13 @@
 
                 <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:condition=>false) rescue "" %>
 
-                <%= (f.text_field :informant_phone_number,:helpText => "Informant Telephone Number", :field_type =>"number",
-                                  :tt_pageStyleClass => "Numeric NumbersOnly",:validationRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_phone_number,
+                                :helpText => "Informant Telephone Number",
+                                :field_type =>"number",
+                                :tt_pageStyleClass => "Numeric NumbersWithUnknown",
+                                :tt_onLoad => "showPhoneSummary()",
+                                :optional => :true) rescue "" %>
+
             </sub>
             <sub id="Informant verification" name="Verification">
                 <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed") %>
