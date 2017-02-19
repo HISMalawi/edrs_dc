@@ -122,7 +122,7 @@
 			<!--button class="gray" style="float: right; margin-right:1%"><span>Completeness Check</span></button-->
 
 		<%end%>
-		<%if ["NEW","DC REJECTED"].include? @status.status %>
+		<%if ["NEW"].include? @status.status %>
 		
 			<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
 		<%end%>

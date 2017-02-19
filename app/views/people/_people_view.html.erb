@@ -246,7 +246,7 @@
 
 								}else if(data[i].place_of_death =="Home"){
 
-									td.innerHTML = data[i].place_of_death_district +"," + data[i].place_of_death_ta + ","+  data[i].place_of_death_village;
+									td.innerHTML = data[i].place_of_death_district +" " + data[i].place_of_death_ta + " "+  data[i].place_of_death_village;
 
 								}
 
@@ -260,7 +260,7 @@
 
 								if(data[i].nationality.trim().toLowerCase().match("malawi") && data[i].current_district.length > 0){
 
-									td.innerHTML =  data[i].current_district +"," + data[i].current_ta + ","+  data[i].current_village;
+									td.innerHTML =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
 
 								}else if(data[i].home_country.length > 0) {
 									td.innerHTML = data[i].home_country;

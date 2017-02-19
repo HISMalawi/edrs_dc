@@ -1,5 +1,53 @@
 <script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
+	var confirmation = null;
+	var confirmationTimeout = null
+
+	function hideConfirmation(){
+		if (confirmation != null) confirmation.setAttribute('style', 'display:none');
+		if (confirmationTimeout != null) window.clearTimeout(confirmationTimeout);
+	}
+
+	function cancelForm(){
+			window.top.location.href ="/people/new_person_type";
+	}
+
+	function confirmYesNo(message, yes, no,time) {
+		    hideConfirmation();
+
+		    if (confirmation == null) {
+		        confirmation = document.createElement("div");
+		        confirmation.setAttribute('id', 'confirmation');
+		        
+		        document.body.appendChild(confirmation);
+		    }
+		    confirmation.innerHTML = ''+
+		    '<div class="confirmation" >'+ message+ '<div>'+
+		    '<button id="yes"><span>Yes</span></button>'+
+		    '<button id="no"><span>No</span></button></div>'+
+		    '</div>';
+
+		    if(yes){
+		    	__$("yes").onmousedown = yes;   
+		    }
+		    
+		    if(no){
+		    	__$("no").onmousedown = no;
+		    }else{
+		    	__$("yes").innerHTML ="OK"
+		    	__$("no").style.display ="none";
+		    }
+		    
+		    
+		    confirmation.setAttribute('style', 'display:block');
+		    if(time){
+
+		    	confirmationTimeout = window.setTimeout("hideConfirmation()", time);
+		    }else{
+		    	confirmationTimeout = window.setTimeout("hideConfirmation()", 5000);
+		    } 
+	}
+
 	function loadPersonSummary(){
 		if (__$("keyboard")) {
 			__$("keyboard").style.display = "none";
@@ -1221,9 +1269,7 @@
 		            setTimeout(function () {
 
 		                gotoPage(tstCurrentPage - 1, false, true);
-
-		                showPopupMessage(message, "Month of Birth Validation")
-
+		                showMessage(message);
 		            }, 10);
 
 		        }
@@ -1361,7 +1407,7 @@
 				valid =  false;
 			}
 			if(__$("person_gender") && __$("person_gender").value == "Female" && __$('person_birthdate') && ((age >= 9 && age <= 13) ||  (age >= 50 && age <= 55))){
-				showPopupMessage("Person is out of the normal child bearing age range <br><b>(13 - 49)</b>","Death while pregnant validation");
+				showMessage("Person is out of the normal child bearing age range <br><b>(13 - 49)</b>");
 				valid = true;
 			}
 			return valid;
@@ -1376,24 +1422,20 @@
 			if(site_type == "facility"){
 					
 					if (date < min){
-						showPopupMessage("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>","Delayed Record Registration");
+						confirmYesNo("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>",function(){cancelForm()},null,30000);
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
-						},100)
-
-						__$("ok_button").onclick = function(){
-								 window.top.location.href ="/people/new_person_type";
-						}
+						},100);
 					}
 			}else{
 
 				if(date < min){
-					showPopupMessage("Registration of the record has been delayed by more than 6 weeks","Delayed Record Registration");
+					showMessage("Registration of the record has been delayed by more than 6 weeks");
 					__$("person_delayed_registration").value ="Yes"
 				}
 			}
 			if(date < __$("person_birthdate").value){
-				showPopupMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")" ,"Date validation");
+				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")");
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -1408,8 +1450,7 @@
 			var date_of_death = (new Date(__$("person_date_of_death").value)).format("YYYY-mm-dd");
 
 			if(date < date_of_death){
-
-				showPopupMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")" ,"Date validation")
+				showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")");
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -1424,8 +1465,7 @@
 				        
 				 }
 				 else {
-				        showPopupMessage("Input name should have atleast 2 characters and atmost 42 character as one word" ,"Name field validation");
-
+				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word");
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 						},100)
@@ -1443,8 +1483,7 @@
 				        
 				 }
 				 else {
-				        showPopupMessage("Input name should have atleast 2 characters and atmost 42 character as one word" ,"Name field validation");
-
+				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word");
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 						},100)

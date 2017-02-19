@@ -150,6 +150,7 @@ class DcController < ApplicationController
 	def add_pending_comment
 
 		@action ="/mark_as_pending"
+		render :layout => "touch"
 		
 	end
 	def mark_as_pending
@@ -177,6 +178,7 @@ class DcController < ApplicationController
 
 	def add_reprint_comment
 		@action ="/mark_for_reprint"
+		render :layout => "touch"
 
 	end
 	def mark_for_reprint
