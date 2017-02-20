@@ -170,13 +170,20 @@
 		        td.style.fontWeight = "bold";
 		        tr.appendChild(td);
 
+		        var birthdate  = new Date(__$("person_birthdate").value).format();
+
+		       	if(__$('person_birthdate_estimated').value == 1) {
+		       		birthdate = "??/??/"+(new Date(__$("person_birthdate").value).format("YYYY-mm-dd").split("-")[0]);
+		       	}
+
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Year";
+		        td.colSpan ="6";
+		        td.innerHTML = birthdate;
 		        tr.appendChild(td);
 
-		        var td = document.createElement("td");
+		        /*var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_birth_year') && __$('person_birth_year').value ? __$("person_birth_year").value : "";
 		        tr.appendChild(td);
@@ -201,7 +208,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
 		        td.innerHTML = __$('person_birth_day') && __$('person_birth_day').value ? __$("person_birth_day").value : "";
-		        tr.appendChild(td);
+		        tr.appendChild(td);*/
 
 		        var td = document.createElement("td");
 		        td.style.border = "1px solid black";
@@ -1596,7 +1603,7 @@
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_onUnLoad=>"removeDollar()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()"} %>
 			</sub>
 		</section>
 	<%end%>
