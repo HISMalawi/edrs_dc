@@ -425,14 +425,13 @@ class DcController < ApplicationController
 
 	def new_burial_report
 		@burial_report = BurialReport.new
+		@person = Person.find(params[:id])
+		render :layout => "touch"
 	end
 
 	def create_burial_report
-
 		BurialReport.create(params)
-
-		redirect_to "/people/view/#{params[:person_record_id]}?next_url=#{params[:next_url]}"
-		
+		redirect_to "/people/view/#{params[:person_record_id]}?next_url=#{params[:next_url]}"		
 	end
 
 	protected

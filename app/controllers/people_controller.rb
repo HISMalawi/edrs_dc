@@ -557,7 +557,16 @@ class PeopleController < ApplicationController
 
     render :text => result.to_json
   end
-
+  def search_barcode
+      if params[:barcode].present?
+        count = PersonIdentifier.by_identifier.key(params[:barcode]).count  
+        if count >= 1
+            render :text => {:response => true}.to_json
+        else
+           render :text => {:response => false}.to_json
+        end            
+      end
+  end
   protected
 
   def find_person

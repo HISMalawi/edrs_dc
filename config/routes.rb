@@ -115,6 +115,7 @@ Rails.application.routes.draw do
   get "/people/find/:id" =>"people#find"
 
   get "/people/new_person_type" => "people#new_person_type"
+  post "/search_barcode" => "people#search_barcode"
 
 
 
