@@ -1,8 +1,13 @@
 <%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
-    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username") %>
+    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username", :tt_onLoad =>"setValuetoBlank()") %>
 
-    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password") %>
+    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password",:tt_onLoad =>"setValuetoBlank()") %>
 
     <input type="submit" value="Login">
 
 <% end %>
+<script type="text/javascript">
+		function setValuetoBlank(){
+				__$('touchscreenInput' + tstCurrentPage).value =""
+		}
+</script>

@@ -219,8 +219,8 @@ function $$(id){
                       th.style.backgroundColor = color;
                       th.style.border = "2px outset "+color;
                   }else{
-                      th.style.backgroundColor = "red";
-                      th.style.border = "2px outset red";
+                      th.style.backgroundColor = "#79a3c1";
+                      th.style.border = "2px outset #79a3c1";
                   }
                   th.style.color = "#fff";
                   th.innerHTML = topic;
