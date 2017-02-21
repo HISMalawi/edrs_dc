@@ -1,3 +1,73 @@
+<script type="text/javascript">
+	function removeDollar(){
+			var input_element = __$('touchscreenInput' + tstCurrentPage);
+			console.log(input_element);
+			if (input_element && input_element.value.match(/.+\$$/i) != null){
+				 setTimeout(function(){
+						barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+				},1000);		
+			}
+			else{
+				console.log("No dollar");
+			}
+	}
+
+	var patnum = ""
+	var setFocusTimeout = 5000;
+	var checkForBarcodeTimeout = 1500;
+	var barcodeFocusTimeoutId = null;
+	var barcodeFocusOnce = false;
+	var barcodeId = '';
+	var focusOnce = false;
+	var barcode_element;
+
+	function loadBarcodePage() {
+
+		  focusForBarcodeInput()
+
+		  checkForBarcode()
+
+	}
+
+	function focusForBarcodeInput(){
+
+			if (!barcodeId) {
+				barcodeId = "person_barcode";
+			}
+
+		  	barcode_element = document.getElementById(barcodeId);
+
+			if (barcode_element) {
+				barcode_element.focus();
+				if (!focusOnce) barcodeFocusTimeoutId = window.setTimeout("focusForBarcodeInput()", setFocusTimeout);
+			}
+	}
+
+	function checkForBarcode(validAction){
+
+			if (__$("person_barcode")){
+
+				var input_element = __$('touchscreenInput' + tstCurrentPage);
+
+				if (input_element && input_element.value.match(/.+\$$/i) != null){
+
+					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+
+					 setTimeout(function(){
+
+					 		 gotoNextPage();
+					 },500);
+
+					
+						
+				}else{
+					window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+				}
+			}
+	}
+
+	window.addEventListener("load", loadBarcodePage, false);
+</script>
 <% if params[:search_criteria].present? %>
 
 	<%= render :partial => "people_view" %>
@@ -6,7 +76,9 @@
 
 	<%= form_tag("/people/search",:method=>:get) do %>
 
-		<%= select_tag "search_criteria", options_for_select(["By Death Entry Number","By Death Registration Number","By Personal Details of the deceased","By Home Address","By Mother details","By Father details","By Informant details"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+		<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","By Personal Details of the deceased","By Home Address","By Mother details","By Father details","By Informant details"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+
+		<%= text_field_tag "person[barcode]",nil , {:name => "barcode",:helpText=> "Scan Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:condition => "__$('search_criteria').value =='By Barcode'"} %>
 
 		<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'"}  %>
 

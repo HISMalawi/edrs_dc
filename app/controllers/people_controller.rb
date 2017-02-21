@@ -228,11 +228,16 @@ class PeopleController < ApplicationController
 
        @section ="Search Results"
 
+       @next_url = "/"
+
+       render :layout => "landing"
+
     else  
       @section ="Search Criteria"
+      render :layout => "touch"
     end
 
-    render :layout => "touch"
+    
   end
 
   def search_by_fields
@@ -252,7 +257,16 @@ class PeopleController < ApplicationController
       end               
       
     end
+    if params[:barcode].present?
+   
+      PersonIdentifier.by_identifier.key(params[:barcode]).page(page).per(size).each do |pid|
+        
+          person = pid.person
 
+          people << person_selective_fields(person)
+      end               
+      
+    end
     if params[:death_registration_number].present?
 
        PersonIdentifier.by_identifier.key(params[:death_registration_number]).page(page).per(size).each do |pid|

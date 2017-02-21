@@ -71,9 +71,17 @@
 		var url =""
 
 		<% if params[:search_criteria].present? %>
-
+			
 			<%if params[:death_entry_number].present? %>
 				url = "/search_by_fields?death_entry_number=<%=params[:death_entry_number]%>"
+			<%end%>
+
+			<%if params[:barcode].present? %>
+
+				var param = "<%=params[:barcode]%>";
+				param = param.substr(0,param.length-1);
+				console.log(param);
+				url = "/search_by_fields?barcode="+param;
 			<%end%>
 		<%else%>
 				url ="/search_by_status?status=<%=@status%>"

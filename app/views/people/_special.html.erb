@@ -1506,6 +1506,77 @@
 				console.log("No dollar");
 			}
 		}
+		results = {}
+        old_value = "";
+        function showPhoneSummary(){
+            //variables 'results' and 'old_value' must be predefined above this function
+            var input = __$("touchscreenInput" + tstCurrentPage);
+            var label = __$("helpText" + tstCurrentPage).innerHTML;
+
+            if (label.match(/Phone Number/i)){
+
+                //Lock Next
+                if (input.value == "Unknown" || results['valid'] == true) {
+                    __$("nextButton").onmousedown = function () {
+                        gotoNextPage();
+                    }
+                }else{
+                    __$("nextButton").onmousedown = function () {
+                        var label = __$("helpText" + tstCurrentPage).innerHTML;
+                        if (label.match(/Phone Number/i)){
+                            showMessage("Invalid Phone Number");
+                        }else{
+                            gotoNextPage();
+                        }
+                    }
+                }
+
+                if (input.value != "Unknown" && (input.value.trim().length == 0 || !input.value.match(/^\+/))){
+                    input.value = "+265";
+                }
+
+                if(old_value != input.value) {
+
+                    var val = input.value.replace(/\+/, 'plus');
+
+                    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+                        xmlhttp = new XMLHttpRequest();
+                    } else {// code for IE6, IE5
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+
+                    xmlhttp.onreadystatechange = function () {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                            results = xmlhttp.responseText;
+                            results = JSON.parse(results);
+                            var national_format = results['national_format'] || "<span style='color: red'>?</span>";
+                            var international_format = results['international_format'] || "<span style='color: red'>?</span>";
+                            var country = results['country'] || "<span style='color: red'>?</span>";
+
+                            var div = document.createElement("div");
+                            div.id = "status";
+                            div.className = "statusLabel";
+                            div.style.marginTop = "2%";
+                            div.style.fontSize = "1.7em";
+                            div.style.padding = "12px";
+                            div.style.textAlign = "left";
+                            div.innerHTML = "National format:&nbsp;&nbsp;&nbsp;<i style='color: green;'> " + national_format + "</i>" +
+                                    "<br />International format: &nbsp;&nbsp;&nbsp;<i style='color: green;'>" + international_format + "</i>" +
+                                     "<br />Country: &nbsp;&nbsp;&nbsp;<i style='color: green;'>" + country + "</i> "
+                            __$("inputFrame" + tstCurrentPage).appendChild(div);
+                        }
+                    }
+
+                    xmlhttp.open("GET", ("/global_phone_validation?value="+val), true);
+                    xmlhttp.send();
+                }
+
+                old_value = input.value;
+
+                setTimeout("showPhoneSummary()",500);
+            }
+        }
+
 		window.addEventListener("load", loadBarcodePage, false)
 </script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
@@ -1523,29 +1594,77 @@
                 <%= (f.text_field :last_name, :helpText => "Surname",
                                   :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName('person_last_name')",:optional=> true) rescue "" %>
 
-                <%= (f.text_field :first_name,:helpText => "First name",:allowFreeText =>true,  :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateName('person_first_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :first_name,
+                				  :helpText => "First name",
+                				  :allowFreeText =>true,  
+                				  :ajaxURL => "/get_first_names?search=",
+                				  :tt_onUnLoad=>"validateName('person_first_name')",
+                				  :optional=> true) rescue "" %>
 
-                <%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:tt_onUnLoad=>"validateName('person_middle_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :middle_name, 
+                				  :helpText => "Other names",
+                				  :allowFreeText =>true, 
+                				  :optional => :true, :ajaxURL => "/get_first_names?search=",
+                				  :tt_onUnLoad=>"validateName('person_middle_name')",
+                				  :optional=> true) rescue "" %>
 
-                <%= text_field_tag "person[id_number]",nil , {:helpText => "ID No", :optional => true, :validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
+                <%= text_field_tag "person[id_number]",nil , {
+                				 :helpText => "ID No", 
+                				 :optional => true, 
+                				 :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                				 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
-                <%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?special=Special&search_string=",:allowFreeText => true} %>
+                <%= text_field_tag "person[nationality]",nil , {
+                				:helpText => "Nationality",
+                				:ajaxURL => "/nationalities?special=Special&search_string=",
+                				:allowFreeText => true} %>
 
-                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Sex",:tt_requireNextClick => false) %>
+                 <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
+                 				:helpText =>"Sex",
+                 				:tt_requireNextClick => false) %>
 
-                <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
+                <%= text_field_tag "person[birth_year]", nil, {
+                			:helpText => 'Year of Birth', 
+                			:field_type => 'number',
+                			:absoluteMin => "1890", 
+                			:min => "1940", 
+                			:absoluteMax => Date.today.year, 
+                			:tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
-                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_onUnLoad=>"validateAndProcessMonth()" }%>
+                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {
+                				:helpText => 'Month of Birth', 
+                				:condition => '$("person_birth_year").value.toLowerCase() != "unknown"',
+                				:validationJS => "validateDOB();",
+                				:validationMessage => 'Please enter a valid date', 
+                				:tt_onLoad =>"__$('keyboard').style.display = 'none'",
+                				:tt_requireNextClick => false,
+                				:tt_pageStyleClass =>"NoKeyboard longSelectList",
+                				:tt_onUnLoad=>"validateAndProcessMonth()" }%>
 
-                <%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %>
+                <%= text_field_tag "person[age_estimate]", nil, {
+                				:helpText => 'Age Estimate', 
+                				:absoluteMin => 1, 
+                				:absoluteMax => 120,
+                				:field_type => 'number', 
+                				:condition => '$("person_birth_year").value == "Unknown"', 
+                				:tt_onLoad => "$('nextButton').style.display = 'block';", 
+                				:tt_pageStyleClass => "Numeric NumbersOnly",
+                				:tt_onUnLoad => "setEstimatedAgeValue()"} %>
 
-                <%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,:tt_onUnLoad => "setAgeValues()"%>
+                <%= text_field_tag "person[birth_day]",  nil, 
+                				:field_type => 'number',
+                				:helpText => 'Birth Day', 
+                				:condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")',
+                				:tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,
+                				:tt_onUnLoad => "setAgeValues()"%>
 
                 <%= (f.hidden_field :birthdate) rescue "" %>
 
                 <%= f.hidden_field :birthdate_estimated rescue "" %>
 
-                <%= text_field_tag "person[birth_certificate_number]",nil , {:helpText => "Birth Certificate No.", :optional => true} %>
+                <%= text_field_tag "person[birth_certificate_number]",nil , {
+                					:helpText => "Birth Certificate No.",
+                					:optional => true} %>
             </sub>
 
             <sub id="death_details" name="Details of death">
@@ -1583,41 +1702,44 @@
 
             	 <%= text_field_tag "person[current_country]", nil, {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=", :condition =>false} %>
 
-   				<%= text_field_tag "person[current_district]", nil, {:helpText => "District of Residence",
+   				<%= text_field_tag "person[current_district]", nil, {:helpText => "District (<i>Physical residential address</i>)",
                                 :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_physical_address_check').value == 'Yes'",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
 
-                <%= text_field_tag "person[current_ta]", nil, {:helpText => "Traditional Authority of Residence",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_physical_address_check').value == 'Yes'",
+                <%= text_field_tag "person[current_ta]", nil, {:helpText => "Traditional Authority (<i>Physical residential address</i>)",:condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_physical_address_check').value == 'Yes'",
                                 :tt_onUnLoad => "setAjaxUrl(7)"} %>
 
-                <%= text_field_tag "person[other_current_ta]", nil, {:helpText => "Other Traditional Authority of Residence specify",:condition => "__$('person_current_ta').value =='Other'"} %>
+                <%= text_field_tag "person[other_current_ta]", nil, {:helpText => "Other Traditional Authority specify (<i>Physical residential address</i>)",:condition => "__$('person_current_ta').value =='Other'"} %>
 
-               	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village of Residence",
+               	<%= text_field_tag "person[current_village]", nil, {:helpText => "Village (<i>Physical residential address</i>)",
                                 :condition => "__$('person_current_ta').value.length > 0 && __$('person_current_ta').value != 'Other'"} %>
 
-                <%= text_field_tag "person[other_current_village]", nil, {:helpText => "Other Village of Residence specify",:condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'", :tt_onLoad=>"setOtherTofield('person_current_village')"} %>
+                <%= text_field_tag "person[other_current_village]", nil, {:helpText => "Other Village specify(<i>Physical residential address</i>)",:condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'", :tt_onLoad=>"setOtherTofield('person_current_village')"} %>
             </sub>
 
             <sub id="home_address" name="Home address">
             	 <%= select_tag("person[home_address_check]",options_for_select([" ", "No", "Yes"], nil),:helpText =>"Home address details available?",:tt_requireNextClick => false) %>
 
-            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
+            	 <%= text_field_tag "person[home_country]", nil, {:helpText => "Home nationality",
+            	 					:ajaxURL => "/nationalities?search_string=",
+            	 					:condition=>false} %>
 
-   				<%= text_field_tag "person[home_district]", nil, {:helpText => "Home district",
+   				<%= text_field_tag "person[home_district]", nil, {:helpText => "District (<i>Home address</i>)",
                                 :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_home_address_check').value == 'Yes'",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
-                  <%= text_field_tag "person[home_ta]", nil, {:helpText => "Home Traditional Authority",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_home_address_check').value == 'Yes'",
+                  <%= text_field_tag "person[home_ta]", nil, {:helpText => "Traditional Authority (<i>Home address</i>)",
+                              	:condition => "__$('person_nationality').value.toLowerCase().match('malawi') && __$('person_home_address_check').value == 'Yes'",
                                 :tt_onUnLoad => "setAjaxUrl(3)"} %>
 
-                 <%= text_field_tag "person[other_home_ta]", nil, {:helpText => "Other Home Traditional Authority specify",:condition => "__$('person_home_ta').value =='Other'"} %>
+                 <%= text_field_tag "person[other_home_ta]", nil, {:helpText => "Other Traditional Authority specify (<i>Home address</i>)",:condition => "__$('person_home_ta').value =='Other'"} %>
 
-               	<%= text_field_tag "person[home_village]", nil, {:helpText => "Home Village",
+               	<%= text_field_tag "person[home_village]", nil, {:helpText => "Village(<i>Home address</i>)",
                                 :condition => "__$('person_home_ta').value.length > 0 && __$('person_home_ta').value != 'Other'"} %>
 
-                <%= text_field_tag "person[other_home_village]", nil, {:helpText => "Other Home Village specify",:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_home_village')"} %>
+                <%= text_field_tag "person[other_home_village]", nil, {:helpText => "Other Village specify (<i>Home address</i>)",
+                					:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'",
+                					:tt_onLoad=>"setOtherTofield('person_home_village')"} %>
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
@@ -1628,44 +1750,136 @@
 
     <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
-            	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Mother details available?",:tt_requireNextClick => false) %>
+            	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
+            			:helpText =>"Mother's details available?",
+            			:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :mother_last_name, :helpText => "Mother Surname",:optional => :true,:allowFreeText =>true, :ajaxURL => "/get_last_names?search=", :condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_last_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :mother_last_name, 
+                				:helpText => "Mother's Surname",
+                				:optional => :true,
+                				:allowFreeText =>true, 
+                				:ajaxURL => "/get_last_names?search=",
+                				:condition => "__$('mother_details_available').value =='Yes'",
+                				:tt_onUnLoad=>"validateName('person_mother_last_name')",
+                				:optional=> true) rescue "" %>
 
-                <%= (f.text_field :mother_first_name,:helpText => "Mother First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_first_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :mother_first_name,:helpText => "Mother's First name",
+                				:allowFreeText =>true,
+                				:optional => true,
+                				:ajaxURL => "/get_first_names?search=",
+                				:condition => "__$('mother_details_available').value =='Yes'",
+                				:tt_onUnLoad=>"validateName('person_mother_first_name')",
+                				:optional=> true) rescue "" %>
 
-                <%= (f.text_field :mother_middle_name, :helpText => "Mother Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=",:condition => "__$('mother_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_mother_middle_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :mother_middle_name, 
+                			:helpText => "Mother's Other names",
+                			:allowFreeText =>true, 
+                			:optional => :true, 
+                			:ajaxURL => "/get_first_names?search=",
+                			:condition => "__$('mother_details_available').value =='Yes'",
+                			:tt_onUnLoad=>"validateName('person_mother_middle_name')",
+                			:optional=> true) rescue "" %>
 
-                <%= (f.text_field :mother_id_number, :helpText => "Mother ID No.",:optional => :true,:allowFreeText =>true,:condition => "__$('mother_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+                <%= (f.text_field :mother_id_number, 
+                			:helpText => "Mother's ID No.",
+                			:optional => true,
+                			:allowFreeText =>true,
+                			:condition => "__$('mother_details_available').value =='Yes'",
+                			:validationRule=>"^[a-zA-Z0-9]{8}$", 
+                			:validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
             <sub id="details_father" name="Details of father">
-            	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),:helpText =>"Father details available?",:tt_requireNextClick => false) %>
+            	<%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
+            				:helpText =>"Father's details available?",
+            				:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :father_last_name,:helpText => "Father Surname",:allowFreeText =>true,:optional => :true, :ajaxURL => "/get_last_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_last_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :father_last_name,
+                					:helpText => "Father's Surname",
+                					:allowFreeText =>true,
+                					:optional => true,
+                					:ajaxURL => "/get_last_names?search=", 
+                					:condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_last_name')",
+                					:optional=> true) rescue "" %>
 
-                <%= (f.text_field :father_first_name,:helpText => "Father First Name",:allowFreeText =>true,:optional => :true,:ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_first_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :father_first_name,
+                					:helpText => "Father's First name",
+                					:allowFreeText =>true,
+                					:optional => true,
+                					:ajaxURL => "/get_first_names?search=",
+                					:condition => "__$('father_details_available').value =='Yes'",
+                					:tt_onUnLoad=>"validateName('person_father_first_name')",
+                					:optional=> true) rescue "" %>
 
-                <%= (f.text_field :father_middle_name, :helpText => "Father Other Names",:allowFreeText =>true, :optional => :true, :ajaxURL => "/get_first_names?search=", :condition => "__$('father_details_available').value =='Yes'",:tt_onUnLoad=>"validateName('person_father_middle_name')",:optional=> true) rescue "" %>
+                <%= (f.text_field :father_middle_name, 
+                				:helpText => "Father's Other names",
+                				:allowFreeText =>true, 
+                				:optional => true,
+                				:ajaxURL => "/get_first_names?search=", 
+                				:condition => "__$('father_details_available').value =='Yes'",
+                				:tt_onUnLoad=>"validateName('person_father_middle_name')",
+                				:optional=> true) rescue "" %>
 
-                 <%= (f.text_field :father_id_number, :helpText => "Father ID No.",:optional => :true,:allowFreeText =>true, :condition => "__$('father_details_available').value =='Yes'",:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+                <%= (f.text_field :father_id_number, 
+                 					:helpText => "Father's ID No.",
+                 					:optional => :true,
+                 					:allowFreeText =>true, 
+                 					:condition => "__$('father_details_available').value =='Yes'",
+                 					:validationRule=>"^[a-zA-Z0-9]{8}$", 
+                 					:validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
             </sub>
     </section>
 
     <section name="Informant's details">
-            <sub id="info_details" name="Basic demographics">
-        		<input id="person_informant_designation"
+            <sub id="info_details" name="Details and designation">
+
+                 <%= (f.text_field :informant_last_name, 
+                				  :helpText => "Informant's  Surname",
+                				  :allowFreeText =>true,
+                				  :ajaxURL => "/get_last_names?search=",
+                				  :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :informant_first_name,
+                				  :helpText => "Informant's First Name",
+                				  :allowFreeText =>true,
+                				  :ajaxURL => "/get_first_names?search=",
+                				  :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :informant_middle_name, 
+                				  :helpText => "Informant's Other Names",
+                				  :allowFreeText =>true,
+                				  :ajaxURL => "/get_first_names?search=",
+                				  :optional => :true,
+                				  :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :informant_id_number, 
+                				  :helpText => "Informant's ID No.",
+                				  :optional => :true,
+                				  :allowFreeText =>true,
+                				  :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                				  :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+
+                <input id="person_informant_designation"
 	               name="person[informant_designation]"
-	              helpText = "Informant Designation"
+	              helpText = "Informant's Designation"
 	               value="<%= @person[:informant_designation] rescue nil %>" />
 
-                <%= (f.text_field :informant_last_name, :helpText => "Informant  Surname",:allowFreeText =>true,:ajaxURL => "/get_last_names?search=") rescue "" %>
+	             <%= text_field_tag "person[informant_office_name]",nil , {
+	             		:name => "barcode",
+	             		:helpText=> "Informant's office name"} %>
 
-                <%= (f.text_field :informant_first_name,:helpText => "Informant First Name",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=") rescue "" %>
+	             <%= text_field_tag "person[informant_office_address]",nil , {
+	             		:name => "barcode",
+	             		:placeholder => "e.g P.O. Box 200 Lilongwe",
+	             		:helpText=> "Informant's office address"} %>
 
-                <%= (f.text_field :informant_middle_name, :helpText => "Informant Other Names",:allowFreeText =>true,:ajaxURL => "/get_first_names?search=",:optional => :true) rescue "" %>
+	             <%= (f.text_field :informant_phone_number,
+                                :helpText => "Informant Telephone Number",
+                                :field_type =>"number",
+                                :tt_pageStyleClass => "Numeric NumbersWithUnknown",
+                                :tt_onLoad => "showPhoneSummary()",
+                                :optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_id_number, :helpText => "Informant ID No.",:optional => :true,:allowFreeText =>true,:validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
-
+                <% if false %>
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
                              'Grandfather', 'Grandmother',
@@ -1673,36 +1887,75 @@
                              'Son', 'Daughter',
                              'Nephew', 'Niece',
                              'Uncle', 'Aunt',
-                             'Other'], @person[:informant_relationship_to_deceased]),:helpText =>"Relationship to deceased",:tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_requireNextClick => false) %>
+                             'Other'], @person[:informant_relationship_to_deceased]),
+                             :helpText =>"Informant's relationship to deceased",
+                             :tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :informant_relationship_to_deceased_other,:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",:helpText => "Relationship to Deceased specify") rescue "" %>
+                <%= (f.text_field :informant_relationship_to_deceased_other,
+                				:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",
+                				:helpText => "Informant's relationship to deceased specify") rescue "" %>
+                <%end%>
             </sub>
+            <% if false %>
             <sub id="info_home_address" name="Address">
 
-   				<%= text_field_tag "person[informant_current_district]", nil, {:helpText => "Informant address district",:ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(4)"} %>
+   				<%= text_field_tag "person[informant_current_district]", nil, {
+   									:helpText => "Dstrict (<i>Informant's address</i>)",
+   									:ajaxURL =>"/districts?search_string=",
+   									:tt_onUnLoad => "setAjaxUrl(4)"} %>
 
-                <%= text_field_tag "person[informant_current_ta]", nil, {:helpText => "Informant address Traditional Authority",:tt_onUnLoad => "setAjaxUrl(5)"} %>
+                <%= text_field_tag "person[informant_current_ta]", nil, {
+                					:helpText => "Traditional Authority (<i>Informant's address</i>)",
+                					:tt_onUnLoad => "setAjaxUrl(5)"} %>
 
-                <%= text_field_tag "person[other_informant_current_ta]", nil, {:helpText => "Other Informant address Traditional Authority specify",:condition => "__$('person_informant_current_ta').value =='Other'"} %>
+                <%= text_field_tag "person[other_informant_current_ta]", nil, {
+                					:helpText => "Other Traditional Authority specify (<i>Informant's address</i>)",
+                					:condition => "__$('person_informant_current_ta').value =='Other'"} %>
     			
-    			<%= text_field_tag "person[informant_current_village]", nil, {:helpText => "Informant address village", :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
+    			<%= text_field_tag "person[informant_current_village]", nil, {
+    								:helpText => "Village (<i>Informant's address</i>)", 
+    								:condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
 
-    			<%= text_field_tag "person[other_informant_current_village]", nil, {:helpText => "Other Informant address Village specify",:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
+    			<%= text_field_tag "person[other_informant_current_village]", nil, {
+    							:helpText => "Other village specify (<i>Informant's address</i>)",
+    							:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",
+    							:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
 
-                <%= (f.text_field :informant_addressline1,:helpText => "Informant Postal address",:placeholder => "e.g P.O. Box 200 Lilongwe",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_addressline1,
+                				:helpText => "Informant's Postal address",
+                				:placeholder => "e.g P.O. Box 200 Lilongwe",
+                				:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_addressline2,condition=>false,:helpText => "Informant Address Line 2",:placeholder => "Street / Company /Building",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_addressline2,
+                				:condition=>false,
+                				:helpText => "Informant Address Line 2",
+                				:placeholder => "Street / Company /Building",
+                				:optional => :true) rescue "" %>
 
-                <%= (f.text_field :informant_city,:helpText => "Informant city",:placeholder => "Location e.g Area 3",:optional => :true,:condition=>false) rescue "" %>
+                <%= (f.text_field :informant_city,
+                				:helpText => "Informant city",
+                				:placeholder => "Location e.g Area 3",
+                				:optional => :true,:condition=>false) rescue "" %>
 
-                <%= (f.text_field :informant_phone_number,:helpText => "Informant Telephone Number", :field_type =>"number",
-                                  :tt_pageStyleClass => "Numeric NumbersOnly",:validationRule => "^01\\d{6}$|Unknown|Not Available|^01\\d{8}$|^02\\d{8}$|^03\\d{8}$|^04\\d{8}$|^05\\d{8}$|^06\\d{8}$|^07\\d{8}$|^08\\d{8}$|^09\\d{8}$|^N\\/A$",:validationMessage => "Not a valid phone number",:optional => :true) rescue "" %>
+                <%= (f.text_field :informant_phone_number,
+                                :helpText => "Informant Telephone Number",
+                                :field_type =>"number",
+                                :tt_pageStyleClass => "Numeric NumbersWithUnknown",
+                                :tt_onLoad => "showPhoneSummary()",
+                                :optional => :true) rescue "" %>
+
             </sub>
+            <%end%>
             <sub id="Informant verification" name="Verification">
-                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),:helpText =>"Informant Signed") %>
+                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
+                				:helpText =>"Informant Signed?") %>
 
-                <%= (f.text_field :informant_signature_date,:helpText => "Date Informant Signed",:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
-                                      :field_type => "date",:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDateInformant()") rescue "" %>
+                <%= (f.text_field :informant_signature_date,
+                					:helpText => "Date Informant signed",
+                					:condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
+                                    :field_type => "date",
+                                    :tt_onLoad =>"removeUnknown()",
+                                    :tt_onUnLoad => "validateDateInformant()") rescue "" %>
             </sub>
     </section>
 
