@@ -1983,7 +1983,7 @@ function loadPersonSummary(){
             <sub id="info_home_address" name="Address">
 
    				<%= text_field_tag "person[informant_current_district]", nil, {
-   									:helpText => "Dstrict (<i>Informant's address</i>)",
+   									:helpText => "District (<i>Informant's address</i>)",
    									:ajaxURL =>"/districts?search_string=",
    									:tt_onUnLoad => "setAjaxUrl(4)"} %>
 
@@ -2042,21 +2042,28 @@ function loadPersonSummary(){
             </sub>
     </section>
 
-    <% if site_type == "dc" %>
+ 	<% if site_type == "dc" %>
 
     <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">
-                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),:helpText =>"Village leader Signed") %>
+                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
+                					:helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :headman_verification_date,:helpText => "Date Headman verified",
-                                  :field_type => "date",:condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                <%= (f.text_field :headman_verification_date,
+                				  :helpText => "Date Village headman/Block leader signed",
+                                  :field_type => "date",
+                                  :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
                                   :tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
             <sub id="church_verification" name="Church verification">
-                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),:helpText =>"Church leader Signed") %>
+                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
+                		:helpText =>"Senior member of village/Religious institution signed?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :church_verification_date,:helpText => "Date Church leader verified",
-		                          :field_type => "date",:condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",:tt_onLoad =>"removeUnknown()") rescue "" %>
+                <%= (f.text_field :church_verification_date,
+                				:helpText => "Date Senior member of village/Religious institution signed",
+		                        :field_type => "date",
+		                        :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
+		                        :tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
     </section>
     <% end %>
@@ -2074,8 +2081,8 @@ function loadPersonSummary(){
     <% end %>
     <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false">
 
-    <section name="Summary">
-        <sub id="summary" name="Summary">
+    <section name="Complete form">
+        <sub id="summary" name="Details">
 		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"checkForDuplicate();loadPersonSummary()"} %>
         </sub>
     </section>  

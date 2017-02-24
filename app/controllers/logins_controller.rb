@@ -49,8 +49,8 @@ class LoginsController < ApplicationController
 
   def logout
     # session[:touchcontext] = nil
+    flash[:notice] = "User #{User.current_user.username} has been logged out"
     logout!
-    flash[:notice] = 'You have been logged out. Good Bye!'
     redirect_to "/", referrer_param => referrer_path
   end
 
