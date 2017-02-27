@@ -1354,7 +1354,7 @@ function loadPersonSummary(){
 		            setTimeout(function () {
 
 		                gotoPage(tstCurrentPage - 1, false, true);
-		                showMessage(message);
+		                showMessage(message,null,30000);
 		            }, 10);
 
 		        }
@@ -1555,12 +1555,12 @@ function loadPersonSummary(){
 			}else{
 
 				if(date < min){
-					showMessage("Registration of the record has been delayed by more than 6 weeks");
+					showMessage("Registration of the record has been delayed by more than 6 weeks",null,30000);
 					__$("person_delayed_registration").value ="Yes"
 				}
 			}
 			if(date < __$("person_birthdate").value){
-				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")");
+				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -1575,7 +1575,7 @@ function loadPersonSummary(){
 			var date_of_death = (new Date(__$("person_date_of_death").value)).format("YYYY-mm-dd");
 
 			if(date < date_of_death){
-				showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")");
+				showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -1590,7 +1590,7 @@ function loadPersonSummary(){
 				        
 				 }
 				 else {
-				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word");
+				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word",null,30000);
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 						},100)
@@ -1608,7 +1608,7 @@ function loadPersonSummary(){
 				        
 				 }
 				 else {
-				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word");
+				 		showMessage("Input name should have atleast 2 characters and atmost 42 character as one word",null,30000);
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 						},100)
@@ -1649,7 +1649,7 @@ function loadPersonSummary(){
                     __$("nextButton").onmousedown = function () {
                         var label = __$("helpText" + tstCurrentPage).innerHTML;
                         if (label.match(/Phone Number/i)){
-                            showMessage("Invalid Phone Number");
+                            showMessage("Invalid Phone Number",null,30000);
                         }else{
                             gotoNextPage();
                         }
@@ -2008,6 +2008,7 @@ function loadPersonSummary(){
                                 :tt_pageStyleClass => "Numeric NumbersWithUnknown",
                                 :tt_onLoad => "showPhoneSummary()",
                                 :optional => :true) rescue "" %>
+                <input type="hidden" name="person[informant_current_country]" id="person_informant_current_country" value="Malawi">
 
                 <% if false %>
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
@@ -2104,7 +2105,7 @@ function loadPersonSummary(){
             </sub>
             <sub id="church_verification" name="Church verification">
                 <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
-                		:helpText =>"Senior member of village/Religious institution signed?",:tt_requireNextClick => false) %>
+                		:helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
 
                 <%= (f.text_field :church_verification_date,
                 				:helpText => "Date Senior member of village/Religious institution signed",
