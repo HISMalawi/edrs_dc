@@ -3,6 +3,8 @@
 	<%= render 'form' %>
 <%elsif params[:relationship].include? "Unclaimed"%>
 	<%= render 'special' %>
+<%elsif params[:relationship].include? "Deaths Abroad"%>
+	<%= render 'abroad' %>
 <%else%>
 	<%= render 'form' %>
 <%end%>

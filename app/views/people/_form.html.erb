@@ -1440,23 +1440,9 @@
 				var input_element = __$('touchscreenInput' + tstCurrentPage);
 
 				if (input_element && input_element.value.match(/.+\$$/i) != null){
-
-					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
-
-
-
-					 postAjax("/search_barcode",{barcode : barcode_element.value},function(response){
-					 		console.log(response);
-					 		var response = JSON.parse(response).response
-					 		if(response){
-					 			confirmYesNo("Scanned Barcode ("+barcode_element.value+") already exist for another record",function(){window.location.reload();},null,30000);
-					 		}else{
-					 			 setTimeout(function(){
-								 	 gotoNextPage();
-								 },100);
-					 		}	
-					 });				
-						
+					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);				 
+					 checkBarcode();
+					 gotoNextPage();									
 				}else{
 					window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
 				}
@@ -1472,16 +1458,29 @@
 			postAjax("/search_barcode",{barcode : value},function(response){
 				var response = JSON.parse(response).response
 				if(response){
-					confirmYesNo("Scanned Barcode ("+value+") already exist for another record",function(){window.location.reload();},null,30000);
+					confirmYesNo("Scanned Barcode ("+value+") already exist for another record",
+						function(){
+							top.location.reload();
+						},
+						function(){
+							top.location ="/people/view/"+response+"?next_url=/people/new_person_type";
+						},300000);
+					__$("yes").innerHTML ="Dismiss"
+					__$("yes").className = "red";
+					__$("no").innerHTML ="View Record"
 					setTimeout(function(){
 						gotoPage(tstCurrentPage -1);
 					},100);
 				}
 			});								
 		}
-		function getAge(dateString){
+		function getAge(dateString,otherDate){
 
 		    var today = new Date();
+
+		    if(otherDate){
+		    	today = new Date(otherDate);
+		    }
 
 		    var birthDate = new Date(dateString);
 
@@ -1489,35 +1488,57 @@
 
 		    var m = today.getMonth() - birthDate.getMonth();
 
-		    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
-		    {
-		        age--;
+		    if(parseInt(__$('person_birthdate_estimated').value) == 0){
+		    	if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+			    {
+			        age--;
+			    }
 		    }
 		    return age;
 		}
 
 		function validatePregnancy(){
 
-			var valid = true;
-
-			var age = parseInt(getAge(__$('person_birthdate').value));
+			var age = parseInt(getAge(__$('person_birthdate').value, __$('person_date_of_death').value));
 
 			if(__$("person_gender") && __$("person_gender").value == "Male"){
+				return false;
+			}
+			if (__$('person_birthdate') && parseInt(getAge(__$('person_birthdate').value)) >= 9 && parseInt(getAge(__$('person_birthdate').value)) <= 55){
+				return true;
+			}else{
+				 return false;
+			}
 
-				valid = false;
-			}
-			if (__$('person_birthdate') && parseInt(getAge(__$('person_birthdate').value)) < 9 ){
-				valid =  false;
-			}
-			if (__$('person_birthdate') && parseInt(getAge(__$('person_birthdate').value)) > 55 ){
-				valid =  false;
-			}
-			if(__$("person_gender") && __$("person_gender").value == "Female" && __$('person_birthdate') && ((age >= 9 && age <= 13) ||  (age >= 50 && age <= 55))){
-				showMessage("Person is out of the normal child bearing age range <br><b>(13 - 49)</b>");
-				valid = true;
-			}
-			return valid;
+		}
 
+		var flag = true;
+		function flagIfOut(){
+				if(flag){
+					var value = __$('touchscreenInput' + tstCurrentPage).value;
+					var age = parseInt(getAge(__$('person_birthdate').value, __$('person_date_of_death').value));
+					if(value.trim() == "Yes"){
+						if(__$("person_gender") && __$("person_gender").value == "Female" && __$('person_birthdate') && ((age >= 9 && age <= 13) ||  (age >= 50 && age <= 55))){
+							confirmYesNo("Female is out of the normal child bearing age range <br><b>(13 - 49)</b>",
+								function(){
+									__$("confirmation").style.display ="none";
+								},
+								function(){
+									flag = false;
+									gotoNextPage();
+									__$("confirmation").style.display ="none";
+								},300000);
+
+							__$("yes").innerHTML ="Change"
+							__$("no").innerHTML ="Continue";
+							setTimeout(function(){
+								gotoPage(tstCurrentPage -1);
+							},100);
+						}
+					}
+				}else{
+
+				}
 		}
 
 		function validateDeathDate(){
@@ -1797,7 +1818,7 @@
                 				  :field_type => "date" ,
                 				  :tt_onLoad =>"removeUnknown()",
                 				  :tt_onUnLoad => "validateDeathDate()") rescue "" %>
-
+                <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
                 <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
@@ -1847,18 +1868,17 @@
             <sub id="physical_address" name="Physical address">
 
             	 <%= text_field_tag "person[current_country]", nil, {
-            	 				:helpText => "Nationality of Residence",
-            	 				:ajaxURL => "/nationalities?search_string=", 
-            	 				:condition =>false} %>
+            	 				:helpText => "Country (<i>Physical residential address</i>) <i style='color: red'>*</i>",
+            	 				:ajaxURL => "/countries?search_string="} %>
 
    				<%= text_field_tag "person[current_district]", nil, {
    								:helpText => "District (<i>Physical residential address</i>) <i style='color: red'>*</i>",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
                                 :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
 
                 <%= text_field_tag "person[current_ta]", nil, {
                 				:helpText => "Traditional Authority (<i>Physical residential address</i>)  <i style='color: red'>*</i>",
-                                :condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
                                 :tt_onUnLoad => "setAjaxUrl(7)"} %>
 
                 <%= text_field_tag "person[other_current_ta]", nil, {
@@ -1870,22 +1890,38 @@
                                 :condition => "__$('person_current_ta').value.length > 0 && __$('person_current_ta').value != 'Other'"} %>
 
                 <%= text_field_tag "person[other_current_village]", nil, {:helpText => "Other Village specify(<i>Physical residential address</i>)  <i style='color: red'>*</i>",:condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'", :tt_onLoad=>"setOtherTofield('person_current_village')"} %>
+
+                <%= text_field_tag "person[current_foreign_district]", nil, {
+   								:helpText => "District/State (<i>Foreign physical residential address</i>) <i style='color: red'>*</i>",
+                                :condition => "__$('person_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[current_foreign_village]", nil, {
+                				:helpText => "Village/Town (<i>Foreign physical residential address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[current_foreign_address]", nil, {
+                				:helpText => "Adrress (<i>Foreign postal address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_current_country').value.toLowerCase() !='malawi'",
+                				:placeholder => "e.g P.O. Box 200 Lilongwe"} %>
+
             </sub>
 
             <sub id="home_address" name="Home address">
 
             	 <%= text_field_tag "person[home_country]", nil, {
-            	 					:helpText => "Home nationality",
-            	 					:ajaxURL => "/nationalities?search_string=",:condition=>false} %>
+            	 					:helpText => "Home Country (<i>Home address</i>)  <i style='color: red'>*</i>",
+            	 					:ajaxURL => "/countries?search_string="} %>
 
    				<%= text_field_tag "person[home_district]", nil, {
    									:helpText => "District (<i>Home address</i>)  <i style='color: red'>*</i>",
-                                	:condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                	:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
                                 	:ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
                   <%= text_field_tag "person[home_ta]", nil, {
                   					:helpText => "Traditional Authority (<i>Home address</i>) <i style='color: red'>*</i>",
-                                	:condition => "__$('person_nationality').value.toLowerCase().match('malawi')",
+                                	:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
                                 	:tt_onUnLoad => "setAjaxUrl(3)"} %>
 
                  <%= text_field_tag "person[other_home_ta]", nil, {
@@ -1899,13 +1935,31 @@
                 <%= text_field_tag "person[other_home_village]", nil, {
                 					:helpText => "Other Village specify (<i>Home address</i>) <i style='color: red'>*</i>",
                 					:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'",
-                					:tt_onLoad=>"setOtherTofield('person_home_village')"} %>
+                					:tt_onLoad=>"setOtherTofield('person_home_village')",
+                					:tt_onLoad=>"hideConfirmation()"} %>
+
+               <%= text_field_tag "person[home_foreign_district]", nil, {
+   								:helpText => "District/State (<i>Foreign home address</i>) <i style='color: red'>*</i>",
+                                :condition => "__$('person_home_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[home_foreign_village]", nil, {
+                				:helpText => "Village/Town (<i>Foreign home address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_home_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[home_foreign_address]", nil, {
+                				:helpText => "Adrress (<i>Foreign home postal address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_home_country').value.toLowerCase() !='malawi'",
+                				:placeholder => "e.g P.O. Box 200 Lilongwe"} %>
             </sub>
 
             <sub id='pregnancy_status' name="Pregnancy status">
                <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
                         :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", 
-                        :condition =>"validatePregnancy()",:tt_requireNextClick => false) %>
+                        :condition =>"validatePregnancy()",
+                        :tt_requireNextClick => false,
+                        :tt_onUnLoad=>"flagIfOut()") %>
             </sub>
   	</section>
 
@@ -1913,7 +1967,8 @@
             <sub id="details_mother" name="Details of mother">
             	<%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
             				 :helpText =>"Mother's details available?",
-            				 :tt_requireNextClick => false) %>
+            				 :tt_requireNextClick => false,
+            				 :tt_onLoad=>"if(!flag){hideConfirmation()};flag=true") %>
 
                 <%= (f.text_field :mother_last_name, 
                 				  :helpText => "Mother's Surname",
@@ -2029,44 +2084,69 @@
                 				:helpText => "Informant's relationship to deceased specify <i style='color: red'>*</i>") rescue "" %>
             </sub>
             <sub id="info_home_address" name="Address">
+            	<%= text_field_tag "person[informant_current_country]", nil, {
+            	 					:helpText => "Country (<i>Informant's address</i>)<i style='color: red'>*</i>",
+            	 					:ajaxURL => "/countries?search_string="} %>
 
    				<%= text_field_tag "person[informant_current_district]", nil, {
    									:helpText => "District (<i>Informant's address</i>)<i style='color: red'>*</i>",
    									:ajaxURL =>"/districts?search_string=",
-   									:tt_onUnLoad => "setAjaxUrl(4)"} %>
+   									:tt_onUnLoad => "setAjaxUrl(4)",
+   									:condition => "__$('person_informant_current_country').value.trim() == 'Malawi'"} %>
 
                 <%= text_field_tag "person[informant_current_ta]", nil, {
                 					:helpText => "Traditional Authority (<i>Informant's address</i>)<i style='color: red'>*</i>",
-                					:tt_onUnLoad => "setAjaxUrl(5)"} %>
+                					:tt_onUnLoad => "setAjaxUrl(5)",
+                					:condition => "__$('person_informant_current_country').value.trim() == 'Malawi'"} %>
 
                 <%= text_field_tag "person[other_informant_current_ta]", nil, {
                 					:helpText => "Other Traditional Authority specify (<i>Informant's address</i>)<i style='color: red'>*</i>",
-                					:condition => "__$('person_informant_current_ta').value =='Other'"} %>
+                					:condition => "__$('person_informant_current_ta').value =='Other' && __$('person_informant_current_country').value.trim() == 'Malawi'"} %>
     			
     			<%= text_field_tag "person[informant_current_village]", nil, {
     								:helpText => "Village (<i>Informant's address</i>)<i style='color: red'>*</i>", 
-    								:condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other'"} %>
+    								:condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other' && __$('person_informant_current_country').value.trim() == 'Malawi'"} %>
 
     			<%= text_field_tag "person[other_informant_current_village]", nil, {
     							:helpText => "Other village specify (<i>Informant's address</i>)<i style='color: red'>*</i>",
-    							:condition => "__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other'",
+    							:condition => "(__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other') && __$('person_informant_current_country').value.trim() == 'Malawi'",
     							:tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
 
                 <%= (f.text_field :informant_addressline1,
                 				:helpText => "Informant's Postal address",
                 				:placeholder => "e.g P.O. Box 200 Lilongwe",
-                				:optional => :true) rescue "" %>
+                				:optional => :true,
+                				:condition => "__$('person_informant_current_country').value.trim() == 'Malawi'") rescue "" %>
 
                 <%= (f.text_field :informant_addressline2,
                 				:condition=>false,
                 				:helpText => "Informant Address Line 2",
                 				:placeholder => "Street / Company /Building",
-                				:optional => :true) rescue "" %>
+                				:optional => :true,
+                				:condition => "__$('person_informant_current_country').value.trim() == 'Malawi'") rescue "" %>
 
                 <%= (f.text_field :informant_city,
                 				:helpText => "Informant city",
                 				:placeholder => "Location e.g Area 3",
-                				:optional => :true,:condition=>false) rescue "" %>
+                				:optional => :true,:condition=>false,
+                				:condition => "__$('person_informant_current_country').value.trim() == 'Malawi'") rescue "" %>
+
+
+               <%= text_field_tag "person[informant_foreign_district]", nil, {
+   								:helpText => "District/State (<i>Informant foreign address</i>) <i style='color: red'>*</i>",
+                                :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[informant_foreign_village]", nil, {
+                				:helpText => "Village/Town (<i>Informant foreign address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[informant_foreign_address]", nil, {
+                				:helpText => "Adrress (<i>Informant foreign postal address</i>)",
+                				:optional => true,
+                				:condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'",
+                				:placeholder => "e.g P.O. Box 200 Lilongwe"} %>
+
 
                 <%= (f.text_field :informant_phone_number,
                                 :helpText => "Informant Telephone Number",
@@ -2130,8 +2210,8 @@
     <% end %>
     <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false">
 
-    <section name="Complete form">
-        <sub id="summary" name="Details">
+    <section name="Captured data">
+        <sub id="captured_data" name="Captured Data">
 		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"checkForDuplicate();loadPersonSummary()"} %>
         </sub>
     </section>  

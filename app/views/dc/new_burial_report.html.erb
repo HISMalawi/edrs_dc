@@ -96,10 +96,10 @@
 <form action="/create_burial_report" method="post">
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
 	<input type="hidden" name="person_record_id" value="<%= params[:id] %>">
-	<input type="" name="cemetery_authority_first_name" helpText ="Last Name (<i>Village Headman /Caretaker of cemetery</i>)">
-	<input type="" name="cemetery_authority_last_name" helpText ="First Name (<i>Village Headman /Caretaker of cemetery</i>)">
+	<input type="" name="cemetery_authority_first_name" helpText ="Surname (<i>Village Headman /Caretaker of cemetery</i>)">
+	<input type="" name="cemetery_authority_last_name" helpText ="First name (<i>Village Headman /Caretaker of cemetery</i>)">
 	<input type="" name="cemetery_name" helpText="Cemetery name">
-	<input type="" name="district" id="district" helpText ="Cemetery district" ajaxURL = "/districts" tt_onUnLoad="setAjaxUrl(0)">
+	<input type="" name="district" id="district" helpText ="Cemetery district" ajaxURL = "/districts?search_string=" tt_onUnLoad="setAjaxUrl(0)">
 	<input type="" name="ta" id="ta" helpText ="Cemetery Traditional Authority/Town" tt_onUnLoad="setAjaxUrl(1)" allowFreeText ="true">
 	<input type="" name="village" id="village" helpText ="Village" condition="false">
 	<input type="date" id="date_of_burial" field_type="date" name="date_of_burial" helpText ="Date burried" tt_onLoad="removeUnknown()" tt_onUnLoad="validateDateBuried()">

@@ -244,15 +244,21 @@
 
 								td.style.borderBottom= "1px solid black";
 
-								if(data[i].nationality.trim().toLowerCase().match("malawi") && data[i].current_district.length > 0){
+								if(data[i].current_country){
+									if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
+										td.innerHTML =  data[i].current_foreign_district +" " + data[i].current_ta + " "+  data[i].current_village;
+									}
+									else{
+										var address = data[i].current_foreign_district ;
 
-									td.innerHTML =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
-
-								}else if(data[i].home_country.length > 0) {
-									td.innerHTML = data[i].home_country;
+										if( data[i].current_foreign_village){
+											address = address + " "+ data[i].current_foreign_village
+										}
+										td.innerHTML =  address
+									}
+								}else{
 
 								}
-
 								tr.appendChild(td)
 
 								var td = document.createElement("td");

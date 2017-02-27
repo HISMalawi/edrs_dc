@@ -16,8 +16,8 @@
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
-                                    <div class="button_label">View Records</div>
-                                    <div class="button_description">  View registered record.</div>
+                                    <div class="button_label">Active Records</div>
+                                    <div class="button_description">  All active records eDRS from facility and those entered at DRO.</div>
 
                                     
                                   </div>
@@ -42,8 +42,8 @@
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>
-                                      <div class="button_label">View  Approved Cases</div>
-                                      <div class="button_description">  Approved registered record.</div>
+                                      <div class="button_label">Approved by ADR</div>
+                                      <div class="button_description">View records that were approved by ADR and sent to HQ</div>
 
                                     
                                   </div>
@@ -68,8 +68,8 @@
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>
-                                      <div class="button_label">View  Rejected Cases</div>
-                                      <div class="button_description">  Approved registered record.</div>
+                                      <div class="button_label">Rejected from HQ</div>
+                                      <div class="button_description">  Incomplete records rejected from HQ along with comments.</div>
 
                                     
                                   </div>
@@ -112,7 +112,18 @@
                                     
                                   </div>
                               <%end%>
+                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
+                                  <div class="touch_btn" onmousedown="window.location = '/people/sync'" >
+                                    <div class="icon">
+                                           <i class="fa fa-cloud"></i>
+                                    </div>
+                                    <div class="button_label">View Sync</div>
+                                    <div class="button_description">The staatus of showing number of records sent to DC</div>
+
+                                    
+                                  </div>
+                            <%end%>
                              
                         </div>
 </div>

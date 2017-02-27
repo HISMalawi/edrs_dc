@@ -32,6 +32,19 @@
                                   </div>
                             <%end%>
 
+                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+
+                                  <div class="touch_btn" onmousedown="window.location = '/people/sync'" >
+                                    <div class="icon">
+                                           <i class="fa fa-cloud"></i>
+                                    </div>
+                                    <div class="button_label">View Sync</div>
+                                    <div class="button_description">The staatus of showing number of records sent to DC</div>
+
+                                    
+                                  </div>
+                            <%end%>
+
                             <div class="touch_btn"  onclick="window.location = ''"   >
                                           <div class="icon">
                                                  <i class="fa fa-bar-chart"></i>

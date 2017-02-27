@@ -188,6 +188,8 @@ class PeopleController < ApplicationController
 
       @next_url = "/people/view"
 
+      @search = true
+
       render :layout => "landing"
       
   end
@@ -215,7 +217,7 @@ class PeopleController < ApplicationController
       
         person = status.person
 
-       people << person_selective_fields(person)
+       people << person
       
     end
 
@@ -414,11 +416,11 @@ class PeopleController < ApplicationController
       end
     end
 
-    if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
-      list = [malawi] + list
+    nations = list.collect {|c| c.nationality}.sort
+     if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
+      nations = [malawi.nationality] + nations
     end
-
-    render :text => list.collect { |w| "<li>#{w.nationality}" }.uniq.join("</li>")+"</li>"
+    render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
 
   end
 
@@ -427,8 +429,11 @@ class PeopleController < ApplicationController
     malawi = Country.by_country.key("Malawi").last
     list = []
     countries.each do |n|
-      if n.nationality =="Unknown"
+      if n.name =="Unknown"
           next if params[:special].blank?
+      end
+      if n.name =="Malawi"
+          next unless params[:exclude].blank?
       end
       if !params[:search_string].blank?
         list << n if n.name.match(/#{params[:search_string]}/i)
@@ -437,11 +442,17 @@ class PeopleController < ApplicationController
       end
     end
 
-    if "Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?
+    if ("Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?) && params[:exclude] != "Malawi"
       list = [malawi] + list
     end
 
-    render :text => list.uniq.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    countries = list.collect {|c| c.name}.sort
+
+    if ("Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?) && params[:exclude] != "Malawi"
+      countries = [malawi.name] + countries
+    end
+
+    render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
 
   end
 
@@ -561,7 +572,7 @@ class PeopleController < ApplicationController
       if params[:barcode].present?
         count = PersonIdentifier.by_identifier.key(params[:barcode]).count  
         if count >= 1
-            render :text => {:response => true}.to_json
+            render :text => {:response =>  PersonIdentifier.by_identifier.key(params[:barcode]).first.person_record_id}.to_json
         else
            render :text => {:response => false}.to_json
         end            
