@@ -117,7 +117,7 @@ Rails.application.routes.draw do
   get "/people/new_person_type" => "people#new_person_type"
 
   post "/search_barcode" => "people#search_barcode"
-  
+
   get "/search_barcode" => "people#search_barcode"
 
 
@@ -193,6 +193,9 @@ Rails.application.routes.draw do
   get "/query_users" => "users#query"
 
   get "/search_user" => "users#search"
+
+
+  get "/reports" => "reports#index"
 
   resources :users
 
