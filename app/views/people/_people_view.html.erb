@@ -363,6 +363,12 @@
 
 		
 		loadTable(page);
-
+		var removeBack = setInterval(function(){
+			if(__$('signout')){
+				__$('signout').style.display = "none";
+				clearInterval(removeBack);
+			}
+		},50);
+	
 
 </script>

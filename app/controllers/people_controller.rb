@@ -217,6 +217,8 @@ class PeopleController < ApplicationController
       
         person = status.person
 
+        person["den"] = person.den rescue ""
+
        people << person
       
     end

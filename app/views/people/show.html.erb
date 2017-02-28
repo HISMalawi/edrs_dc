@@ -100,8 +100,17 @@
 
 </style>
 
-<div style="position : absolute; width : 80%; bottom:58px;right :10%; margin-right : 2%">
-  	
+<div style="position : absolute; width : 80%; bottom:58px;right :1%; margin-right : 2%">
+  	<% if params[:next_url] %>
+        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+
+  <% elsif @targeturl.present? %>
+
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status.status == "NEW" || @status.status == "DC PENDING"  || @status.status =="DC REJECTED" %>
@@ -864,5 +873,10 @@
 
 				<%end%>
 			}
-
+			var removeBack = setInterval(function(){
+				if(__$('signout')){
+					__$('signout').style.display = "none";
+					clearInterval(removeBack);
+				}
+			},50);
 </script>

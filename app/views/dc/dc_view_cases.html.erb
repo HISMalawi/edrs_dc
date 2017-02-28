@@ -246,7 +246,7 @@
 
 								if(data[i].current_country){
 									if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
-										td.innerHTML =  data[i].current_foreign_district +" " + data[i].current_ta + " "+  data[i].current_village;
+										td.innerHTML =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
 									}
 									else{
 										var address = data[i].current_foreign_district ;
@@ -287,9 +287,9 @@
 
 								<% unless @duplicate.blank? %>
 
-										button.setAttribute("onclick","window.location = '/dc/show_duplicate/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+										button.setAttribute("onclick","window.location = '/dc/show_duplicate/" +data[i]["_id"]+"?next_url=<%=@next_url%>?page="+page+"'");
 								<%else%>
-									button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+									button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=<%=@next_url%>?page="+page+"'");
 								<%end%>
 
 								td.appendChild(button);
@@ -364,5 +364,10 @@
 
 		loadTable(page);
 
-
+		var removeBack = setInterval(function(){
+			if(__$('signout')){
+				__$('signout').style.display = "none";
+				clearInterval(removeBack);
+			}
+		},50);
 </script>
