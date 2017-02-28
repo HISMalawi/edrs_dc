@@ -424,75 +424,52 @@
 			function popUpRecordDetails(){
 
 					var popup_container = __$("msg.popup")
-
 					popup_container.style.width = "40%";
-
 					popup_container.style.left =  "calc(43% - 210px)";
-
 					popup_container.style.top =  "10%";
-
 					popup_container.style.height= "500px";
 
 					var control = __$("msg.content");
-
 					control.style.height = "350px"
 
 					var table = document.createElement("table");
-
 					table.id = "popup_details"
-
-					table.style.width = "80%";
-
+					table.style.width = "94%";
 					table.style.margin ="auto";
-
+					table.style.marginBottom = "2%";
 					control.appendChild(table);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Barcode Number";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.barcode %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Surname";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.last_name %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "First Name";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.first_name %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
@@ -584,6 +561,38 @@
 					<% end %>
 
 					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+					tr.appendChild(td);
+					td.innerHTML ="Mother's name";
+
+					var td = document.createElement("td");
+					tr.appendChild(td);
+					var mother = "NA"
+					<% if @person.mother_first_name.present? %>
+						mother = "<%= @person.mother_first_name%>  <%=  @person.mother_last_name %> ";
+					<%end%>
+					td.innerHTML = mother;
+
+					tr.appendChild(td);
+
+					var tr = document.createElement("tr");
+					table.appendChild(tr);
+
+					var td = document.createElement("th");
+					tr.appendChild(td);
+					td.innerHTML ="Father's name";
+
+					var td = document.createElement("td");
+					tr.appendChild(td);
+					var father = "NA"
+					<% if @person.mother_first_name.present? %>
+						father = "<%= @person.father_first_name%>  <%=  @person.father_last_name %> ";
+					<%end%>
+					td.innerHTML = father;
 
 
 			}
