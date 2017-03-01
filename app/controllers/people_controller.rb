@@ -22,31 +22,23 @@ class PeopleController < ApplicationController
 
   end
 
-   def new_person_type
+  def new_person_type
       @section = "Registration Categories"
       @facility = facility
       @district = district
-      render :layout => "landing"
-      
+      @targeturl = "/"
+      render :layout => "landing" 
   end
+
   def new
-
-	   # redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
-
+	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
      @current_nationality = Nationality.by_nationality.key("Malawian").last
-
-	    if !params[:id].blank?
-
-	    else
-
+	   if !params[:id].blank?
+	   else
 	    	@person = Person.new if @person.nil?
-
-	    end
-
+	   end
 	    @section = "New Person"
-
 	    render :layout => "touch"
-
   end
 
   def render_cause_of_death_page

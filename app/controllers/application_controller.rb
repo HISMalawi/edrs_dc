@@ -110,7 +110,7 @@ class ApplicationController < ActionController::Base
   #Root index of app
   def index
 
-    if CONFIG['site_type'] =="facility"
+    if CONFIG['site_type'] =="facility" || User.current_user.role += "Data Clerk"
 
       redirect_to "/people/"
 

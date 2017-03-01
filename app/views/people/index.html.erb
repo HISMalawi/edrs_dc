@@ -44,17 +44,17 @@
                                     
                                   </div>
                             <%end%>
+                            <% if false %>
+                               <div class="touch_btn"  onclick="window.location = '/reports'"   >
+                                            <div class="icon">
+                                                   <i class="fa fa-bar-chart"></i>
+                                            </div>
+                                            <div class="button_label"> Reports</div>
+                                            <div class="button_description">  System reports</div>
 
-                            <div class="touch_btn"  onclick="window.location = '/reports'"   >
-                                          <div class="icon">
-                                                 <i class="fa fa-bar-chart"></i>
-                                          </div>
-                                          <div class="button_label"> Reports</div>
-                                          <div class="button_description">  System reports</div>
-
-                                      
-                              </div>
-
+                                        
+                                </div>
+                              <%end%>
 
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or

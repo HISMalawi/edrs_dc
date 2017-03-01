@@ -10,6 +10,19 @@
                     <td style="width:80%">-->
                         <div id="buttons" style="display: inline ">
 
+                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+
+                              <div class="touch_btn" onmousedown="window.location = '/people/new_person_type'" >
+                                <div class="icon">
+                                       <i class="fa fa-edit"></i>
+                                </div>
+                                <div class="button_label">Register Person</div>
+                                <div class="button_description">  Register record at DC's office</div>
+
+                                
+                              </div>
+                            <%end%>
+
                              <% if !User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/view?next_url=/dc/manage_cases'" >
@@ -62,7 +75,7 @@
                                   </div>
                               <%end %>
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role == "ADR"%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases'" >
                                       <div class="icon">

@@ -59,6 +59,13 @@ class DcController < ApplicationController
 		
 	end
 
+	def special_cases
+
+		@section = "Special Cases"
+
+		render :layout => "landing"
+		
+	end
 
 	def approve_cases
 
@@ -277,6 +284,8 @@ class DcController < ApplicationController
 	def manage_duplicates
 
 		@section = "Manage Duplicates"
+
+		render :layout => "landing"
 		
 	end
 
@@ -295,7 +304,9 @@ class DcController < ApplicationController
 
 	def manage_requests
 
-		@setion = "Manage Requests"
+		@section = "Manage Requests"
+
+		render :layout => "landing"
 		
 	end
 

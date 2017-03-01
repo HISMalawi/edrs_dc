@@ -126,6 +126,8 @@ Rails.application.routes.draw do
 
   get "/dc/manage_cases" =>"dc#manage_cases"
 
+  get "/dc/special_cases" => "dc#special_cases"
+
   get "/dc/approve_cases" => "dc#approve_cases"
 
   get "/dc/approve_record/:id" => "dc#approve_record"

@@ -1,0 +1,82 @@
+<section name="Details of parents">
+            <sub id="details_mother" name="Details of mother">
+              <%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
+                     :helpText =>"Mother's details available?",
+                     :tt_requireNextClick => false,
+                     :tt_onLoad=>"if(!flag){hideConfirmation()};flag=true") %>
+
+                <%= (f.text_field :mother_last_name, 
+                          :helpText => "Mother's Surname",
+                              :optional => true,
+                              :allowFreeText =>true, 
+                              :ajaxURL => "/get_last_names?search=",
+                              :tt_onLoad=> "removeUnknown()", 
+                              :tt_onUnLoad=>"validateName('person_mother',4)",
+                              :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+
+                <%= (f.text_field :mother_first_name,
+                          :helpText => "Mother's First Name",
+                          :allowFreeText =>true,:optional => true,
+                          :ajaxURL => "/get_first_names?search=",
+                          :tt_onLoad=> "removeUnknown()",
+                          :tt_onUnLoad=>"validateName('person_mother',5)",
+                          :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+
+                <%= (f.text_field :mother_middle_name, 
+                          :helpText => "Mother's Other Names",
+                          :allowFreeText =>true, 
+                          :optional => true, 
+                          :ajaxURL => "/get_first_names?search=",
+                          :tt_onLoad=> "removeUnknown()",
+                          :tt_onUnLoad =>"validateOtherName('person_mother',6)",
+                          :condition => "__$('mother_details_available').value =='Yes'") rescue "" %>
+
+                <%= (f.text_field :mother_id_number, 
+                          :helpText => "Mother's ID No.",
+                          :optional => :true,
+                          :allowFreeText =>true,
+                          :condition => "__$('mother_details_available').value =='Yes'",
+                          :validationRule=>"^[a-zA-Z0-9]{8}$",
+                          :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+            </sub>
+            <sub id="details_father" name="Details of father">
+              <%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
+                      :helpText =>"Father's details available?",
+                      :tt_requireNextClick => false) %>
+
+                <%= (f.text_field :father_last_name,
+                          :helpText => "Father's Surname",
+                          :allowFreeText =>true,
+                          :optional => true, 
+                          :ajaxURL => "/get_last_names?search=", 
+                          :condition => "__$('father_details_available').value =='Yes'",
+                          :tt_onUnLoad =>"validateName('person_father',7)",
+                          :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :father_first_name,
+                          :helpText => "Father's First Name",
+                          :allowFreeText =>true,
+                          :optional => true,
+                          :ajaxURL => "/get_first_names?search=",
+                          :tt_onLoad=> "removeUnknown()", 
+                          :tt_onUnLoad =>"validateName('person_father',8)",
+                          :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+
+                <%= (f.text_field :father_middle_name, 
+                          :helpText => "Father's Other Names",
+                          :allowFreeText =>true, 
+                          :optional => true, 
+                          :ajaxURL => "/get_first_names?search=",
+                          :tt_onLoad=> "removeUnknown()", 
+                          :tt_onUnLoad =>"validateOtherName('person_father',9)",
+                          :condition => "__$('father_details_available').value =='Yes'") rescue "" %>
+
+                 <%= (f.text_field :father_id_number, 
+                           :helpText => "Father's ID No.",
+                           :optional => true,
+                           :allowFreeText =>true, 
+                           :condition => "__$('father_details_available').value =='Yes'",
+                           :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                           :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+            </sub>
+    </section>

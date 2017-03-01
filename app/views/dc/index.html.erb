@@ -9,18 +9,7 @@
                     <td style="width:80%">
                         <div id="buttons" style="display: inline ">
 
-                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
-
-                              <div class="touch_btn" onmousedown="window.location = '/people/new_person_type'" >
-                                <div class="icon">
-                                       <i class="fa fa-edit"></i>
-                                </div>
-                                <div class="button_label">Register Person</div>
-                                <div class="button_description">  Register record at DC's office</div>
-
-                                
-                              </div>
-                          <%end%>
+                        
                           <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/search'" >
@@ -36,7 +25,7 @@
 
                           <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_cases'" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_cases?next_url=/'" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
@@ -46,8 +35,21 @@
                                     
                                   </div>
                           <%end%>
+
+                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role != "Data Clerk"%>
+
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/special_cases?next_url=/'" >
+                                    <div class="icon">
+                                           <i class="fa fa-folder-open"></i>
+                                    </div>
+                                    <div class="button_label">Special Cases</div>
+                                    <div class="button_description">  Manage cases </div>
+
+                                    
+                                  </div>
+                          <%end%>
                          <% if User.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
-                                 <div class="touch_btn" onmousedown="window.location = '/dc/manage_requests'" >
+                                 <div class="touch_btn" onmousedown="window.location = '/dc/manage_requests?next_url=/'" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
@@ -59,7 +61,7 @@
                           <%end%>
                          
                           <% if  User.current_user.activities_by_level("DC").include?("Manage duplicates") %>
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_duplicates'" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_duplicates?next_url=/'" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
                                     </div>
@@ -69,8 +71,8 @@
                                     
                                   </div>
                           <%end%>
-
-                            <div class="touch_btn"  onclick="window.location = '/reports'"   >
+                          <% if User.current_user.role != "Data Clerk"%>
+                              <div class="touch_btn"  onclick="window.location = '/reports?next_url=/'"   >
                                           <div class="icon">
                                                  <i class="fa fa-bar-chart"></i>
                                           </div>
@@ -80,13 +82,13 @@
                                       
                               </div>
 
-
+                              <%end %>
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
 
-                                    <div class="touch_btn"  onclick="window.location = '/users'"   >
+                                    <div class="touch_btn"  onclick="window.location = '/users?next_url=/'"   >
                                           <div class="icon">
                                                  <i class="fa fa-users"></i>
                                           </div>
