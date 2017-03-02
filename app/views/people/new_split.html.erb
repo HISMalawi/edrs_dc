@@ -196,6 +196,14 @@
         interval = window.setInterval(function(){
             checkCurPos();
         }, 350);
+
+        window.onerror = function (errorMsg, url, lineNumber) {
+            //alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
+            if(errorMsg.match("iframe")){
+               window.top.location.reload();   
+            }
+          
+        }
     </script>
 
 </html>

@@ -1284,7 +1284,7 @@
 
 		            __$("person_birthdate").value = year + "-07-15";
 
-		            console.log( __$("person_birthdate").value);
+		            //console.log( __$("person_birthdate").value);
 
 		        } else {
 
@@ -1370,7 +1370,7 @@
 								informant_last_name: __$("person_informant_last_name").value,
 								informant_first_name: __$("person_informant_first_name").value
 				}
-				console.log(data)
+				//console.log(data)
 				postAjax("/search_similar_record", data, function(response){
 
 					var people = JSON.parse(response).response;
@@ -1472,6 +1472,9 @@
 				}
 			});								
 		}
+
+		window.addEventListener("load", loadBarcodePage, false);
+
 		function getAge(dateString,otherDate){
 
 		    var today = new Date();
@@ -1541,9 +1544,10 @@
 
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
-			date = (new Date(date)).format("YYYY-mm-dd")
-			var site_type = "<%= site_type %>";
-			var min = "<%= (Date.today - 6.weeks).strftime('%Y-%m-%d') %>".trim();
+			date = (new Date(date)).format("YYYY-mm-dd");
+			var min = new Date();
+			min.setDate(-42);
+			min = min.format("YYYY-mm-dd");
 			if(site_type == "facility"){
 					
 					if (date < min){
@@ -1569,9 +1573,22 @@
 
 		function validateDateInformant(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = new Date(date).format("YYYY-mm-dd");
+			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd")
+			if(date < min){
+				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")",null,30000);
+				setTimeout(function(){
+					gotoPage(tstCurrentPage -1);
+				},100)
+			}
+		}
 
-			if(date < __$("person_date_of_death").value){
-				showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")",null,30000);
+		function validateWithDeathDate(){
+			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = new Date(date).format("YYYY-mm-dd");
+			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd");
+			if(date < min){
+				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date signed ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -1623,6 +1640,7 @@
 				 		}				 		
 				  }
 			}
+			clearInterval(spaceInterval);
 		}
 
 		function validateOtherName(person,level){
@@ -1668,6 +1686,7 @@
 				 		}				 		
 				  }
 			}
+			clearInterval(spaceInterval);
 		}
 
 		function setOtherTofield(id){
@@ -1683,6 +1702,7 @@
 					},100);*/
 			}
 		}
+
 		function policeReport(){
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
@@ -1701,51 +1721,51 @@
 				},1000);		
 			}
 			else{
-				console.log("No dollar");
+				//console.log("No dollar");
 			}
 		}
 
-        results = {}
-        old_value = "";
-        function showPhoneSummary(){
+results = {}
+old_value = "";
+function showPhoneSummary(){
             //variables 'results' and 'old_value' must be predefined above this function
-            var input = __$("touchscreenInput" + tstCurrentPage);
-            var label = __$("helpText" + tstCurrentPage).innerHTML;
+    var input = __$("touchscreenInput" + tstCurrentPage);
+    var label = __$("helpText" + tstCurrentPage).innerHTML;
 
-            if (label.match(/Phone Number/i)){
+    if (label.match(/Phone Number/i)){
 
                 //Lock Next
-                if (input.value == "Unknown" || results['valid'] == true) {
-                    __$("nextButton").onmousedown = function () {
+        if (input.value == "Unknown" || results['valid'] == true) {
+            __$("nextButton").onmousedown = function () {
                         gotoNextPage();
-                    }
-                }else{
-                    __$("nextButton").onmousedown = function () {
+        	}
+        }else{
+            __$("nextButton").onmousedown = function () {
                         var label = __$("helpText" + tstCurrentPage).innerHTML;
                         if (label.match(/Phone Number/i)){
                             showMessage("Invalid Phone Number",null,30000);
                         }else{
                             gotoNextPage();
                         }
-                    }
-                }
+            }
+        }
 
-                if (input.value != "Unknown" && (input.value.trim().length == 0 || !input.value.match(/^\+/))){
+        if (input.value != "Unknown" && (input.value.trim().length == 0 || !input.value.match(/^\+/))){
                     input.value = "+265";
-                }
+        }
 
-                if(old_value != input.value) {
+         if(old_value != input.value) {
 
-                    var val = input.value.replace(/\+/, 'plus');
+            var val = input.value.replace(/\+/, 'plus');
 
-                    if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+            if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
                         xmlhttp = new XMLHttpRequest();
-                    } else {// code for IE6, IE5
+            } else {// code for IE6, IE5
                         xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                    }
+            }
 
-                    xmlhttp.onreadystatechange = function () {
-                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                             results = xmlhttp.responseText;
                             results = JSON.parse(results);
                             var national_format = results['national_format'] || "<span style='color: red'>?</span>";
@@ -1764,16 +1784,31 @@
                                      "<br />Country: &nbsp;&nbsp;&nbsp;<i style='color: green;'>" + country + "</i> "
                             __$("inputFrame" + tstCurrentPage).appendChild(div);
                         }
-                    }
-
-                    xmlhttp.open("GET", ("/global_phone_validation?value="+val), true);
-                    xmlhttp.send();
                 }
 
-                old_value = input.value;
-
-                setTimeout("showPhoneSummary()",200);
+                xmlhttp.open("GET", ("/global_phone_validation?value="+val), true);
+                xmlhttp.send();
             }
-        }
 
-        window.addEventListener("load", loadBarcodePage, false);
+            old_value = input.value;
+
+            setTimeout("showPhoneSummary()",200);
+        }
+ }
+
+ var spaceInterval ;
+ function 
+
+ checkSpace(){
+ 	spaceInterval = setInterval(function(){
+ 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
+	 	if(text_input.length > 0){
+	 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
+	 	}		
+ 	},100);
+ 	
+ }
+
+
+
+        

@@ -35,10 +35,13 @@ Object.defineProperty(Date.prototype, "format", {
                     return result;
            }
 });
+
+
 function $$(id){
     return document.getElementById(id);
 }
-              function showPopupMessage(msg, topic,targeturl) {
+
+function showPopupMessage(msg, topic,targeturl) {
 
                 if (!topic) {
 
@@ -298,9 +301,9 @@ function $$(id){
                   }
 
                   tdf.appendChild(btnOK);
+}
 
-              }
-              function ajaxGETRequest(url, callback, optionalControl) {
+function ajaxGETRequest(url, callback, optionalControl) {
 
                                 var shield = document.createElement("div");
 

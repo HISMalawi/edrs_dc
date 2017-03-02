@@ -354,7 +354,7 @@ class PeopleController < ApplicationController
 
   def districts
   
-    if params[:place].present? && params[:place] == "Hospital/Institution"
+    if params[:place].present? && params[:place] == "Health Facility"
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
 

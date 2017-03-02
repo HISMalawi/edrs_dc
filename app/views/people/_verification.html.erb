@@ -4,21 +4,23 @@
                 <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
                           :helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :headman_verification_date,
-                          :helpText => "Date Village headman/Block leader signed",
-                                  :field_type => "date",
-                                  :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
-                                  :tt_onLoad =>"removeUnknown()") rescue "" %>
+                <%= text_field_tag "person[headman_verification_date]",nil,
+                          {:helpText => "Date Village headman/Block leader signed",
+                            :field_type => "date",
+                            :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                            :tt_onLoad =>"removeUnknown()",
+                            :tt_onUnLoad=> "validateWithDeathDate()"}%>
             </sub>
             <sub id="church_verification" name="Church verification">
                 <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
                     :helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
 
-                <%= (f.text_field :church_verification_date,
-                        :helpText => "Date Senior member of village/Religious institution signed",
-                            :field_type => "date",
-                            :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
-                            :tt_onLoad =>"removeUnknown()") rescue "" %>
+                <%= text_field_tag "person[church_verification_date]",nil,
+                        {:helpText => "Date Senior member of village/Religious institution signed",
+                          :field_type => "date",
+                          :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
+                          :tt_onLoad =>"removeUnknown()",
+                          :tt_onUnLoad=>"validateWithDeathDate()"}%>
             </sub>
     </section>
     <% end %>
