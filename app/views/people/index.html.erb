@@ -19,17 +19,26 @@
                               </div>
                           <%end%>
 
-                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
-
+                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record")%>
+                                <% if  @facility_type == 'DC'%>
                                   <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                     <div class="icon">
                                            <i class="fa fa-users"></i>
                                     </div>
                                     <div class="button_label">Active Records</div>
                                     <div class="button_description">All active records eDRS from facility and those entered at DRO</div>
-
-                                    
                                   </div>
+
+                                  <%else%> 
+
+                                  <div class="touch_btn" onmousedown="window.location = '/people/view'" >
+                                    <div class="icon">
+                                           <i class="fa fa-users"></i>
+                                    </div>
+                                    <div class="button_label">Sent Records to DC</div>
+                                    <div class="button_description">All records eDRS from facility and those entered at DRO</div>
+                                  </div>
+                                <%end%>
                             <%end%>
 
                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>

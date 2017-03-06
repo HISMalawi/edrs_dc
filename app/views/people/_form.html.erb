@@ -93,7 +93,7 @@
             <%= render :partial => "home_address" %>
 
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
+               <%= select_tag("person[died_while_pregnant]", options_for_select(['','No', 'Yes','N/A'], (@person[:died_while_pregnant] rescue 'N/A')),
                         :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", 
                         :condition =>"validatePregnancy()",
                         :tt_requireNextClick => false,

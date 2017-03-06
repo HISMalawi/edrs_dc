@@ -379,63 +379,117 @@
 		        td.style.borderBottom = "1px solid black";
 		        td.innerHTML = "Physical address";
 		        tr.appendChild(td);
+				if(__$('person_current_country').value.trim().toLowerCase()=="malawi"){
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.innerHTML = "District :";
+			        td.colSpan ="2";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.innerHTML = "District :";
-		        td.colSpan ="2";
-		        td.style.borderBottom = "1px solid black";
-		        td.style.fontWeight = "bold";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML =__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "TA :";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "TA :";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        if(__$('person_current_ta')){
+			        	if(__$("person_current_ta").value == "Other"){
+			        		td.innerHTML =__$("person_other_current_ta").value;
+			        	}else{
+			        		td.innerHTML =__$("person_current_ta").value;
+			        	}
+			        }
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        if(__$('person_current_ta')){
-		        	if(__$("person_current_ta").value == "Other"){
-		        		td.innerHTML =__$("person_other_current_ta").value;
-		        	}else{
-		        		td.innerHTML =__$("person_current_ta").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "Village :";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.borderBottom = "1px solid black";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Village :";
-		        td.colSpan ="2";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.colSpan ="2";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        if(__$('person_current_village')){
+			        	if(__$("person_current_village").value == "Other"){
+			        		td.innerHTML =__$("person_other_current_village").value;
+			        	}else{
+			        		td.innerHTML =__$("person_current_village").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+			    }else{
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "Country : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.colSpan ="2";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        if(__$('person_current_village')){
-		        	if(__$("person_current_village").value == "Other"){
-		        		td.innerHTML =__$("person_other_current_village").value;
-		        	}else{
-		        		td.innerHTML =__$("person_current_village").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_current_country')? __$('person_current_country').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "State : ";
+			        td.style.textAlign = "right";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_current_foreign_state')? __$('person_current_foreign_state').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "District : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_current_foreign_district')? __$('person_current_foreign_district').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "Village : ";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = (__$('person_current_foreign_village')? __$('person_current_foreign_village').value : "??");
+			        td.style.textAlign = "left";
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+			    }
 
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
@@ -452,61 +506,117 @@
 		        td.innerHTML = "Home address";
 		        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "District :";
-		        td.colSpan ="2";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
+				if(__$('person_home_country').value.trim().toLowerCase()=='malawi'){
+					var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "District :";
+			        td.colSpan ="2";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML =__$("person_home_district") && __$("person_home_district").value ? __$('person_home_district').value : "";
+			        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "TA :";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        if(__$('person_home_ta')){
+			        	if(__$("person_home_ta").value == "Other"){
+			        		td.innerHTML =__$("person_other_home_ta").value;
+			        	}else{
+			        		td.innerHTML =__$("person_home_ta").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "Village :";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			        if(__$('person_home_village')){
+			        	if(__$("person_home_village").value == "Other"){
+			        		td.innerHTML =__$("person_other_home_village").value;
+			        	}else{
+			        		td.innerHTML =__$("person_home_village").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+			    }else{
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =__$("person_home_district") && __$("person_home_district").value ? __$('person_home_district').value : "";
-		        tr.appendChild(td);
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.borderBottom = "1px solid black";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "TA :";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "Country : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        if(__$('person_home_ta')){
-		        	if(__$("person_home_ta").value == "Other"){
-		        		td.innerHTML =__$("person_other_home_ta").value;
-		        	}else{
-		        		td.innerHTML =__$("person_home_ta").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_home_country')? __$('person_home_country').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.borderBottom = "1px solid black";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Village :";
-		        td.colSpan ="2";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.innerHTML = "State : ";
+			        td.style.textAlign = "right";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        td.colSpan ="2";
-		        if(__$('person_home_village')){
-		        	if(__$("person_home_village").value == "Other"){
-		        		td.innerHTML =__$("person_other_home_village").value;
-		        	}else{
-		        		td.innerHTML =__$("person_home_village").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_home_foreign_state')? __$('person_home_foreign_state').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "District : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_home_foreign_district')? __$('person_home_foreign_district').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "Village : ";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = (__$('person_home_foreign_village')? __$('person_home_foreign_village').value : "??");
+			        td.style.textAlign = "left";
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+			    }
 
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
@@ -526,7 +636,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		         td.style.borderBottom = "1px solid black";
-		        td.innerHTML =__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "";
+		        td.innerHTML =__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "N/A";
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -785,51 +895,106 @@
 		        td.innerHTML = "Address";
 		        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "District : ";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
+				if(__$('person_informant_current_country').value.trim().toLowerCase()=="malawi"){	        	
+					var td = document.createElement("td");
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "District : ";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML =(__$("person_informant_current_district") && __$("person_informant_current_district").value ? __$('person_informant_current_district').value : "");
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.fontWeight = "bold";
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "TA : ";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        if(__$('person_informant_current_ta')){
+			        	if(__$("person_informant_current_ta").value == "Other"){
+			        		td.innerHTML =__$("person_other_informant_current_ta").value;
+			        	}else{
+			        		td.innerHTML =__$("person_informant_current_ta").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "Village :";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
+	
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="5";
+			        if(__$('person_informant_current_village')){
+			        	if(__$("person_informant_current_village").value == "Other"){
+			        		td.innerHTML =__$("person_other_informant_current_village").value;
+			        	}else{
+			        		td.innerHTML =__$("person_informant_current_village").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+			    }else{
+					var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "Country : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =(__$("person_informant_current_district") && __$("person_informant_current_district").value ? __$('person_informant_current_district').value : "");
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_informant_current_country')? __$('person_informant_current_country').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.fontWeight = "bold";
-		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML = "TA : ";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.innerHTML = "State : ";
+			        td.style.textAlign = "right";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.borderBottom = "1px solid black";
-		        if(__$('person_informant_current_ta')){
-		        	if(__$("person_informant_current_ta").value == "Other"){
-		        		td.innerHTML =__$("person_other_informant_current_ta").value;
-		        	}else{
-		        		td.innerHTML =__$("person_informant_current_ta").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_informant_foreign_state')? __$('person_informant_foreign_state').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Village :";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "District : ";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.borderBottom = "1px solid black";
-		        td.colSpan ="5";
-		        if(__$('person_informant_current_village')){
-		        	if(__$("person_informant_current_village").value == "Other"){
-		        		td.innerHTML =__$("person_other_informant_current_village").value;
-		        	}else{
-		        		td.innerHTML =__$("person_informant_current_village").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_informant_foreign_district')? __$('person_informant_foreign_district').value : "??");
+			        td.style.textAlign = "left";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = "Village : ";
+			        td.style.borderBottom = "1px solid black";
+			        td.style.fontWeight = "bold";
+			        td.style.textAlign = "right";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.innerHTML = (__$('person_informant_foreign_village')? __$('person_informant_foreign_village').value : "??");
+			        td.style.textAlign = "left";
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			        tr.appendChild(td);			    	
+			    }
 
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
