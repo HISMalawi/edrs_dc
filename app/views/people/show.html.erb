@@ -571,7 +571,7 @@
 
 					var td = document.createElement("td");
 					tr.appendChild(td);
-					var mother = "NA"
+					var mother = "N/A"
 					<% if @person.mother_first_name.present? %>
 						mother = "<%= @person.mother_first_name%>  <%=  @person.mother_last_name %> ";
 					<%end%>
@@ -588,7 +588,7 @@
 
 					var td = document.createElement("td");
 					tr.appendChild(td);
-					var father = "NA"
+					var father = "N/A"
 					<% if @person.mother_first_name.present? %>
 						father = "<%= @person.father_first_name%>  <%=  @person.father_last_name %> ";
 					<%end%>
