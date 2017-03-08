@@ -20,7 +20,7 @@
                           :ajaxURL => "/get_first_names?search=",
                           :tt_onUnLoad =>"validateName('person_informant',12)",
                           :optional => :true,
-                          :tt_onLoad=> "removeUnknown()"}%>
+                          :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 
                  <%= text_field_tag "person[informant_id_number]",nil, 
                           {:helpText => "Informant's ID No.",

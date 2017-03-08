@@ -7,7 +7,7 @@
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
-	<input type="hidden" name="person[relationship]" value="<%params[:relationship]%>">
+	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" value="No">
 	<% if true %>
 		<section name="Barcode">

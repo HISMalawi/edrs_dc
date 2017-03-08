@@ -1,9 +1,14 @@
 
-<% if params[:relationship].include? "Natural" %>
+<style type="text/css">
+	.capitalize{
+		 text-transform: capitalize;
+	}
+</style>
+<% if params[:registration_type].include? "Natural" %>
 	<%= render 'form' %>
-<%elsif params[:relationship].include? "Unclaimed"%>
+<%elsif params[:registration_type].include? "Unclaimed"%>
 	<%= render 'special' %>
-<%elsif params[:relationship].include? "Deaths Abroad"%>
+<%elsif params[:registration_type].include? "Deaths Abroad"%>
 	<%= render 'abroad' %>
 <%else%>
 	<%= render 'form' %>

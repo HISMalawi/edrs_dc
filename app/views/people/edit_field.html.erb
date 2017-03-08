@@ -35,11 +35,11 @@
 
 		<% elsif @field  == "person[last_name]" %>
 
-					<%= (f.text_field :last_name, :helpText => "Last Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
+					<%= (f.text_field :last_name, :helpText => "Surname",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[middle_name]" %>
 
-					<%= (f.text_field :middle_name, :helpText => "Middle Name",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
+					<%= (f.text_field :middle_name, :helpText => "Other names",:allowFreeText =>true, :ajaxURL => "/get_last_names?search=") rescue "" %>
 
 		<% elsif @field  == "person[father_first_name]" %>
 
@@ -117,42 +117,18 @@
             	<%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other')") rescue "" %>
 
        <% elsif @field == "person[date_of_death]" %>
-
-       			<%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date",:tt_onLoad=>"removeUnknown()"} %>
+       			<%= text_field_tag @field ,@person[params[:field]] , {:helpText => "Date of death", :field_type => "date",:tt_onLoad=>"removeUnknown()"} %>
 
 
        <% elsif @field =="person[nationality]" %>
-
-       			<%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string=", :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
+       			<%= text_field_tag "person[nationality]",nil , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
        <% elsif @field == "person[home_country]" || @field == "person[home_district]" || @field == "person[home_ta]" || @field == "person[home_village]"%>
-
-       			<%= (f.text_field :home_country,:helpText => "Home Country",:ajaxURL => "/nationalities",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :allowFreeText => true) rescue "" %>
-
-		    	<%= (f.text_field :home_district,:helpText => "Home district",
-		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",:optional=>true, 
-		    				:ajaxURL =>"/districts",:tt_onUnLoad => "setAjaxUrl(2)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')", :allowFreeText => true) rescue "" %>
-
-		    	<%= (f.text_field :home_ta,:helpText => "Home TA",:optional=>true,
-		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')", :tt_onUnLoad => "setAjaxUrl(3)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:allowFreeText => true) rescue "" %>
-
-		    	<%= (f.text_field :home_village,:helpText => "Home Village",:optional=>true,
-		    				:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')",:allowFreeText => true) rescue "" %> 
+       			<%= render :partial => 'home_address' %>
+       			
 		 <% elsif @field == "person[current_country]" || @field == "person[current_district]" || @field == "person[current_ta]" || @field == "person[current_village]"%>
 
-       			 <%= text_field_tag "person[current_country]", @person[:current_country], {:helpText => "Nationality of Residence",:ajaxURL => "/nationalities?search_string=",
-                                  :tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
-
-   				<%= text_field_tag "person[current_district]", @person[:current_district], {:helpText => "District of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
-
-                  <%= text_field_tag "person[current_ta]", @person[:current_ta], {:helpText => "Traditional Authority of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                                :tt_onUnLoad => "setAjaxUrl(7)",:tt_onLoad =>"showCategory('Section 1 : Personal Details of deceased')"} %>
-
-               	<%= text_field_tag "person[current_village]", @person[:current_village], {:helpText => "Village of Residence",
-                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')"} %>
+       			<%= render :partial => 'physical_address' %>
 
 		<% elsif @field.include? "date" %>
 
