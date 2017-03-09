@@ -438,6 +438,7 @@ class Person < CouchRest::Model::Base
   property :place_of_death_foreign_district, String #District
   property :place_of_death_foreign_village, String #Town / Village
   property :place_of_death_foreign_hospital, String
+  property :cause_of_death_available, String
   property :cause_of_death1, String
   property :other_cause_of_death1, String
   property :cause_of_death2, String
