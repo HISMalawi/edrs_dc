@@ -1,44 +1,44 @@
 <sub id="home_address" name="Home address">
 
-          <%= text_field_tag "person[home_country]", nil, {
+          <%= text_field_tag "person[home_country]", @person[:home_country], {
             	 					:helpText => "Home Country (<i>Home address</i>)  <i style='color: red'>*</i>",
             	 					:ajaxURL => "/countries?search_string="} %>
 
-   				<%= text_field_tag "person[home_district]", nil, {
+   				<%= text_field_tag "person[home_district]", @person[:home_district], {
    									:helpText => "District (<i>Home address</i>)  <i style='color: red'>*</i>",
                                 	:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
                                 	:ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(2)"} %>
 
-          <%= text_field_tag "person[home_ta]", nil, {
+          <%= text_field_tag "person[home_ta]", @person[:home_ta], {
                   					:helpText => "Traditional Authority (<i>Home address</i>) <i style='color: red'>*</i>",
                                 	:condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
                                 	:tt_onUnLoad => "setAjaxUrl(3)"} %>
 
-          <%= text_field_tag "person[other_home_ta]", nil, {
+          <%= text_field_tag "person[other_home_ta]", @person[:other_home_ta], {
                  					:helpText => "Other Traditional Authority specify (<i>Home address</i>) <i style='color: red'>*</i>",
                  					:condition => "__$('person_home_ta').value =='Other'"} %>
 
-          <%= text_field_tag "person[home_village]", nil, {
-               						:helpText => "Village (<i>Home address</i>) <i style='color: red'>*</i>",
-                               		:condition => "__$('person_home_ta').value.length > 0 && __$('person_home_ta').value != 'Other'"} %>
+          <%= text_field_tag "person[home_village]", @person[:home_village], 
+                          {:helpText => "Village (<i>Home address</i>) <i style='color: red'>*</i>",
+                           :condition => "__$('person_home_ta').value.length > 0 && __$('person_home_ta').value != 'Other'"} %>
 
-          <%= text_field_tag "person[other_home_village]", nil, {
+          <%= text_field_tag "person[other_home_village]",@person[:other_home_village], {
                 					:helpText => "Other Village specify (<i>Home address</i>) <i style='color: red'>*</i>",
                 					:condition => "__$('person_home_ta').value =='Other' || __$('person_home_village').value =='Other'",
                 					:tt_onLoad=>"setOtherTofield('person_home_village')",
                 					:tt_onLoad=>"hideConfirmation()"} %>
 
-          <%= text_field_tag "person[home_foreign_state]", nil, {
+          <%= text_field_tag "person[home_foreign_state]", @person[:home_foreign_state], {
                   :helpText => "State (<i>Foreign home address</i>)",
                   :optional => true,
                   :condition => "__$('person_home_country').value.toLowerCase() !='malawi'"} %>
 
-          <%= text_field_tag "person[home_foreign_district]", nil, {
+          <%= text_field_tag "person[home_foreign_district]", @person[:home_foreign_district], {
    								:helpText => "District (<i>Foreign home address</i>)",
                   :optional => true,
                   :condition => "__$('person_home_country').value.toLowerCase() !='malawi'"} %>
 
-          <%= text_field_tag "person[home_foreign_village]", nil, {
+          <%= text_field_tag "person[home_foreign_village]", @person[:home_foreign_village], {
                 				:helpText => "Village/Town (<i>Foreign home address</i>)",
                 				:optional => true,
                 				:condition => "__$('person_home_country').value.toLowerCase() !='malawi'"} %>

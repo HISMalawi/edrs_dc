@@ -1713,6 +1713,12 @@
 			var min = new Date();
 			min.setDate(-42);
 			min = min.format("YYYY-mm-dd");
+			if(date < __$("person_birthdate").value){
+				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")",null,30000);
+				setTimeout(function(){
+					gotoPage(tstCurrentPage -1);
+				},100)
+			}
 			if(site_type == "facility"){
 					
 					if (date < min){
@@ -1728,12 +1734,7 @@
 					__$("person_delayed_registration").value ="Yes"
 				}
 			}
-			if(date < __$("person_birthdate").value){
-				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")",null,30000);
-				setTimeout(function(){
-					gotoPage(tstCurrentPage -1);
-				},100)
-			}
+			
 		}
 
 		function validateDateInformant(){
@@ -1764,9 +1765,9 @@
 		function validateName(person,level){
 			var input  = __$('touchscreenInput' + tstCurrentPage).value.trim();
 			var regex = /^[a-zA-Z']{2,24}$/;
-			var name_length = __$(person+'_last_name').value.length + 
-								  __$(person+'_first_name').value.length;
-			if(__$(person+'_middle_name').value.length > 0){
+			var name_length = (__$(person+'_last_name') ? __$(person+'_last_name').value.length : "") + 
+							(__$(person+'_first_name') ?  __$(person+'_first_name').value.length : "");
+			if(__$(person+'_middle_name') && __$(person+'_middle_name').value.length > 0){
 					name_length = name_length + __$(person+'_middle_name').value.split(" ").join("").length;
 			}
 			if(input.length > 0 ){
@@ -1965,12 +1966,13 @@ function showPhoneSummary(){
  function 
 
  checkSpace(){
- 	spaceInterval = setInterval(function(){
+ 	__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
+ 	/*spaceInterval = setInterval(function(){
  		var text_input = __$('touchscreenInput'+tstCurrentPage).value
 	 	if(text_input.length > 0){
 	 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
 	 	}		
- 	},100);
+ 	},100);*/
  	
  }
 

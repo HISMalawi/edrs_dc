@@ -18,7 +18,7 @@
                           {:helpText => "Informant's Other Names",
                           :allowFreeText =>true,
                           :ajaxURL => "/get_first_names?search=",
-                          :tt_onUnLoad =>"validateName('person_informant',12)",
+                          :tt_onUnLoad =>"validateOtherName('person_informant',12)",
                           :optional => :true,
                           :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 

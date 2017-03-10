@@ -9,7 +9,7 @@
 
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
-	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
+	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration" value="No">
 	<% if params[:registration_type].include? "Missing"%>
 		<section name="Court Order">
 			<sub id="person_court_order_section" name="Court order attached">

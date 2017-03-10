@@ -7,7 +7,7 @@
                                                            :tt_onUnLoad=>"validateName('person',1)",
                                                            :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
-                <%= text_field_tag "person[first_name]",@person.last_name,
+                <%= text_field_tag "person[first_name]",@person.first_name,
                           {:helpText => "First name <i style='color: red'>*</i>",
                                                     :allowFreeText =>true,  
                                                     :ajaxURL => "/get_first_names?search=",
