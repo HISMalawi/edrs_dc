@@ -161,6 +161,8 @@ class Person < CouchRest::Model::Base
 
       params = parameters[:person]
 
+      params[:acknowledgement_of_receipt_date] = Time.now
+
       if !params[:nationality].blank?
 
         params[:nationality_id] = Nationality.by_nationality.key(params[:nationality]).first.id
@@ -288,7 +290,6 @@ class Person < CouchRest::Model::Base
 
       person = Person.find(id)
 
-      
        if !params[:place_of_death_district].blank?
 
             district = District.by_name.key(params[:place_of_death_district]).first
