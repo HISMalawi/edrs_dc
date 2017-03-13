@@ -333,8 +333,29 @@
                           :field_type => "date",
                           :tt_onLoad =>"removeUnknown()",
                           :tt_onUnLoad => "validateDateInformant()"}%>
+        <%elsif @field == "person[headman_verified]"%>
+        	<input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
+        	<%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
+                          :helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
+
+            <%= text_field_tag "person[headman_verification_date]",@person[:headman_verification_date],
+                          {:helpText => "Date Village headman/Block leader signed",
+                            :field_type => "date",
+                            :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                            :tt_onLoad =>"removeUnknown()",
+                            :tt_onUnLoad=> "validateWithDeathDate()"}%>
+        <%elsif @field == "person[headman_verified]"%>
+        	<input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
+        	<%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
+                    :helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
+
+                <%= text_field_tag "person[church_verification_date]",@person[:church_verification_date],
+                        {:helpText => "Date Senior member of village/Religious institution signed",
+                          :field_type => "date",
+                          :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
+                          :tt_onLoad =>"removeUnknown()",
+                          :tt_onUnLoad=>"validateWithDeathDate()"}%>
 		<% else %>
-				<%= raise @field.inspect %>
  				<%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
 
  		<%end%>

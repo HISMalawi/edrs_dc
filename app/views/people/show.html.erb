@@ -96,7 +96,19 @@
 			background: #d16b07;
 		}
 
+		.verification{
+			width:96% !important;
+			margin: auto;
+			margin-bottom: 1%;
+		}
+		.verification td {
 
+				background: #ffffff;
+				text-align: left !important;
+				padding: 10px;
+				padding-left: 10px;
+				width: 40%;
+		}
 
 </style>
 
@@ -361,11 +373,41 @@
 				<td class="clickable" onclick="editField('informant_signature_date')">Date:</td>
 				<td colspan="6"><%= Date.parse(@person.informant_signature_date.to_s).strftime("%d/%b/%Y") rescue "" %></td>
 			</tr>
-			<tr>
-				
-				
+			<tr>	
 			</tr>
 		</table>
+		<% if site_type == "dc" %>
+		<table class="verification">
+			<tr>
+				<th colspan="2">Verification by Village Headman</th>
+			</tr>
+			<tr class="clickable" onclick="editField('headman_verified')">
+				<td class="clickable" onclick="editField('headman_verified')">Signed?</td>
+				<td><%= @person.headman_verified rescue "No" %></td>
+			</tr>
+			<% if @person.headman_verified == "Yes" %>
+				<tr class="clickable" onclick="editField('headman_verified')">
+					<td>Date Signed</td>
+					<td><%= Date.parse(@person.headman_verification_date.to_s).strftime("%d/%b/%Y") %></td>
+				</tr>
+			<%end%>
+		</table>
+		<table class="verification" style="margin-bottom:1.5%">
+			<tr>
+				<th colspan="2">Verification by Senior member of village/ Religous Institution</th>
+			</tr>
+			<tr  class="clickable" onclick="editField('church_verified')">
+				<td>Signed?</td>
+				<td><%= @person.church_verified rescue "No" %></td>
+			</tr>
+			<% if @person.church_verified == "Yes" %>
+				<tr  class="clickable" onclick="editField('church_verified')">
+					<td>Date Signed</td>
+					<td><%= Date.parse(@person.church_verification_date.to_s).strftime("%d/%b/%Y")  %></td>
+				</tr>
+			<%end%>
+		</table>
+		<%end%>
 
 </div>
   <div id="up" class="scroll" onmousedown="up()">
