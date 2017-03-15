@@ -5,13 +5,13 @@ class Audit < CouchRest::Model::Base
   before_save :set_site_id, :set_site_type, :set_user_id
 
   property :record_id, String # Person/Audit...
-  property :audit_type, String # Quality Control | Reprint | Audit
+  property :audit_type, String # Quality Control | Reprint | Audit | Amendment
   property :level, String # Person | User
   property :reason, String
   property :user_id, String # User id
   property :site_id, String
   property :site_type, String  #FACILITY, DC, HQ
-  property :change_log, [], :default => []
+  property :change_log, {}, :default => {}
   property :voided, TrueClass, :default => false
   timestamps!
 

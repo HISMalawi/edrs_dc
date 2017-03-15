@@ -204,6 +204,11 @@ class PeopleController < ApplicationController
     else
          record_status = [params[:status]]
     end
+    if params[:status] == "HQ REJECTED"
+         record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
+    else
+         record_status = [params[:status]]
+    end
    
     PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
       

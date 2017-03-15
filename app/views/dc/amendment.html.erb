@@ -1,0 +1,488 @@
+<style type="text/css">
+		
+		#table_container{
+
+				height: calc(88% - 20px);
+
+				overflow-y: hidden;
+
+				margin-bottom : 0.3em;
+
+				box-shadow: 3.5px 3.5px 1.5px #888888;
+
+				width: 86%;
+				margin-left: 5%;
+
+				border: 1px solid #bcb5b5;
+				margin-top: 1%;
+
+
+		}
+		#summary{
+			width:96% !important;
+			margin: auto;
+			margin-bottom: 2%;
+
+		}
+		#summary td {
+
+				background: #ffffff;
+				text-align: left !important;
+				padding: 10px;
+				padding-left: 10px;
+
+		}
+
+		#summary th {
+			font-style: 15px;
+			border: 1px solid #ffffff;
+		}
+		.clickable{
+
+			font-weight: bold;
+		}
+		.clickable:hover{
+
+				color: #3e98c6;
+
+				cursor: pointer;
+
+		}
+		.scroll{
+			background: #bed5de;
+
+            border : 0.005em solid #b3b1b1;
+
+            font-size: 3.8em;
+
+            min-width: 20px;
+
+            margin: 0.3%;
+
+            box-shadow: 2.5px 2.5px 1px #888888;
+
+           	padding: 0.1%;
+
+           	text-align: center
+		}
+		#up {
+			position: absolute;
+
+			right: 3%;
+
+			top :13%;
+		}
+
+		#down {
+			position: absolute;
+
+			right: 3%;
+
+			bottom :20%;
+		}
+		#popup_details{
+			width: 90%;
+			margin: auto;
+		}
+		#popup_details th ,#popup_details td {
+
+			text-align: left;
+			font-size: 0.8em;
+			padding: 0.5em;
+		}
+		#popup_details tr:nth-child(odd){
+				background: #ffffff;
+		}
+		.orange{
+			background: #ce731b;
+			border:1px solid #ba6614;
+		}
+
+		.orange:hover{
+
+			background: #d16b07;
+		}
+		#amendment{
+			margin-top: 0.5% !important;
+		}
+		#amendment th{
+			font-size:1.2em;
+		}
+		#amendment td{
+			width: 40%;
+			border: 1px solid #ffffff !important;
+			padding: 6px;
+		}
+</style>
+
+<div style="position : absolute; width : 80%; bottom:58px;; right :1%; margin-right : 2%">
+	<% if params[:next_url] %>
+	        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+	<%end%>
+	<button style="float: right; margin-right:1%" onmousedown=""><span>Proceed to Re-Print</span></button>
+	<% if @comments.count > 0 %>
+		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
+	<%end%>
+
+</div>
+
+<div id="table_container">
+
+		
+		<table id="amendment">	
+			<tr>
+				<td style="visibility:hidden;width: 20%"></td>
+				<th style="background:#fbf7e2;color:#DEB887;border:1px solid #ffffff">Current record</th>
+				<th style="background:#dff0d8;color:#3cb865;border:1px solid #ffffff">Amended record</th>
+			</tr>
+			<tr>
+				<td style="width: 20%;">
+                 Death Registration Number :
+                </td>
+                <td>
+                  <%= @person.drn %>
+                </td>
+                <td>
+                <%= @person.drn %>
+                </td>
+			</tr>
+			<tr>
+				<td style="width: 20%;">
+                  Death Entry Number :
+                </td>
+                <td>
+                  <%= @person.den %>
+                </td>
+                <td>
+                <%= @person.den %>
+                </td>
+			</tr>
+			<tr>
+				<td style="width: 20%;">
+                  Barcode Number :
+                </td>
+                <td>
+                  <%= @person.barcode %>
+                </td>
+                <td>
+                <%= @person.barcode %>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('first_name')">
+				<td style="width: 20%;">
+                  First Name :
+                </td>
+                <td>
+                  <%=@person.first_name %>
+                </td>
+                <td>
+                  <%= @amendment_audit.change_log['first_name'][0] rescue '' %>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('last_name')">
+				<td style="width: 20%;">
+                  Surname :
+                </td>
+                <td>
+                  <%= @person.last_name %>
+                </td>
+                <td>
+                   <%= @amendment_audit.change_log['last_name'][0] rescue '' %>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('middle_name')">
+				<td style="width: 20%;">
+                  Other name(s) :
+                </td>
+                <td>
+                  <%= @person.middle_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('birthdate')">
+				<td style="width: 20%;">
+                 Date of birth :
+                </td>
+                <td>
+                 <%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('gender')">
+				<td style="width: 20%;">
+                 Sex :
+                </td>
+                <td>
+                 <%= @person.gender %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('date_of_death')">
+				<td style="width: 20%;">
+                 Date of death :
+                </td>
+                <td>
+                 <%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('place_of_death')">
+				<td style="width: 20%;">
+                 Place death:
+                </td>
+                <td>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('mother_first_name')">
+				<td style="width: 20%;">
+                  Mother's First Name :
+                </td>
+                <td>
+                  <%= @person.mother_first_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('mother_last_name')">
+				<td style="width: 20%;">
+                  Mother's Surname :
+                </td>
+                <td>
+                  <%= @person.mother_last_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('mother_middle_name')">
+				<td style="width: 20%;">
+                  Mother's Other name(s) :
+                </td>
+                <td>
+                  <%= @person.mother_middle_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('father_first_name')">
+				<td style="width: 20%;">
+                  Father's First Name :
+                </td>
+                <td>
+                  <%= @person.father_first_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('father_last_name')">
+				<td style="width: 20%;">
+                  Father's Surname :
+                </td>
+                <td>
+                  <%= @person.father_last_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+			<tr class="clickable" onclick="editField('father_middle_name')">
+				<td style="width: 20%;">
+                  Father's Other name(s) :
+                </td>
+                <td>
+                  <%= @person.father_middle_name %>
+                </td>
+                <td>
+                </td>
+			</tr>
+		</table>
+
+</div>
+  <div id="up" class="scroll" onmousedown="up()">
+     <i class=" fa fa-arrow-up"></i>
+ </div>
+ <div id="down" class="scroll" onmousedown="down()">
+     <i class=" fa fa-arrow-down"></i>
+ </div>
+<script type="text/javascript">
+			function __$(id){
+				return document.getElementById(id);
+			}
+			function resizeDiv(){
+		      var wH = window.innerHeight; 
+		      if(__$("containt"))
+		      	__$("containt").style.height = (wH *0.83 )+"px";
+		      if(__$("table_container"))
+		      	__$("table_container").style.height = (wH * 0.72) +"px";
+		    }
+			<% if params[:error] %>
+
+					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
+
+			<% end %>
+	
+			function checkCompleteness(){
+
+					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
+
+							
+					showConfirmMessage("","Data Completeness check",url,"#79a3c1")
+
+					popUpRecordDetails();
+			
+
+			}
+
+			function approveRecord(){
+
+					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Approve record",url,"#79a3c1")
+
+					popUpRecordDetails();
+
+			}
+			function markAsPending(){
+
+					var url = "/dc/add_pending_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Click \"OK\" to mark the record as pending",url,"#e2a648")
+
+					popUpRecordDetails();
+			}
+
+			function rejectRecord(){
+
+					var url = "/dc/add_rejection_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					showConfirmMessage("","Proceed to reject a record?",url,"red")
+
+					popUpRecordDetails();
+
+			}
+			function editField(field){
+
+					window.location = "/dc/amendment_edit_field/<%= @person.id %>/"+field+"?next_url=<%=params[:next_url]%>"
+
+			}
+
+			function up(){
+
+				//alert("Yeeeeeei up")
+				__$("table_container").scrollBy(0, -100);
+				
+			}
+
+			function down(){
+
+				__$("table_container").scrollBy(0,100);
+
+			}
+
+			function viewPersonComment(){
+
+				showConfirmMessage("","Comments trail","","#79a3c1");
+
+				var popup_container = __$("msg.popup")
+
+				popup_container.style.width = "40%";
+
+				popup_container.style.left =  "calc(43% - 210px)";
+
+				popup_container.style.top =  "10%";
+
+				popup_container.style.height= "500px";
+
+				var control = __$("msg.content");
+
+				control.style.height = "350px"
+
+				var table = document.createElement("table");
+
+				table.id = "popup_details"
+
+				table.style.width = "100%";
+
+				table.style.margin ="auto";
+
+				control.appendChild(table);
+
+				var tr = document.createElement("tr");
+
+				table.appendChild(tr);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="#";
+
+				td.style.background = "#868687";
+
+				td.style.width = "2%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="Comment";
+
+				td.style.background = "#868687";
+
+				td.style.width = "60%";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+				var td = document.createElement("th");
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				td.innerHTML ="Date"
+
+				tr.appendChild(td);
+				<% @i = 0 %>
+
+				<% @comments.each do |comment| %>
+
+					<% @i = @i + 1 %>
+
+					var tr = document.createElement("tr");
+
+					table.appendChild(tr);
+
+					var td = document.createElement("td");
+
+					td.innerHTML = "<%= @i %>"
+
+					tr.appendChild(td);
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= comment.reason%>";
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= Date.parse(comment.created_at.to_s).strftime('%d/%b/%Y') rescue '' %>";
+
+				<%end%>
+			}
+		resizeDiv()
+</script>

@@ -178,7 +178,11 @@ Rails.application.routes.draw do
 
   post "/mark_for_reprint" => "dc#mark_for_reprint"
 
-  get "/dc/ammendment/:id" => "dc#ammendment"
+  get "/dc/ammendment/:id" => "dc#amendment"
+
+  get "/dc/amendment_edit_field/:id/:field" => "dc#amendment_edit_field"
+
+  post "/amend_field" => "dc#amend_field"
 
   get "/global_phone_validation" => "people#global_phone_validation"
 

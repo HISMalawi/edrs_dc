@@ -404,24 +404,52 @@ class DcController < ApplicationController
 
 	end
 
-	def ammendment
+	def amendment
 		@person = Person.find(params[:id])
-
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
       	@person_place_details = place_details(@person)
-
       	@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
-
       	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
                                                           [params[:id],"DC REJECTED"],
                                                           [params[:id],"HQ REJECTED"],
                                                           [params[:id],"DC REAPPROVED"],
                                                           [params[:id],"DC DUPLICATE"],
                                                           [params[:id],"RESOLVE DUPLICATE"]]).each
-
-		@section ="Ammendments"
+      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"Amendment"]).first
+		@section ="Amendments"
 		
+	end
+
+	def amendment_edit_field
+		@person = Person.find(params[:id])
+		@helpText = params[:field].humanize
+      	@field = "person[#{params[:field]}]"
+      	render :layout => "touch"
+	end
+	def amend_field
+		person = Person.find(params[:id])
+		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"Amendment"]).first
+		if amendment_audit
+			param_keys = params[:person].keys
+			hash = amendment_audit.change_log
+			param_keys.each do |key|
+				amendment_audit.change_log.merge!(key => [params[:person][key],params[:prev][key]])
+			end	
+			amendment_audit.save
+			amendment_audit.reload
+			raise amendment_audit.change_log.inspect
+		else
+			amendment_audit = Audit.new
+			amendment_audit.record_id = params[:id]
+			amendment_audit.audit_type = "Amendment"
+			amendment_audit.change_log = {}
+			param_keys = params[:person].keys
+			param_keys.each do |key|
+				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
+			end
+			amendment_audit.save
+		end
+		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
 
 	def counts_by_status

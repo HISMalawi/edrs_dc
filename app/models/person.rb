@@ -407,6 +407,9 @@ class Person < CouchRest::Model::Base
   def barcode
       PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier
   end
+  def drn
+      return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier
+  end
 
   #Person properties
   property :first_name, String
