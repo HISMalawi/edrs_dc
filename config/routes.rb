@@ -156,6 +156,7 @@ Rails.application.routes.draw do
   get "/confirm_duplicate_comment/:id/:audit_id" => "dc#confirm_duplicate_comment"
   post "/confirm_duplicate" => "dc#confirm_duplicate"
   post "/confirm_not_duplicate" => "dc#confirm_not_duplicate"
+  get  "/dc/confirmed_duplicated" => "dc#confirmed_duplicated"
 
   get "/dc/new_burial_report/:id" => "dc#new_burial_report"
   post "/create_burial_report" => "dc#create_burial_report"

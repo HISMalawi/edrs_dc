@@ -154,7 +154,7 @@
 
 <div id="table_container">
 	<div id="existing" >
-		<div style="width:98% ; text-align :center ; font-size: 1.5em;padding: 0.3em; background:#ffe1b7; color :#2f4f4f;text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;"><b>Duplicate Record</b></div>
+		<div style="width:98% ; text-align :center ; font-size: 1.5em;padding: 0.3em;background:#fbf7e2;color:#DEB887;border:1px solid #ffffff" ;text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;"><b>Duplicate Record</b></div>
 		<div>
 			<table style="width:100% !important" id="details">
 					<tr>
@@ -272,6 +272,17 @@
 
 </div>
 <script type="text/javascript">
+			function __$(id){
+	        	return document.getElementById(id);
+		    }
+
+		    function resizeDiv(){
+		      var wH = window.innerHeight; 
+		      __$("containt").style.height = (wH *0.83 )+"px";
+		      __$("table_container").style.height = (wH * 0.72) +"px";
+		    }
+	  
+		    resizeDiv();
 			<% if params[:error] %>
 
 					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")

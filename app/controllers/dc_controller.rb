@@ -263,15 +263,18 @@ class DcController < ApplicationController
 	end
 
 	def potential_duplicates
-
 		@section = "Potential Duplicate"
-
 		@status = "DC POTENTIAL DUPLICATE"
-
 		@next_url = "/dc/potential_duplicates"
-
 		@duplicate = true
- 
+		render :template =>"/dc/dc_view_cases"
+	end
+
+	def confirmed_duplicated
+		@section = "Confimed Duplicate"
+		@status = "DC DUPLICATE"
+		@next_url = "/dc/confirmed_duplicated"
+		@duplicate = true
 		render :template =>"/dc/dc_view_cases"
 	end
 

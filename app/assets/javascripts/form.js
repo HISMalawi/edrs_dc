@@ -1539,10 +1539,8 @@
 				postAjax("/search_similar_record", data, function(response){
 					var people = JSON.parse(response).response;
 					if(people){
-
-						showConfirmMessage("","Potential duplicate to "+people.length +" other record(s)","","#e2a648");
+						showMessage("Potential duplicate to "+people.length +" other record(s)",null,30000);
 						var ids = [];
-
 						for(var i = 0 ; i < people.length ; i++){
 							ids[i] = people[i]['_id'];
 						}

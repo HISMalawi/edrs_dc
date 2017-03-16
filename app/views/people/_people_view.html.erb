@@ -54,14 +54,14 @@
 
   <% elsif @targeturl.present? %>
 
-        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
 
   <%else %>
-         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+         <button class="green" style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
   <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
 
-		<button class="green" style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_person_type'" ><span>Register New</span></button>
+		<button style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_person_type'" ><span>Register New</span></button>
 
   <%end%>
 </div>
