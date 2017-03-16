@@ -2,6 +2,6 @@
 		<input type="hidden" name="next_url" value="<%= params[:next_url]%>"> 
 		<input type="hidden" name="id" value="<%= params[:id]%>">
 		<input type="hidden" name="user_id" value="<%=User.current_user.id%>">
-		<input name="reason" helpText ="Reason for pending record" id="reason">
+		<input name="reason" helpText ="Reason for pending record <i style='color: red'>*</i>" id="reason">
 	
 </form>

@@ -166,9 +166,14 @@
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
-			<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>'"><span>Request for Reprint</span></button>
+			<button class="green" style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Request for Reprint</span></button>
+	<%end%>
+	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") || (@status.present? && @status.status == "DC REPRINT")%>
+			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amment Record</span></button>
 
-			<button class="orange" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>'"><span>Amment Record</span></button>
+	<%end%>
+	<%if (@status.present? && @status.status == "DC REPRINT") && false%>
+			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
 	<%end%>
 	<% if CONFIG['site_type'] == "dc"%>
@@ -472,6 +477,18 @@
 
 					popUpRecordDetails();
 
+			}
+
+			function mark_for_reprint() {
+				var url = "/dc/add_reprint_comment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+				showConfirmMessage("","Proceed to mark record reprint?",url);
+				popUpRecordDetails();
+			}
+
+			function mark_for_amendment(){
+				var url = "/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+				showConfirmMessage("","Proceed to amend the record?",url);
+				popUpRecordDetails();
 			}
 
 			function popUpRecordDetails(){

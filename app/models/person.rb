@@ -157,6 +157,16 @@ class Person < CouchRest::Model::Base
 
   end
 
+  def change_status(nextstatus)
+    status = PersonRecordStatus.by_person_recent_status.key(self.id.to_s).last
+    status.update_attributes({:voided => true})
+    PersonRecordStatus.create({
+                        :person_record_id => self.id.to_s,
+                        :status => nextstatus,
+                        :district_code =>(self.district_code rescue CONFIG['district_code']),
+                        :creator => User.current_user.id})
+  end
+
   def self.create_person(parameters)
 
       params = parameters[:person]

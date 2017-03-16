@@ -49,9 +49,9 @@
 
               <%else%>
                   <% if @targeturl.present?%>
-                      <button id="signout" class="blue" onmousedown="window.location ='<%= @targeturl %>'" ><span>Back</span></button>
+                      <button id="signout" class="green" onmousedown="window.location ='<%= @targeturl %>'" ><span>Back</span></button>
                   <%elsif params[:next_url].present? %>
-                      <button id="signout" class="blue" onmousedown="window.location ='<%= params[:next_url] %>'" ><span>Back</span></button>
+                      <button id="signout" class="green" onmousedown="window.location ='<%= params[:next_url] %>'" ><span>Back</span></button>
                   <%else %>
                       <button id="signout" style="display:none" class="blue" onmousedown="window.location ='/'" ><span>Back</span></button>
                   <%end%>

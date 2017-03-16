@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
-                                                  "mark_as_pending","mark_for_reprint","search_barcode"]
+                                                  "mark_as_pending","mark_for_reprint","search_barcode","proceed_amend"]
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied

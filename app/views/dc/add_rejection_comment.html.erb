@@ -1,6 +1,6 @@
 <form action="/reject_record" method="post">
 		<input type="hidden" name="next_url" value="<%= params[:next_url]%>"> 
 		<input type="hidden" name="id" value="<%= params[:id]%>">
-		<input name="reason" helpText ="Reason for rejecting record" id="reason">
+		<input name="reason" helpText ="Reason for rejecting record <i style='color: red'>*</i>" id="reason">
 	
 </form>

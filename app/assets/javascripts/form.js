@@ -1537,27 +1537,21 @@
 				}
 				//console.log(data)
 				postAjax("/search_similar_record", data, function(response){
-
 					var people = JSON.parse(response).response;
 					if(people){
 
 						showConfirmMessage("","Potential duplicate to "+people.length +" other record(s)","","#e2a648");
-
 						var ids = [];
 
 						for(var i = 0 ; i < people.length ; i++){
-
 							ids[i] = people[i]['_id'];
-
 						}
+
 						__$("potential_duplicate").setAttribute("condition",true);
 						__$("potential_duplicate").value = ids.toString();
 
 					}
-
 				})
-
-
 		}
 
 		function removeUnknown(){

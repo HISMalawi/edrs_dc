@@ -119,7 +119,7 @@
 	<% if params[:next_url] %>
 	        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 	<%end%>
-	<button style="float: right; margin-right:1%" onmousedown=""><span>Proceed to Re-Print</span></button>
+	<button style="float: right; margin-right:1%" onmousedown="window.location='/dc/add_amendment_comment/<%=params[:id]%>'"><span>Proceed to Re-Print</span></button>
 	<% if @comments.count > 0 %>
 		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
 	<%end%>
@@ -157,7 +157,7 @@
                 <%= @person.den %>
                 </td>
 			</tr>
-			<tr>
+			<tr  class="clickable" onclick="editField('barcode')">
 				<td style="width: 20%;">
                   Barcode Number :
                 </td>
@@ -165,7 +165,7 @@
                   <%= @person.barcode %>
                 </td>
                 <td>
-                <%= @person.barcode %>
+               <%= @amendment_audit.change_log['barcode'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('first_name')">
@@ -173,7 +173,7 @@
                   First Name :
                 </td>
                 <td>
-                  <%=@person.first_name %>
+                  <%= @amendment_audit.change_log['first_name'][1] rescue @person.first_name %>
                 </td>
                 <td>
                   <%= @amendment_audit.change_log['first_name'][0] rescue '' %>
@@ -184,7 +184,7 @@
                   Surname :
                 </td>
                 <td>
-                  <%= @person.last_name %>
+                  <%=  @amendment_audit.change_log['last_name'][1] rescue @person.last_name %>
                 </td>
                 <td>
                    <%= @amendment_audit.change_log['last_name'][0] rescue '' %>
@@ -195,9 +195,10 @@
                   Other name(s) :
                 </td>
                 <td>
-                  <%= @person.middle_name %>
+                  <%= @amendment_audit.change_log['middle_name'][1] rescue  @person.middle_name %>
                 </td>
                 <td>
+                	<%= @amendment_audit.change_log['middle_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('birthdate')">
@@ -205,9 +206,10 @@
                  Date of birth :
                 </td>
                 <td>
-                 <%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %>
+                 <%= Date.parse(@amendment_audit.change_log['birthdate'][1].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %>
                 </td>
                 <td>
+               	 <%= Date.parse(@amendment_audit.change_log['birthdate'][0].to_s).strftime("%d/%b/%Y") rescue ''%>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('gender')">
@@ -215,9 +217,10 @@
                  Sex :
                 </td>
                 <td>
-                 <%= @person.gender %>
+                 <%= @amendment_audit.change_log['gender'][1] rescue @person.gender %>
                 </td>
                 <td>
+                 <%= @amendment_audit.change_log['gender'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('date_of_death')">
@@ -225,7 +228,7 @@
                  Date of death :
                 </td>
                 <td>
-                 <%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
+                 <%=Date.parse(@amendment_audit.change_log['date_of_death'][1].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
                 </td>
                 <td>
                 </td>
@@ -244,9 +247,10 @@
                   Mother's First Name :
                 </td>
                 <td>
-                  <%= @person.mother_first_name %>
+                  <%= @amendment_audit.change_log['mother_first_name'][1] rescue (@person.mother_first_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<%= @amendment_audit.change_log['mother_first_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('mother_last_name')">
@@ -254,9 +258,10 @@
                   Mother's Surname :
                 </td>
                 <td>
-                  <%= @person.mother_last_name %>
+                   <%= @amendment_audit.change_log['mother_last_name'][1] rescue (@person.mother_last_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<%= @amendment_audit.change_log['mother_last_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('mother_middle_name')">
@@ -264,9 +269,10 @@
                   Mother's Other name(s) :
                 </td>
                 <td>
-                  <%= @person.mother_middle_name %>
+                  <%= @amendment_audit.change_log['mother_middle_name'][1] rescue (@person.mother_middle_name rescue 'N/A') %>
                 </td>
                 <td>
+                 <%= @amendment_audit.change_log['mother_middle_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('father_first_name')">
@@ -274,9 +280,10 @@
                   Father's First Name :
                 </td>
                 <td>
-                  <%= @person.father_first_name %>
+                   <%= @amendment_audit.change_log['father_first_name'][1] rescue (@person.father_first_name rescue 'N/A') %>
                 </td>
                 <td>
+                  <%= @amendment_audit.change_log['father_first_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('father_last_name')">
@@ -284,9 +291,10 @@
                   Father's Surname :
                 </td>
                 <td>
-                  <%= @person.father_last_name %>
+                  <%= @amendment_audit.change_log['father_last_name'][1] rescue (@person.father_last_name rescue 'N/A') %>
                 </td>
                 <td>
+                  <%= @amendment_audit.change_log['father_last_name'][0] rescue '' %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('father_middle_name')">
@@ -294,9 +302,10 @@
                   Father's Other name(s) :
                 </td>
                 <td>
-                  <%= @person.father_middle_name %>
+                  <%= @amendment_audit.change_log['father_middle_name'][1] rescue (@person.father_middle_name rescue 'N/A') %>
                 </td>
                 <td>
+                 <%= @amendment_audit.change_log['father_first_name'][0] rescue '' %>
                 </td>
 			</tr>
 		</table>

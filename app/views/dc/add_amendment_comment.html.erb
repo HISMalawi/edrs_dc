@@ -117,10 +117,6 @@
 		<input type="hidden" name="next_url" value="<%= params[:next_url]%>"> 
 		<input type="hidden" name="id" value="<%= params[:id]%>">
 		<input type="hidden" name="user_id" value="<%=User.current_user.id%>">
-		<input type="" id="person_barcode" name="barcode" helpText ="Scan Barcode(<i>Re print request form</i>)" tt_pageStyleClass ="NoKeyboard" tt_onUnLoad ="removeDollar();checkBarcode()" optional='true'>
-		<select name="reason"  helpText ="Reason for Re-print <i style='color: red'>*</i>" id="reason">
-				<option value="Lost">Lost</option>
-				<option value="Damaged">Damaged</option>
-		</select>
-	
+		<input type="" id="person_barcode" name="barcode" helpText ="Scan Barcode(<i>Amendment request form</i>)" tt_pageStyleClass ="NoKeyboard" tt_onUnLoad ="removeDollar();checkBarcode()" optional='true'>
+		<input name="reason" helpText ="Amending record comment <i style='color: red'>*</i>" id="reason">	
 </form>

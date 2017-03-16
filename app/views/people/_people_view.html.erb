@@ -50,7 +50,7 @@
 </div>
 <div style="position : absolute; min-width : 30%; bottom:58px;; right :1%; margin-right : 1%">
   <% if params[:next_url] %>
-        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
   <% elsif @targeturl.present? %>
 

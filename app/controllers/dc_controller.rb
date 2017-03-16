@@ -183,33 +183,6 @@ class DcController < ApplicationController
 		
 	end
 
-	def add_reprint_comment
-		@action ="/mark_for_reprint"
-		render :layout => "touch"
-
-	end
-	def mark_for_reprint
-
-		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-		status.update_attributes({:voided => true})
-
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "HQ REPRINT",
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => params[:user_id]})
-
-		Audit.create({
-							:record_id => params[:id].to_s    , 
-							:audit_type=>"HQ REPRINT",
-							:level => "Person",
-							:reason => params[:reason]})
-
-		redirect_to "#{params[:next_url].to_s}"
-
-		
-	end
 	def  approved_cases
 
 		@section ="Approved Cases"
@@ -300,14 +273,6 @@ class DcController < ApplicationController
 		@duplicate = true
  
 		render :template =>"/dc/dc_view_cases"
-	end
-
-	def manage_requests
-
-		@section = "Manage Requests"
-
-		render :layout => "landing"
-		
 	end
 
 	def show_duplicate
@@ -404,6 +369,64 @@ class DcController < ApplicationController
 
 	end
 
+	def manage_requests
+		@section = "Manage Requests"
+		@next_url = "/dc/manage_requests"
+		render :layout => "landing"	
+	end
+
+	def reprint_requests
+		@section ="Reprint Requests"
+		@status = "DC REPRINT"
+		@next_url = "/dc/reprint_requests"
+		render :template =>"/dc/dc_view_cases"
+	end
+
+	def add_reprint_comment
+		@action ="/mark_for_reprint"
+		render :layout => "touch"
+	end
+
+	def approve_reprint
+		person = Person.find(params[:id])
+		person.change_status("HQ REPRINT")
+
+		Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC APPROVE REPRINT",
+							:level => "Person",
+							:reason => params[:reason]})
+
+		redirect_to "#{params[:next_url].to_s}"
+	end
+
+	def mark_for_reprint
+		person = Person.find(params[:id])
+
+		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+		status.update_attributes({:voided => true})
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC REPRINT",
+                                  :district_code => (person.district_code rescue CONFIG['district_code']),
+                                  :creator => params[:user_id]})
+		PersonIdentifier.create({
+                                      :person_record_id => person.id.to_s,
+                                      :identifier_type => "Reprint Barcode", 
+                                      :identifier => params[:barcode].to_s,
+                                      :site_code => (person.site_code rescue (CONFIG['site_code'] rescue nil)),
+                                      :district_code => (person.district_code rescue CONFIG['district_code']),
+                                      :creator => params[:user_id]})
+
+		Audit.create({
+							:record_id => params[:id].to_s    , 
+							:audit_type=>"DC REPRINT",
+							:level => "Person",
+							:reason => params[:reason]})
+
+		redirect_to "#{params[:next_url].to_s}"		
+	end
+
 	def amendment
 		@person = Person.find(params[:id])
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -414,10 +437,20 @@ class DcController < ApplicationController
                                                           [params[:id],"HQ REJECTED"],
                                                           [params[:id],"DC REAPPROVED"],
                                                           [params[:id],"DC DUPLICATE"],
-                                                          [params[:id],"RESOLVE DUPLICATE"]]).each
-      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"Amendment"]).first
+                                                          [params[:id],"RESOLVE DUPLICATE"],
+                                                          [params[:id],"DC REPRINT"],
+                                                          [params[:id],"DC AMEND"]]).each
+      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
+      	#@person.change_status("DC AMEND")
 		@section ="Amendments"
 		
+	end
+
+	def amendment_requests
+		@section ="Amendments Requests"
+		@status = "DC AMEND"
+		@next_url = "/dc/amendment_requests"
+		render :template =>"/dc/dc_view_cases"
 	end
 
 	def amendment_edit_field
@@ -426,40 +459,84 @@ class DcController < ApplicationController
       	@field = "person[#{params[:field]}]"
       	render :layout => "touch"
 	end
+
 	def amend_field
 		person = Person.find(params[:id])
-		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"Amendment"]).first
+		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
 		if amendment_audit
 			param_keys = params[:person].keys
 			hash = amendment_audit.change_log
 			param_keys.each do |key|
-				amendment_audit.change_log.merge!(key => [params[:person][key],params[:prev][key]])
-			end	
+				unless hash.present?
+					hash = {}
+				end
+				hash.merge!(key => [params[:person][key],params[:prev][key]])
+			end
+
+			amendment_audit.change_log = nil
 			amendment_audit.save
 			amendment_audit.reload
-			raise amendment_audit.change_log.inspect
+
+			amendment_audit.change_log = hash
+			amendment_audit.save
+			amendment_audit.reload
 		else
 			amendment_audit = Audit.new
 			amendment_audit.record_id = params[:id]
-			amendment_audit.audit_type = "Amendment"
+			amendment_audit.audit_type = "DC AMENDMENT"
 			amendment_audit.change_log = {}
+
 			param_keys = params[:person].keys
 			param_keys.each do |key|
 				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
 			end
+
 			amendment_audit.save
 		end
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
 
+	def add_amendment_comment
+		@action = '/proceed_amend'
+		render :layout =>'touch'
+	end
+
+	def proceed_amend
+		person = Person.find(params[:id])
+		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
+		amend_keys = amendment_audit.change_log.keys
+		amend_keys.each do |key|
+			#person[key] = amendment_audit.change_log[key][0]
+			person.update_attributes({key => amendment_audit.change_log[key][0]})
+		end
+		#person.save
+
+		amendment_audit.reason = "DC Amendment : #{params[:reason]}"
+		amendment_audit.level ="Person"
+		amendment_audit.save
+
+		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+		status.update_attributes({:voided => true})
+		PersonRecordStatus.create({
+                                  :person_record_id => params[:id].to_s,
+                                  :status => "DC AMEND",
+                                  :district_code => CONFIG['district_code'],
+                                  :creator => params[:user_id]})
+		PersonIdentifier.create({
+                                      :person_record_id => person.id.to_s,
+                                      :identifier_type => "AMENDMENT Barcode", 
+                                      :identifier => params[:barcode].to_s,
+                                      :site_code => (person.site_code rescue (CONFIG['site_code'] rescue nil)),
+                                      :district_code => (person.district_code rescue CONFIG['district_code']),
+                                      :creator => params[:user_id]})
+
+		redirect_to "#{params[:next_url].to_s}"
+	end
+
 	def counts_by_status
-
 		status = params[:status]
-
 		count = PersonRecordStatus.by_record_status.key(status).each.count
-
-		render :text => {:count => count}.to_json
-		
+		render :text => {:count => count}.to_json	
 	end
 
 	def new_burial_report
