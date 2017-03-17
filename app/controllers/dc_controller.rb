@@ -553,6 +553,36 @@ class DcController < ApplicationController
 		redirect_to "/people/view/#{params[:person_record_id]}?next_url=#{params[:next_url]}"		
 	end
 
+	def sync
+		if CONFIG['site_type'] = "dc"
+			@section ="Synced to HQ"
+			@url = "/dc/query_hq_sync"
+		else
+			@section ="Synced to HQ"
+			@url = "/people/query_hq_sync"
+		end
+		render :template =>"/people/view_sync"
+	end
+
+	def query_hq_sync
+		page = params[:page] rescue 1
+	    size = params[:size] rescue 7
+	    people = []
+		Sync.by_district_code.key(CONFIG['district_code'].to_s).page(page).per(size).each do |sync|
+			person = sycn.person
+			person_details = {
+						id:          	person.id,
+						first_name:  	person.first_name,
+						last_name:   	person.last_name,
+						middle_name: 	person.middle_name,
+						date_reported: 	person.created_at,
+						record_status: 	sync.status,
+						sync_status: 	sync.dc_sync_status
+			}
+			people << person_details
+		end
+		render :text => people.to_json
+	end
 	protected
 
 	

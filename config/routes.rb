@@ -189,6 +189,10 @@ Rails.application.routes.draw do
   get "/query_users" => "users#query"
   get "/search_user" => "users#search"
 
+  get "/dc/sync" => "dc#sync"
+  get "/dc/query_hq_sync" =>"dc#query_hq_sync"
+  get "/people/sync" => "people#sync"
+  get "/people/query_dc_sync" =>"people#query_dc_sync"
 
   get "/reports" => "reports#index"
 

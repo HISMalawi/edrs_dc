@@ -1,0 +1,281 @@
+
+<style type="text/css">
+	#pagination{
+		width: 20% !important;
+		left : 40%;
+		z-index: 100000;
+	}
+</style>
+<div id="table_container">
+
+		<table>
+				<thead>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							Name
+						</th>
+						<th>
+							Gender
+						</th>
+						<th>
+							Date reported
+						</th>
+						<th>
+							Record status
+						</th>
+						<th>
+							Sync status
+						</th>
+						<th>
+							View Record
+						</th>
+					</tr>
+				</thead>
+				<tbody id="table_body">
+					
+				</tbody>
+		</table>
+	
+</div>
+<div id="pagination">
+	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
+	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
+		
+</div>
+<div style="position : absolute; min-width : 30%; bottom:58px;; right :1%; margin-right : 1%">
+  <% if params[:next_url] %>
+        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+
+  <% elsif @targeturl.present? %>
+
+        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
+</div>
+<%= render :partial => "landing_resize" %>
+<script type="text/javascript">
+	var status = "<%=@status%>"
+	var url ="<%=@url%>"
+
+	if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
+
+		    Object.defineProperty(Date.prototype, "format", {
+		        value: function (format) {
+		            var date = this;
+
+		            var result = "";
+
+		            if (!format) {
+
+		                format = ""
+
+		            }
+
+		            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+		            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+		                "October", "November", "December"];
+
+		            if (format.match(/YYYY\-mm\-dd\sHH\:\MM\:SS/)) {
+
+		                result = date.getFullYear() + "-" + stock;
+		                padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                stock.padZeros(date.getDate(), 2) + " " + stock.padZeros(date.getHours(), 2) + ":" +
+		                stock.padZeros(date.getMinutes(), 2) + ":" + stock.padZeros(date.getSeconds(), 2);
+
+		            } else if (format.match(/YYYY\-mm\-dd/)) {
+
+		                result = date.getFullYear() + "-" + stock.padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                    stock.padZeros(date.getDate(), 2);
+
+		            } else if (format.match(/mmm\/d\/YYYY/)) {
+
+		                result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+		            } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+		                result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+		            } else {
+
+		                result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+		            }
+
+		            return result;
+		        }
+		    });
+
+		}
+
+	    var page = 1 ;
+
+	    var estimatesize = 0;
+
+	    function navNextPage(){
+
+	    	if(estimatesize >= 7){
+
+	    			page ++;
+
+			    	loadTable(page);
+
+	    	}
+
+	    }
+
+	    function navPrevPage(){
+
+	    	if(page > 1){
+
+	    		page--
+	    		loadTable(page);
+
+	    	}
+
+	    }
+
+		function __$(id){
+
+			return document.getElementById(id)
+
+		}
+
+		function loadTable(page){
+
+					var content = __$("table_container")
+	
+					var table = __$("table_body");
+
+
+					ajaxGETRequest(url+"?page="+page+"&size=8",function(data){
+
+								var data = JSON.parse(data);
+
+							for(var i = 0 ; i < data.length ; i++){
+
+								estimatesize = i + 1;
+
+								var tr = document.createElement("tr");
+
+								table.appendChild(tr);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = i + 1;
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = data[i]["first_name"] +" "+ data[i]["middle_name"] + " "+ data[i]["last_name"]
+								tr.appendChild(td);
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = data[i].den
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = data[i].gender
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = new Date(data[i].date_reported).format()
+								tr.appendChild(td);
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = (data[i].record_status =='NEW'? "ACTIVE" : data[i].record_status);
+								tr.appendChild(td);
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = (eval(data[i].record_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderBottom= "1px solid black";
+								td.style.borderRight= "1px solid black";
+								var button = document.createElement("button");
+								button.innerHTML = "<span>View</span>";
+								button.style.width = "90%";
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+
+								td.appendChild(button);
+
+								tr.appendChild(td);
+
+
+							}
+
+							if(estimatesize >= 7){
+
+								__$("next").className = __$("next").className.replace("gray","blue");
+
+								__$("next").setAttribute("onmousedown","navNextPage()");
+
+							}else{
+
+								__$("next").className = __$("next").className.replace("blue","gray");
+
+								__$("next").removeAttribute("onmousedown");
+
+							}
+
+							if(page == 1 ){
+
+								__$("prev").className = __$("prev").className.replace("blue","gray");
+
+								__$("prev").removeAttribute("onmousedown");
+
+							}else{
+
+								__$("prev").className = __$("prev").className.replace("gray","blue");
+
+								__$("prev").setAttribute("onmousedown","navPrevPage()");
+
+							}
+
+					});
+
+		}
+
+		<% if params[:page] %>
+
+				page = parseInt("<%= params[:page] %>")
+
+		<%else %>
+
+				page = 1;
+
+		<% end %>
+
+
+		loadTable(page);
+
+		var removeBack = setInterval(function(){
+			if(__$('signout')){
+				__$('signout').style.display = "none";
+				clearInterval(removeBack);
+			}
+		},50);
+</script>

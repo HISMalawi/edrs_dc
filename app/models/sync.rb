@@ -1,10 +1,9 @@
 class Sync < CouchRest::Model::Base
 	before_save :set_district_code,:set_facility_code
-	property :person_id, String
+	property :person_record_id, String
 	property :dc_sync_status, TrueClass, :default => false
 	property :hq_sync_status, TrueClass, :default => false
 	property :record_status, String
-	property :request_status, String
 	property :facility_code, String
 	property :district_code, String
 	timestamps!
@@ -19,6 +18,18 @@ class Sync < CouchRest::Model::Base
 		view :by_created_at_and_hq_sync_status
 		view :by_district_code_and_hq_sync_status
 		view :by_facility_code_and_dc_sync_status
+		view :by_dc_unsynced,
+			   :map => "function(doc) {
+	                  if (doc['type'] == 'Sync' && doc['dc_sync_status'] == false) {
+	                    	emit(doc['record_id'], 1);
+	                  }
+	                }"
+	    view :by_hq_unsynced,
+			   :map => "function(doc) {
+	                  if (doc['type'] == 'Sync' && doc['hq_sync_status'] == false) {
+	                    	emit(doc['record_id'], 1);
+	                  }
+	                }"
 		filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 		filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
 
