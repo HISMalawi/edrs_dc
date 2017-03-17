@@ -36,7 +36,12 @@ class Audit < CouchRest::Model::Base
     filter :facility_sync, "function(doc,req) {return req.query.site_id == doc.site_id}"
 
   end
-  
+
+  def person
+    person = Person.find(self.record_id)
+    return person
+  end
+
   def set_user_id
     if Audit.user.present?
       self.user_id = Audit.user
@@ -46,28 +51,18 @@ class Audit < CouchRest::Model::Base
   end
   
   def set_site_id
-
     if CONFIG['site_type'] =="facility"
-
-        self.site_id = CONFIG["facility_code"]
-
+      self.site_id = (self.person.facility_code rescue self.person.district_code)
     else
-
-        self.site_id = CONFIG["district_code"]
-
+      self.site_id = (self.person.district_code rescue CONFIG["district_code"])
     end
   end  
   
   def set_site_type
-
      if CONFIG['site_type'] =="facility"
-
         self.site_type = "facility"
-
     else
-
-         self.site_type = "DC"
-
+        self.site_type = "DC"
     end
   end 
  

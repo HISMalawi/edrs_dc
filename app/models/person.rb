@@ -133,28 +133,20 @@ class Person < CouchRest::Model::Base
     audit.save
   end
 
-  def set_facility_code
-
-    if CONFIG['site_type'] =="facility"
-
-      self.facility_code = CONFIG["facility_code"]
-
-    else
-      self.facility_code = nil
-    end
-
+ def set_district_code
+    unless self.district_code.present?
+      self.district_code = CONFIG["district_code"]
+    end      
   end
 
-  def set_district_code
-
-    self.district_code = CONFIG["district_code"]
-
+  def set_facility_code
+    unless self.facility_code.present?
+      self.facility_code = (CONFIG['facility_code'] rescue nil)
+    end 
   end
 
   def status
-
     PersonRecordStatus.by_person_recent_status.key(self.id).last.status
-
   end
 
   def change_status(nextstatus)
@@ -168,7 +160,6 @@ class Person < CouchRest::Model::Base
   end
 
   def self.create_person(parameters)
-
       params = parameters[:person]
 
       params[:acknowledgement_of_receipt_date] = Time.now
@@ -1015,7 +1006,6 @@ class Person < CouchRest::Model::Base
     view :by_approved
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
-
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 
   end
