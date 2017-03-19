@@ -590,6 +590,7 @@ class PeopleController < ApplicationController
       @section ="Synced to DC"
       @url = "/people/query_dc_sync"
     end
+    @next_url = "/people/sync"
     render :layout => "landing"
     #render :template =>"/people/view_sync"
   end
