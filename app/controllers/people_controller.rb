@@ -581,15 +581,17 @@ class PeopleController < ApplicationController
       end
   end
 
-  def sync
-   if CONFIG['site_type'] = "dc"
+  def view_sync
+   @site_type = CONFIG['site_type'].to_s
+   if @site_type == "dc"
       @section ="Synced to HQ"
       @url = "/dc/query_hq_sync"
     else
       @section ="Synced to DC"
-      @url = "/people/query_hq_sync"
+      @url = "/people/query_dc_sync"
     end
-    render :template =>"/people/view_sync"
+    render :layout => "landing"
+    #render :template =>"/people/view_sync"
   end
 
   def query_dc_sync
@@ -597,14 +599,15 @@ class PeopleController < ApplicationController
       size = params[:size] rescue 7
       people = []
     Sync.by_district_code.key(CONFIG['district_code'].to_s).page(page).per(size).each do |sync|
-      person = sycn.person
+      person = sync.person
       person_details = {
             id:           person.id,
             first_name:   person.first_name,
             last_name:    person.last_name,
             middle_name:  person.middle_name,
+            gender:       person.gender,
             date_reported:  person.created_at,
-            record_status:  sync.status,
+            record_status:  sync.record_status,
             sync_status:  sync.dc_sync_status
       }
       people << person_details
