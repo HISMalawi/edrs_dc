@@ -609,7 +609,8 @@ class PeopleController < ApplicationController
             gender:       person.gender,
             date_reported:  person.created_at,
             record_status:  sync.record_status,
-            sync_status:  sync.dc_sync_status
+            dc_sync_status:  sync.dc_sync_status,
+            hq_sync_status:  sync.hq_sync_status
       }
       people << person_details
     end
