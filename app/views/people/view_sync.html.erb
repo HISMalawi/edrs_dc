@@ -212,7 +212,7 @@
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
 								td.style.borderBottom= "1px solid black";
-								if(site_type == 'dc'){
+								if(site_type != 'facility'){
 									td.innerHTML = (eval(data[i].hq_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
 								}else{
 									td.innerHTML = (eval(data[i].dc_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
