@@ -61,10 +61,10 @@
 
   <% elsif @targeturl.present? %>
 
-        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
 
   <%else %>
-         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+         <button class="green"  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
 </div>
 <%= render :partial => "/dc/landing_resize" %>

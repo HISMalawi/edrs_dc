@@ -114,11 +114,11 @@
 
 <div style="position : absolute; width : 80%; bottom:58px;right :1%; margin-right : 2%">
   	<% if params[:next_url] %>
-        <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+        <button class="green" style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 
   <% elsif @targeturl.present? %>
 
-        <button   style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
 
   <%else %>
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
@@ -127,7 +127,7 @@
 
 		<% if @status.status == "NEW" || @status.status == "DC PENDING"  || @status.status =="DC REJECTED" %>
 
-			<button class="green" style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
+			<button style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
 
 		<%else%>
 
@@ -136,7 +136,7 @@
 		<%end%>
 		<%if ["NEW"].include? @status.status %>
 		
-			<button class="green" style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
+			<button style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
 		<%end%>
 
 			
@@ -146,7 +146,7 @@
 		
 		<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
 
-				<button class="green" style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
+				<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
 		<%end%>
 
@@ -166,7 +166,7 @@
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
-			<button class="green" style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Request for Reprint</span></button>
+			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Request for Reprint</span></button>
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") || (@status.present? && @status.status == "DC REPRINT")%>
 			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amment Record</span></button>
@@ -180,7 +180,7 @@
 
 		<% if @burial_report.blank? && User.current_user.role != "ADR"%>
 
-			<button class="green" style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Add Burial Report</span></button>
+			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Add Burial Report</span></button>
 		<%else  @burial_report.present? %>
 		
 			<button style="float: right; margin-right:3%" onmousedown="viewBurialReport()"><span>View Burial Report</span></button>
