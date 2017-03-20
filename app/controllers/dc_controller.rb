@@ -569,14 +569,15 @@ class DcController < ApplicationController
 	    size = params[:size] rescue 7
 	    people = []
 		Sync.by_district_code.key(CONFIG['district_code'].to_s).page(page).per(size).each do |sync|
-			person = sycn.person
+			person = sync.person
 			person_details = {
 						id:          	person.id,
 						first_name:  	person.first_name,
 						last_name:   	person.last_name,
 						middle_name: 	person.middle_name,
+						gender:       person.gender,
 						date_reported: 	person.created_at,
-						record_status: 	sync.status,
+						record_status: 	sync.record_status,
 						sync_status: 	sync.dc_sync_status
 			}
 			people << person_details

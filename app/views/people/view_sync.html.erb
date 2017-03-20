@@ -1,9 +1,19 @@
-
+<script type="text/javascript">
+	var site_type = "<%= @site_type %>"
+</script>
 <style type="text/css">
 	#pagination{
 		width: 20% !important;
 		left : 40%;
 		z-index: 100000;
+	}
+	.fa-check{
+		font-size: 1em !important;
+		color: green !important;
+	}
+	.fa-ban{
+		font-size: 1em !important;
+		color: red;
 	}
 </style>
 <div id="table_container">
@@ -57,7 +67,7 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
 </div>
-<%= render :partial => "landing_resize" %>
+<%= render :partial => "/dc/landing_resize" %>
 <script type="text/javascript">
 	var status = "<%=@status%>"
 	var url ="<%=@url%>"
@@ -179,12 +189,6 @@
 								td.innerHTML = data[i]["first_name"] +" "+ data[i]["middle_name"] + " "+ data[i]["last_name"]
 								tr.appendChild(td);
 
-								var td = document.createElement("td");
-								td.style.borderRight= "1px solid black";
-								td.style.borderBottom= "1px solid black";
-								td.innerHTML = data[i].den
-								tr.appendChild(td);
-
 
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
@@ -208,7 +212,11 @@
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
 								td.style.borderBottom= "1px solid black";
-								td.innerHTML = (eval(data[i].record_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+								if(site_type == 'dc'){
+									td.innerHTML = (eval(data[i].hq_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+								}else{
+									td.innerHTML = (eval(data[i].dc_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+								}
 								tr.appendChild(td);
 
 
@@ -218,7 +226,7 @@
 								var button = document.createElement("button");
 								button.innerHTML = "<span>View</span>";
 								button.style.width = "90%";
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=<%=@next_url%>?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["id"]+"?next_url=<%=@next_url%>?page="+page+"'");
 
 								td.appendChild(button);
 
