@@ -2,7 +2,7 @@
 district_code = CONFIG['district_code']
 person_count = Person.count
 
-source = @settings[:source]
+source = @settings[:dc]
 hq = @settings[:hq]
 
 source_to_target = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
@@ -12,7 +12,7 @@ source_to_target = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{
               retries_per_request: 20,
               http_connections: 30,
               continuous: true
-                }.to_json}' "#{source[:protocol]}://#{source[:username]}:#{source[:password]}@#{source[:host]}:#{source[:port]}/_replicate"]                 
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"]                 
 
 puts "There are #{person_count } people"
 
