@@ -22,6 +22,7 @@ class PersonIdentifier < CouchRest::Model::Base
     view :by_person_record_id
     view :by_identifier_type
     view :by_identifier
+    view :by_identifier_and_identifier_type
     view :by_site_code
     view :by_den_sort_value,
          :map => "function(doc) {

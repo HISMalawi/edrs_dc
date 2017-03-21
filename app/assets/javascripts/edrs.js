@@ -280,6 +280,7 @@ function showPopupMessage(msg, topic,targeturl) {
                   tdf.appendChild(btnCancel);
 
                   var btnOK = document.createElement("button");
+                  btnOK.id = "ok_button"
                   //btnOK.className = "blue";
                   btnOK.innerHTML = "<span>OK</span>";
                   btnOK.style.minWidth = "100px";
@@ -287,14 +288,14 @@ function showPopupMessage(msg, topic,targeturl) {
                   if (nextURL)
                       btnOK.setAttribute("nextURL", nextURL);
 
-                  btnOK.onclick = function () {
+                      btnOK.onclick = function () {
 
-                      if (__$("msg.shield")) {
+                          if (__$("msg.shield")) {
 
-                          document.body.removeChild(__$("msg.shield"));
+                              document.body.removeChild(__$("msg.shield"));
 
-                          if (this.getAttribute("nextURL"))
-                              window.location = this.getAttribute("nextURL");
+                              if (this.getAttribute("nextURL"))
+                                  window.location = this.getAttribute("nextURL");
 
                       }
 
@@ -305,17 +306,16 @@ function showPopupMessage(msg, topic,targeturl) {
 
 function ajaxGETRequest(url, callback, optionalControl) {
 
-                                var shield = document.createElement("div");
+        if (__$("msg.shield")) {
+            document.body.removeChild(__$("msg.shield"));
+        }
 
-                                shield.style.position = "absolute";
-
-                                shield.style.position = "absolute";
-
-                                shield.style.top = "20%";
-
-                                shield.style.left = "20%";
-
-                                shield.style.width = "60%";
+        var shield = document.createElement("div");
+        shield.style.position = "absolute";
+        shield.style.position = "absolute";
+        shield.style.top = "20%";
+        shield.style.left = "20%";
+        shield.style.width = "60%";
 
                                 shield.style.height = "60%";
 

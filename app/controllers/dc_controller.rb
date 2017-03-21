@@ -92,17 +92,13 @@ class DcController < ApplicationController
 
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
-                                  :status => "DC APPROVED",
+                                  :status => "MARKED APPROVAL",
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
-				person.update_attributes({:approved =>"Yes"})
-
-				PersonIdentifier.assign_den(person, User.current_user.id)
-
 				#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
-
-			    redirect_to "#{params[:next_url].to_s}"
+				render :text => {marked: true}.to_json
+			    #redirect_to "#{params[:next_url].to_s}"
 
 		else
 				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -119,10 +115,19 @@ class DcController < ApplicationController
 							:audit_type=>"DC INCOMPLETE",
 							:level => "Person",
 							:reason => "Approve record not successful"})
-
-				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
+				render :text => {incomplete: true}.to_json
+				#redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
 		end
 		
+	end
+
+	def check_approval_status
+		den = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id], "DEATH ENTRY NUMBER"]).first
+		if den.present?
+			render :text => {assigned: true}.to_json
+		else
+			render :text => {assigned: false}.to_json
+		end
 	end
 
 	def add_rejection_comment

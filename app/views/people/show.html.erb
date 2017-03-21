@@ -453,12 +453,48 @@
 
 			function approveRecord(){
 
-					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
-
-					showConfirmMessage("","Approve record",url)
+					
+					showConfirmMessage("","Approve record",null)
 
 					popUpRecordDetails();
+					var ok = __$("ok_button");
+					ok.removeAttribute('onclick');
+					ok.setAttribute("onclick", "markForApproval()");
 
+			}
+			var check_status_interval;
+			function markForApproval(){
+					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+				  	if (__$("msg.shield")) {
+                              document.body.removeChild(__$("msg.shield"));
+                     }
+                     ajaxGETRequest(url,function(data){
+                     	var data = JSON.parse(data);
+
+                     	if(data.marked && eval(data.marked)){
+                     		setTimeout(function(){
+                     			checkApprovalStatus('/dc/check_approval_status/<%= @person.id%>')
+                     		},100);
+                     	}
+                     	if(data.incomplete && eval(data.incomplete)){
+                     		showPopupMessage("Record incomplete","Completeness check");
+                     	}
+                     	
+                     })
+
+			}
+			function checkApprovalStatus(url){
+				 ajaxGETRequest(url,function(data){
+				 	var data = JSON.parse(data);
+				 	if(data.assigned && eval(data.assigned)){
+				 		window.location.href ="<%=params[:next_url]%>"	
+				 	}
+				 	else{
+				 		setTimeout(function(){
+                     			checkApprovalStatus('/dc/check_approval_status/<%= @person.id%>')
+                     	},100);
+				 	}
+				 });
 			}
 			function markAsPending(){
 

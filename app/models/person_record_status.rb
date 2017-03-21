@@ -40,7 +40,12 @@ class PersonRecordStatus < CouchRest::Model::Base
 	                    	emit(doc['status'], 1);
 	                  }
 	                }"
-
+	    view :by_marked_for_approval,
+	    		:map =>"function(doc){
+		    			   if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false && doc['status']=='MARKED APPROVAL'){
+		                    	emit(doc['status'], 1);
+		                  	}
+	    			   }"
 	    filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 	    filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
 

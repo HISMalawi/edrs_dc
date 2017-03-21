@@ -132,6 +132,8 @@ Rails.application.routes.draw do
 
   get "/dc/approve_record/:id" => "dc#approve_record"
 
+  get "/dc/check_approval_status/:id"=> "dc#check_approval_status"
+
   get "/dc/add_rejection_comment/:id" => "dc#add_rejection_comment"
 
   get "/dc/counts_by_status" => "dc#counts_by_status"
