@@ -27,6 +27,7 @@ class DcController < ApplicationController
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => "DC COMPLETE",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
@@ -42,6 +43,7 @@ class DcController < ApplicationController
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => "DC INCOMPLETE",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
@@ -93,6 +95,7 @@ class DcController < ApplicationController
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => "MARKED APPROVAL",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
@@ -108,6 +111,7 @@ class DcController < ApplicationController
 				PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => "DC INCOMPLETE",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 				Audit.create({
@@ -144,6 +148,7 @@ class DcController < ApplicationController
 			PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC REJECTED",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
 
@@ -174,6 +179,7 @@ class DcController < ApplicationController
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC PENDING",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => params[:user_id]})
 
@@ -323,6 +329,7 @@ class DcController < ApplicationController
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC APPROVED",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => params[:user_id]})
 		Audit.user = params[:user_id].to_s
@@ -358,6 +365,7 @@ class DcController < ApplicationController
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC DUPLICATE",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => params[:user_id]})
 
@@ -416,6 +424,7 @@ class DcController < ApplicationController
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC REPRINT",
+                                  :prev_status => status.status,
                                   :district_code => (person.district_code rescue CONFIG['district_code']),
                                   :creator => params[:user_id]})
 		PersonIdentifier.create({
@@ -528,6 +537,7 @@ class DcController < ApplicationController
 		PersonRecordStatus.create({
                                   :person_record_id => params[:id].to_s,
                                   :status => "DC AMEND",
+                                  :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => params[:user_id]})
 		PersonIdentifier.create({

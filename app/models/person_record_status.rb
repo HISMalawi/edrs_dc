@@ -4,6 +4,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 	property :person_record_id, String
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...
+	property :prev_status, String
 	property :district_code, String
 	property :facility_code, String
 	property :voided, TrueClass, :default => false
@@ -18,6 +19,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 		view :by_creator
 		view :by_created_at
 		view :by_person_record_id
+		view :by_prev_status
 	    view :by_person_recent_status,
 				 :map => "function(doc) {
 	                  if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false) {
@@ -54,11 +56,23 @@ class PersonRecordStatus < CouchRest::Model::Base
 	def set_district_code
 		self.district_code = self.person.district_code
 	end
+
 	def set_facility_code
 		self.district_code = self.person.facility_code
 	end
 
 	def person
 	    return Person.find(self.person_record_id)    	
+	end
+
+	def self.change_status(person,currentstatus)
+		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
+		status.update_attributes({:voided => true})
+		PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => currentstatus,
+                                  :prev_status => status.status,
+                                  :district_code => status.district_code,
+                                  :creator => User.current_user.id})
 	end
 end

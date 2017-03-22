@@ -1005,6 +1005,8 @@ class Person < CouchRest::Model::Base
 
     view :by_approved
 
+    view :by_registration_type
+
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 
