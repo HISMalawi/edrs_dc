@@ -434,28 +434,17 @@
 	  
 		    resizeDiv();
 			<% if params[:error] %>
-
-					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
-
+				showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
 			<% end %>
 	
 			function checkCompleteness(){
-
-					var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";
-
-							
-					showConfirmMessage("","Data Completeness check",url)
-
-					popUpRecordDetails();
-			
-
+				var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";		
+				showConfirmMessage("","Data Completeness check",url)
+				popUpRecordDetails();
 			}
 
 			function approveRecord(){
-
-					
 					showConfirmMessage("","Approve record",null)
-
 					popUpRecordDetails();
 					var ok = __$("ok_button");
 					ok.removeAttribute('onclick');
@@ -579,93 +568,66 @@
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Nationality";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.nationality %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Sex";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.gender %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Date of Birth";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.birthdate.to_date.strftime('%d/%b/%Y') %>";
-
 					tr.appendChild(td);
 
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Date of Death";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					td.innerHTML = "<%= @person.date_of_death.to_date.strftime('%d/%b/%Y') %>";
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
-
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-
 					td.innerHTML = "Place of Death";
-
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-
 					<% if @person.place_of_death == 'Health Facility'%>
-
 					 	td.innerHTML = " <%= @person.hospital_of_death %>";
-
 					<%elsif @person.place_of_death == 'Home'%>
 						 td.innerHTML = "<%= @person.place_of_death_district %> <%= @person.place_of_death_ta%> "+
 						 				" <%= @person.place_of_death_village%>";
 					<%elsif @person.place_of_death == 'Other' %>
 						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
 					<% end %>
-
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");

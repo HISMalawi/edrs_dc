@@ -9,7 +9,7 @@ class Audit < CouchRest::Model::Base
   property :level, String # Person | User
   property :reason, String
   property :user_id, String # User id
-  property :site_id, String
+  property :site_id, String #Site Code | District Code
   property :site_type, String  #FACILITY, DC, HQ
   property :change_log, {}, :default => {}
   property :voided, TrueClass, :default => false

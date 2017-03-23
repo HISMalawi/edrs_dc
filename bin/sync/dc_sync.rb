@@ -56,7 +56,7 @@ if hq[:bidirectional] == true
                   connection_timeout: 60000,
                   filter: 'Audit/facility_sync',
                   query_params: {
-                      district_code: "#{district_code}"
+                      site_id: "#{district_code}"
                             }
                    }.to_json}' "#{source[:protocol]}://#{source[:username]}:#{source[:password]}@#{source[:host]}:#{source[:port]}/_replicate"]
    

@@ -92,13 +92,22 @@ class DcController < ApplicationController
 
 				status.update_attributes({:voided => true})
 
-				PersonRecordStatus.create({
+				if status.status =="HQ REJECTED"
+					PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => "DC REAPPROVED",
+                                  :prev_status => status.status,
+                                  :district_code =>person.district_code,
+                                  :creator => User.current_user.id})
+				else
+					PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => "MARKED APPROVAL",
                                   :prev_status => status.status,
                                   :district_code => CONFIG['district_code'],
                                   :creator => User.current_user.id})
-
+				end
+			
 				#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 				render :text => {marked: true}.to_json
 			    #redirect_to "#{params[:next_url].to_s}"

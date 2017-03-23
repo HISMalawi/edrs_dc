@@ -208,7 +208,8 @@ class PeopleController < ApplicationController
          record_status = [params[:status]]
     end
     if params[:status] == "HQ REJECTED"
-         record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
+         #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
+         record_status = [params[:status]]
     else
          record_status = [params[:status]]
     end
@@ -302,7 +303,12 @@ class PeopleController < ApplicationController
                                                           [params[:id],"HQ REJECTED"],
                                                           [params[:id],"DC REAPPROVED"],
                                                           [params[:id],"DC DUPLICATE"],
-                                                          [params[:id],"RESOLVE DUPLICATE"]]).each
+                                                          [params[:id],"RESOLVE DUPLICATE"],
+                                                          [params[:id],"HQ POTENTIAL INCOMPLETE"],
+                                                          [params[:id],"HQ INCOMPLETE"],
+                                                          [params[:id],"HQ CONFIRMED INCOMPLETE"]
+
+                                                          ]).each
 
       render :layout => "landing"
   	
