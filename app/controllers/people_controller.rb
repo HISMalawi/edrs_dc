@@ -306,7 +306,8 @@ class PeopleController < ApplicationController
                                                           [params[:id],"RESOLVE DUPLICATE"],
                                                           [params[:id],"HQ POTENTIAL INCOMPLETE"],
                                                           [params[:id],"HQ INCOMPLETE"],
-                                                          [params[:id],"HQ CONFIRMED INCOMPLETE"]
+                                                          [params[:id],"HQ CONFIRMED INCOMPLETE"],
+                                                          [params[:id],"DC AMEND"]
 
                                                           ]).each
 

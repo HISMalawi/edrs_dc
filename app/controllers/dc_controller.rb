@@ -19,34 +19,12 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 
 		if record_complete?(person)
-
-				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-				status.update_attributes({:voided => true})
-
-				PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC COMPLETE",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
-
-
-				 redirect_to "#{params[:next_url].to_s}"
+				PersonRecordStatus.change_status(person, "DC COMPLETE")
+				redirect_to "#{params[:next_url].to_s}"
 
 
 		else
-				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-				status.update_attributes({:voided => true})
-
-				PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC INCOMPLETE",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
-
+				PersonRecordStatus.change_status(person, "DC INCOMPLETE")
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
 		
@@ -90,45 +68,32 @@ class DcController < ApplicationController
 
 				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-				status.update_attributes({:voided => true})
-
 				if status.status =="HQ REJECTED"
-					PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC REAPPROVED",
-                                  :prev_status => status.status,
-                                  :district_code =>person.district_code,
-                                  :creator => User.current_user.id})
+					PersonRecordStatus.change_status(person, "DC REAPPROVED")
 				else
-					PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "MARKED APPROVAL",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
+					PersonRecordStatus.change_status(person, "MARKED APPROVAL")
 				end
-			
+				
+				last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+		        job_interval = CONFIG['ben_assignment_interval']
+		        job_interval = 1.5 if job_interval.blank?
+		        job_interval = job_interval.to_f
+		        now = Time.now
+		        if (now - last_run_time).to_f > job_interval
+		          AssignDen.perform_in(1)
+		        end
 				#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 				render :text => {marked: true}.to_json
 			    #redirect_to "#{params[:next_url].to_s}"
 
 		else
-				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-				status.update_attributes({:voided => true})
-
-				PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC INCOMPLETE",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
-				Audit.create({
-							:record_id => params[:id].to_s    , 
-							:audit_type=>"DC INCOMPLETE",
-							:level => "Person",
-							:reason => "Approve record not successful"})
-				render :text => {incomplete: true}.to_json
+			PersonRecordStatus.change_status(person, "DC INCOMPLETE")
+			Audit.create({
+				:record_id => params[:id].to_s    , 
+				:audit_type=>"DC INCOMPLETE",
+				:level => "Person",
+				:reason => "Approve record not successful"})
+			render :text => {incomplete: true}.to_json
 				#redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
 		end
 		
@@ -149,19 +114,7 @@ class DcController < ApplicationController
 	end
 
 	def reject_record
-
-			status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-			status.update_attributes({:voided => true})
-
-			PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC REJECTED",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => User.current_user.id})
-
-			
+			PersonRecordStatus.change_status(person, "DC REJECTED")			
 			Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECTED",
@@ -180,18 +133,7 @@ class DcController < ApplicationController
 		
 	end
 	def mark_as_pending
-
-		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-		status.update_attributes({:voided => true})
-
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC PENDING",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => params[:user_id]})
-
+		PersonRecordStatus.change_status(person, "DC PENDING")
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC PENDING",
@@ -328,19 +270,7 @@ class DcController < ApplicationController
 	end
 
 	def confirm_not_duplicate
-
-		status = PersonRecordStatus.by_person_record_id_recent_status.key([params[:id],"DC POTENTIAL DUPLICATE"]).last
-
-		status.update_attributes({:voided => true})
-
-
-
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC APPROVED",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => params[:user_id]})
+		PersonRecordStatus.change_status(person, "DC APPROVED")
 		Audit.user = params[:user_id].to_s
 		Audit.create({
 
@@ -366,18 +296,7 @@ class DcController < ApplicationController
 	end
 
 	def confirm_duplicate
-
-		status = PersonRecordStatus.by_person_record_id_recent_status.key([params[:id],"DC POTENTIAL DUPLICATE"]).last
-
-		status.update_attributes({:voided => true})
-
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC DUPLICATE",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => params[:user_id]})
-
+		PersonRecordStatus.change_status(person, "DC DUPLICATE")
 		Audit.user = params[:user_id].to_s
 
 		Audit.create({
@@ -428,14 +347,7 @@ class DcController < ApplicationController
 	def mark_for_reprint
 		person = Person.find(params[:id])
 
-		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-		status.update_attributes({:voided => true})
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC REPRINT",
-                                  :prev_status => status.status,
-                                  :district_code => (person.district_code rescue CONFIG['district_code']),
-                                  :creator => params[:user_id]})
+		PersonRecordStatus.change_status(person, "DC REPRINT")
 		PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Reprint Barcode", 
@@ -509,7 +421,7 @@ class DcController < ApplicationController
 		else
 			amendment_audit = Audit.new
 			amendment_audit.record_id = params[:id]
-			amendment_audit.audit_type = "DC AMENDMENT"
+			amendment_audit.audit_type = "DC AMEND"
 			amendment_audit.change_log = {}
 
 			param_keys = params[:person].keys
@@ -529,7 +441,7 @@ class DcController < ApplicationController
 
 	def proceed_amend
 		person = Person.find(params[:id])
-		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
+		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
 		amend_keys = amendment_audit.change_log.keys
 		amend_keys.each do |key|
 			#person[key] = amendment_audit.change_log[key][0]
@@ -541,14 +453,7 @@ class DcController < ApplicationController
 		amendment_audit.level ="Person"
 		amendment_audit.save
 
-		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-		status.update_attributes({:voided => true})
-		PersonRecordStatus.create({
-                                  :person_record_id => params[:id].to_s,
-                                  :status => "DC AMEND",
-                                  :prev_status => status.status,
-                                  :district_code => CONFIG['district_code'],
-                                  :creator => params[:user_id]})
+		PersonRecordStatus.change_status(person, "DC AMEND")
 		PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "AMENDMENT Barcode", 

@@ -76,7 +76,7 @@ class Person < CouchRest::Model::Base
       PersonRecordStatus.create({
                                   :person_record_id => self.id.to_s,
                                   :status => "NEW",
-                                  :district_code => CONFIG['district_code'],
+                                  :district_code =>  self.district_code,
                                   :created_by => User.current_user.id})
     else
       
@@ -91,7 +91,7 @@ class Person < CouchRest::Model::Base
       PersonRecordStatus.create({
                                   :person_record_id => self.id.to_s,
                                   :status => "DC POTENTIAL DUPLICATE",
-                                  :district_code => CONFIG['district_code'],
+                                  :district_code => self.district_code,
                                   :created_by => User.current_user.id})
 
       self.duplicate = nil
