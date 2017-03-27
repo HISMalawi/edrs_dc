@@ -2,7 +2,7 @@
 district_code = CONFIG['district_code']
 person_count = Person.count
 
-source = @settings[:source]
+source = @settings[:dc]
 hq = @settings[:hq]
 
 target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{

@@ -166,9 +166,9 @@
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
-			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Request for Reprint</span></button>
+			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Mark for Reprint</span></button>
 	<%end%>
-	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") || (@status.present? && @status.status == "DC REPRINT")%>
+	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amment Record</span></button>
 
 	<%end%>

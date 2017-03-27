@@ -524,7 +524,7 @@ class Person < CouchRest::Model::Base
   property :mother_current_village, String
   property :mother_current_ta, String
   property :mother_current_district, String
-  property :mother_home_village_id, String
+  property :mother_home_village, String
   property :mother_home_ta_id, String
   property :mother_home_district_id, String
   property :mother_home_country_id, String

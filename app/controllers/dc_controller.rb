@@ -378,7 +378,7 @@ class DcController < ApplicationController
                                                           [params[:id],"RESOLVE DUPLICATE"],
                                                           [params[:id],"DC REPRINT"],
                                                           [params[:id],"DC AMEND"]]).each
-      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
+      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
       	#@person.change_status("DC AMEND")
 		@section ="Amendments"
 		
@@ -399,9 +399,10 @@ class DcController < ApplicationController
 	end
 
 	def amend_field
+		
 		person = Person.find(params[:id])
-		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMENDMENT"]).first
-		if amendment_audit
+		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
+		if amendment_audit.present?
 			param_keys = params[:person].keys
 			hash = amendment_audit.change_log
 			param_keys.each do |key|
@@ -428,7 +429,6 @@ class DcController < ApplicationController
 			param_keys.each do |key|
 				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
 			end
-
 			amendment_audit.save
 		end
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
@@ -448,7 +448,7 @@ class DcController < ApplicationController
 			person.update_attributes({key => amendment_audit.change_log[key][0]})
 		end
 		#person.save
-
+ 
 		amendment_audit.reason = "DC Amendment : #{params[:reason]}"
 		amendment_audit.level ="Person"
 		amendment_audit.save
