@@ -438,6 +438,7 @@ class Person < CouchRest::Model::Base
   property :place_of_death_district_id, String
   property :place_of_death_district, String
   property :place_of_death_country, String
+  property :place_of_death_foreign, String
   property :place_of_death_foreign_state, String #State
   property :place_of_death_foreign_district, String #District
   property :place_of_death_foreign_village, String #Town / Village
@@ -505,6 +506,7 @@ class Person < CouchRest::Model::Base
   property :registration_type, String, :default => "Natural Death" # Unnatural Death | Unclaimed bodies | Missing Persons | Death abroad
   property :court_order, String, :default => "No"
   property :police_report, String, :default => "No"
+  property :commissioner_documents, String, :default => "No"
 
   #Person's mother properties
   #property :mother do
@@ -658,7 +660,7 @@ class Person < CouchRest::Model::Base
   property :position_of_certifier, String
   property :other_position_of_certifier, String
 
-  property :acknowledgement_of_receipt_date, Time
+  property :acknowledgement_of_receipt_date, Time, :default => Time.now
 
   #facility related information
   property :facility_code, String

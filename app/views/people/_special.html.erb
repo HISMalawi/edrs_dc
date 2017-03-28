@@ -3,12 +3,27 @@
     String.prototype.capitalize = function(lower) {
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
+    function addUnknow(field_id){
+        var value = __$('touchscreenInput'+tstCurrentPage).value;
+        if(value.length == 0){
+            setTimeout(function(){
+                __$(field_id).value = "Unknown"
+            },500);
+        }
+    }
 </script>
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" value="No">
+    <% if params[:registration_type].include? "Unclaimed bodies"%>
+        <section name="Police report">
+            <sub id="person_police_report_section" name="Police report attached">
+                <%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport('Unclaimed body')") %>
+            </sub>
+        </section>
+    <%end%>
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
@@ -19,13 +34,13 @@
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",
-                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName('person',1)",:optional=> true) rescue "" %>
+                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName('person',1);addUnknow('person_last_name')",:optional=> true) rescue "" %>
 
                 <%= (f.text_field :first_name,
                 				  :helpText => "First name",
                 				  :allowFreeText =>true,  
                 				  :ajaxURL => "/get_first_names?search=",
-                				  :tt_onUnLoad=>"validateName('person',2)",
+                				  :tt_onUnLoad=>"validateName('person',2);addUnknow('person_first_name')",
                 				  :optional=> true) rescue "" %>
 
                 <%= (f.text_field :middle_name, 
@@ -123,7 +138,7 @@
              
             </sub>
 
-  			<% render :partial => "physical_address" %>
+  			<%= render :partial => "special_physical_address" %>
 
             <%= render :partial => "home_address" %>
 
@@ -270,7 +285,7 @@
             </sub>
     </section>
 
- 	<% if site_type == "dc" %>
+ 	<% if site_type == "dc" && false%>
 
     <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">

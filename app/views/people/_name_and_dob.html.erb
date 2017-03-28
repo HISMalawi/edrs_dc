@@ -28,10 +28,13 @@
                           :validationRule=>"^[a-zA-Z0-9]{8}$",
                           :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
-                <%= text_field_tag "person[nationality]",nil , {
+                <% if params[:registration_type]=='Deaths Abroad'%>
+                      <input type="hidden" name="person[nationality]" id="person_nationality" value="Malawian">
+                <%else%>
+                      <%= text_field_tag "person[nationality]",nil , {
                           :helpText => "Nationality <i style='color: red'>*</i>",
                           :ajaxURL => "/nationalities?search_string="} %>
-
+                <%end%>
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
                           :helpText =>"Sex <i style='color: red'>*</i>",
                           :tt_requireNextClick => false) %>

@@ -12,9 +12,9 @@
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration" value="No">
   <input type="hidden" name="person[potential_duplicate]" id="potential_duplicate" condition="false">
 	<% if params[:registration_type].include? "Missing"%>
-		<section name="Court Order">
-			<sub id="person_court_order_section" name="Court order attached">
-				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Court order attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"courtOrder()") %>
+		<section name="Proof of reported missing">
+			<sub id="person_court_order_section" name="Documents attached">
+				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Court order  or relevant documents attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"courtOrder()") %>
 			</sub>
 		</section>
 	<%end%>

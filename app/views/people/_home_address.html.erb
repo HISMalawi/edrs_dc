@@ -1,8 +1,11 @@
 <sub id="home_address" name="Home address">
-
-          <%= text_field_tag "person[home_country]", @person[:home_country], {
-            	 					:helpText => "Home Country (<i>Home address</i>)  <i style='color: red'>*</i>",
-            	 					:ajaxURL => "/countries?search_string="} %>
+          <% if params[:registration_type]=='Deaths Abroad'%>
+              <input type="hidden" name="person[home_country]" id="person_home_country" value="Malawi">
+          <%else%>
+              <%= text_field_tag "person[home_country]", @person[:home_country], {
+                          :helpText => "Home Country (<i>Home address</i>)  <i style='color: red'>*</i>",
+                          :ajaxURL => "/countries?search_string="} %>
+          <%end%>
 
    				<%= text_field_tag "person[home_district]", @person[:home_district], {
    									:helpText => "District (<i>Home address</i>)  <i style='color: red'>*</i>",

@@ -9,13 +9,13 @@
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
-	<% if params[:registration_type].include? "Missing" || true%>
-		<section name="Court Order">
-			<sub id="person_court_order_section" name="Court order attached">
-				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Court order attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"courtOrder()") %>
-			</sub>
-		</section>
-	<%end%>
+	<% if params[:registration_type].include? "Deaths Abroad"%>
+        <section name="Commissioner's documents">
+            <sub id="person_commissioner_documents_section" name="Documents attached">
+                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Commissioner's documents attached?",:tt_requireNextClick => false) %>
+            </sub>
+        </section>
+    <%end%>
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
@@ -36,14 +36,30 @@
                     					:helpText => "Place of Death Country <i style='color: red'>*</i>" , 
                     					:ajaxURL => "/countries?exclude=Malawi&search_string="} %> 
 
-               <input type="hidden" id="person_place_of_death" name="person[place_of_death]" value="Other">
+                <%= select_tag("person[place_of_death_foreign]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death_foreign]),
+                                        :id=> "person_place_of_death_foreign",
+                                        :helpText =>"Place of Death <i style='color: red'>*</i>",
+                                        :tt_requireNextClick => false,
+                                        :tt_pageStyleClass =>"NoKeyboard") %>
 
-               <%= (f.text_field :other_place_of_death,
-                						:helpText => "Place of death details <i style='color: red'>*</i>") rescue "" %>                
+                <%= text_field_tag "person[place_of_death_foreign_hospital]", @person[:place_of_death_foreign_hospital], {
+                  :helpText => "Hospital of death (<i>Foreign  place of death</i>)", :condition => "__$('person_place_of_death_foreign').value == 'Health Facility'"} %>
+
+                <%= text_field_tag "person[place_of_death_foreign_state]", @person[:place_of_death_foreign_state], {
+                  :helpText => "State (<i>Foreign  place of death</i>)",
+                  :optional => true} %>
+
+                <%= text_field_tag "person[place_of_death_foreign_district]", @person[:place_of_death_foreign_district], {
+                                    :helpText => "District (<i>Foreign place of death</i>)",
+                                    :optional => true} %>
+
+                <%= text_field_tag "person[place_of_death_foreign_village]", @person[:place_of_death_foreign_village], {
+                                    :helpText => "Village/Town (<i>Foreign place of death</i>)",
+                                    :optional => true} %>             
              
             </sub>
 
-            <% render :partial => "physical_address" %>
+            <%= render :partial => "physical_address" %>
 
             <%= render :partial => "home_address" %>
 
@@ -58,46 +74,85 @@
 
   	<%= render :partial => "parents_details" %>
 
-    <%= render :partial => "informant" %>
+    <section name="Informant's details">
+            <sub id="info_details" name="Details and designation">
 
-    <% if site_type == "dc" %>
-    <section name="Verification">
-            <sub id="village_headman_verification" name="Village head verification">
-                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
-                					:helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
+                 <%= (f.text_field :informant_last_name, 
+                                  :helpText => "Informant's  Surname",
+                                  :allowFreeText =>true,
+                                  :ajaxURL => "/get_last_names?search=",
+                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
 
-                <%= (f.text_field :headman_verification_date,
-                				  :helpText => "Date Village headman/Block leader signed",
-                                  :field_type => "date",
-                                  :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
-                                  :tt_onLoad =>"removeUnknown()") rescue "" %>
+                <%= (f.text_field :informant_first_name,
+                                  :helpText => "Informant's First Name",
+                                  :allowFreeText =>true,
+                                  :ajaxURL => "/get_first_names?search=",
+                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :informant_middle_name, 
+                                  :helpText => "Informant's Other Names",
+                                  :allowFreeText =>true,
+                                  :ajaxURL => "/get_first_names?search=",
+                                  :optional => :true,
+                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
+
+                <%= (f.text_field :informant_id_number, 
+                                  :helpText => "Informant's ID No.",
+                                  :optional => :true,
+                                  :allowFreeText =>true,
+                                  :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                                  :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
+
+                <input id="person_informant_designation"
+                   name="person[informant_designation]"
+                  helpText = "Informant's Designation <i style='color: red'>*</i>"
+                   value="<%= @person[:informant_designation] rescue nil %>" />
+
+                 <%= text_field_tag "person[informant_office_name]",nil , {
+                        :name => "barcode",
+                        :helpText=> "Informant's office name <i style='color: red'>*</i>"} %>
+
+                 <%= text_field_tag "person[informant_office_address]",nil , {
+                        :name => "barcode",
+                        :placeholder => "e.g P.O. Box 200 Lilongwe",
+                        :helpText=> "Informant's office address"} %>
+
+                 <%= (f.text_field :informant_phone_number,
+                                :helpText => "Informant Telephone Number",
+                                :field_type =>"number",
+                                :tt_pageStyleClass => "Numeric NumbersWithUnknown",
+                                :tt_onLoad => "showPhoneSummary()",
+                                :optional => :true) rescue "" %>
+                 <%= text_field_tag "person[informant_current_country]", nil, {
+                        :helpText => "Country (<i>Informant's address</i>)<i style='color: red'>*</i>",
+                        :ajaxURL => "/countries?special=true&search_string="} %>
+                <%= text_field_tag "person[informant_foreign_state]", nil, {
+                  :helpText => "State (<i>Informant foreign address</i>)",
+                  :optional => true,
+                  :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
+
+               <%= text_field_tag "person[informant_foreign_district]", nil, {
+                  :helpText => "District (<i>Informant foreign address</i>)",
+                  :optional => true,
+                  :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[informant_foreign_village]", nil, {
+                        :helpText => "Village/Town (<i>Informant foreign address</i>)",
+                        :optional => true,
+                        :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
             </sub>
-            <sub id="church_verification" name="Church verification">
-                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
-                		:helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
+            <sub id="Informant verification" name="Verification">
+                <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
+                                :helpText =>"Informant Signed?") %>
 
-                <%= (f.text_field :church_verification_date,
-                				:helpText => "Date Senior member of village/Religious institution signed",
-		                        :field_type => "date",
-		                        :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
-		                        :tt_onLoad =>"removeUnknown()") rescue "" %>
+                <%= (f.text_field :informant_signature_date,
+                                    :helpText => "Date Informant signed",
+                                    :condition => "__$('person_informant_signed').value.trim().toLowerCase() == 'yes'",
+                                    :field_type => "date",
+                                    :tt_onLoad =>"removeUnknown()",
+                                    :tt_onUnLoad => "validateDateInformant()") rescue "" %>
             </sub>
     </section>
-    <% end %>
-
-    <% if false %>
-
-    <section name="Acknowledgement of Receipt">
-        	<sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
-        		<%= (f.text_field :acknowledgement_of_receipt_date,
-        						  :helpText => "Acknowledgement of receipt date",
-                                  :field_type => "date",
-                                  :tt_onLoad =>"removeUnknown()") rescue "" %>
-        	</sub>
-    </section>
-
-
-    <% end %>
     <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false">
 
     <section name="Captured data">

@@ -1524,15 +1524,16 @@
 
 		}
 		function checkForDuplicate(){
-
+				var place_of_death = (__$("person_place_of_death") && __$("person_place_of_death").value? __$("person_place_of_death").value : "" );
+				place_of_death = (__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value? __$("person_place_of_death_foreign").value : place_of_death);	
 				var data = {
-								first_name    : __$("person_first_name").value,
-								last_name 	  : __$("person_last_name").value,
-								gender 		  : __$("person_gender").value,
-								birthdate 	  : __$("person_birthdate").value,
-								date_of_death : __$("person_date_of_death").value,
-								place_of_death: __$("person_place_of_death").value,
-								informant_last_name: __$("person_informant_last_name").value,
+								first_name    		: __$("person_first_name").value,
+								last_name 	  		: __$("person_last_name").value,
+								gender 		  		: __$("person_gender").value,
+								birthdate 	  		: __$("person_birthdate").value,
+								date_of_death 		: __$("person_date_of_death").value,
+								place_of_death 		: place_of_death,
+								informant_last_name : __$("person_informant_last_name").value,
 								informant_first_name: __$("person_informant_first_name").value
 				}
 				//console.log(data)
@@ -1861,10 +1862,10 @@
 			}
 		}
 
-		function policeReport(){
+		function policeReport(registration_type){
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
-					confirmYesNo("Registering Unnatural death requires a police report",function(){cancelForm()},null,30000);
+					confirmYesNo("Registering "+(registration_type ? registration_type : "Unnatural death")+" requires a police report",function(){cancelForm()},null,30000);
 					/*setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 					},100);*/

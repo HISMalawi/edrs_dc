@@ -229,14 +229,23 @@
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
 								td.style.borderBottom= "1px solid black";
-								if(data[i].place_of_death.trim().toLowerCase().match("facility")){
+								if(data[i].place_of_death && data[i].place_of_death.trim().toLowerCase().match("facility")){
 									td.innerHTML = data[i].hospital_of_death;
-								}else if(data[i].place_of_death =="Other"){
+								}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim().toLowerCase().match("facility")){
+									td.innerHTML = data[i].place_of_death_foreign_hospital
+								}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim() !="facility"){
+									td.innerHTML = (data[i].place_of_death_foreign_state ? data[i].place_of_death_foreign_state : "") +" " 
+									+ (data[i].place_of_death_foreign_district ? data[i].place_of_death_foreign_district : "" ) + " "+ 
+									 (data[i].place_of_death_foreign_village ? data[i].place_of_death_foreign_village : "");
+
+								}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
 									td.innerHTML = data[i].other_place_of_death;
 
-								}else if(data[i].place_of_death =="Home"){
+								}else if(data[i].place_of_death  && data[i].place_of_death =="Home"){
 									td.innerHTML = data[i].place_of_death_district +" " + data[i].place_of_death_ta + " "+  data[i].place_of_death_village;
+
 								}
+
 								tr.appendChild(td);
 
 								var td = document.createElement("td");

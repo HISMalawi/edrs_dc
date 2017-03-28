@@ -8,6 +8,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	property :district_code, String
 	property :facility_code, String
 	property :voided, TrueClass, :default => false
+	property :reprint, TrueClass, :default => false
 	property :creator, String
 
 	timestamps!
@@ -45,6 +46,12 @@ class PersonRecordStatus < CouchRest::Model::Base
 	    view :by_marked_for_approval,
 	    		:map =>"function(doc){
 		    			   if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false && doc['status']=='MARKED APPROVAL'){
+		                    	emit(doc['status'], 1);
+		                  	}
+	    			   }"
+	    view :by_amend_or_reprint,
+	    		:map =>"function(doc){
+		    			   if (doc['type'] == 'PersonRecordStatus' && doc['reprint'] == true){
 		                    	emit(doc['status'], 1);
 		                  	}
 	    			   }"
