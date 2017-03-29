@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
       return false      
     end
 
-    if person.place_of_death.blank?
+    if person.place_of_death.blank? ||  person.place_of_death_foreign.blank?
       return false      
     end
 

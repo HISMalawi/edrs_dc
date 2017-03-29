@@ -274,14 +274,23 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Health Facility";
+		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Health Facility"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Health Facility";
+		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Health Facility"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Health Facility";
+		        }else{
+		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Health Facility";
+		        }
+		        
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.colSpan ="9";
 		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =(__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "");
+		        td.innerHTML =
+		        var hospital = (__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "");
+		        hospital =(__$("place_of_death_foreign_hospital") && __$("place_of_death_foreign_hospital").value ? __$('place_of_death_foreign_hospital').value : hospital);
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -379,7 +388,7 @@
 		        td.style.borderBottom = "1px solid black";
 		        td.innerHTML = "Physical address";
 		        tr.appendChild(td);
-				if(__$('person_current_country').value.trim().toLowerCase()=="malawi"){
+				if(__$('person_current_country') && __$('person_current_country').value.trim().toLowerCase()=="malawi"){
 			        var td = document.createElement("td");
 			        td.style.border = "none";
 			        td.innerHTML = "District :";
@@ -392,7 +401,7 @@
 			        td.style.border = "none";
 			        td.style.textAlign ="left"
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML =__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "";
+			        td.innerHTML =(__$("person_current_district") && __$("person_current_district").value ? __$('person_current_district').value : "");
 			        tr.appendChild(td);
 
 			        var td = document.createElement("td");
@@ -506,7 +515,7 @@
 		        td.innerHTML = "Home address";
 		        tr.appendChild(td);
 
-				if(__$('person_home_country').value.trim().toLowerCase()=='malawi'){
+				if(__$('person_home_country') &&__$('person_home_country').value.trim().toLowerCase()=='malawi'){
 					var td = document.createElement("td");
 			        td.style.border = "none";
 			        td.style.fontWeight = "bold";
@@ -636,7 +645,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		         td.style.borderBottom = "1px solid black";
-		        td.innerHTML =__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "N/A";
+		        td.innerHTML =(__$("person_died_while_pregnant") && __$("person_died_while_pregnant").value ? __$('person_died_while_pregnant').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -895,7 +904,7 @@
 		        td.innerHTML = "Address";
 		        tr.appendChild(td);
 
-				if(__$('person_informant_current_country').value.trim().toLowerCase()=="malawi"){	        	
+				if(__$('person_informant_current_country') && __$('person_informant_current_country').value.trim().toLowerCase()=="malawi"){	        	
 					var td = document.createElement("td");
 			        td.style.fontWeight = "bold";
 			        td.innerHTML = "District : ";
