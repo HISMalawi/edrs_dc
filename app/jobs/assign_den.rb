@@ -27,13 +27,25 @@ class AssignDen
 
         person.update_attributes({:approved =>"Yes",:approved_at=> (Time.now)})
 
+        person.reload
+
         PersonIdentifier.assign_den(person, record.creator)
 
-        Audit.create(record_id: record.id,
+        Audit.create(record_id: record.person_record_id,
                        audit_type: "Audit",
                        user_id: record.creator,
                        level: "Person",
                        reason: "Approved record")
+
+        stat = Statistic.by_person_record_id.key(person.id).first
+
+        if stat.present?
+           stat.update_attributes({:date_doc_approved => record.person.approved_at.to_time})
+        else
+           Statistic.create({:person_record_id => person.id, 
+                              :date_doc_created => person.created_at.to_time,
+                              :date_doc_approved => person.approved_at.to_tme})
+        end
 
         #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
 

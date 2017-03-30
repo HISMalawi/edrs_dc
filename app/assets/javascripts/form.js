@@ -288,9 +288,17 @@
 		        td.style.border = "none";
 		        td.colSpan ="9";
 		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =
-		        var hospital = (__$("person_hospital_of_death") && __$("person_hospital_of_death").value ? __$('person_hospital_of_death').value : "");
-		        hospital =(__$("place_of_death_foreign_hospital") && __$("place_of_death_foreign_hospital").value ? __$('place_of_death_foreign_hospital').value : hospital);
+		        
+		        var hospital_of_death = "";
+
+		        if(__$("person_hospital_of_death") && __$("person_hospital_of_death").value){
+		        	hospital_of_death = __$('person_hospital_of_death').value;
+		        }
+		        if(__$("place_of_death_foreign_hospital") && __$("place_of_death_foreign_hospital").value){
+		        	hospital_of_death =  __$('place_of_death_foreign_hospital').value ;
+		        }
+		        td.innerHTML = hospital_of_death;
+		        
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -1060,7 +1068,7 @@
 		        var td = document.createElement("td");
 		        td.style.borderBottom = "1px solid black";
 		        td.colSpan= "10"
-		        td.innerHTML = __$("person_informant_signed") && __$("person_informant_signed").value ? __$('person_informant_signed').value : "No";
+		        td.innerHTML = (__$("person_informant_signed") && __$("person_informant_signed").value ? __$('person_informant_signed').value : "No");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");

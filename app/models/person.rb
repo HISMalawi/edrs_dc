@@ -32,7 +32,7 @@ class Person < CouchRest::Model::Base
 
   before_save :set_facility_code,:set_district_code
 
-  after_create :create_status
+  after_create :create_status,:create_stat
 
   cattr_accessor :duplicate
   
@@ -98,6 +98,13 @@ class Person < CouchRest::Model::Base
 
     end
     
+  end
+
+  def create_stat
+    stat = Statistic.by_person_record_id.key(self.id).first
+    if stat.blank?
+        Statistic.create({:person_record_id => self.id, :date_doc_created => self.created_at.to_time})
+    end
   end
 
   #Person methods
