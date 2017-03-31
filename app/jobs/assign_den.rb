@@ -25,9 +25,10 @@ class AssignDen
                                   :district_code => CONFIG['district_code'],
                                   :creator => record.creator})
 
-        person.update_attributes({:approved =>"Yes",:approved_at=> (Time.now)})
+        person.approved = "Yes"
+        person.approved_at = Time.now
 
-        person.reload
+        person.save
 
         PersonIdentifier.assign_den(person, record.creator)
 
@@ -42,9 +43,11 @@ class AssignDen
         if stat.present?
            stat.update_attributes({:date_doc_approved => record.person.approved_at.to_time})
         else
-           Statistic.create({:person_record_id => person.id, 
-                              :date_doc_created => person.created_at.to_time,
-                              :date_doc_approved => person.approved_at.to_tme})
+          stat = Statistic.new
+          stat.person_record_id = person.id
+          stat.date_doc_created = person.created_at.to_time
+          stat.date_doc_approved = person.approved_at.to_time
+          stat.save
         end
 
         #checkCreatedSync(record.id, "HQ OPEN", record.request_status)

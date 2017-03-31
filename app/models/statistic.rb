@@ -10,7 +10,7 @@ class Statistic < CouchRest::Model::Base
 		view :by_date_doc_approved
 		view :by_turn_around_time,
 			  :map =>"function(doc){
-		    			   if (doc['type'] == 'Statistic' && doc['date_approved'] != null){
+		    			   if (doc['type'] == 'Statistic' && doc['date_doc_approved'] != null){
 		    			   		var date_created = new Date(doc.date_doc_created);
 		    			   		var date_approved = new Date(doc.date_doc_approved);
 		    			   		var seconds_difference = (date_approved.getTime()-date_created.getTime())/1000;
@@ -19,7 +19,7 @@ class Statistic < CouchRest::Model::Base
 	    			   }"
 	   	view :by_district_code_and_turn_around_time,
 			  :map =>"function(doc){
-		    			   if (doc['type'] == 'Statistic' && doc['date_approved'] != null){
+		    			   if (doc['type'] == 'Statistic' && doc['date_doc_approved'] != null){
 		    			   		var date_created = new Date(doc.date_doc_created);
 		    			   		var date_approved = new Date(doc.date_doc_approved);
 		    			   		var seconds_difference = (date_approved.getTime()-date_created.getTime())/1000;
