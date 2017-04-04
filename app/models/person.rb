@@ -32,7 +32,7 @@ class Person < CouchRest::Model::Base
 
   before_save :set_facility_code,:set_district_code
 
-  after_create :create_status,:create_stat
+  #after_create :create_status,:create_stat
 
   cattr_accessor :duplicate
   
