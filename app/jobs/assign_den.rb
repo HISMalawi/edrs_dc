@@ -51,8 +51,9 @@ class AssignDen
         end
 
         #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
-
-        SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
+        if Rails.env = 'development'
+          SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
+        end
     end rescue (AssignDen.perform_in(job_interval))
 
     AssignDen.perform_in(job_interval)

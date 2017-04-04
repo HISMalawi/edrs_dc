@@ -1,3 +1,4 @@
+Person.count
 @settings = SETTINGS
 district_code = CONFIG['district_code']
 person_count = Person.count

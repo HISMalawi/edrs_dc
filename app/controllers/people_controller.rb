@@ -116,6 +116,33 @@ class PeopleController < ApplicationController
         
       end
 
+      #create status
+       if Person.duplicate.nil?
+          PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => "NEW",
+                                      :district_code =>  person.district_code,
+                                      :created_by => User.current_user.id})
+        else
+          
+          change_log = [{:duplicates => Person.duplicate.to_s}]
+
+          Audit.create({
+                          :record_id  => person.id.to_s,
+                          :audit_type => "POTENTIAL DUPLICATE",
+                          :reason     => "Record is a potential",
+                          :change_log => change_log
+          })
+          PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => "DC POTENTIAL DUPLICATE",
+                                      :district_code => person.district_code,
+                                      :created_by => User.current_user.id})
+
+          Person.duplicate = nil
+
+        end
+
       Sync.create({
                     :person_record_id => person.id.to_s,
                     :record_status => "NEW"

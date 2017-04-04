@@ -8,6 +8,7 @@ class Statistic < CouchRest::Model::Base
 		view :by_person_record_id
 		view :by_date_doc_created
 		view :by_date_doc_approved
+		view :by_district_code_and_date_doc_created
 		view :by_turn_around_time,
 			  :map =>"function(doc){
 		    			   if (doc['type'] == 'Statistic' && doc['date_doc_approved'] != null){

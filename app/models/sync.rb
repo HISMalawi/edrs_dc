@@ -32,6 +32,7 @@ class Sync < CouchRest::Model::Base
 	                }"
 		filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 		filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
+		filter :stats_sync, "function(doc,req) {return doc.district_code != null}"
 
 	end
 
