@@ -306,7 +306,14 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Home";
+		        //td.innerHTML = "Home";
+		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Home"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Home";
+		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Home"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Home";
+		        }else{
+		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Home";
+		        }
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -371,7 +378,14 @@
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Other";
+		        //td.innerHTML = "Other";
+		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Other"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Other";
+		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Other"){
+		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Other";
+		        }else{
+		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Other";
+		        }
 		        td.style.borderBottom = "1px solid black";
 		        tr.appendChild(td);
 

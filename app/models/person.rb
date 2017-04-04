@@ -3,27 +3,19 @@ class Person < CouchRest::Model::Base
   #use_database "death"
 
   before_save NameCodes.new("first_name")
-
   before_save NameCodes.new("last_name")
-
   before_save NameCodes.new("middle_name")
 
   before_save NameCodes.new("mother_first_name")
-
   before_save NameCodes.new("mother_last_name")
-
   before_save NameCodes.new("mother_middle_name")
 
   before_save NameCodes.new("father_first_name")
-
   before_save NameCodes.new("father_last_name")
-
   before_save NameCodes.new("father_middle_name")
 
   before_save NameCodes.new("informant_first_name")
-
   before_save NameCodes.new("informant_last_name")
-
   before_save NameCodes.new("informant_middle_name")
 
   #after_initialize :decrypt_data
@@ -31,8 +23,8 @@ class Person < CouchRest::Model::Base
   #before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
-
-  #after_create :create_status,:create_stat
+  #after_create :create_status
+  after_create :create_stat
 
   cattr_accessor :duplicate
   
