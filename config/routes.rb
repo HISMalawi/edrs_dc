@@ -56,6 +56,8 @@ Rails.application.routes.draw do
 
   root 'application#index'
 
+  ########################################## Routes for people controller####################################################
+
   get '/people/' => "people#index"
 
   get '/dc/' => "dc#index"
@@ -120,7 +122,15 @@ Rails.application.routes.draw do
 
   get "/search_barcode" => "people#search_barcode"
 
+  get "/global_phone_validation" => "people#global_phone_validation"
 
+  get "/people/sync" => "people#view_sync"
+
+  get "/people/query_dc_sync" =>"people#query_dc_sync"
+
+##############################################################################################################################################
+
+################################ Routes for DC controller ####################################################################################
 
   get "/check_completeness/:id" =>"dc#check_completeness"
 
@@ -150,54 +160,87 @@ Rails.application.routes.draw do
 
   get "/dc/voided" => "dc#voided"
 
-
   get "/dc/manage_duplicates" => "dc#manage_duplicates"
+
   get "/dc/potential_duplicates" => "dc#potential_duplicates"
+
   get "/dc/show_duplicate/:id" =>"dc#show_duplicate"
+
   get "/confirm_record_not_duplicate_comment/:id/:audit_id" => "dc#confirm_record_not_duplicate_comment"
+
   get "/confirm_duplicate_comment/:id/:audit_id" => "dc#confirm_duplicate_comment"
+
   post "/confirm_duplicate" => "dc#confirm_duplicate"
+
   post "/confirm_not_duplicate" => "dc#confirm_not_duplicate"
+
   get  "/dc/confirmed_duplicated" => "dc#confirmed_duplicated"
 
   get "/dc/new_burial_report/:id" => "dc#new_burial_report"
+
   post "/create_burial_report" => "dc#create_burial_report"
 
   get "/dc/pending_cases" => "dc#pending_cases"
+
   get "/dc/add_pending_comment/:id" => "dc#add_pending_comment"
+
   post "/mark_as_pending" => "dc#mark_as_pending"
 
-
   get "/dc/add_reprint_comment/:id" => "dc#add_reprint_comment"
+
   post "/mark_for_reprint" => "dc#mark_for_reprint"
+
   get "/dc/reprint_requests" => "dc#reprint_requests"
+
   get "/dc/approve_reprint/:id" => "dc#approve_reprint"
 
   get "/dc/manage_requests" => "dc#manage_requests"
+
   get "/dc/amendment_requests" => "dc#amendment_requests"
+
   get "/dc/ammendment/:id" => "dc#amendment"
+
   get "/dc/amendment_edit_field/:id/:field" => "dc#amendment_edit_field"
+
   post "/amend_field" => "dc#amend_field"
+
   get "/dc/add_amendment_comment/:id" => "dc#add_amendment_comment"
+
   post "/proceed_amend" => "dc#proceed_amend"
 
-  get "/global_phone_validation" => "people#global_phone_validation"
+  get "/dc/sync" => "dc#sync"
 
+  get "/dc/query_hq_sync" =>"dc#query_hq_sync"
+
+####################################################################################################################################################################################
+
+############################# Routes Users and Logins ####################################################################################
   get "/logout" => "logins#logout"
+
   get "/change_password" => "users#change_password"
+
   get "/login" => "logins#login"
+
   get "/view_users" => "users#view"
+
   get "/edit_account" => "users#edit_account"
+
   get "/query_users" => "users#query"
+
   get "/search_user" => "users#search"
 
-  get "/dc/sync" => "dc#sync"
-  get "/dc/query_hq_sync" =>"dc#query_hq_sync"
-  get "/people/sync" => "people#view_sync"
-  get "/people/query_dc_sync" =>"people#query_dc_sync"
+######################################################################################################################################################################################
 
+################################ Routes for Reports ###################################################################################################################################
   get "/reports" => "reports#index"
 
+  get "/death_reports" => "reports#death_reports"
+
+  get "/report_data/:status" => "reports#report_data"
+
+  get "/pick_dates" => "reports#pick_dates"
+
+######################################################################################################################################################################################
   resources :users
 
   resource :login do

@@ -274,14 +274,7 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.style.fontWeight = "bold";
-		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Health Facility"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Health Facility";
-		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Health Facility"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Health Facility";
-		        }else{
-		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Health Facility";
-		        }
-		        
+		       td.innerHTML = "<input type='radio' name='place' id='facility'>Health Facility"
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
@@ -306,86 +299,108 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.style.fontWeight = "bold";
-		        //td.innerHTML = "Home";
-		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Home"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Home";
-		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Home"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Home";
+		        td.innerHTML = "<input type='radio' name='place' id='home'>Home";
+		        tr.appendChild(td);
+
+		        //start
+		        if(__$('person_place_of_death_country') && __$('person_place_of_death_country').value != "Malawi"){
+		        	var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2"
+			        td.innerHTML = "Country :";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = __$('person_place_of_death_country').value
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = "Details:";
+			        td.colSpan ="2";
+			        tr.appendChild(td);
+
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.colSpan ="2"
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML = (__$('person_place_of_death_foreign_hospital') && __$('person_place_of_death_foreign_hospital').value ? __$('person_place_of_death_foreign_hospital').value : "") +" "
+			        			   +(__$('person_place_of_death_foreign_state') && __$('person_place_of_death_foreign_state').value ? __$('person_place_of_death_foreign_state').value : "")+" "
+			        			   +(__$('person_place_of_death_foreign_district') && __$('person_place_of_death_foreign_district').value ? __$('person_place_of_death_foreign_district').value : "")+" "
+			        			   +(__$('person_place_of_death_foreign_village') && __$('person_place_of_death_foreign_village').value ? __$('person_place_of_death_foreign_village').value : "")
+			        tr.appendChild(td);
 		        }else{
-		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Home";
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			        td.innerHTML = "District:";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.fontWeight = "bold";
-		        td.style.borderBottom = "1px solid black";
-		        td.colSpan ="2";
-		        td.innerHTML = "District :";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.innerHTML =(__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "");
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        td.innerHTML =(__$("person_place_of_death").value=="Home" &&__$("person_place_of_death_district").value  ? __$('person_place_of_death_district').value : "");
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "TA:";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "TA :";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        if(__$('person_place_of_death_ta')){
+			        	if(__$("person_place_of_death_ta").value == "Other"){
+			        		td.innerHTML =__$("person_other_place_of_death_ta").value;
+			        	}else{
+			        		td.innerHTML =__$("person_place_of_death_ta").value;
+			        	}
+			        }
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        if(__$('person_place_of_death_ta')){
-		        	if(__$("person_place_of_death_ta").value == "Other"){
-		        		td.innerHTML =__$("person_other_place_of_death_ta").value;
-		        	}else{
-		        		td.innerHTML =__$("person_place_of_death_ta").value;
-		        	}
-		        }
-		        tr.appendChild(td);
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.fontWeight = "bold";
+			        td.innerHTML = "Village:";
+			        td.colSpan ="2";
+			        td.style.borderBottom = "1px solid black";
+			        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.fontWeight = "bold";
-		        td.innerHTML = "Village :";
-		        td.colSpan ="2";
-		        td.style.borderBottom = "1px solid black";
-		        tr.appendChild(td);
-
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.style.textAlign ="left"
-		        td.style.borderBottom = "1px solid black";
-		        td.colSpan ="2";
-		         if(__$('person_place_of_death_village')){
-		        	if(__$("person_place_of_death_village").value == "Other"){
-		        		td.innerHTML =__$("person_other_place_of_death_village").value;
-		        	}else{
-		        		td.innerHTML =__$("person_place_of_death_village").value;
-		        	}
-		        }
-		        tr.appendChild(td);
-
-
+			        var td = document.createElement("td");
+			        td.style.border = "none";
+			        td.style.textAlign ="left"
+			        td.style.borderBottom = "1px solid black";
+			        td.colSpan ="2";
+			         if(__$('person_place_of_death_village')){
+			        	if(__$("person_place_of_death_village").value == "Other"){
+			        		td.innerHTML =__$("person_other_place_of_death_village").value;
+			        	}else{
+			        		td.innerHTML =__$("person_place_of_death_village").value;
+			        	}
+			        }
+			        tr.appendChild(td);
+			    }
+		        //end
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
 		        var td = document.createElement("td");
 		        td.style.fontWeight = "bold";
-		        //td.innerHTML = "Other";
-		        if(__$('person_place_of_death') && __$('person_place_of_death').value == "Other"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Other";
-		        }else if(__$('place_of_death_foreign') && __$('place_of_death_foreign').value == "Other"){
-		        	td.innerHTML = "<img style='width:1em;height:1em' src='/assets/tick.png'>Other";
-		        }else{
-		        	td.innerHTML = "<span style='width:1em;height:1em;border:2px solid green'></span>Other";
-		        }
+		        td.innerHTML = "<input type='radio' name='place' id='other'>Other";
 		        td.style.borderBottom = "1px solid black";
 		        tr.appendChild(td);
 
@@ -470,7 +485,7 @@
 			    }else{
 			        var td = document.createElement("td");
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML = "Country : ";
+			        td.innerHTML = "Country: ";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
 			        tr.appendChild(td);
@@ -482,7 +497,7 @@
 			        tr.appendChild(td);
 
 			        var td = document.createElement("td");
-			        td.innerHTML = "State : ";
+			        td.innerHTML = "State: ";
 			        td.style.textAlign = "right";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
@@ -496,7 +511,7 @@
 
 			        var td = document.createElement("td");
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML = "District : ";
+			        td.innerHTML = "District: ";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
 			        tr.appendChild(td);
@@ -508,7 +523,7 @@
 			        tr.appendChild(td);
 
 			        var td = document.createElement("td");
-			        td.innerHTML = "Village : ";
+			        td.innerHTML = "Village: ";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
@@ -541,7 +556,7 @@
 					var td = document.createElement("td");
 			        td.style.border = "none";
 			        td.style.fontWeight = "bold";
-			        td.innerHTML = "District :";
+			        td.innerHTML = "District:";
 			        td.colSpan ="2";
 			        td.style.borderBottom = "1px solid black";
 			        tr.appendChild(td);
@@ -556,7 +571,7 @@
 			        td.style.border = "none";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
-			        td.innerHTML = "TA :";
+			        td.innerHTML = "TA:";
 			        tr.appendChild(td);
 	
 			        var td = document.createElement("td");
@@ -576,7 +591,7 @@
 			        td.style.border = "none";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
-			        td.innerHTML = "Village :";
+			        td.innerHTML = "Village:";
 			        td.colSpan ="2";
 			        tr.appendChild(td);
 	
@@ -597,7 +612,7 @@
 
 			        var td = document.createElement("td");
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML = "Country : ";
+			        td.innerHTML = "Country: ";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
 			        tr.appendChild(td);
@@ -609,7 +624,7 @@
 			        tr.appendChild(td);
 
 			        var td = document.createElement("td");
-			        td.innerHTML = "State : ";
+			        td.innerHTML = "State: ";
 			        td.style.textAlign = "right";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
@@ -623,7 +638,7 @@
 
 			        var td = document.createElement("td");
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML = "District : ";
+			        td.innerHTML = "District: ";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
 			        tr.appendChild(td);
@@ -635,7 +650,7 @@
 			        tr.appendChild(td);
 
 			        var td = document.createElement("td");
-			        td.innerHTML = "Village : ";
+			        td.innerHTML = "Village: ";
 			        td.style.borderBottom = "1px solid black";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
@@ -975,7 +990,7 @@
 			    }else{
 					var td = document.createElement("td");
 			        td.style.borderBottom = "1px solid black";
-			        td.innerHTML = "Country : ";
+			        td.innerHTML = "Country:";
 			        td.style.fontWeight = "bold";
 			        td.style.textAlign = "right";
 			        tr.appendChild(td);
@@ -1184,6 +1199,27 @@
 
 		   	}
 
+		   	var place_of_death = (__$('person_place_of_death') && __$('person_place_of_death').value ? __$('person_place_of_death').value : "");
+		   	place_of_death = (__$('person_place_of_death_foreign') && __$('person_place_of_death_foreign').value ? __$('person_place_of_death_foreign').value : place_of_death);
+
+		   	if(place_of_death.trim() == 'Home'){
+		   		__$('home').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
+		   	if(place_of_death.trim().toLowerCase().match('facility')){
+		   		__$('facility').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
+		   	if(place_of_death.trim().toLowerCase().match('Other')){
+		   		__$('other').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
 		}
 		function setAjaxUrl(case_number){
 			switch(case_number) {

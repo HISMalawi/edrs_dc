@@ -162,10 +162,11 @@
 	
 					var table = __$("table_body");
 
+					table.innerHTML ="";
 
 					ajaxGETRequest(url+"?page="+page+"&size=8",function(data){
 
-								var data = JSON.parse(data);
+							var data = JSON.parse(data);
 
 							for(var i = 0 ; i < data.length ; i++){
 
@@ -179,7 +180,7 @@
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
 								td.style.borderBottom= "1px solid black";
-								td.innerHTML = i + 1;
+								td.innerHTML = (page - 1)* 8 + (i + 1);
 								tr.appendChild(td);
 
 

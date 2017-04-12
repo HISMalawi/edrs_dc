@@ -249,11 +249,8 @@
 								tr.appendChild(td);
 
 								var td = document.createElement("td");
-
 								td.style.borderRight= "1px solid black";
-
 								td.style.borderBottom= "1px solid black";
-
 								if(data[i].current_country){
 									if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
 										td.innerHTML =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;

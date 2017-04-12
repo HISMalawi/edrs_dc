@@ -489,7 +489,7 @@ class Person < CouchRest::Model::Base
   property :current_foreign_district, String
   property :current_foreign_village, String
   property :current_foreign_address, String
-  property :died_while_pregnant, String
+  property :died_while_pregnant, String, :default => "N/A"
   property :updated_by, String
   property :voided_by, String
   property :voided_date, Time

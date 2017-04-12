@@ -1,5 +1,33 @@
 <style type="text/css">
-		
+		input[type=radio].css-checkbox {
+			position:absolute; z-index:-1000; left:-1000px; overflow: hidden; clip: rect(0 0 0 0); height:1px; width:1px; margin:-1px; padding:0; border:0;
+		}
+
+		input[type=radio].css-checkbox + label.css-label {
+							padding-left:24px;
+							height:19px; 
+							display:inline-block;
+							line-height:19px;
+							background-repeat:no-repeat;
+							background-position: 0 0;
+							font-size:1.1em;
+							vertical-align:middle;
+							cursor:pointer;
+
+		}
+
+		input[type=radio].css-checkbox:checked + label.css-label {
+							background-position: 0 -19px;
+		}
+		label.css-label {
+				background-image:url(/assets/checkbox/checkbox1.png);
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				-khtml-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+		}
 		#table_container{
 
 				overflow-y: hidden;
@@ -33,6 +61,7 @@
 		.clickable{
 
 			font-weight: bold;
+			font-size:0.9em !important;
 		}
 		.clickable:hover{
 
@@ -237,45 +266,72 @@
 			<tr>
 				<td rowspan="4">8</td>
 				<td class="clickable" onclick="editField('place_of_death')" >Place of Death</td>
+			<%if @person.place_of_death.present? %>
 				<td colspan="9"><%= @person.place_of_death %></td>
+			<%else%>
+				<td colspan="9"><%= @person.place_of_death_foreign %>
+			<%end%>
 			</tr>
 			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" >Health Facility</td>
+				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
 			</tr>
 			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" >Home</td>
-				<td>Address</td>
-				<td class="clickable" onclick="editField('home_district')" >District</td>
+				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
+			<% if @person.place_of_death_country == 'Malawi'%>
+				<td class="clickable">Address</td>
+				<td class="clickable" onclick="editField('place_of_death_district')" >District</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
-				<td class="clickable" onclick="editField('home_district')">TA</td>
+				<td class="clickable" onclick="editField('place_of_death_ta')">TA</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
-				<td class="clickable" onclick="editField('home_district')" >Village</td>
+				<td class="clickable" onclick="editField('place_of_death_village')" >Village</td>
 				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
+			<%else%>
+				<td class="clickable" onclick="editField('place_of_death_country')" >Country</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country %></td>
+				<td class="clickable" onclick="editField('place_of_death_foreign_state')">State</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_foreign_state %></td>
+				<td class="clickable" onclick="editField('place_of_death_foreign_district')" >District</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_district  %></td>
+				<td class="clickable" onclick="editField('place_of_death_foreign_village')" >Town</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_village  %></td>
+			<% end %>
 			</tr>
 			<tr>
-				<td>Other</td>
+				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
 				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
 			</tr>
 			<tr>
 				<td>9</td>
+			<% if @person.current_country == "Malawi" %>
 				<td colspan="3" class="clickable" onclick="editField('current_district')">Physical residential address</td>
 				<td class="clickable" onclick="editField('current_district')" >District </td>
-				<td><%= @person_place_details['current_district'] %></td>
+				<td><%= @person.current_district%></td>
 				<td class="clickable" onclick="editField('current_ta')">TA</td>
-				<td><%= @person_place_details['current_ta'] %></td>
+				<td><%= @person.current_ta %></td>
 				<td class="clickable" onclick="editField('current_village')" >Village</td>
-				<td><%= @person_place_details['current_village'] %></td>
+				<td><%= @person.current_village %></td>
+			<%else%>
+				<td class="clickable" onclick="editField('current_district')">Physical address</td>
+				<td class="clickable" onclick="editField('current_country')" >Country</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_country %></td>
+				<td class="clickable" onclick="editField('current_foreign_state')">State</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_foreign_state %></td>
+				<td class="clickable" onclick="editField('current_foreign_district')" >District</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.current_foreign_district  %></td>
+				<td class="clickable" onclick="editField('current_foreign_village')" >Town</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.current_foreign_village  %></td>
+			<%end%>
 			</tr>
 			<tr>
 				<td>10</td>
 				<td colspan="3" class="clickable" onclick="editField('home_district')">Home address</td>
 				<td class="clickable" onclick="editField('home_district')" >District </td>
-				<td><%= @person_place_details['home_district'] %></td>
+				<td><%= @person.home_district %></td>
 				<td class="clickable" onclick="editField('home_ta')">TA</td>
-				<td><%= @person_place_details['home_ta'] %></td>
+				<td><%= @person.home_ta %></td>
 				<td class="clickable" onclick="editField('home_village')" >Village</td>
-				<td><%= @person_place_details['home_village'] %></td>
+				<td><%= @person.home_village %></td>
 			</tr>
 			<tr>
 				<td rowspan="2">11</td>
@@ -956,4 +1012,28 @@
 					clearInterval(removeBack);
 				}
 			},50);
+
+			var place_of_death = "<%= @person.place_of_death %>"
+			if (place_of_death.length == 0){
+				place_of_death ="<%= @person.place_of_death_foreign %>"
+			}
+
+		   	if(place_of_death.trim() == 'Home'){
+		   		__$('home').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
+		   	if(place_of_death.trim().toLowerCase().match('facility')){
+		   		__$('facility').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
+		   	if(place_of_death.trim().toLowerCase().match('Other')){
+		   		__$('other').checked = true
+		   		__$('home').setAttribute('disabled','disabled');
+		   		__$('facility').setAttribute('disabled','disabled')
+		   		__$('other').setAttribute('disabled','disabled')
+		   	}
 </script>
