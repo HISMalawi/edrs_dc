@@ -83,6 +83,10 @@
 				console.log(param);
 				url = "/search_by_fields?barcode="+param;
 			<%end%>
+		<%elsif params[:registration_type].present?%>
+				url = "/query_registration_type/<%=params[:registration_type]%>?"
+		<%elsif @special_case_print.present?%>
+				url = "/query_registration_type_and_printed?"
 		<%else%>
 				url ="/search_by_status?status=<%=@status%>"
 		<%end%>

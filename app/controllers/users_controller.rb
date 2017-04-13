@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+  class UsersController < ApplicationController
   before_action :set_user, :only => [:show, :edit, :edit_account, :update, :destroy]
 
   before_filter :check_if_user_admin
@@ -215,8 +215,7 @@ class UsersController < ApplicationController
   end
 
   def block_user
-
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Deactivate User"))
+    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Deactivate User"))
 
     user = User.find(params[:id]) rescue nil
 
@@ -227,7 +226,11 @@ class UsersController < ApplicationController
 
     end
 
-    redirect_to "/view_users" and return
+    if params[:next_url].present?
+      redirect_to params[:next_url] and return
+    else
+      redirect_to "/view_users" and return
+    end
 
   end
 
@@ -244,7 +247,11 @@ class UsersController < ApplicationController
 
     end
 
-    redirect_to "/view_users" and return
+    if params[:next_url].present?
+      redirect_to params[:next_url] and return
+    else
+      redirect_to "/view_users" and return
+    end
 
   end
 
@@ -268,7 +275,17 @@ class UsersController < ApplicationController
 
     results = []
 
-    users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 20)).each
+    if params[:active].present? && params[:active] == "true"
+
+      users = User.active_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+
+    elsif params[:active].present? && params[:active] == "false"
+
+      users = User.inactive_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+
+    else
+      users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+    end
 
     users.each do |user|
 
@@ -300,6 +317,38 @@ class UsersController < ApplicationController
 
   end
 
+  def view_active
+    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+
+    @users = User.all.each
+
+    @section = "Active Users"
+
+    @targeturl = "/users"
+
+    render :layout => "landing"
+  end
+
+  def view_blocked
+    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+
+    @users = User.all.each
+
+    @section = "Blocked Users"
+
+    @targeturl = "/users"
+
+    render :layout => "landing"
+  end
+
+  def add_comment
+    if params[:operation] =="Block"
+        @action = '/block_user'
+    elsif  params[:operation] =="Unblock"
+        @action = '/unblock_user'
+    end
+    
+  end
   def search_by_username
 
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
@@ -376,15 +425,13 @@ class UsersController < ApplicationController
   end
 
   def my_account
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Change own password"))
+    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Change own password"))
 
     @section = "My Account"
 
-    @targeturl = "/"
-
     @user = User.current_user
 
-    render :layout => false#render :layout => "facility"
+    render :layout => "landing"
 
   end
 

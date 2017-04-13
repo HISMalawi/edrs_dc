@@ -128,6 +128,14 @@ Rails.application.routes.draw do
 
   get "/people/query_dc_sync" =>"people#query_dc_sync"
 
+  get "/view_special/:registration_type" =>"people#view_special"
+
+  get "/query_registration_type/:registration_type" => "people#query_registration_type"
+
+  get "/view_special_case_and_printed" => "people#view_special_case_and_printed"
+
+  get "/query_registration_type_and_printed" => "people#query_registration_type_and_printed"
+
 ##############################################################################################################################################
 
 ################################ Routes for DC controller ####################################################################################
@@ -228,6 +236,18 @@ Rails.application.routes.draw do
   get "/query_users" => "users#query"
 
   get "/search_user" => "users#search"
+
+  get "/view_active" => "users#view_active"
+
+  get "/view_blocked" => "users#view_blocked"
+
+  get "/add_user_comment/:id" => "users#add_comment"
+
+  post "/block_user" =>"users#block_user"
+
+  post "/unblock_user" =>"users#unblock_user"
+
+  get "/my_account" => "users#my_account"
 
 ######################################################################################################################################################################################
 

@@ -614,7 +614,7 @@ class PeopleController < ApplicationController
         end            
       end
   end
-
+########## Render sync status page ##################################################################################################################
   def view_sync
    @site_type = CONFIG['site_type'].to_s
    if @site_type == "dc"
@@ -628,7 +628,9 @@ class PeopleController < ApplicationController
     render :layout => "landing"
     #render :template =>"/people/view_sync"
   end
-
+###################################################################################################################################################
+###### Query sync status for records sent to DC####################################################################################################
+  
   def query_dc_sync
     page = params[:page] rescue 1
       size = params[:size] rescue 7
@@ -650,7 +652,49 @@ class PeopleController < ApplicationController
     end
     render :text => people.to_json
   end
+######################################################################################################################
 
+################ View Special cases by type ##########################################################################
+  def view_special
+    @section = params[:registration_type]
+    @registration_type = params[:registration_type]
+    @next_url = "/dc/special_cases"
+    @search = true
+    render :layout => "landing"
+      
+  end
+################# Query special cases by their type #####################################################################
+
+  def query_registration_type
+      page = params[:page] rescue 1
+      size = params[:size] rescue 7
+      render :text => Person.by_registration_type.key(params[:registration_type]).page(page).per(size).each.to_json
+  end
+
+#########################################################################################################################
+
+def view_special_case_and_printed
+    @section = "Printed Special Cases"
+    @special_case_print = ["HQ CLOSED","HQ DISPATCHED"]
+    @next_url = "/dc/special_cases"
+    @search = true
+    render :layout => "landing"
+end
+
+################## Query Specail case and their status###################################################################
+  def query_registration_type_and_printed
+      page = params[:page] rescue 1
+      size = params[:size] rescue 7
+      keys = []
+      special_cases = ["Unnatural Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+      special_cases.each do |special_case|
+          keys << [special_case,"HQ CLOSED"]
+          keys << [special_case,"HQ DISPATCHED"]
+      end
+      people =  PersonRecordStatus.registration_type_and_recent_status.keys(keys).page(page).per(size).each
+      render :text =>people.to_json
+  end
+  #######################################################################################################################
   protected
 
   def find_person

@@ -52,6 +52,14 @@ class User < CouchRest::Model::Base
               creator: doc.creator, notify: doc.notify, updated_at: doc.updated_at});
             }
           }"
+    view :inactive_users,
+         :map => "function(doc){
+            if (doc['type'] == 'User' && doc['active'] == false){
+              emit(doc.username, {username: doc.username,first_name: doc.first_name,
+              last_name: doc.last_name, email: doc.email,role: doc.role,
+              creator: doc.creator, notify: doc.notify, updated_at: doc.updated_at});
+            }
+          }"
                 
      filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"    
              

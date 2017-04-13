@@ -1,6 +1,6 @@
 class PersonRecordStatus < CouchRest::Model::Base
 
-	before_save :set_district_code,:set_facility_code
+	before_save :set_district_code,:set_facility_code, :set_registration_type
 
 	property :person_record_id, String
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...
@@ -9,6 +9,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	property :facility_code, String
 	property :voided, TrueClass, :default => false
 	property :reprint, TrueClass, :default => false
+	property :registration_type, String
 	property :creator, String
 
 	timestamps!
@@ -74,7 +75,14 @@ class PersonRecordStatus < CouchRest::Model::Base
 		    			   if (doc['type'] == 'PersonRecordStatus'){
 		                    	emit(doc['status']+'_'+doc['created_at'], 1);
 		                  	}
-	    			   }"             
+	    			   }"
+	    view :registration_type_and_recent_status,
+	    		:map =>"function(doc){
+		    			   if (doc['type'] == 'PersonRecordStatus' && doc['voided'] == false){
+		                    	emit([doc['registration_type'],doc['status']], 1);
+		                  	}
+	    			   }"
+
 	    filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 	    filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
 	    filter :stats_sync, "function(doc,req) {return doc.district_code != null}"
@@ -87,6 +95,10 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 	def set_facility_code
 		self.facility_code = self.person.facility_code
+	end
+
+	def set_registration_type
+		self.registration_type = self.person.registration_type
 	end
 
 	def person

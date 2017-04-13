@@ -19,7 +19,7 @@
                         <th>
                             Status
                         </th>
-                        <th colspan="3">
+                        <th colspan="2">
                             Operations
                         </th>
                     </tr>
@@ -57,7 +57,7 @@
     }
 
     resizeDiv();
-    var query_url = "/query_users?" 
+    var query_url = "/query_users?active=true&" 
 
     if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
@@ -278,44 +278,15 @@
 
                                 td.style.borderBottom= "1px solid black";
 
-                                 var button = document.createElement("button");
-
-                                button.className = "yellow";
-
-                                button.innerHTML = "<span>Edit</span>";
-
-                                button.setAttribute("onclick", "window.location='/users/" + data[i].id+ "/edit?next_url=/view_users?page="+page+"'");
-
-                                button.style.width ="90%";
-
-                                td.appendChild(button)
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
                                 var button = document.createElement("button");
 
-                                if (data[i].active){
+                                button.className = "red";
 
-                                    button.className = "red";
+                                button.setAttribute('onmousedown',"window.location='/add_user_comment/"+data[i].id+"?operation=Block&next_url=/view_active?page="+page+"'");
 
-                                    button.innerHTML = "<span>Block</span>";
+                                button.innerHTML = "<span>Block</span>";
 
-                                     button.setAttribute('onmousedown',"window.location='/add_user_comment/"+data[i].id+"?operation=Block&next_url=/view_users?page="+page+"'");
-                                }else{
-                                    button.className = "green";
-
-                                    button.innerHTML = "<span>Unblock</span>";
-
-                                     button.setAttribute('onmousedown',"window.location='/add_user_comment/"+data[i].id+"?operation=Unblock&next_url=/view_users?page="+page+"'"); 
-                                }
-                                button.style.width ="70%";
+                                button.style.width ="90%";
 
                                 td.appendChild(button)
 

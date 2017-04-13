@@ -1,171 +1,53 @@
-<div style="display: table; width: 100%; border-spacing: 20px; color: #3465a4; font-size: 32px; margin-top: 50px;">
+<style type="text/css">
+  .left{
+    float: left;
+  }
+  .right {
+      float: right;
+  }
+  #details {
+      width: 100%;
+      border-collapse: collapse;
+      margin-left: 1%;
+      margin-top: 4%
+  }
 
-  <div style="display: table-row;">
+  #details tr:nth-child(odd){
+    background: #dcdbdb;
+  }
+  #details td, #details th {
+     border: 1px solid lightgray;
+     font-size: 1.1em;
+     padding: 1em;
+  }
+  #details th{
+    background: #4c79a3;
+    color:#ffffff;
+    font-size: 1.2em;
+    padding: 0.8em;
+  }
 
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      Username
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      :
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      <%= @user.username %>
-
-    </div>
-
+  
+</style>
+<button id="signout" class="green" onmousedown="window.location ='/'" ><span>Back</span></button>
+<div style="width:100%">
+  <div class="left" style="width:70%; text-align:center">
+        <table id="details">
+              <tr><th colspan="2">Details</th></tr>
+              <tr><td>Username</td><td><%= @user.username %></td></tr>
+              <tr><td>First name</td><td><%= @user.first_name %></td></tr>
+              <tr><td>Surname</td><td><%= @user.last_name %></td></tr>
+              <tr><td>Role</td><td><%= @user.role %></td></tr>
+              <tr><td>Email</td><td><%= @user.email %></td></tr>
+              <tr><td>Created at</td><td><%= @user.created_at.to_date.strftime("%d/%b/%Y") rescue nil %></td></tr>
+              <tr><td>Updated at</td><td><%= @user.updated_at.to_date.strftime("%d/%b/%Y") rescue nil %></td></tr>
+        </table>
   </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
+  <div class="right">
+        <table style="margin-top:15%">
+            <tr><td><button>Change Password</button></td></tr>
+            <tr><td><button>Edit demographics</button></td></tr>
+        </table>
   </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      Role(s)
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      :
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      <%= @user.role %>
-
-    </div>
-
-  </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
-  </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      Preferred Keyboard
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      :
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      <%= preferred_keyboard %>
-
-    </div>
-
-  </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      &nbsp;
-
-    </div>
-
-  </div>
-
-  <div style="display: table-row;">
-
-    <div style="display: table-cell; text-align: right; width: 45%;">
-
-      <div style="border: 1px dotted #ccc; width: 90%; height: 400px; border-radius: 20px; float: right;">
-
-        &nbsp;
-
-      </div>
-
-    </div>
-
-    <div style="display: table-cell; text-align: center;">
-
-      &nbsp;
-
-    </div>
-
-    <div style="display: table-cell; width: 45%;">
-
-      <div style="border: 1px dotted #ccc; width: 90%; height: 400px; border-radius: 20px; float: left;">
-
-        &nbsp;
-
-      </div>
-
-    </div>
-
-  </div>
-
 </div>
-
-<button id="btnAction" class="blue" onclick="window.location = '/users/change_password';"
-        style="position: absolute; right: 160px; bottom: 20px;">Change Password</button>
-
-<!--button id="btnAction" class="blue" onclick="window.location = '/users/edit_account';"
-        style="position: absolute; right: 450px; bottom: 20px;">Edit Account</button-->
+<%= render :partial => "/dc/landing_resize" %>
