@@ -9,6 +9,9 @@ class LoginsController < ApplicationController
     username = params[:user][:username]
     password = params[:user][:password]
     user = User.get_active_user(username)
+    if CONFIG['site_type'] != "remote"
+        #do some if not from the district
+    end
     if user and user.password_matches?(password)
       site_type = CONFIG['site_type']
       if site_type =="dc"

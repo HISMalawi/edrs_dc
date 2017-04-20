@@ -2,16 +2,18 @@ development: &development
   protocol: 'http'
   host: localhost
   port: 5984
-  prefix: edrs 
-  suffix: facility
-  username: root
+  prefix: edrs
+  suffix: dc #facility
+  username: admin
   password: password
-  crtkey:
-  facility_code:  
-  district_code: LL
+  crtkey: password
+  facility_code: '2926' 
+  district_code: BT
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'
-  site_type: facility #facility | dc
+  site_type: dc #facility | dc | remote
+  den_assignment_interval: 3
+
 test:
   <<: *development
   suffix: test

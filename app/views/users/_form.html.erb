@@ -47,6 +47,11 @@
 
         <% end %>
 
+        <% if CONFIG['site_type'] == "remote" %>
+               <%= text_field_tag "user[district]",nil,
+                          {:helpText => "Date of Death" ,:ajaxURL => "/districts" }%>
+        <%end%>
+
             <%= f.text_field :email, :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>
        
         <%#= f.hidden_field :_rev %>

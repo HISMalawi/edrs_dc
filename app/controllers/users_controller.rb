@@ -123,13 +123,17 @@
 
       @user.email = params[:user]['email']
 
-      @user.district_code = CONFIG['district_code']
+      if CONFIG['site_type'] == "remote"
 
-      if !CONFIG['facility_code'].nil? && !CONFIG['facility_code'].blank?       
+        @user.district_code = District.by_name.key(params[:user]['district']).first.id 
 
-         @user.site_code = CONFIG['facility_code']
+      else
 
+        @user.district_code = CONFIG['district_code']
+        
       end
+
+      
       
     respond_to do |format|
     
