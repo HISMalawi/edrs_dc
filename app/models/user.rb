@@ -126,7 +126,9 @@ class User < CouchRest::Model::Base
 
     end
 
-    user.district_code = CONFIG['district_code']
+    if CONFIG['site_type'] == 'remote'
+      user.district_code = (District.by_name.key(params[:user]['district'] ) rescue CONFIG['district_code'])
+    end
    
     user.email = (params[:email] rescue nil || params[:user]['email'] rescue nil)
 
