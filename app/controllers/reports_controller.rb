@@ -44,7 +44,7 @@ class ReportsController < ApplicationController
 			end_date =	DateTime.parse(params[:end_date]).strftime("%Y-%m-%dT23:59:59.999Z")
 		end
 
-		data = PersonRecordStatus.by_status_and_created_at.startkey([status_map[params[:status]],start_date]).endkey([status_map[params[:status]],end_date]).each
+		data = PersonRecordStatus.by_district_code_and_status_and_created_at.startkey([User.current_user.district_code,status_map[params[:status]],start_date]).endkey([User.current_user.district_code,status_map[params[:status]],end_date]).each
 		male = 0
 		female = 0
 		data.each do |record|

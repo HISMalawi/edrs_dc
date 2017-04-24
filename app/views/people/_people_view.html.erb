@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	<% if @statuses.present? %>
+		var statuses = "<%= @statuses.join(",") %>".split(",");
+	<%end%>
+</script>
 <div id="table_container">
 
 		<table>
@@ -88,7 +93,10 @@
 		<%elsif @special_case_print.present?%>
 				url = "/query_registration_type_and_printed?"
 		<%else%>
-				url ="/search_by_status?status=<%=@status%>"
+				url ="/search_by_status?";
+				for (var i = 0 ; i < statuses.length ; i++){
+					url = url+"&statuses[]="+statuses[i];
+				}
 		<%end%>
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {

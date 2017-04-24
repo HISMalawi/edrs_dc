@@ -135,7 +135,10 @@ class Person < CouchRest::Model::Base
  def set_district_code
     unless self.district_code.present?
       self.district_code = CONFIG["district_code"]
-    end      
+    end 
+    if CONFIG['site_type'] == "remote"
+      self.district_code = User.current_user.district_code
+    end   
   end
 
   def set_facility_code
@@ -1007,6 +1010,8 @@ class Person < CouchRest::Model::Base
     view :by_approved
 
     view :by_registration_type
+
+    view :by_district_code_and_registration_type
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"

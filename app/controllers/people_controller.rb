@@ -206,7 +206,7 @@ class PeopleController < ApplicationController
 
       @section = "View"
 
-      @status = "NEW"
+      @statuses = ["NEW"]
 
       @next_url = "/people/view"
 
@@ -229,26 +229,46 @@ class PeopleController < ApplicationController
     page = params[:page] rescue 1
     size = params[:size] rescue 7
     people = []
-    if params[:status] == "DC PENDING"
-         record_status = [params[:status],"DC REJECTED"]
+
+    if CONFIG['site_type'] == "remote"
+      record_status = []
+      statuses = params[:statuses]
+
+      statuses.each do |status|
+          record_status << [User.current_user.district_code,status]
+      end
+     
+      PersonRecordStatus.by_district_code_and_record_status.keys(record_status).page(page).per(size).each do |status|
+        
+          person = status.person
+          person["den"] = person.den rescue ""
+          person["drn"] = person.drn rescue ""
+          people << person
+        
+      end
     else
-         record_status = [params[:status]]
-    end
-    if params[:status] == "HQ REJECTED"
-         #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
-         record_status = [params[:status]]
-    else
-         record_status = [params[:status]]
-    end
-   
-    PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
+        if params[:statuses].include?("DC PENDING")
+         record_status = params[:statuses]
+         record_status << "DC REJECTED"
+        else
+             record_status = params[:statuses]
+        end
+        if params[:statuses].include?("HQ REJECTED")
+             #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
+             record_status = params[:statuses]
+        else
+             record_status = params[:statuses]
+        end
+
+        PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
       
         person = status.person
 
         person["den"] = person.den rescue ""
 
-       people << person
+        people << person
       
+    end
     end
 
     render  :text => people.to_json
@@ -668,7 +688,7 @@ class PeopleController < ApplicationController
   def query_registration_type
       page = params[:page] rescue 1
       size = params[:size] rescue 7
-      render :text => Person.by_registration_type.key(params[:registration_type]).page(page).per(size).each.to_json
+      render :text => Person.by_district_code_and_registration_type.key([User.current_user.district_code,params[:registration_type]]).page(page).per(size).each.to_json
   end
 
 #########################################################################################################################
