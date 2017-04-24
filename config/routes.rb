@@ -249,6 +249,16 @@ Rails.application.routes.draw do
 
   get "/my_account" => "users#my_account"
 
+  get "/build_mysql" => "users#build_mysql"
+
+  get '/build_mysql_database' => 'users#build_mysql_database'
+
+  get 'create_mysql_database/:page_number/:records_per_page/:model_name/:table_name/:table_primary_key' => 'users#create_mysql_database'
+  
+  post '/database_load' => 'users#database_load'
+  
+  get 'database_load_progress/:table_name' => 'users#database_load_progress'
+
 ######################################################################################################################################################################################
 
 ################################ Routes for Reports ###################################################################################################################################

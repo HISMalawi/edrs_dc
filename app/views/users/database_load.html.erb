@@ -1,0 +1,192 @@
+<style>
+#main-table  {
+  width: 100%;
+}
+
+#main-table_paginate, #main-table_info, #main-table_filter, #main-table_length {
+  display: none;
+}
+
+.counts {
+  text-align: right;
+  padding-right: 20px;
+  width: 20%;
+}
+
+.myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+.myBars {
+  width: 0%;
+  height: 30px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+}
+#main-table{
+  border-collapse: collapse;
+  width: 98%;
+  margin: auto;
+}
+#main-table th , #main-table td{
+    border: 1px solid  #dcdbdb;
+    padding: 0.2%;
+}
+h2 {
+  margin-left: 2%;
+}
+</style>
+
+<script>
+ var attr = [];
+</script>
+
+
+
+<h2>Load data into&nbsp;<%= @mysql_connection[:database]%>&nbsp;database</h2>
+
+<div style="text-align: right; padding-bottom: 20px;">
+  <table style="width: 100%;">
+    <tr>
+      <td><button onclick="startTransfer()" id="startBTN" >Load Data</button></td>
+      <!--td style="width:10%;"><a href="#" class="btn btn-danger">Stop transfer</a></td-->
+    </tr>
+  </table>
+</div>
+
+
+<table id="main-table">
+  <thead>
+    <tr>
+      <th>MySQL table</th>
+      <th class="counts">Table&nbsp;No.&nbsp;of records</th>
+      <th>MySQL data load percentage (.sql)</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%(@documents || []).sort_by{ |m, d| m }.each do |tname, count|
+      table_name = tname.gsub('.sql','')
+    %>
+    <tr>
+      <td id="<%=table_name%>" class="docs"><%=table_name%></td>
+      <td class="counts" id="<%=table_name%>_count"><%=count%></td>
+      <td class="transfer_percentage">
+
+        <div id="<%=table_name%>_myProgress" class="myProgress">
+          <div id="<%=table_name%>_myBar" class="myBars"></div>
+        </div>
+
+      </td>
+    </tr>
+    <script>attr.push(["<%= table_name %>", "<%= count %>"]);</script>
+    <%end%>
+  </tbody>
+</table>
+<script>
+  function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.81)+"px";
+    }
+
+    resizeDiv();
+</script>
+<script>
+var attr_counter = 0;
+
+function loadData() {
+<%
+database =@mysql_connection[:database]
+user = @mysql_connection[:username]
+password = @mysql_connection[:password]
+host = @mysql_connection[:host]
+
+file_path =  Rails.root.to_s + '/app/assets/data/MySQL_data/'
+
+(@documents || []).sort_by{ |m, d| m }.each do |tname, count|
+  `nice mysql -u#{user} #{database} -p#{password} -h #{host} < #{file_path}#{tname}` 
+end
+
+%>
+}
+
+function startTransfer() {
+  try {
+    var table_name = attr[attr_counter][0];
+    var progress_bar_id = attr[attr_counter][0];
+    var total_count = parseInt(attr[attr_counter][1]);
+    var progress_bar = document.getElementById(progress_bar_id + "_myBar");
+
+  }catch(e){
+    var table_name = '';
+    var total_count = 0;
+    document.location = '/settings';
+    return;
+  }
+  
+  loadData();
+
+  if(table_name.length < 1) {
+    var startBTN = document.getElementById('startBTN');
+    startBTN.disabled = true;
+    return;
+  }
+
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari  
+    xmlhttp=new XMLHttpRequest();                                             
+  }else{// code for IE6, IE5                                                  
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");                           
+  }
+                                                                           
+  xmlhttp.onreadystatechange=function() {                                     
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {                       
+      var results = xmlhttp.responseText;
+
+      if(results == 'undefined' || results == '' || results == '"not validate"' || results.length == 0) {
+        return;                                                               
+      }else{
+        var data = JSON.parse(results);
+
+        if(parseInt(data['count']) > 0) {
+          var created = (parseInt(data['count']));
+          var currrent_percent = ((created * 100) / parseInt(total_count));
+          if(currrent_percent > 100)
+            currrent_percent = 100;
+
+          progress_bar.style.width = (Math.floor(currrent_percent) + "%");
+          progress_bar.innerHTML = progress_bar.style.width;
+    
+          if(created >= total_count)
+            attr_counter += 1;
+
+          startTransfer();
+        }else{
+          startTransfer();
+        }                                                    
+      }                                                                       
+    }
+  }
+
+  var url = "/database_load_progress/" + table_name;
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send()
+}
+
+function initDataTable(){        
+  try {  
+    dataTable = $('#main-table').dataTable();
+  }catch(e){
+    alert(e);
+  }
+}
+
+//initDataTable();
+
+</script>
