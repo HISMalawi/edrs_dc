@@ -50,7 +50,7 @@ h2 {
 <div style="text-align: right; padding-bottom: 20px;">
   <table style="width: 100%;">
     <tr>
-      <td><button onclick="startTransfer()" id="startBTN" >Load Data</button></td>
+      <td><button onclick=" loadData();startTransfer()" id="startBTN" >Load Data</button></td>
       <!--td style="width:10%;"><a href="#" class="btn btn-danger">Stop transfer</a></td-->
     </tr>
   </table>
@@ -102,19 +102,22 @@ h2 {
 var attr_counter = 0;
 
 function loadData() {
-<%
-database =@mysql_connection[:database]
-user = @mysql_connection[:username]
-password = @mysql_connection[:password]
-host = @mysql_connection[:host]
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari  
+    xmlhttp=new XMLHttpRequest();                                             
+  }else{// code for IE6, IE5                                                  
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");                           
+  }
+                                                                           
+  xmlhttp.onreadystatechange=function() {                                     
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {                       
+      var results = xmlhttp.responseText;
+      console.log(results);
+    }
+  }
 
-file_path =  Rails.root.to_s + '/app/assets/data/MySQL_data/'
-
-(@documents || []).sort_by{ |m, d| m }.each do |tname, count|
-  `nice mysql -u#{user} #{database} -p#{password} -h #{host} < #{file_path}#{tname}` 
-end
-
-%>
+  var url = "/load_dumps"
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send()
 }
 
 function startTransfer() {
@@ -130,8 +133,7 @@ function startTransfer() {
     document.location = '/settings';
     return;
   }
-  
-  loadData();
+
 
   if(table_name.length < 1) {
     var startBTN = document.getElementById('startBTN');

@@ -258,6 +258,9 @@ class PeopleController < ApplicationController
 
     if params[:search_criteria].present?
 
+      if params[:search_criteria] == "General Search"
+      end
+
        @section ="Search Results"
 
        @next_url = "/"

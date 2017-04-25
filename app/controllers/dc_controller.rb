@@ -133,6 +133,7 @@ class DcController < ApplicationController
 		
 	end
 	def mark_as_pending
+		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC PENDING")
 		Audit.create({
 							:record_id => params[:id].to_s    , 

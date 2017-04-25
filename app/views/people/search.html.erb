@@ -65,6 +65,66 @@
 	}
 
 	window.addEventListener("load", loadBarcodePage, false);
+
+	function groupInclude(){
+		var field_map ={
+						"Details of person" : ["last_name", "first_name", "gender"],
+						"Home address" 		: ["home_country","home_district","home_ta","home_village"],
+						"Name of mother" 	: ["mother_last_name","mother_first_name"],
+						"Name of father" 	: ["father_last_name","father_first_name"],
+						"Name of informant" : ["informant_last_name","informant_first_name"],
+						"Informant address" : ["informant_current_country","informant_current_district","informant_current_ta","informant_current_village"],
+						"Place of death"	: ["place_of_death"]
+		}
+		var map_key = Object.keys(field_map);
+
+		for (var i = map_key.length - 1; i >= 0; i--) {
+			var array = field_map[map_key[i]];
+			for (var j = array.length - 1; j >= 0; j--) {	
+				__$(array[j]).setAttribute("condition","false");
+			}
+			
+		}
+ 		var value = __$('touchscreenInput' + tstCurrentPage).value;
+ 		var values = value.split(";");
+
+ 		for (var i = values.length - 1; i >= 0; i--) {
+ 			var array = field_map[values[i]];
+			for (var j = array.length - 1; j >= 0; j--) {	
+				__$(array[j]).setAttribute("condition","true");
+			}
+ 		}
+	}
+	function setAjaxUrl(case_number){
+			switch(case_number) {
+				case -1:
+					var place = __$('touchscreenInput' + tstCurrentPage).value;
+					__$("place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
+					__$("place_of_death_district").setAttribute("condition","true");
+					break;
+
+				case 0:
+					var district = __$('touchscreenInput' + tstCurrentPage).value;
+					if(__$("hospital_of_death")){
+						__$("hospital_of_death").setAttribute("ajaxURL","/facilities?district="+district+"&search_string=");
+					}
+					if(__$("place_of_death_ta")){
+					    __$("place_of_death_ta").setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
+					}
+					break;
+
+				case 1:
+					var ta = __$('touchscreenInput' + tstCurrentPage).value;
+					var district = __$('place_of_death_district').value
+					__$("place_of_death_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+					break
+				} 
+
+	}
+	window.onerror = function (errorMsg, url, lineNumber) {
+		alert(errorMsg);
+              // window.top.location.reload();           
+    }
 </script>
 <% if params[:search_criteria].present? %>
 
@@ -74,7 +134,7 @@
 
 	<%= form_tag("/people/search",:method=>:get) do %>
 
-		<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","By Personal Details of the deceased","By Home Address","By Mother details","By Father details","By Informant details"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+		<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
 
 		<%= text_field_tag "person[barcode]",nil , {:name => "barcode",:helpText=> "Scan Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:condition => "__$('search_criteria').value =='By Barcode'"} %>
 
@@ -82,22 +142,55 @@
 
 		<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
 
-		<%= text_field_tag "last_name", nil, {:helpText => 'Enter last name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
-		<%= text_field_tag "first_name", nil, {:helpText => 'Enter First name',:condition => "__$('search_criteria').value =='By Personal Details of the deceased'"}  %>
-		<%= select_tag "search_criteria", options_for_select(["Female","Male"], " "), {:helpText => 'Sex / Gender',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard",:condition => "__$('search_criteria').value =='By Personal Details of the deceased'" }%>
+		<%= select_tag "field_group[]", options_for_select(["Details of person","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()"}%>
 
-		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-		<%= text_field_tag "home_ta", nil, {:helpText => 'Home TA',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
-		<%= text_field_tag "home_village", nil, {:helpText => 'Home Village',:condition => "__$('search_criteria').value =='By Home Address'"}  %>
+		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false}  %>
 
-		<%= text_field_tag "mother_last_name", nil, {:helpText => 'Mother Last Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
-		<%= text_field_tag "mother_first_name", nil, {:helpText => 'Mother First Name',:condition => "__$('search_criteria').value =='By Mother details'"}  %>
+		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false}  %>
 
-		<%= text_field_tag "father_last_name", nil, {:helpText => 'Father Last Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
-		<%= text_field_tag "father_first_name", nil, {:helpText => 'Father First Name',:condition => "__$('search_criteria').value =='By Father details'"}  %>
+		<%= select_tag "gender", options_for_select(["","Female","Male"], " "), {:helpText => 'Gender',:tt_pageStyleClass =>"NoKeyboard",:condition =>false , :optional=>true}%>
 
-		<%= text_field_tag "informant_last_name", nil, {:helpText => 'Informant Last Name',:condition => "__$('search_criteria').value =='By Informant details'"}  %>
-		<%= text_field_tag "informant_first_name", nil, {:helpText => 'Informant First Name',:condition => "__$('search_criteria').value =='By informant details'"}  %>
+		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition =>false }  %>
+		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition =>false }  %>
+		<%= text_field_tag "home_ta", nil, {:helpText => 'Home TA',:condition =>false }  %>
+		<%= text_field_tag "home_village", nil, {:helpText => 'Home Village',:condition =>false }  %>
+
+		<%= text_field_tag "mother_last_name", nil, {:helpText => 'Mother Last Name',:condition =>false }  %>
+		<%= text_field_tag "mother_first_name", nil, {:helpText => 'Mother First Name',:condition =>false }  %>
+
+		<%= text_field_tag "father_last_name", nil, {:helpText => 'Father Last Name',:condition =>false }  %>
+		<%= text_field_tag "father_first_name", nil, {:helpText => 'Father First Name',:condition =>false }  %>
+
+		<%= text_field_tag "informant_last_name", nil, {:helpText => 'Informant Last Name',:condition =>false }  %>
+		<%= text_field_tag "informant_first_name", nil, {:helpText => 'Informant First Name',:condition =>false }  %>
+
+		<%= text_field_tag "informant_current_country", nil, {:helpText => 'Informant current country',:condition =>false }  %>
+		<%= text_field_tag "informant_current_district", nil, {:helpText => 'Informant current country',:condition =>false }  %>
+		<%= text_field_tag "informant_current_ta", nil, {:helpText => 'Informant current TA',:condition =>false }  %>
+		<%= text_field_tag "informant_current_village", nil, {:helpText => 'Informant current village',:condition =>false }  %>
+		
+		 <%= select_tag("place_of_death", options_for_select(["","Health Facility", "Home","Other"], nil),
+                    					:id=> "place_of_death",
+                    					:helpText =>"Place of Death", 
+                    					:tt_requireNextClick => false,
+                    					:tt_pageStyleClass =>"NoKeyboard",:condition => false,
+                    					:tt_onUnLoad =>"setAjaxUrl(-1)") %>
+
+         <%= text_field_tag "place_of_death_district", nil, {
+                    					:helpText => "Place of Death District" , 
+                    					:tt_onUnLoad => "setAjaxUrl(0)",:ajaxURL=>"/district",:condition=>false} %>
+
+         <%= text_field_tag "hospital_of_death", nil, {
+                    					:helpText => "Health Facility",
+                    					:condition => "__$('place_of_death').value.trim()=='Health Facility'"} %>
+
+         <%= text_field_tag "place_of_death_ta", nil, {
+                    					:helpText => "Traditional authority",
+                    					:condition => "__$('place_of_death').value.match('Home')", 
+                    					:tt_onUnLoad => "setAjaxUrl(1)"} %>
+        <%= text_field_tag "place_of_death_village", nil, {
+               							:helpText => "Village",
+               							:condition => "__$('place_of_death_ta').value.length > 0 && __$('place_of_death_ta').value != 'Other'"} %>
+
 	<%end%>
 <%end%>

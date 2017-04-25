@@ -627,6 +627,23 @@ EOF
     #raise @documents.inspect
   end
 
+  def load_dumps
+
+    database =mysql_connection['database']
+    user = mysql_connection['username']
+    password = mysql_connection['password']
+    host = mysql_connection['host']
+
+    file_path =  Rails.root.to_s + '/app/assets/data/MySQL_data/'
+
+    @documents = Dir.foreach(file_path) do |file|
+        if file.match(".sql")
+            `nice mysql -u#{user} #{database} -p#{password} -h #{host} < #{file_path}#{file}`
+        end
+    end
+    render :text => "loading dump"
+  end
+
   def database_load_progress
     db_result = `nice mysql -u#{mysql_connection['username']} #{mysql_connection['database']} -p#{mysql_connection['password']} -e "select count(*) as c from #{params[:table_name]};"`
     dbcount = db_result.split("\n")[1].to_i rescue 0
