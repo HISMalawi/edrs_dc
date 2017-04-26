@@ -257,7 +257,7 @@ class PeopleController < ApplicationController
   def search
 
     if params[:search_criteria].present?
-      
+
       @search = true
 
       if params[:search_criteria] == "General Search"
@@ -310,7 +310,9 @@ class PeopleController < ApplicationController
       PersonIdentifier.by_identifier.key(params[:death_entry_number]).page(page).per(size).each do |pid|
         
           person = pid.person
-
+          if CONFIG['site_type'] == "remote"
+              next if User.current_user.district_code != person.district_code
+          end
           people << person_selective_fields(person)
       end               
       

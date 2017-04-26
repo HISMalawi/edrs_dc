@@ -26,7 +26,11 @@ class SQLSearch
     ids = (((`mysql -u #{CONFIGS['username']} -p#{CONFIGS['password']} #{CONFIGS['database']} -e "#{query}"`).split(/\n/) rescue []) - ['person_id']) rescue []
     people = []
     ids.each do |id|
-      people << Person.find(id)
+      person = Person.find(id)
+      if CONFIG['site_type'] == "remote"
+              next if (User.current_user.district_code != person.district_code ) && (user.role !="System Administrator") && (user.site_code != "HQ")
+          end
+      people << person
     end
 
     people
