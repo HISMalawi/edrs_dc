@@ -96,6 +96,8 @@ Rails.application.routes.draw do
 
   get "/search_by_fields" => "people#search_by_fields"
 
+  get "/general_search" => "people#general_search"
+
   get '/people/finalize_create/:id' => "people#finalize_create"
 
   get "/get_first_names" => "people#get_first_names"
@@ -248,6 +250,18 @@ Rails.application.routes.draw do
   post "/unblock_user" =>"users#unblock_user"
 
   get "/my_account" => "users#my_account"
+
+  get "/build_mysql" => "users#build_mysql"
+
+  get '/build_mysql_database' => 'users#build_mysql_database'
+
+  get 'create_mysql_database/:page_number/:records_per_page/:model_name/:table_name/:table_primary_key' => 'users#create_mysql_database'
+  
+  post '/database_load' => 'users#database_load'
+  
+  get 'database_load_progress/:table_name' => 'users#database_load_progress'
+
+  get '/load_dumps' =>"users#load_dumps"
 
 ######################################################################################################################################################################################
 

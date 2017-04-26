@@ -1,8 +1,10 @@
-  class UsersController < ApplicationController
+class UsersController < ApplicationController
+
   before_action :set_user, :only => [:show, :edit, :edit_account, :update, :destroy]
 
   before_filter :check_if_user_admin
 
+  @@file_path = "#{Rails.root.to_s}/app/assets/data/MySQL_data/"
   # GET /users
   # GET /users.json
   def index
@@ -472,6 +474,186 @@
 
   end
 
+  def build_mysql
+    render :layout => "landing"
+  end
+
+   def build_mysql_database
+    @section = "Build MSQL"
+    start_date = "1900-01-01 00:00:00".to_time
+    end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+
+    @couchdb_files = {
+      'Person' => {count: Person.count, name: 'Person doc.', id: 'person_doc', 
+        doc_primary_key: 'person_id', table_name: 'people'},
+
+      'PersonIdentifier' => {count: PersonIdentifier.count, name: 'PersonIdentifier doc.', 
+        id: 'person_identifier_doc', doc_primary_key: 'person_identifier_id', table_name: 'person_identifier'},
+
+      'PersonRecordStatus' => {count: PersonRecordStatus.count, name: 'PersonRecordStatus doc.', 
+        id: 'person_record_status_doc', doc_primary_key: 'person_record_status_id', table_name: 'person_record_status'},
+      
+      'District' => {count: District.count, name: 'District doc.', 
+        id: 'district_doc', doc_primary_key: 'district_id', table_name: 'district'},
+
+      'Nationality' => {count: Nationality.count, name: 'Nationality doc.', 
+        id: 'nationality_doc', doc_primary_key: 'nationality_id', table_name: 'nationality'},
+
+      'Village' => {count: Village.count, name: 'Village doc.', 
+        id: 'village_doc', doc_primary_key: 'village_id', table_name: 'village'},
+
+      'TraditionalAuthority' => {count: TraditionalAuthority.count, name: 'TraditionalAuthority doc.', 
+        id: 'traditional_authority_doc', doc_primary_key: 'traditional_authority_id', table_name: 'traditional_authority'},
+
+      'User' => {count: User.count, name: 'User doc.', 
+        id: 'user_doc', doc_primary_key: 'user_id', table_name: 'user'},
+
+      'Role' => {count: Role.count, name: 'Role doc.', 
+        id: 'role_doc', doc_primary_key: 'role_id', table_name: 'role'},
+
+      'Country' => {count: Country.count, name: 'Country doc.', 
+        id: 'country_doc', doc_primary_key: 'country_id', table_name: 'country'}
+
+    }
+
+    (@couchdb_files || []).each do |doc, data|
+      create_file(data[:doc_primary_key], doc, data[:table_name])
+    end
+    render :layout => "landing"
+  end
+
+  def create_mysql_database
+    start_date = "1900-01-01 00:00:00".to_time
+    end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+
+    data = [] ; sql_insert_field_plus_data = {}
+    set_model = eval(params[:model_name])
+    table_name = params[:table_name]
+    records_per_page = params[:records_per_page].to_i
+    page_number = params[:page_number].to_i
+    table_primary_key = params[:table_primary_key]
+
+    begin
+      count = set_model.by_updated_at.startkey(start_date).endkey(end_date).page(page_number).per(records_per_page).each.count
+    rescue
+      count = set_model.all.page(page_number).per(records_per_page).each.count
+    end
+
+    if count > 0
+      begin
+        count_couchdb = set_model.by_updated_at.startkey(start_date).endkey(end_date).page(page_number).per(records_per_page).each
+      rescue
+        count_couchdb = set_model.all.page(page_number).per(records_per_page).each
+      end
+
+      sql_statement =<<EOF
+
+EOF
+
+      sql_statement += "INSERT INTO #{table_name} (#{table_primary_key}, "
+    else
+      render text: {people_count: count }.to_json  and return
+    end
+
+    (count_couchdb || []).each do |person|
+      sql_insert_field_plus_data[person.id] = [] if sql_insert_field_plus_data[person.id].blank?
+      (person.properties || []).each do |property|
+        sql_insert_field_plus_data[person.id] << {
+          name: "#{property.name}" , data: person.send(property.name),
+          type: property.type.to_s
+        }    
+      end
+    end 
+
+    (sql_insert_field_plus_data || []).each do |id, statements|
+      (statements || []).each do |statement|
+        sql_statement += "#{statement[:name]}, "
+      end
+      break
+    end
+    sql_statement = ("#{sql_statement[0..-3]}) VALUES ")
+
+    File.open(@@file_path + "#{table_name}.sql", 'a') do |f|
+      f.puts sql_statement
+    end
+
+
+
+    sql_statement = ''
+    (sql_insert_field_plus_data || []).each do |id, statements|
+      sql_statement += "('#{id}', "
+
+      (statements || []).each do |statement|
+        if statement[:data].blank?
+          if statement[:type] == 'TrueClass'
+            sql_statement += "0, "
+          else 
+            sql_statement += "NULL, "
+          end
+        elsif statement[:type] == 'Integer' || statement[:type] == 'TrueClass'
+          sql_statement += "#{statement[:data]},"
+        elsif statement[:type] == 'Date'
+          sql_statement += '"' + "#{statement[:data].to_date.strftime('%Y-%m-%d')}" + '",'
+        elsif statement[:type] == 'Time'
+          sql_statement += '"' + "#{statement[:data].to_time.strftime('%Y-%m-%d %H:%M:%S')}" + '",'
+        else
+          if statement[:data].to_s.match(/"/)
+            sql_statement += "'" + "#{statement[:data]}" + "',"
+          else
+            sql_statement += '"' + "#{statement[:data]}" + '",'
+          end
+        end
+      end
+      sql_statement = sql_statement[0..-2] + '),'
+    end
+    sql_statement = sql_statement[0..-2] + ";"
+
+    File.open(@@file_path + "#{table_name}.sql", 'a') do |f|
+      f.puts sql_statement
+    end
+
+    render text: {people_count: count }.to_json  and return
+  end
+
+  def database_load
+    @mysql_connection =  mysql_connection
+    @documents = {}
+    (params[:documents] || {}).each do |doc, count|
+      sql_file_name = "#{doc}.sql"
+      @documents[sql_file_name] = count.to_i
+    end
+    @section = "Load MSQL Dump"
+    render :layout => 'landing'
+    #raise @documents.inspect
+  end
+
+  def load_dumps
+
+    database =mysql_connection['database']
+    user = mysql_connection['username']
+    password = mysql_connection['password']
+    host = mysql_connection['host']
+
+    file_path =  Rails.root.to_s + '/app/assets/data/MySQL_data/'
+
+    @documents = Dir.foreach(file_path) do |file|
+        if file.match(".sql")
+            `nice mysql -u#{user} #{database} -p#{password} -h #{host} < #{file_path}#{file}`
+        end
+    end
+    render :text => "loading dump"
+  end
+
+  def database_load_progress
+    db_result = `nice mysql -u#{mysql_connection['username']} #{mysql_connection['database']} -p#{mysql_connection['password']} -e "select count(*) as c from #{params[:table_name]};"`
+    dbcount = db_result.split("\n")[1].to_i rescue 0
+    render text: { count: dbcount }.to_json and return
+  end
+
+  def mysql_connection
+     YAML.load_file(File.join(Rails.root, "config", "mysql_connection.yml"))['connection']
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_user
@@ -507,6 +689,70 @@
 
     @admin = ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
 
+  end
+
+  def create_file(doc_primary_key, doc, table_name)
+    #Create insert statments for all documets
+    #Ducument path: app/assets/data/MySQL_data/
+    
+    if doc_primary_key.blank?
+      doc_primary_key = 'id'
+      person_table = <<EOF
+        DROP TABLE IF EXISTS `#{table_name}`;
+        CREATE TABLE `#{table_name}` (
+        `#{doc_primary_key}` INT(11)  NOT NULL AUTO_INCREMENT,
+EOF
+    
+    else
+      person_table = <<EOF
+        DROP TABLE IF EXISTS `#{table_name}`;
+        CREATE TABLE `#{table_name}` (
+        `#{doc_primary_key}` VARCHAR(225) NOT NULL,
+EOF
+    
+    end
+
+    (eval(doc).properties || []).each do |property|
+      field_name = property.name
+      case property.type.to_s
+        when 'String'
+          field_type = "VARCHAR(255) DEFAULT NULL"
+        when 'Date'
+          field_type = "date DEFAULT NULL"
+        when 'Integer'
+          field_type = "INT(11) DEFAULT NULL"
+        when 'Time'
+          field_type = "datetime DEFAULT NULL"
+        when 'TrueClass'
+          field_type = "tinyint(1) NOT NULL  DEFAULT '0'"
+        else
+          field_type = "TEXT DEFAULT NULL" 
+      end
+      person_table += <<EOF
+      `#{field_name}` #{field_type},
+EOF
+
+    end
+
+    person_table += <<EOF
+      PRIMARY KEY (`#{doc_primary_key}`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+EOF
+
+    if !File.exists?(@@file_path + "#{table_name}.sql")
+      file = File.new(@@file_path + "#{table_name}.sql", 'w')
+    end
+
+    #deleting all file contents
+    File.open(@@file_path + "#{table_name}.sql", 'w') do |f|
+      f.truncate(0)
+    end
+
+    File.open(@@file_path + "#{table_name}.sql", 'a') do |f|
+      f.puts person_table
+    end
+
+    return true
   end
 
 end

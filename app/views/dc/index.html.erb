@@ -98,13 +98,23 @@
                                       
                                     </div>
 
+                                     <div class="touch_btn" onmousedown="window.location = '/build_mysql_database?next_url=/';" >
+                                        <div class="icon">
+                                               <i class="fa fa-database"></i>
+                                        </div>
+                                        <div class="button_label">Build MySQL</div>
+                                        <div class="button_description">  Manage own account.</div>
+
+                                      
+                                    </div>
+
                               <%end%>
 
                                 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/my_account';" >
                                         <div class="icon">
-                                               <i class="fa fa-gear"></i>
+                                               <i class="fa fa-gears"></i>
                                         </div>
                                         <div class="button_label">My Account</div>
                                         <div class="button_description">  Manage own account.</div>

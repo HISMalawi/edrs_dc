@@ -1,0 +1,205 @@
+<style>
+#main-table  {
+  width: 100%;
+}
+
+#main-table_paginate, #main-table_info, #main-table_filter, #main-table_length {
+  display: none;
+}
+
+.counts {
+  text-align: right;
+  margin-right: 25px;
+  width: 20%;
+}
+
+.myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+.myBars {
+  width: 0%;
+  height: 30px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+}
+#main-table{
+  border-collapse: collapse;
+  width: 98%;
+  margin: auto;
+}
+#main-table th , #main-table td{
+    border: 1px solid  #dcdbdb;
+    padding: 0.2%;
+}
+h2 {
+  margin-left: 2%;
+}
+</style>
+
+<script>
+ var attr = [];
+</script>
+
+<h2>Build MySQL database</h2>
+
+<div style="text-align: right;">
+  <table style="width: 98%;">
+    <tr>
+      <td><button onclick="startTransfer()" id="startBTN" >Start transfer</button></td>
+      <!--td style="width:10%;"><a href="#" class="btn btn-danger">Stop transfer</a></td-->
+    </tr>
+  </table>
+</div>
+
+<table id="main-table">
+  <thead>
+    <tr>
+      <th>CouchDB</th>
+      <th class="counts">CouchDB&nbsp;No.&nbsp;of records</th>
+      <th>MySQL data file build (.sql)</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%(@couchdb_files || []).sort_by{|m, d| m}.each do |model, data|%>
+    <tr>
+      <td id="<%=data[:table_name]%>" class="docs"><%=data[:name]%></td>
+      <td class="counts" id="<%=data[:table_name]%>_count"><%=data[:count]%></td>
+      <td class="transfer_percentage">
+      
+        <div id="<%=data[:table_name]%>_myProgress" class="myProgress">
+          <div id="<%=data[:table_name]%>_myBar" class="myBars"></div>
+        </div>
+      
+      </td>
+    </tr>
+    <script>attr.push(["<%=model%>","<%=data[:table_name]%>","<%=data[:doc_primary_key]%>"]);</script>
+    <%end%>
+  </tbody>
+</table>
+
+<form id="database_load" method="post" action="/database_load?next_url=/" style="visibility: hidden;">
+</form>
+<script>
+  function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.81)+"px";
+    }
+
+    resizeDiv();
+</script>
+<script>
+
+var attr_counter = 0;
+var num_of_records_per_page = 100;
+var page_number = 1
+
+function databaseLoad() {
+  var docs = document.getElementsByClassName('docs');
+  var counts = document.getElementsByClassName('counts');
+  var f = document.getElementById('database_load');
+  
+  for(var i = 0; i < docs.length; i++){
+    for(var x = 0; x < counts.length; x++){
+      try {
+        var c = parseInt(document.getElementById(docs[i].id + "_count").innerHTML);
+        var input = document.createElement('input');
+        input.setAttribute("name", "documents[" + docs[i].id + "]");
+        input.setAttribute("value", c);
+        input.setAttribute('type','hidden');
+        f.appendChild(input);
+        break;
+      }catch(e) {
+        continue;
+      }
+    }
+  }
+
+  f.submit();
+}
+
+function initDataTable(){        
+  try {  
+    dataTable = $('#main-table').dataTable();
+  }catch(e){
+    alert(e);
+  }
+}
+
+function startTransfer() {
+  try {
+    var model_name = attr[attr_counter][0];
+    var table_name = attr[attr_counter][1];
+    var progress_bar_id = attr[attr_counter][1];
+    var table_primary_key = attr[attr_counter][2];
+
+    var progress_bar = document.getElementById(progress_bar_id + "_myBar");
+    //alert(progress_bar_id)
+    var total_count = parseInt(document.getElementById(progress_bar_id + "_count").innerHTML);
+
+  }catch(e){
+    var model_name = '';
+    var table_name = '';
+    databaseLoad();
+  }
+
+  if(model_name.length < 1 || table_name.length < 1) {
+    var startBTN = document.getElementById('startBTN');
+    startBTN.disabled = true;
+    return;
+  }
+
+  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari  
+    xmlhttp=new XMLHttpRequest();                                             
+  }else{// code for IE6, IE5                                                  
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");                           
+  }
+                                                                           
+  xmlhttp.onreadystatechange=function() {                                     
+    if (xmlhttp.readyState==4 && xmlhttp.status==200) {                       
+      var results = xmlhttp.responseText;
+
+      if(results == 'undefined' || results == '' || results == '"not validate"' || results.length == 0) {
+        return;                                                               
+      }else{
+        var data = JSON.parse(results);
+        //console.log(model_name);
+
+        if(parseInt(data['people_count']) > 0) {
+          var created = (num_of_records_per_page * page_number);
+          var currrent_percent = ((created * 100) / total_count);
+          if(currrent_percent > 100)
+            currrent_percent = 100;
+
+          progress_bar.style.width = (Math.floor(currrent_percent) + "%");
+          progress_bar.innerHTML = progress_bar.style.width;
+
+          page_number += 1;
+          startTransfer();
+        }else{
+          attr_counter += 1;
+          page_number = 1;
+          startTransfer();
+        }                                                    
+      }                                                                       
+    }                                                                         
+  }
+
+  var url = "/create_mysql_database/" + page_number + "/" + num_of_records_per_page + "/";
+  url += model_name + "/" + table_name + "/" + table_primary_key;
+
+  xmlhttp.open("GET", url, true);
+  xmlhttp.send(); 
+}
+
+//initDataTable()
+
+</script>

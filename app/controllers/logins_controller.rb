@@ -9,10 +9,23 @@ class LoginsController < ApplicationController
     username = params[:user][:username]
     password = params[:user][:password]
     user = User.get_active_user(username)
-    if CONFIG['site_type'] != "remote"
-        #do some if not from the district
-    end
     if user and user.password_matches?(password)
+
+      ############## Checking if the user is from the district ####################################
+      if CONFIG['site_type'] != "remote"
+          if (user.district_code != CONFIG['district_code']) 
+            if (user.role !="System Administrator") && (user.site_code != "HQ")
+                logout!
+                flash[:error] = 'Your user credentilas is not from this district'
+                redirect_to "/", referrer_param => referrer_path and return
+            end
+          end 
+      else
+        #do something if remote
+      end
+
+      ###############################################################################################
+      
       site_type = CONFIG['site_type']
       if site_type =="dc"
         site_type = "DC"
@@ -26,11 +39,11 @@ class LoginsController < ApplicationController
            if user.password_attempt >= 5 && username.downcase != 'admin'
              logout!
              flash[:error] = 'Your password has expired.Please contact your System Administrator.'
-             redirect_to "/", referrer_param => referrer_path
+             redirect_to "/", referrer_param => referrer_path and return
            else
              user.update_attributes(:password_attempt => user.password_attempt + 1)
              flash[:error] = 'Your password has expired.Please change it!!!'
-             redirect_to "/change_password"
+             redirect_to "/change_password" and return
            end
         else
         
@@ -38,21 +51,21 @@ class LoginsController < ApplicationController
            		flash[:info] = 'Your password will expire soon. Please change it.'
            end
 
-           redirect_to default_path 
+           redirect_to default_path and return
         end   
       else
           flash[:error] = 'That username and/or password is not valid for this level'
-          redirect_to "/login"
+          redirect_to "/login" and return
       end
     else
       flash[:error] = 'That username and/or password is not valid.'
-      redirect_to "/login"
+      redirect_to "/login" and return
     end
   end
 
   def logout
     # session[:touchcontext] = nil
-    flash[:notice] = "User #{User.current_user.username} has been logged out"
+    flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
     logout!
     redirect_to "/", referrer_param => referrer_path
   end

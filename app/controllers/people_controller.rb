@@ -258,6 +258,16 @@ class PeopleController < ApplicationController
 
     if params[:search_criteria].present?
 
+      @search = true
+
+      if params[:search_criteria] == "General Search"
+        keys = params.keys - ['utf8','controller','action','field_group','search_criteria']
+        @params_string =""
+        keys.each do |key|
+          @params_string = "#{@params_string}&#{key}=#{params[key]}" if params[key].present?
+        end
+      end
+
        @section ="Search Results"
 
        @next_url = "/"
@@ -272,6 +282,22 @@ class PeopleController < ApplicationController
     
   end
 
+  def general_search
+    map = {
+                "details_of_deceased" => ['first_name', 'last_name', 'gender'],
+                "home_address" => ['home_country', 'home_ta', 'home_village'],
+                "mother" => ['mother_first_name', 'mother_last_name'],
+                "father" => ['father_first_name', 'father_last_name'],
+                "informant" => ['informant_first_name', 'informant_last_name'],
+                "informant_address" => ['informant_current_district', 'informant_current_ta', 'informant_current_village'],
+                "place_death" => ['place_of_death', 'place_of_death_district', 'place_of_death_ta', 'place_of_death_village', 'hospital_of_death', 'other_place_of_death']
+              }
+
+    results = SQLSearch.query(map, params)
+
+    render :text => results.to_json
+  end
+
   def search_by_fields
 
     status = params[:status]
@@ -284,7 +310,9 @@ class PeopleController < ApplicationController
       PersonIdentifier.by_identifier.key(params[:death_entry_number]).page(page).per(size).each do |pid|
         
           person = pid.person
-
+          if CONFIG['site_type'] == "remote"
+              next if User.current_user.district_code != person.district_code
+          end
           people << person_selective_fields(person)
       end               
       

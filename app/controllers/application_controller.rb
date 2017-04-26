@@ -9,7 +9,8 @@ class ApplicationController < ActionController::Base
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
-                                                  "mark_as_pending","mark_for_reprint","search_barcode","proceed_amend","block_user","unblock_user"]
+                                                  "mark_as_pending","mark_for_reprint","search_barcode","proceed_amend",
+                                                  "block_user","unblock_user","database_load"]
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
@@ -117,6 +118,10 @@ class ApplicationController < ActionController::Base
     places['informant_current_village'] = Village.find(person.informant_current_village_id).name rescue ""
     return places
 
+  end
+
+  def mysql_connection
+     YAML.load_file(File.join(Rails.root, "config", "mysql_connection.yml"))['connection']
   end
 
   protected
