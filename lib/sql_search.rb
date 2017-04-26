@@ -7,7 +7,7 @@ class SQLSearch
     where_ext = ""
 
     options.keys.each do |group|
-      next if selected[group].blank? && selected[group] != 'On'
+      #next if selected[group].blank? && selected[group] != 'On'
       fields = options[group]
       fields.each do |field|
         next if !accept_blanks && selected[field].blank?
@@ -16,6 +16,9 @@ class SQLSearch
     end
 
     query = "SELECT person_id FROM people #{join_ext} WHERE #{where_ext}"
+
+    puts query
+
     self.exec(query)
   end
 

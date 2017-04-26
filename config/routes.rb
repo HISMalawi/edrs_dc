@@ -96,6 +96,8 @@ Rails.application.routes.draw do
 
   get "/search_by_fields" => "people#search_by_fields"
 
+  get "/general_search" => "people#general_search"
+
   get '/people/finalize_create/:id' => "people#finalize_create"
 
   get "/get_first_names" => "people#get_first_names"
