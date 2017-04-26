@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery #with: :exception
 
-   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_den_assignment, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -174,6 +174,17 @@ class ApplicationController < ActionController::Base
 
   def perform_basic_auth
     authorize! :access, :anything
+  end
+
+  def check_den_assignment
+    last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+    job_interval = CONFIG['ben_assignment_interval']
+    job_interval = 1.5 if job_interval.blank?
+    job_interval = job_interval.to_f
+    now = Time.now
+    if (now - last_run_time).to_f > job_interval
+      AssignDen.perform_in(1)
+    end
   end
 
   def access_denied
