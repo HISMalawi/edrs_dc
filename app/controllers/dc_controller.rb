@@ -51,7 +51,7 @@ class DcController < ApplicationController
 
 		@section ="Approve Cases"
 
-		@status = "DC COMPLETE"
+		@statuses = ["DC COMPLETE"]
 
 		@next_url = "/dc/approve_cases"
 
@@ -150,7 +150,7 @@ class DcController < ApplicationController
 
 		@section ="Approved Cases"
 
-		@status = "DC APPROVED"
+		@statuses = ["DC APPROVED"]
 
 		@next_url = "/dc/approved_cases"
 
@@ -162,7 +162,7 @@ class DcController < ApplicationController
 
 		@section = "Rejected Cases"
 
-		@status = "HQ REJECTED"
+		@statuses = ["HQ REJECTED"]
 
 		@next_url = "/dc/rejected_cases"
 
@@ -173,7 +173,7 @@ class DcController < ApplicationController
 
 		@section = "voided Records"
 
-		@status = "HQ VOIDED"
+		@statuses = ["HQ VOIDED"]
 
 		@next_url = "/dc/voided"
 
@@ -185,7 +185,7 @@ class DcController < ApplicationController
 
 		@section = "Printed Records"
 
-		@status = "HQ CLOSED"
+		@statuses = ["HQ CLOSED"]
 
 		@next_url = "/dc/closed"
 
@@ -197,7 +197,7 @@ class DcController < ApplicationController
 
 		@section = "Dispatched"
 
-		@status = "HQ DISPATCHED"
+		@statuses = ["HQ DISPATCHED"]
 
 		@next_url = "/dc/dispatched"
 
@@ -209,7 +209,7 @@ class DcController < ApplicationController
 		
 		@section = "Pending Record"
 
-		@status = "DC PENDING"
+		@statuses = ["DC PENDING"]
 
 		@next_url = "/dc/pending_cases"
 
@@ -227,7 +227,7 @@ class DcController < ApplicationController
 
 	def potential_duplicates
 		@section = "Potential Duplicate"
-		@status = "DC POTENTIAL DUPLICATE"
+		@statuses = ["DC POTENTIAL DUPLICATE"]
 		@next_url = "/dc/potential_duplicates"
 		@duplicate = true
 		render :template =>"/dc/dc_view_cases"
@@ -235,7 +235,7 @@ class DcController < ApplicationController
 
 	def confirmed_duplicated
 		@section = "Confimed Duplicate"
-		@status = "DC DUPLICATE"
+		@statuses = ["DC DUPLICATE"]
 		@next_url = "/dc/confirmed_duplicated"
 		@duplicate = true
 		render :template =>"/dc/dc_view_cases"
@@ -322,7 +322,7 @@ class DcController < ApplicationController
 
 	def reprint_requests
 		@section ="Reprint Requests"
-		@status = "DC REPRINT"
+		@statuses = ["DC REPRINT"]
 		@next_url = "/dc/reprint_requests"
 		render :template =>"/dc/dc_view_cases"
 	end
@@ -387,7 +387,7 @@ class DcController < ApplicationController
 
 	def amendment_requests
 		@section ="Amendments Requests"
-		@status = "DC AMEND"
+		@statuses = ["DC AMEND"]
 		@next_url = "/dc/amendment_requests"
 		render :template =>"/dc/dc_view_cases"
 	end
@@ -468,7 +468,7 @@ class DcController < ApplicationController
 
 	def counts_by_status
 		status = params[:status]
-		count = PersonRecordStatus.by_record_status.key(status).each.count
+		count = PersonRecordStatus.by_district_code_and_record_status.key([User.current_user.district_code,status]).each.count
 		render :text => {:count => count}.to_json	
 	end
 

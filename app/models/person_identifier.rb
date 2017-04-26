@@ -24,6 +24,12 @@ class PersonIdentifier < CouchRest::Model::Base
     view :by_identifier
     view :by_identifier_and_identifier_type
     view :by_site_code
+    view :by_district_code_and_den_sort_value,
+         :map => "function(doc) {
+                  if (doc['type'] == 'PersonIdentifier' && doc['den_sort_value'] != null ) {
+                    emit(doc['district_code']+doc['den_sort_value']);
+                  }
+                }"
     view :by_den_sort_value,
          :map => "function(doc) {
                   if (doc['type'] == 'PersonIdentifier' && doc['district_code'] == '#{CONFIG['district_code']}') {

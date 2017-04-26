@@ -49,7 +49,7 @@
 
         <% if CONFIG['site_type'] == "remote" %>
                <%= text_field_tag "user[district]",nil,
-                          {:helpText => "District of user" ,:ajaxURL => "/districts?search_string=" }%>
+                          {:helpText => "District of user" ,:ajaxURL => "/districts?place=Health Facility&search_string=" }%>
         <%end%>
 
             <%= f.text_field :email, :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>

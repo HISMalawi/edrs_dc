@@ -8,7 +8,7 @@ development: &development
   password: password
   crtkey: password
   facility_code: '2926' 
-  district_code: BT
+  district_code:  #BT | LL | ZA
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'
   site_type: dc #facility | dc | remote

@@ -716,7 +716,7 @@ class PeopleController < ApplicationController
   def query_registration_type
       page = params[:page] rescue 1
       size = params[:size] rescue 7
-      render :text => Person.by_registration_type.key(params[:registration_type]).page(page).per(size).each.to_json
+      render :text => Person.by_district_code_and_registration_type.key([User.current_user.district_code,params[:registration_type]]).page(page).per(size).each.to_json
   end
 
 #########################################################################################################################

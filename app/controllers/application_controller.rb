@@ -3,9 +3,9 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery #with: :exception
 
-   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_den_assignment, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -33,7 +33,16 @@ class ApplicationController < ActionController::Base
       if facility.present?
            return District.find(facility.district_id) rescue nil
       else
-           return District.by_code.key(CONFIG['district_code'].to_s).first rescue nil
+          if CONFIG['district_code'].blank?
+            district_code = User.current_user.district_code.to_s
+
+          else
+            district_code = CONFIG['district_code'].to_s
+          end
+           
+          district = District.find(district_code) rescue nil
+
+          return district
       end     
   end
 
@@ -95,8 +104,10 @@ class ApplicationController < ActionController::Base
     @district = district
     if CONFIG['site_type'] =="facility"
       @facility_type = "Facility"
-    else
+    elsif CONFIG['site_type'] =="dc"
       @facility_type = "DC"
+    else
+      @facility_type = "Remote"
     end
   end
 
@@ -163,6 +174,17 @@ class ApplicationController < ActionController::Base
 
   def perform_basic_auth
     authorize! :access, :anything
+  end
+
+  def check_den_assignment
+    last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+    job_interval = CONFIG['ben_assignment_interval']
+    job_interval = 1.5 if job_interval.blank?
+    job_interval = job_interval.to_f
+    now = Time.now
+    if (now - last_run_time).to_f > job_interval
+      AssignDen.perform_in(1)
+    end
   end
 
   def access_denied
