@@ -90,9 +90,19 @@ class PersonIdentifier < CouchRest::Model::Base
   end
 
   def self.assign_den(person, creator)
+    if CONFIG['site_type'] =="remote"
+      year = Date.today.year
+      district_code = User.find(creator).district_code
 
-    den = PersonIdentifier.by_den_sort_value.last.identifier rescue nil
-    year = Date.today.year
+      start_key = "#{district_code}#{year}0000001"
+      end_key = "#{district_code}#{year}99999999"
+
+      den = PersonIdentifier.by_district_code_and_den_sort_value.startkey(start_key).endkey(end_key).last.identifier rescue nil
+    else
+      den = PersonIdentifier.by_den_sort_value.last.identifier rescue nil
+      year = Date.today.year
+    end
+    
 
     if den.blank? || !den.match(/#{year}$/)
       n = 1

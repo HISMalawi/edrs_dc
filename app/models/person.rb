@@ -132,10 +132,13 @@ class Person < CouchRest::Model::Base
     audit.save
   end
 
- def set_district_code
+  def set_district_code
     unless self.district_code.present?
       self.district_code = CONFIG["district_code"]
-    end      
+    end 
+    if CONFIG['site_type'] == "remote"
+      self.district_code = User.current_user.district_code
+    end   
   end
 
   def set_facility_code
