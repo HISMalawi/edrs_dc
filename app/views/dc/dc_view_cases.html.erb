@@ -1,4 +1,8 @@
-
+<script type="text/javascript">
+	<% if @statuses.present? %>
+		var statuses = "<%= @statuses.join(",") %>".split(",");
+	<%end%>
+</script>
 <style type="text/css">
 	#pagination{
 		width: 20% !important;
@@ -66,8 +70,31 @@
 </div>
 <%= render :partial => "landing_resize" %>
 <script type="text/javascript">
-	var status = "<%=@status%>"
-	var url ="/search_by_status?status=<%=@status%>"
+	var url =""
+
+	<% if params[:search_criteria].present? %>
+			
+			<%if params[:death_entry_number].present? %>
+				url = "/search_by_fields?death_entry_number=<%=params[:death_entry_number]%>"
+			<%end%>
+
+			<%if params[:barcode].present? %>
+
+				var param = "<%=params[:barcode]%>";
+				param = param.substr(0,param.length-1);
+				console.log(param);
+				url = "/search_by_fields?barcode="+param;
+			<%end%>
+	<%elsif params[:registration_type].present?%>
+				url = "/query_registration_type/<%=params[:registration_type]%>?"
+	<%elsif @special_case_print.present?%>
+				url = "/query_registration_type_and_printed?"
+	<%else%>
+				url ="/search_by_status?";
+				for (var i = 0 ; i < statuses.length ; i++){
+					url = url+"&statuses[]="+statuses[i];
+				}
+	<%end%>
 
 	if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 

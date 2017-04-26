@@ -33,7 +33,16 @@ class ApplicationController < ActionController::Base
       if facility.present?
            return District.find(facility.district_id) rescue nil
       else
-           return District.by_code.key(CONFIG['district_code'].to_s).first rescue nil
+          if CONFIG['district_code'].blank?
+            district_code = User.current_user.district_code.to_s
+
+          else
+            district_code = CONFIG['district_code'].to_s
+          end
+           
+          district = District.find(district_code) rescue nil
+
+          return district
       end     
   end
 
@@ -95,8 +104,10 @@ class ApplicationController < ActionController::Base
     @district = district
     if CONFIG['site_type'] =="facility"
       @facility_type = "Facility"
-    else
+    elsif CONFIG['site_type'] =="dc"
       @facility_type = "DC"
+    else
+      @facility_type = "Remote"
     end
   end
 

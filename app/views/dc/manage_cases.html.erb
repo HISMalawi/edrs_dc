@@ -37,16 +37,28 @@
                             <%end%>
 
                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/approve_cases?next_url=/dc/manage_cases'" >
-                                    <div class="icon">
-                                           <i class="fa fa-folder-open"></i>
+                                  <% if  @facility_type == 'Remote'%>
+                                    <div class="touch_btn" onmousedown="window.location = '/people/view'" >
+                                      <div class="icon">
+                                             <i class="fa fa-users"></i>
+                                      </div>
+                                      <div class="button_label">Active Records</div>
+                                      <div class="button_description">All active records eDRS from facility and those entered at DRO</div>
                                     </div>
-                                    <div class="button_label">Complete Cases from LO</div>
-                                    <div class="button_description">  Approved registered record.</div>
 
-                                    
-                                  </div>
+                                  <%else%> 
+                                    <div class="touch_btn" onmousedown="window.location = '/dc/approve_cases?next_url=/dc/manage_cases'" >
+                                        <div class="icon">
+                                               <i class="fa fa-folder-open"></i>
+                                        </div>
+                                        <div class="button_label">Complete Cases from LO</div>
+                                        <div class="button_description">  Approved registered record.</div>
+
+                                        
+                                      </div>
+                                  <%end%>
+
+                                  
                             <%end%>
 
                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>

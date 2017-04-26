@@ -172,21 +172,34 @@
 	<% end %>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-		
-		<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
+		<%if CONFIG['site_type'] == 'remote'%>
+			<%if  (@status.present? && @status.status == "NEW") || (@status.present? && @status.status == "HQ REJECTED") %>
 
-				<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
+					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
+			<%end%>
+		<%else%>
+			<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
+
+					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
+
+			<%end%>
 		<%end%>
-
 	<%end%>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+		<%if CONFIG['site_type'] == 'remote'%>
+			<%if  (@status.present? && @status.status == "NEW")%>
 
-		<%if  @status.present? && @status.status == "DC COMPLETE" %>
+					<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
 
-			<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
+			<%end%>
+		<%else%>
+			<%if  @status.present? && @status.status == "DC COMPLETE" %>
 
+				<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
+
+			<%end%>
 		<%end%>
 
 	<%end%>
