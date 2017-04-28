@@ -64,26 +64,38 @@ class DcController < ApplicationController
 
 		person = Person.find(params[:id])
 
+
 		if record_complete?(person)
+				duplicate = potential_duplicate?(person)
+				if duplicate.blank?
+					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-				status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-				if status.status =="HQ REJECTED"
-					PersonRecordStatus.change_status(person, "DC REAPPROVED")
+					if status.status =="HQ REJECTED"
+						PersonRecordStatus.change_status(person, "DC REAPPROVED")
+					else
+						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+					end
+					
+					last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+			        job_interval = CONFIG['ben_assignment_interval']
+			        job_interval = 1.5 if job_interval.blank?
+			        job_interval = job_interval.to_f
+			        now = Time.now
+			        if (now - last_run_time).to_f > job_interval
+			          AssignDen.perform_in(1)
+			        end
+					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
+					render :text => {marked: true}.to_json
 				else
-					PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+					change_log = [{:duplicates => potential_duplicate?(person).colle}]
+					Audit.create({
+                      :record_id  => person.id.to_s,
+                      :audit_type => "POTENTIAL DUPLICATE",
+                      :reason     => "Record is a potential",
+                      :change_log => change_log
+				      })
+				      PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
 				end
-				
-				last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-		        job_interval = CONFIG['ben_assignment_interval']
-		        job_interval = 1.5 if job_interval.blank?
-		        job_interval = job_interval.to_f
-		        now = Time.now
-		        if (now - last_run_time).to_f > job_interval
-		          AssignDen.perform_in(1)
-		        end
-				#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
-				render :text => {marked: true}.to_json
 			    #redirect_to "#{params[:next_url].to_s}"
 
 		else
@@ -515,6 +527,7 @@ class DcController < ApplicationController
 		end
 		render :text => people.to_json
 	end
+
 	protected
 
 	

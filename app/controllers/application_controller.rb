@@ -135,6 +135,114 @@ class ApplicationController < ActionController::Base
      YAML.load_file(File.join(Rails.root, "config", "mysql_connection.yml"))['connection']
   end
 
+  ##########################################################################################################################
+    ############################# Duplicate ###############################################################################
+  def duplicate_index(person)
+
+    search_content = format_content(person) 
+
+    person_hash = {
+    couchdb_id: person.id,
+    group_id: "",
+    group_id2: "",
+    date_added: person.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+    title: person.first_name + " " + person.last_name,
+    content: search_content.squish
+    }
+    
+    RestClient.post("#{CONFIG['duplicate_service_url']}"+"/write", 
+                    person_hash.to_json, 
+                    content_type: "application/json", 
+                    accept: :json )  rescue []   
+
+  end
+
+  #Read person record after indexing
+  def potential_duplicate?(person)
+
+        result = []
+        search_content = format_content(person)   
+        person_hash = {
+          content: search_content,
+          score: CONFIG["duplicate_score"]
+        }
+                
+          potential_duplicates_result =  RestClient.post("#{CONFIG['duplicate_service_url']}"+"/read", 
+                                                          person_hash.to_json, 
+                                                          content_type: "application/json", 
+                                                          accept: :json ) rescue []
+
+        #Process result here                        
+  end
+
+  #Read person record after indexing
+  def potential_duplicate?(person)
+
+          result = []
+          search_content = format_content(person)   
+          person_hash = {
+            content: search_content,
+            score: CONFIG["duplicate_score"]
+          }
+                  
+            potential_duplicates_result =  RestClient.post("#{CONFIG['duplicate_service_url']}"+"/read", 
+                                                            person_hash.to_json, 
+                                                            content_type: "application/json", 
+                                                            accept: :json ) rescue []
+          return potential_duplicates_result
+
+          #Process result here                        
+   end
+
+   #Format content
+  def format_content(person)
+     
+     search_content = ""
+      if person.middle_name.present?
+         search_content = person.middle_name + ", "
+      end 
+
+      birthdate_formatted = person.birthdate.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + birthdate_formatted + " "
+      death_date_formatted = person.date_of_death.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + death_date_formatted + " "
+      search_content = search_content + person.gender.upcase + " "
+
+      if person.place_of_death_district.present?
+        search_content = search_content + person.place_of_death_district + " " 
+      else
+        registration_district = District.find(person.district_code).name
+        search_content = search_content + registration_district + " " 
+      end    
+
+      if person.mother_first_name.present?
+        search_content = search_content + person.mother_first_name + " " 
+      end
+
+      if person.mother_middle_name.present?
+         search_content = search_content + person.mother_middle_name + " "
+      end   
+
+      if person.mother_last_name.present?
+        search_content = search_content + person.mother_last_name + " "
+      end
+
+      if person.father_first_name.present?
+         search_content = search_content + person.father_first_name + " "
+      end 
+
+      if person.father_middle_name.present?
+         search_content = search_content + person.father_middle_name + " "
+      end 
+
+      if person.father_last_name.present?
+         search_content = search_content + person.father_last_name
+      end 
+
+      return search_content.squish
+
+  end
+
   protected
 
   def login!(user)

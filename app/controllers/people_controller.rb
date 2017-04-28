@@ -80,6 +80,8 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
+      duplicate_index(person)
+
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
 
             PersonIdentifier.create({
@@ -147,7 +149,7 @@ class PeopleController < ApplicationController
                     :person_record_id => person.id.to_s,
                     :record_status => "NEW"
       })
-
+      
       #redirect_to "/people/view/#{person.id.to_s}" and return
       #redirect_to "/people/finalize_create/#{person.id}" and return
       redirect_to "/people/view"
@@ -157,17 +159,24 @@ class PeopleController < ApplicationController
 
   def search_similar_record
 
-      values = [
-                params[:first_name].soundex, 
-                params[:last_name].soundex, 
-                params[:gender], 
-                params[:date_of_death],
-                params[:birthdate],
-                params[:place_of_death],
-                params[:informant_first_name].soundex,
-                params[:informant_last_name].soundex]
+      field_hash = {
+                      :first_name=>params[:first_name], 
+                      :last_name => params[:last_name],
+                      :middle_name => (params[:middle_name] rescue nil),
+                      :gender => params[:gender],
+                      :place_of_death_district => params[:place_of_death_district],
+                      :birthdate => params[:birthdate],
+                      :date_of_death => params[:date_of_death],
+                      :mother_last_name => (params[:mother_last_name] rescue nil),
+                      :mother_middle_name => (params[:mother_middle_name] rescue nil)
+                      :mother_first_name => (params[:mother_first_name] rescue nil),
+                      :father_last_name => (params[:father_last_name] rescue nil),
+                      :father_middle_name => (params[:father_middle_name] rescue nil)
+                      :father_last_name => (params[:father_last_name] rescue nil)
+                    }
 
-      people = Person.by_demographics_and_informant.key(values).each
+      person  = Person.new(field_hash)
+      people = potential_duplicate?(person)
 
       if people.count == 0
 
@@ -600,7 +609,7 @@ class PeopleController < ApplicationController
 
   def print_id_label
 
-    print_string = person_label(params[:person_id]) #rescue (raise "Unable to find child (#{params[:child_id]}) or generate a national id label for that patient")
+    print_string = person_label(params[:person_id]) #rescue (raise "Unable to find person (#{params[:person_id]}) or generate a national id label for that patient")
     send_data(print_string,:type=>"application/label; charset=utf-8", :stream=> false, :filename=>"#{params[:person_id]}#{rand(10000)}.lbl", :disposition => "inline")
   end
 
@@ -742,7 +751,8 @@ end
       people =  PersonRecordStatus.registration_type_and_recent_status.keys(keys).page(page).per(size).each
       render :text =>people.to_json
   end
-  #######################################################################################################################
+
+
   protected
 
   def find_person
