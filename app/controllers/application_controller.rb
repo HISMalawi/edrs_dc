@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth,:check_den_assignment, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_den_assignment,:check_database, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -160,24 +160,6 @@ class ApplicationController < ActionController::Base
   #Read person record after indexing
   def potential_duplicate?(person)
 
-        result = []
-        search_content = format_content(person)   
-        person_hash = {
-          content: search_content,
-          score: CONFIG["duplicate_score"]
-        }
-                
-          potential_duplicates_result =  RestClient.post("#{CONFIG['duplicate_service_url']}"+"/read", 
-                                                          person_hash.to_json, 
-                                                          content_type: "application/json", 
-                                                          accept: :json ) rescue []
-
-        #Process result here                        
-  end
-
-  #Read person record after indexing
-  def potential_duplicate?(person)
-
           result = []
           search_content = format_content(person)   
           person_hash = {
@@ -194,8 +176,24 @@ class ApplicationController < ActionController::Base
           #Process result here                        
    end
 
+   def potential_duplicate_full_text?(person)
+      score = CONFIG['duplicate_score'].to_i
+      searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
+      sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
+                  FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC"
+      results = SQLSearch.query_exec(sql_query).split(/\n/)
+      results = results.drop(1)
+
+      potential_duplicates = []
+
+      results.each do |result|
+          data = result.split("\t");
+          potential_duplicates << data if data[3].to_i >= score
+      end
+      return potential_duplicates
+   end
    #Format content
-  def format_content(person)
+    def format_content(person)
      
      search_content = ""
       if person.middle_name.present?
@@ -293,6 +291,24 @@ class ApplicationController < ActionController::Base
     if (now - last_run_time).to_f > job_interval
       AssignDen.perform_in(1)
     end
+  end
+
+  def check_database
+    create_query = "CREATE TABLE IF NOT EXISTS documents (
+                    id int(11) NOT NULL AUTO_INCREMENT,
+                    couchdb_id varchar(255) NOT NULL UNIQUE,
+                    group_id varchar(255) DEFAULT NULL,
+                    group_id2 varchar(255) DEFAULT NULL,
+                    date_added datetime DEFAULT NULL,
+                    title TEXT,
+                    content TEXT,
+                    created_at datetime NOT NULL,
+                    updated_at datetime NOT NULL,
+                    PRIMARY KEY (id),
+                    FULLTEXT KEY title (title,content)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
+    SQLSearch.query_exec(create_query)
+                      
   end
 
   def access_denied

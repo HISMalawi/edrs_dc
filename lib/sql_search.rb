@@ -36,4 +36,9 @@ class SQLSearch
     people
   end
 
+  def self.query_exec(query)
+    insert = `mysql -u #{CONFIGS['username']} -p#{CONFIGS['password']} #{CONFIGS['database']} -e "#{query}"`
+    return insert
+  end
+
 end

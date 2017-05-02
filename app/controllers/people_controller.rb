@@ -80,6 +80,14 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
+      title = "#{person.first_name} #{person.last_name}"
+      content =  format_content(person)
+
+      query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,update_at) 
+              VALUES('#{person.id}','#{title}','#{content}','#{person.created_at}',NOW(),NOW())"
+
+      SQLSearch.query_exec(query)
+
       duplicate_index(person)
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
@@ -168,16 +176,16 @@ class PeopleController < ApplicationController
                       :birthdate => params[:birthdate],
                       :date_of_death => params[:date_of_death],
                       :mother_last_name => (params[:mother_last_name] rescue nil),
-                      :mother_middle_name => (params[:mother_middle_name] rescue nil)
+                      :mother_middle_name => (params[:mother_middle_name] rescue nil),
                       :mother_first_name => (params[:mother_first_name] rescue nil),
                       :father_last_name => (params[:father_last_name] rescue nil),
-                      :father_middle_name => (params[:father_middle_name] rescue nil)
+                      :father_middle_name => (params[:father_middle_name] rescue nil),
                       :father_last_name => (params[:father_last_name] rescue nil)
                     }
 
       person  = Person.new(field_hash)
-      people = potential_duplicate?(person)
-
+      #people = potential_duplicate?(person)
+      people = potential_duplicate_full_text?(person)
       if people.count == 0
 
         render :text => {:response => false}.to_json
