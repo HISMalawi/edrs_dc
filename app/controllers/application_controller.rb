@@ -241,6 +241,13 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def readable_format(result)
+      person = Person.find(result[0])
+      return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
+                    " Born on #{DateTime.parse(person.birthdate.to_s).strftime('%d/%B/%Y')} "+
+                    " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +
+                    " at #{person.place_of_death_district}"]
+  end
   protected
 
   def login!(user)
@@ -305,7 +312,7 @@ class ApplicationController < ActionController::Base
                     created_at datetime NOT NULL,
                     updated_at datetime NOT NULL,
                     PRIMARY KEY (id),
-                    FULLTEXT KEY title (title,content)
+                    FULLTEXT KEY content (content)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
     SQLSearch.query_exec(create_query)
                       

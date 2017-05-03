@@ -56,7 +56,7 @@ function showPopupMessage(msg, topic,targeturl) {
                 shield.style.width = "100%";
                 shield.style.height = "100%";
                 shield.id = "msg.shield";
-                shield.style.backgroundColor = "rgba(128,128,128,0.75)";
+                shield.style.backgroundColor = "rgba(128,128,128,0.5)";
                 shield.style.zIndex = 1050;
 
                 document.body.appendChild(shield);
@@ -179,7 +179,7 @@ function showPopupMessage(msg, topic,targeturl) {
                   shield.style.width = "100%";
                   shield.style.height = "100%";
                   shield.id = "msg.shield";
-                  shield.style.backgroundColor = "rgba(128,128,128,0.75)";
+                  shield.style.backgroundColor = "rgba(128,128,128,0.5)";
                   shield.style.zIndex = 1050;
 
                   document.body.appendChild(shield);
@@ -316,16 +316,11 @@ function ajaxGETRequest(url, callback, optionalControl) {
         shield.style.top = "20%";
         shield.style.left = "20%";
         shield.style.width = "60%";
-
-                                shield.style.height = "60%";
-
-                                shield.id = "msg.shield";
-
-                                shield.style.backgroundColor = "rgba(128,128,128,0.1)";
-
-                                shield.style.zIndex = 1050;
-
-                                document.body.appendChild(shield);
+        shield.style.height = "60%";
+        shield.id = "msg.shield";
+        shield.style.backgroundColor = "rgba(128,128,128,0.1)";
+        shield.style.zIndex = 1050;
+        document.body.appendChild(shield);
 
                                 var opts = {
                                       lines: 15             // The number of lines to draw
@@ -385,8 +380,8 @@ function ajaxGETRequest(url, callback, optionalControl) {
                                 } catch (e) {
                                 }
 
-              }
-              function  simpleAjaxRequest(url, callback, optionalControl) {
+  }
+  function  simpleAjaxRequest(url, callback, optionalControl) {
 
                     var httpRequest = new XMLHttpRequest();
 
@@ -415,9 +410,9 @@ function ajaxGETRequest(url, callback, optionalControl) {
                     } catch (e) {
                     }
 
-              }
+}
 
-              function postAjax(url, data, success) {
+function postAjax(url, data, success) {
 
                   var params = typeof data == 'string' ? data : Object.keys(data).map(
 
@@ -442,4 +437,108 @@ function ajaxGETRequest(url, callback, optionalControl) {
                   xhr.send(params);
 
                   return xhr;
-              }
+}
+
+function duplicatesPopup(people,checkbox){
+       if (__$("msg.shield")) {
+            document.body.removeChild(__$("msg.shield"));
+        }
+
+        var shield = document.createElement("div");
+        shield.style.position = "absolute";
+        shield.style.position = "absolute";
+        shield.style.top = "0px";
+        shield.style.left = "0px";
+        shield.style.width = "100%";
+        shield.style.height = "100%";
+        shield.id = "msg.shield";
+        shield.style.backgroundColor = "rgba(128,128,128,0.5)";
+        shield.style.zIndex = 1050;
+        document.body.appendChild(shield);
+
+        var width = 700;
+        var height = 500;
+
+        var div = document.createElement("div");
+        div.id = "msg.popup";
+        div.style.position = "absolute";
+        div.style.width = width + "px";
+        div.style.height = height + "px";
+        div.style.backgroundColor = "#ffffff";
+        div.style.borderRadius = "1px";
+        div.style.left = "calc(50% - " + (width / 2) + "px)";
+        div.style.top = "calc(50% - " + (height * 0.6) + "px)";
+        div.style.border = "1px outset #fff";
+        div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+        div.style.fontFamily = "arial, helvetica, sans-serif";
+        div.style.MozUserSelect = "none";
+
+        shield.appendChild(div);
+
+        var table = document.createElement("table");
+        table.style.marginTop = "0.5%";
+        table.style.border = "1px solid gray";
+        table.style.height = "425px";
+        table.style.width = "98%";
+        table.style.margin ="auto";
+        div.appendChild(table);
+
+        var tr = document.createElement("tr");
+        tr.style.height = "30px";
+        table.appendChild(tr);
+        var th =  document.createElement("th");
+        th.colSpan = "3";
+        th.style.padding = "0.8em";
+        th.style.color = "#ffffff";
+        th.style.fontSize = "1.2em";
+        th.style.backgroundColor = "#526a83";
+        th.innerHTML = "The record is potential duplicate to "+ (people && people.length ? people.length : "0")  +" records";
+        tr.appendChild(th);
+        if(people){
+            for(var i = 0; i < people.length ; i++){
+              var tr = document.createElement("tr");
+              table.appendChild(tr);
+              tr.style.height = "25px";
+              var td = document.createElement("td");
+              td.style.borderBottom = "1px dotted gray";
+              td.style.width = "5%";
+              td.style.padding = "0.5em";
+              td.innerHTML = (i + 1);
+
+              tr.appendChild(td);
+              var td = document.createElement("td");
+              td.style.padding = "0.5em";
+              td.style.borderBottom = "1px dotted gray";
+              td.innerHTML =people[i][1];
+              tr.appendChild(td);
+            }
+        }
+        var tr = document.createElement("tr");
+        table.appendChild(tr);
+
+        var footdiv = document.createElement("div");
+        footdiv.style.width = "100%";
+        footdiv.style.height = "25%";
+        footdiv.style.textAlign = "center";
+        div.appendChild(footdiv);
+
+        /*var duplicate = document.createElement("button");
+        duplicate.innerHTML = "Duplicate";
+        footdiv.appendChild(duplicate);
+
+        var notduplicate = document.createElement("button");
+        notduplicate.innerHTML = "Not duplicate";
+        footdiv.appendChild(notduplicate);*/
+
+        var ok = document.createElement("button");
+        ok.innerHTML = "OK";
+        ok.id = "popup.ok"
+        ok.onclick = function () {
+           document.body.removeChild(shield);
+        }
+        footdiv.appendChild(ok);
+
+
+
+
+}

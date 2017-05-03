@@ -1609,12 +1609,16 @@
 				postAjax("/search_similar_record", data, function(response){
 					var people = JSON.parse(response).response;
 					if(people){
-						showMessage("Potential duplicate to "+people.length +" other record(s)",null,30000);
-						var ids = [];
-						for(var i = 0 ; i < people.length ; i++){
-							ids[i] = people[i]['_id'];
-						}
+						duplicatesPopup(people)
 
+						var ids = "";
+						for(var i = 0 ; i < people.length ; i++){
+							if(i == people.length -1){
+								ids = ids + people[i][0];
+							}else{
+								ids = ids + people[i][0] + ",";
+							}			
+						}
 						__$("potential_duplicate").setAttribute("condition",true);
 						__$("potential_duplicate").value = ids.toString();
 

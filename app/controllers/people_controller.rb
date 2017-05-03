@@ -185,7 +185,12 @@ class PeopleController < ApplicationController
 
       person  = Person.new(field_hash)
       #people = potential_duplicate?(person)
-      people = potential_duplicate_full_text?(person)
+      people = []
+      results = potential_duplicate_full_text?(person)
+
+      results.each do |result|
+          people << readable_format(result) if readable_format(result).present?
+      end
       if people.count == 0
 
         render :text => {:response => false}.to_json

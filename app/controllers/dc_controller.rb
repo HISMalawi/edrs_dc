@@ -66,7 +66,7 @@ class DcController < ApplicationController
 
 
 		if record_complete?(person)
-				duplicate = potential_duplicate?(person)
+				duplicate =  potential_duplicate_full_text?(person)
 				if duplicate.blank?
 					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
@@ -87,14 +87,18 @@ class DcController < ApplicationController
 					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 					render :text => {marked: true}.to_json
 				else
-					change_log = [{:duplicates => potential_duplicate?(person).colle}]
+					duplicate = potential_duplicate?(person)
+
+					ids = duplicate.collect{|dup| dup[0] if dup[0] != params[:id]}
+					change_log = [{:duplicates => ids.to_s}]
 					Audit.create({
                       :record_id  => person.id.to_s,
                       :audit_type => "POTENTIAL DUPLICATE",
                       :reason     => "Record is a potential",
                       :change_log => change_log
-				      })
-				      PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
+				     })
+				     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
+				     render :text => {duplicates: true, people: duplicates}.to_json
 				end
 			    #redirect_to "#{params[:next_url].to_s}"
 
@@ -480,7 +484,14 @@ class DcController < ApplicationController
 
 	def counts_by_status
 		status = params[:status]
-		count = PersonRecordStatus.by_district_code_and_record_status.key([User.current_user.district_code,status]).each.count
+		district_code = CONFIG['district_code']
+		if CONFIG['site_type'] == "remote"
+			district_code = User.current_user.district_code
+		end
+		key = [district_code,status]
+
+		count = PersonRecordStatus.by_district_code_and_record_status.key(key).each.count
+
 		render :text => {:count => count}.to_json	
 	end
 

@@ -311,7 +311,7 @@
 			<% end %>
 			</tr>
 			<tr>
-				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
+				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="other" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
 				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
 			</tr>
 			<tr>
@@ -537,7 +537,13 @@
                      	if(data.incomplete && eval(data.incomplete)){
                      		showPopupMessage("Record incomplete","Completeness check");
                      	}
-                     	
+                     	if(data.duplicates && eval(data.duplicates)){
+                     		duplicatesPopup(data.people);
+                     		__$("popup.ok").removeAttribute("onclick");
+                     		__$("popup.ok").onclick = function(){
+                     			window.location.href = "<%params[:next_url] rescue '/'%>"
+                     		}
+                     	}
                      })
 
 			}
@@ -1049,4 +1055,6 @@
 		   		__$('facility').setAttribute('disabled','disabled')
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
+
+		   	//duplicatesPopup();
 </script>
