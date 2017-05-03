@@ -1,0 +1,120 @@
+<script type="text/javascript">
+	var start_date = "<%= params[:start_date] rescue ''%>";
+	var end_date = "<%= params[:end_date] rescue ''%>";
+	var time_line = "<%= params[:time_line] %>";
+</script>
+<style type="text/css">
+	#report{
+		width :100%;
+		font-size: 1.4em;
+		border-collapse: collapse;
+	}
+
+	#report tr:nth-child(odd){
+		background: #dcdbdb;
+	}
+
+	#report td, #report th {
+		border : 1px solid lightgray;
+		padding: 1em;
+	}
+
+	#report th {
+		background: #4c79a3;
+		color:#ffffff;
+	}
+
+	#statuses{
+		list-style: none
+	}
+	#statuses li {
+		font-size: 1.5em;
+		display:  block;
+		padding: 0.6em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	#statuses li:hover {
+		background: #9ec6e2;
+	}
+	#containt{
+		height: calc(100-10px) !important;
+	}
+
+	#time_line{
+		font-size: 1.2em;
+		min-width: 100px;
+		background: #dcdbdb;
+		padding: 1%;
+		border-radius: 10px;
+		border: 1px solid lightgray;
+	}
+
+</style>
+<table style="width:96%;margin:auto; margin-top: 1.5%;height:300px !important">
+	<tr>
+		<td style="text-align:right"><div id="time_line" style="float:left;text-align:center">Today</div><button onclick="window.location.href ='/pick_dates?next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table id="report">
+				<tr>
+					<th>Gender</th>
+					<th>Number of deaths</th>
+				</tr>
+				<tr>
+					<td>Male</td>
+					<td style="text-align:right;padding-right:10%" id="male">100</td>
+				</tr>
+				<tr>
+					<td>Female</td>
+					<td style="text-align:right;padding-right:10%" id="female">1000</td>
+				</tr>
+				<tr>
+					<td style="font-weight:bold">Total</td>
+					<td style="text-align:right;padding-right:10%;font-weight:bold" id="total">1000</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<script>
+	function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.81)+"px";
+    }
+
+    resizeDiv();
+
+    function loadReport(element){
+    	var list = __$("statuses").getElementsByTagName('li');
+    	for(var i = 0 ; i < list.length ; i++){
+    		list[i].style.background ="#ffffff";
+    	}
+    	element.style.background ="#9ec6e2";
+    	var url ="/report_data/"+element.id;
+    	if(start_date.length > 2){
+    		__$("time_line").innerHTML = (new Date(start_date).format())+" to "+(new Date(end_date).format());
+    		url = url + "?start_date="+start_date+"&end_date="+end_date;
+    	}else{
+    		url = url +"?timeline="+time_line;
+    		__$("time_line").innerHTML = time_line;
+    	}
+
+    	ajaxGETRequest(url,function(data){
+    		var data = JSON.parse(data);
+    		__$('female').innerHTML = data.female;
+    		__$('male').innerHTML = data.male;
+    		__$('total').innerHTML = data.male + data.female;
+    	});
+    }
+
+    var reported = __$("Reported");
+
+    loadReport(reported);
+</script>

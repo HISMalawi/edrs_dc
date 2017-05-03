@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
       score = CONFIG['duplicate_score'].to_i
       searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
-                  FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC"
+                  FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
       results = SQLSearch.query_exec(sql_query).split(/\n/)
       results = results.drop(1)
 

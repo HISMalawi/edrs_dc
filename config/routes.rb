@@ -274,6 +274,10 @@ Rails.application.routes.draw do
 
   get "/pick_dates" => "reports#pick_dates"
 
+  get "/amendment_reports" => "reports#amendment_reports"
+
+  get "/lost_damaged_reports" =>"reports#lost_damaged_reports"
+
 ######################################################################################################################################################################################
   resources :users
 

@@ -1,21 +1,69 @@
-
+require 'sql_search'
 User.current_user = User.first
+def format_content(person)
+     
+     search_content = ""
+      if person.middle_name.present?
+         search_content = person.middle_name + ", "
+      end 
 
+      birthdate_formatted = person.birthdate.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + birthdate_formatted + " "
+      death_date_formatted = person.date_of_death.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + death_date_formatted + " "
+      search_content = search_content + person.gender.upcase + " "
+
+      if person.place_of_death_district.present?
+        search_content = search_content + person.place_of_death_district + " " 
+      else
+        registration_district = District.find(person.district_code).name
+        search_content = search_content + registration_district + " " 
+      end    
+
+      if person.mother_first_name.present?
+        search_content = search_content + person.mother_first_name + " " 
+      end
+
+      if person.mother_middle_name.present?
+         search_content = search_content + person.mother_middle_name + " "
+      end   
+
+      if person.mother_last_name.present?
+        search_content = search_content + person.mother_last_name + " "
+      end
+
+      if person.father_first_name.present?
+         search_content = search_content + person.father_first_name + " "
+      end 
+
+      if person.father_middle_name.present?
+         search_content = search_content + person.father_middle_name + " "
+      end 
+
+      if person.father_last_name.present?
+         search_content = search_content + person.father_last_name
+      end 
+
+      return search_content.squish
+
+  end
 def create
   
-  (1.upto(20)).each do |n|
+  (1.upto(20000)).each do |n|
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
     person.last_name =  Faker::Name.last_name
+    person.middle_name = [Faker::Name.first_name,""].sample
     person.gender = gender
     person.birthdate = Faker::Time.between("1964-01-01".to_time, Time.now()).to_date
     person.birthdate_estimated = 1
     person.date_of_death = Date.today
-    person.nationality_id=  "0e7ca4944a421f09b247f2987bce19e0"
-    person.place_of_death = 'Lilongwe'
+    person.nationality=  "Malawi"
+    person.place_of_death_district = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sample
     person.informant_first_name = Faker::Name.first_name
     person.informant_last_name = Faker::Name.first_name
+    person.district_code = "BT"
 
 =begin
     person.hospital_of_death_name = 
@@ -49,6 +97,17 @@ def create
 =end
 
     person.save
+
+    person.reload
+
+    title = "#{person.first_name} #{person.last_name}"
+    content =  format_content(person)
+
+    query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
+              VALUES('#{person.id}','#{title}','#{title} #{content}','#{person.created_at}',NOW(),NOW())"
+
+    SQLSearch.query_exec(query)
+
     puts "........... #{person.first_name}"
   end
 

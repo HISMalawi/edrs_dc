@@ -83,7 +83,7 @@ class PeopleController < ApplicationController
       title = "#{person.first_name} #{person.last_name}"
       content =  format_content(person)
 
-      query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,update_at) 
+      query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
               VALUES('#{person.id}','#{title}','#{content}','#{person.created_at}',NOW(),NOW())"
 
       SQLSearch.query_exec(query)
