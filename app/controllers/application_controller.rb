@@ -177,7 +177,11 @@ class ApplicationController < ActionController::Base
    end
 
    def potential_duplicate_full_text?(person)
-      score = CONFIG['duplicate_score'].to_i
+      if person.middle_name.blank?
+        score = (CONFIG['duplicate_score'].to_i - 1)
+      else
+        score = CONFIG['duplicate_score'].to_i
+      end
       searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
                   FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
@@ -193,7 +197,7 @@ class ApplicationController < ActionController::Base
       return potential_duplicates
    end
    #Format content
-    def format_content(person)
+   def format_content(person)
      
      search_content = ""
       if person.middle_name.present?
