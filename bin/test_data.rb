@@ -1,5 +1,6 @@
 require 'sql_search'
 User.current_user = User.first
+CONFIG = YAML.load_file(Rails.root.join('config', 'couchdb.yml'))[Rails.env]
 def format_content(person)
      
      search_content = ""
@@ -49,7 +50,7 @@ def format_content(person)
   end
 def create
   
-  (1.upto(20000)).each do |n|
+  (1.upto(100000)).each do |n|
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
@@ -60,10 +61,20 @@ def create
     person.birthdate_estimated = 1
     person.date_of_death = Date.today
     person.nationality=  "Malawi"
+    person.place_of_death = "Health Facility"
     person.place_of_death_district = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sample
+    person.hospital_of_death = HealthFacility.by_district_id.keys([District.by_name.key(person.place_of_death_district.to_s).first.id]).collect{|f| f.name }.sample
     person.informant_first_name = Faker::Name.first_name
     person.informant_last_name = Faker::Name.first_name
-    person.district_code = "BT"
+    person.district_code = CONFIG["district_code"]
+    person.current_country = "Malawi"
+    person.current_district = JSON.parse(File.open("#{Rails.root}/app/assets/data/districts.json").read).keys.sample
+    person.current_ta = TraditionalAuthority.by_district_id.key(District.by_name.key(person.current_district.to_s).first.id).collect{|f| f.name }.sample
+    district = District.by_name.key(person.current_district.strip).first
+    ta =TraditionalAuthority.by_district_id_and_name.key([district.id, person.current_ta]).first
+    person.current_village = Village.by_ta_id.key(ta.id.strip).collect{|f| f.name }.sample
+    
+
 
 =begin
     person.hospital_of_death_name = 
@@ -100,6 +111,20 @@ def create
 
     person.reload
 
+    PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => "NEW",
+                                      :district_code =>  person.district_code,
+                                      :created_by => User.current_user.id})
+
+    PersonIdentifier.create({
+                                      :person_record_id => person.id.to_s,
+                                      :identifier_type => "Form Barcode", 
+                                      :identifier => rand(10 ** 10),
+                                      :site_code => CONFIG['site_code'],
+                                      :district_code => CONFIG['district_code'],
+                                      :creator => User.current_user.id})
+
     title = "#{person.first_name} #{person.last_name}"
     content =  format_content(person)
 
@@ -108,7 +133,9 @@ def create
 
     SQLSearch.query_exec(query)
 
-    puts "........... #{person.first_name}"
+    puts "........... #{title}"
+
+    #raise person.inspect
   end
 
 end

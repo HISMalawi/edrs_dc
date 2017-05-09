@@ -401,16 +401,16 @@ class Person < CouchRest::Model::Base
 
   #Identifiers
   def den
-    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier
+    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier rescue "XXXXXXXX"
   end
   def national_id
-    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"National ID"]).first.identifier 
+    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"National ID"]).first.identifier rescue "XXXXXXXX"
   end
   def barcode
-      PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier
+      PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier rescue "XXXXXXXX"
   end
   def drn
-      return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier
+      return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier rescue "XXXXXXXX"
   end
 
   #Person properties

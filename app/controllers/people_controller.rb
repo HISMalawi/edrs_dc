@@ -84,7 +84,7 @@ class PeopleController < ApplicationController
       content =  format_content(person)
 
       query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
-              VALUES('#{person.id}','#{title}','#{content}','#{person.created_at}',NOW(),NOW())"
+              VALUES('#{person.id}','#{title}','#{title} #{content}','#{person.created_at}',NOW(),NOW())"
 
       SQLSearch.query_exec(query)
 
@@ -439,6 +439,13 @@ class PeopleController < ApplicationController
       person = Person.find(params[:id])
 
       person.update_person(params[:id],params[:person])
+
+      title = "#{person.first_name} #{person.last_name}"
+      content =  format_content(person)
+
+      query = "UPDATE documents SET title = '#{title}' content = '#{title} #{content}', updated_at = NOW() WHERE couchdb_id = '#{person.id}'"
+
+      SQLSearch.query_exec(query)
 
       redirect_to "/people/view/#{params[:id]}"
     
