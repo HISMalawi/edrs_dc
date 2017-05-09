@@ -87,9 +87,14 @@ class DcController < ApplicationController
 					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 					render :text => {marked: true}.to_json
 				else
-					duplicate = potential_duplicate?(person)
-
-					ids = duplicate.collect{|dup| dup[0] if dup[0] != params[:id]}
+					existing = []
+					ids = []
+					 duplicates.each do |dup| 
+					 	if dup[0] != params[:id]
+					 		existing_record << dup
+					 		ids << dup[0]
+					 	end
+					 end
 					change_log = [{:duplicates => ids.to_s}]
 					Audit.create({
                       :record_id  => person.id.to_s,
@@ -98,7 +103,8 @@ class DcController < ApplicationController
                       :change_log => change_log
 				     })
 				     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
-				     render :text => {duplicates: true, people: duplicates}.to_json
+
+				     render :text => {:duplicates=> true, :people => existing}.to_json
 				end
 			    #redirect_to "#{params[:next_url].to_s}"
 
