@@ -20,7 +20,11 @@
     <% if params[:registration_type].include? "Unclaimed bodies"%>
         <section name="Police report">
             <sub id="person_police_report_section" name="Police report attached">
-                <%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport('Unclaimed body')") %>
+                <%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()") %>
+
+                <%= text_field_tag "person[police_report_number]", nil, {
+                              :helpText => "Police report number <i style='color: red'>*</i>",
+                              :condition=> "__$('person_police_report').value == 'Yes'"} %>
             </sub>
         </section>
     <%end%>
@@ -57,48 +61,48 @@
                 				 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
                 <%= text_field_tag "person[nationality]",nil , {
-                				:helpText => "Nationality",
+                				:helpText => "Nationality <i style='color: red'>*</i>",
                 				:ajaxURL => "/nationalities?special=Special&search_string=",
                 				:allowFreeText => true} %>
 
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
-                 				:helpText =>"Sex",
+                 				:helpText =>"Sex <i style='color: red'>*</i>",
                  				:tt_requireNextClick => false) %>
 
                 <%= text_field_tag "person[birth_year]", nil, {
-                			:helpText => 'Year of Birth', 
-                			:field_type => 'number',
-                			:absoluteMin => "1890", 
-                			:min => "1940", 
-                			:absoluteMax => Date.today.year, 
-                			:tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
+                          :helpText => "Year of Birth <i style='color: red'>*</i>", 
+                          :field_type => 'number', 
+                          :absoluteMin => "1890", 
+                          :min => (Date.today.year-120), 
+                          :absoluteMax => Date.today.year, 
+                          :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
                 <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {
-                				:helpText => 'Month of Birth', 
-                				:condition => '$("person_birth_year").value.toLowerCase() != "unknown"',
-                				:validationJS => "validateDOB();",
-                				:validationMessage => 'Please enter a valid date', 
-                				:tt_onLoad =>"__$('keyboard').style.display = 'none'",
-                				:tt_requireNextClick => false,
-                				:tt_pageStyleClass =>"NoKeyboard longSelectList",
-                				:tt_onUnLoad=>"validateAndProcessMonth()" }%>
+                           :helpText => "Month of Birth <i style='color: red'>*</i>", 
+                           :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',
+                           :validationJS => "validateDOB();",
+                           :validationMessage => 'Please enter a valid date', 
+                           :tt_onLoad =>"__$('keyboard').style.display = 'none'",
+                           :tt_requireNextClick => false,
+                           :tt_pageStyleClass =>"NoKeyboard longSelectList",
+                           :tt_onUnLoad=>"validateAndProcessMonth()" }%>
 
                 <%= text_field_tag "person[age_estimate]", nil, {
-                				:helpText => 'Age Estimate', 
-                				:absoluteMin => 1, 
-                				:absoluteMax => 120,
-                				:field_type => 'number', 
-                				:condition => '$("person_birth_year").value == "Unknown"', 
-                				:tt_onLoad => "$('nextButton').style.display = 'block';", 
-                				:tt_pageStyleClass => "Numeric NumbersOnly",
-                				:tt_onUnLoad => "setEstimatedAgeValue()"} %>
+                          :helpText => "Age Estimate <i style='color: red'>*</i>",
+                           :absoluteMin => 1, 
+                           :absoluteMax => 120, 
+                           :field_type => 'number', 
+                           :condition => '$("person_birth_year").value == "Unknown"', 
+                           :tt_onLoad => "$('nextButton').style.display = 'block';", 
+                           :tt_pageStyleClass => "Numeric NumbersOnly",
+                           :tt_onUnLoad => "setEstimatedAgeValue()"} %>
 
                 <%= text_field_tag "person[birth_day]",  nil, 
-                				:field_type => 'number',
-                				:helpText => 'Birth Day', 
-                				:condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")',
-                				:tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,
-                				:tt_onUnLoad => "setAgeValues()"%>
+                          :field_type => 'number', 
+                          :helpText => "Birth Day <i style='color: red'>*</i>", 
+                          :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', 
+                          :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,
+                          :tt_onUnLoad => "setAgeValues()"%>
 
                 <%= (f.hidden_field :birthdate) rescue "" %>
 
@@ -110,7 +114,7 @@
             </sub>
 
             <sub id="death_details" name="Details of death">
-                <%= (f.text_field :date_of_death,:helpText => "Date of Death",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
+                <%= (f.text_field :date_of_death,:helpText => "Date of Death <i style='color: red'>*</i>",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
                 <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
@@ -145,7 +149,7 @@
 
            	<sub id='pregnancy_status' name="Pregnancy status">
                <%= select_tag("person[died_while_pregnant]", options_for_select(['No', 'Yes'], @person[:died_while_pregnant]),
-                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", 
+                        :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i> )<i style='color: red'>*</i>", 
                         :condition =>"validatePregnancy()",
                         :tt_requireNextClick => false,
                         :tt_onUnLoad=>"flagIfOut()") %>
@@ -158,13 +162,13 @@
             <sub id="info_details" name="Details and designation">
 
                  <%= (f.text_field :informant_last_name, 
-                				  :helpText => "Informant's  Surname",
+                				  :helpText => "Informant's  Surname <i style='color: red'>*</i>",
                 				  :allowFreeText =>true,
                 				  :ajaxURL => "/get_last_names?search=",
                 				  :tt_onLoad=> "removeUnknown()") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,
-                				  :helpText => "Informant's First Name",
+                				  :helpText => "Informant's First Name <i style='color: red'>*</i>",
                 				  :allowFreeText =>true,
                 				  :ajaxURL => "/get_first_names?search=",
                 				  :tt_onLoad=> "removeUnknown()") rescue "" %>
@@ -185,17 +189,18 @@
 
                 <input id="person_informant_designation"
 	               name="person[informant_designation]"
-	              helpText = "Informant's Designation"
+	              helpText = "Informant's Designation <i style='color: red'>*</i>"
 	               value="<%= @person[:informant_designation] rescue nil %>" />
 
 	             <%= text_field_tag "person[informant_office_name]",nil , {
 	             		:name => "barcode",
-	             		:helpText=> "Informant's office name"} %>
+	             		:helpText=> "Informant's Institution <i style='color: red'>*</i>",
+                        :placeholder => "Zomba prison"} %>
 
 	             <%= text_field_tag "person[informant_office_address]",nil , {
 	             		:name => "barcode",
 	             		:placeholder => "e.g P.O. Box 200 Lilongwe",
-	             		:helpText=> "Informant's office address"} %>
+	             		:helpText=> "Informant's Institution address <i style='color: red'>*</i>"} %>
 
 	             <%= (f.text_field :informant_phone_number,
                                 :helpText => "Informant Telephone Number",
@@ -290,20 +295,20 @@
     <section name="Verification">
             <sub id="village_headman_verification" name="Village head verification">
                 <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
-                					:helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
+                					:helpText =>"Village headman/Block leader signed? <i style='color: red'>*</i>",:tt_requireNextClick => false) %>
 
                 <%= (f.text_field :headman_verification_date,
-                				  :helpText => "Date Village headman/Block leader signed",
+                				  :helpText => "Date Village headman/Block leader signed <i style='color: red'>*</i>",
                                   :field_type => "date",
                                   :condition => "__$('person_headman_verified').value.trim().toLowerCase() =='yes'",
                                   :tt_onLoad =>"removeUnknown()") rescue "" %>
             </sub>
             <sub id="church_verification" name="Church verification">
                 <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
-                		:helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
+                		:helpText =>"Senior Member of Village/Religious institution signed? <i style='color: red'>*</i>",:tt_requireNextClick => false) %>
 
                 <%= (f.text_field :church_verification_date,
-                				:helpText => "Date Senior member of village/Religious institution signed",
+                				:helpText => "Date Senior member of village/Religious institution signed <i style='color: red'>*</i>",
 		                        :field_type => "date",
 		                        :condition => "__$('person_church_verified').value.trim().toLowerCase() =='yes'",
 		                        :tt_onLoad =>"removeUnknown()") rescue "" %>

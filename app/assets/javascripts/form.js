@@ -1939,9 +1939,9 @@
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
 					confirmYesNo("Registering missing person requires a court order",function(){cancelForm()},null,30000);
-					/*setTimeout(function(){
+					setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
-					},100);*/
+					},100);
 			}
 		}
 
@@ -1949,9 +1949,9 @@
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
 					confirmYesNo("Registering "+(registration_type ? registration_type : "Unnatural death")+" requires a police report",function(){cancelForm()},null,30000);
-					/*setTimeout(function(){
+					setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
-					},100);*/
+					},100);
 			}
 		}
 		

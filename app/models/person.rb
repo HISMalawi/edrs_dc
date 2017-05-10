@@ -507,7 +507,9 @@ class Person < CouchRest::Model::Base
   property :delayed_registration, String,  :default =>"No"
   property :registration_type, String, :default => "Natural Death" # Unnatural Death | Unclaimed bodies | Missing Persons | Death abroad
   property :court_order, String, :default => "No"
+  property :court_order_number, String 
   property :police_report, String, :default => "No"
+  property :police_report_number, String
   property :commissioner_documents, String, :default => "No"
 
   #Person's mother properties
