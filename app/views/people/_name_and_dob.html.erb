@@ -43,7 +43,7 @@
                           :helpText => "Year of Birth <i style='color: red'>*</i>", 
                           :field_type => 'number', 
                           :absoluteMin => "1890", 
-                          :min => "1940", 
+                          :min => (Date.today.year-120), 
                           :absoluteMax => Date.today.year, 
                           :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
