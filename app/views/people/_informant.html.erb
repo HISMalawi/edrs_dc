@@ -5,14 +5,14 @@
                                                      :allowFreeText =>true,
                                                      :ajaxURL => "/get_last_names?search=",
                                                      :tt_onUnLoad =>"validateName('person_informant',10)",
-                                                     :tt_onLoad=> "removeUnknown()"} %>
+                                                     :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
                 <%= text_field_tag "person[informant_first_name]",nil,
                           {:helpText => "Informant's First Name <i style='color: red'>*</i>",
                             :allowFreeText =>true,
                             :ajaxURL => "/get_first_names?search=",
                             :tt_onUnLoad =>"validateName('person_informant',11)",
-                            :tt_onLoad=> "removeUnknown()"} %>
+                            :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
                  <%= text_field_tag "person[informant_middle_name]",nil, 
                           {:helpText => "Informant's Other Names",

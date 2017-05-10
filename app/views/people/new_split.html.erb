@@ -200,7 +200,7 @@
         window.onerror = function (errorMsg, url, lineNumber) {
             //alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber);
             if(errorMsg.match("iframe")){
-              // window.top.location.reload();   
+              window.top.location.reload();   
             }
           
         }

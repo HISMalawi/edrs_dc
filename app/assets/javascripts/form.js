@@ -1639,12 +1639,14 @@
 		var barcodeId = '';
 		var focusOnce = false;
 		var barcode_element;
-
+		var checkBarcodeInterval ;
 		function loadBarcodePage() {
 
-		  focusForBarcodeInput()
+			focusForBarcodeInput()
+		 	checkBarcodeInterval = setInterval(function(){
 
-		  checkForBarcode()
+		 		 checkForBarcode();
+		 	},200);
 
 		}
 
@@ -1669,11 +1671,17 @@
 				var input_element = __$('touchscreenInput' + tstCurrentPage);
 
 				if (input_element && input_element.value.match(/.+\$$/i) != null){
-					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);				 
-					 checkBarcode();
-					 gotoNextPage();									
-				}else{
-					window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+					 if(isNaN(barcode_element.value)){
+						showMessage("The barcode number <b>("+barcode_element.value + ")</b> contains letters");
+						setTimeout(function(){
+							window.location.reload();
+						},1500);
+					}else{
+						checkBarcode();
+					 	gotoNextPage();	
+					 	clearInterval(checkBarcodeInterval)
+					}								
 				}
 			}
 		}
@@ -1681,8 +1689,8 @@
 		function checkBarcode(){
 			var value = __$('touchscreenInput' + tstCurrentPage).value;
 			if (value && value.match(/.+\$$/i) != null){
-
 				value = value.substring(0,value.length-1);
+				
 			}
 			postAjax("/search_barcode",{barcode : value},function(response){
 				var response = JSON.parse(response).response
@@ -1839,18 +1847,20 @@
 			if(input.length > 0 ){
 				if (regex.test(input)){				        
 				}else if(parseInt(name_length) > 42){
-					showMessage("Name of the deceased has "+name_length+" character(s) which is more than 42 characters",null,60000);
+					showMessage("Name of the deceased has "+name_length+" character(s) which is more than 42 characters ",null,60000);
 					setTimeout(function(){
 						gotoPage(tstCurrentPage -1);
 					},200);
 				}else {
 				 	var check_number_regex = /\d/;
 				 	var check_space_regex = /\s/;
-
+				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/
 				 	if(check_number_regex.test(input)){
 				 		showMessage("The name contains number(s)",null,30000);
 				 	}else if(check_space_regex.test(input)){
 				 		showMessage("The name contains space(s) it should be one word",null,30000);
+				 	}else if(special_characters.test(input)){
+				 		showMessage("The name should not contains special character(s)",null,30000);
 				 	}else{	
 				 		if(!cont[level]){
 				 			confirmYesNo("Name has "+input.length + " characters but recommended is atmost 24 characters",
@@ -2032,13 +2042,13 @@ function showPhoneSummary(){
  function 
 
  checkSpace(){
- 	__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
- 	/*spaceInterval = setInterval(function(){
+ 	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
+ 	spaceInterval = setInterval(function(){
  		var text_input = __$('touchscreenInput'+tstCurrentPage).value
 	 	if(text_input.length > 0){
 	 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
 	 	}		
- 	},100);*/
+ 	},20);
  	
  }
 

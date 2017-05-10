@@ -11,7 +11,7 @@ development: &development
   district_code:  #BT | LL | ZA
   exact_duplicate: true
   duplicate_service_url: 'http://localhost:3008'
-  duplicate_score: 7
+  duplicate_score: 6
   site_type: dc #facility | dc | remote
   den_assignment_interval: 3
 
