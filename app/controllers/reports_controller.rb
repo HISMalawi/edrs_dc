@@ -19,6 +19,10 @@ class ReportsController < ApplicationController
 		render :layout => "landing"
 	end
 
+	def voided_reports
+		@section = "Voided report"
+		render :layout => "landing"
+	end
 	def report_data
 		status_map ={
 				"Reported" => "NEW",

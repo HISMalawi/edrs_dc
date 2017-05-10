@@ -89,9 +89,9 @@ class DcController < ApplicationController
 				else
 					existing = []
 					ids = []
-					 duplicates.each do |dup| 
+					 duplicate.each do |dup| 
 					 	if dup[0] != params[:id]
-					 		existing_record << dup
+					 		existing << dup
 					 		ids << dup[0]
 					 	end
 					 end
@@ -276,9 +276,7 @@ class DcController < ApplicationController
 	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
-
 	    		@existing_record << Person.find(log['duplicates'])
-
 	    	end
 	    end
 	    @section = "Resolve Duplicate"

@@ -278,6 +278,8 @@ Rails.application.routes.draw do
 
   get "/lost_damaged_reports" =>"reports#lost_damaged_reports"
 
+  get "/voided_reports" => "reports#voided_reports"
+
 ######################################################################################################################################################################################
   resources :users
 
