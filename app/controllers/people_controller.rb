@@ -694,8 +694,11 @@ class PeopleController < ApplicationController
 ########## Render sync status page ##################################################################################################################
   def view_sync
    @site_type = CONFIG['site_type'].to_s
-   if @site_type == "dc"
+    if @site_type == "dc"
       @section ="Synced to HQ"
+      @url = "/dc/query_hq_sync"
+    elsif @site_type =="remote"
+      @section ="Remote Synced to HQ"
       @url = "/dc/query_hq_sync"
     else
       @section ="Synced to DC"
@@ -712,7 +715,7 @@ class PeopleController < ApplicationController
     page = params[:page] rescue 1
       size = params[:size] rescue 7
       people = []
-    Sync.by_district_code.key(CONFIG['district_code'].to_s).page(page).per(size).each do |sync|
+    Sync.by_facility_code.key(CONFIG['facility_code'].to_s).page(page).per(size).each do |sync|
       person = sync.person
       person_details = {
             id:           person.id,

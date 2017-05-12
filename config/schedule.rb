@@ -19,9 +19,9 @@
 
 # Learn more: http://github.com/javan/whenever
 every 2.minutes do
-	rake 'edrs:sync'
+	#rake 'edrs:sync'
 end
 
 every 2.hours do
-	rake 'edrs:update_sync_status'
+	#rake 'edrs:update_sync_status'
 end

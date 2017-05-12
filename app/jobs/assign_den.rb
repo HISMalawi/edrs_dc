@@ -10,7 +10,7 @@ class AssignDen
 
     FileUtils.touch("#{Rails.root}/public/sentinel")
 
-    if Rails.env = 'development' || queue.count > 0
+    if Rails.env == 'development' || queue.count > 0
       SuckerPunch.logger.info "Approving for #{queue.count} record(s)"
     end
     queue.each do |record|
@@ -51,7 +51,7 @@ class AssignDen
         end
 
         #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
-        if Rails.env = 'development'
+        if Rails.env == 'development'
           SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
         end
     end rescue (AssignDen.perform_in(job_interval))

@@ -526,7 +526,12 @@ class DcController < ApplicationController
 		page = params[:page] rescue 1
 	    size = params[:size] rescue 7
 	    people = []
-		Sync.by_district_code.key(CONFIG['district_code'].to_s).page(page).per(size).each do |sync|
+	    if CONFIG['site_type']=="dc"
+	    	district_code = CONFIG['district_code'].to_s
+	    else
+	    	district_code = User.current_user.district_code
+	    end
+		Sync.by_district_code.key(district_code).page(page).per(size).each do |sync|
 			person = sync.person
 			person_details = {
 						id:          	person.id,

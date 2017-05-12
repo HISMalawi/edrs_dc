@@ -46,7 +46,7 @@ class Audit < CouchRest::Model::Base
     if Audit.user.present?
       self.user_id = Audit.user
     else
-      self.user_id = User.current_user.id rescue 'admin'
+      self.user_id = User.current_user.id rescue (User.by_role.key('System Administrator').first.id)
     end
   end
   
