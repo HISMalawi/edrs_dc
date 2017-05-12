@@ -317,6 +317,7 @@ class DcController < ApplicationController
 	end
 
 	def confirm_duplicate
+		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC DUPLICATE")
 		Audit.user = params[:user_id].to_s
 
