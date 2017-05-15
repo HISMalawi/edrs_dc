@@ -1,4 +1,6 @@
 class ReportsController < ApplicationController
+	before_filter :check_user_level_and_site
+	
 	def index
 		@section ="Reports"
 		render :layout => "landing"

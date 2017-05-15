@@ -305,6 +305,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def check_user_level_and_site
+    user = User.current_user
+    if CONFIG['site_type'] == "facility" && user.role != "System Administrator"
+      redirect_to "/logout" and return  if user.site_code != CONFIG['facility_code']
+    end
+  end
+
   def check_database
     create_query = "CREATE TABLE IF NOT EXISTS documents (
                     id int(11) NOT NULL AUTO_INCREMENT,

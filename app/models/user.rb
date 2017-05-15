@@ -4,6 +4,8 @@ class User < CouchRest::Model::Base
   
   after_create :create_audit
 
+  before_save :set_site
+
   property :username, String
   property :first_name, String
   property :last_name, String
@@ -33,6 +35,12 @@ class User < CouchRest::Model::Base
 
   def activities_by_level(level)
     Role.by_level_and_role.key([level, self.current_user.role]).last.activities # rescue []
+  end
+
+  def set_site
+    if CONFIG['site_type'] =="facility"
+      self.site_code = CONFIG["facility_code"]
+    end
   end
 
   design do
@@ -118,13 +126,6 @@ class User < CouchRest::Model::Base
 
     user.role = (params[:role] rescue nil || params[:user]['role'] rescue nil)
 
-
-
-    if !CONFIG['facility_code'].nil? && !CONFIG['facility_code'].blank?       
-
-         user.site_code = CONFIG['facility_code']
-
-    end
 
     if CONFIG['site_type'] == 'remote'
       user.district_code = (District.by_name.key(params[:user]['district'] ) rescue CONFIG['district_code'])

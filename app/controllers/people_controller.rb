@@ -6,6 +6,8 @@ class PeopleController < ApplicationController
 
   before_filter :facility_info
 
+  before_filter :check_user_level_and_site
+
   def new_split
       render :layout => false
   end
