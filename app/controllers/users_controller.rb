@@ -524,8 +524,8 @@ class UsersController < ApplicationController
 
   def create_mysql_database
     start_date = "1900-01-01 00:00:00".to_time
-    end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
-
+    #end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+    end_date = DateTime.now
     data = [] ; sql_insert_field_plus_data = {}
     set_model = eval(params[:model_name])
     table_name = params[:table_name]

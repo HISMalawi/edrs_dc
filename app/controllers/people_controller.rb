@@ -88,6 +88,8 @@ class PeopleController < ApplicationController
 
       SQLSearch.query_exec(query)
 
+      send_person_to_mysql(person)
+
       duplicate_index(person)
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
@@ -163,6 +165,67 @@ class PeopleController < ApplicationController
       redirect_to "/people/view"
 
         	
+  end
+
+  def send_person_to_mysql(person)
+    person_keys = person.keys.sort
+
+    query = "INSERT INTO people ("
+
+    person_keys.each do |key|
+        field = key
+        next if key == "type"
+        if key =="_id"
+          field = "person_id"
+        end
+        if person_keys[0] == key
+            query = "#{query}#{field}"
+        else
+            query = "#{query},#{field}"
+        end
+    end
+
+    query = "#{query}) VALUES("
+
+    person_keys.each do |key|
+        next if key == "type"
+        value = person[key]
+        if value.blank?
+          value ="NULL"
+        end
+
+        if person_keys[0] == key
+            query = "#{query} '#{value}'"
+        else
+            query = "#{query},'#{value}'"
+        end
+    end
+
+    query = "#{query})"
+
+    SQLSearch.query_exec(query)
+  end
+
+  def update_person_to_mysql(person)
+    query = "UPDATE people SET "
+    person_keys = person.keys.sort
+
+    person_keys.each do |key|
+      next if key =="_id" || key =="type"
+      value = person[key]
+      if value.blank?
+          value ="NULL"
+      end
+      if person_keys[0] == key
+            query = "#{query} #{key} = '#{value}'"
+      else
+            query = "#{query},#{key} = '#{value}'"
+      end
+
+    end
+    query = " WHERE person_id = '#{person.id}'"
+
+    SQLSearch.query_exec(query)
   end
 
   def search_similar_record
@@ -446,6 +509,8 @@ class PeopleController < ApplicationController
       query = "UPDATE documents SET title = '#{title}' content = '#{title} #{content}', updated_at = NOW() WHERE couchdb_id = '#{person.id}'"
 
       SQLSearch.query_exec(query)
+
+      update_person_to_mysql(person)
 
       redirect_to "/people/view/#{params[:id]}"
     

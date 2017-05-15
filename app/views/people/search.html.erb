@@ -144,9 +144,9 @@
 
 		<%= select_tag "field_group[]", options_for_select(["Details of person","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()" ,:condition => "__$('search_criteria').value =='General Search'"}%>
 
-		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false}  %>
+		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false, :ajaxURL => "/get_last_names?search="}  %>
 
-		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false}  %>
+		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false, :ajaxURL => "/get_first_names?search="}  %>
 
 		<%= select_tag "gender", options_for_select(["","Female","Male"], " "), {:helpText => 'Gender',:tt_pageStyleClass =>"NoKeyboard",:condition =>false , :optional=>true}%>
 
