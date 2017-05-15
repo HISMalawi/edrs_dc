@@ -54,13 +54,21 @@
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                     <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
                 <% elsif site_type =="dc" || site_type =="remote" || params[:registration_type] == 'Dead on Arrival' %>
-                    <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
-                    					:id=> "person_place_of_death",
-                    					:helpText =>"Place of Death <i style='color: red'>*</i>", 
-                    					:tt_onUnLoad =>"setAjaxUrl(-1)",
-                    					:tt_requireNextClick => false,
-                    					:tt_pageStyleClass =>"NoKeyboard") %>
-
+                    <% if params[:registration_type] == 'Dead on Arrival' %>
+                        <%= select_tag("person[place_of_death]", options_for_select(["","Home","Other"], @person[:place_of_death]),
+                              :id=> "person_place_of_death",
+                              :helpText =>"Place of Death <i style='color: red'>*</i>", 
+                              :tt_onUnLoad =>"setAjaxUrl(-1)",
+                              :tt_requireNextClick => false,
+                              :tt_pageStyleClass =>"NoKeyboard") %>
+                    <%else%>
+                        <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
+                              :id=> "person_place_of_death",
+                              :helpText =>"Place of Death <i style='color: red'>*</i>", 
+                              :tt_onUnLoad =>"setAjaxUrl(-1)",
+                              :tt_requireNextClick => false,
+                              :tt_pageStyleClass =>"NoKeyboard") %>
+                    <%end%>
                     <%= text_field_tag "person[place_of_death_district]", nil, {
                     					:helpText => "Place of Death District <i style='color: red'>*</i>" , 
                     					:tt_onUnLoad => "setAjaxUrl(0)"} %>
