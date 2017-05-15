@@ -231,12 +231,12 @@
 		<% @i = 0 %>
 		<% @existing_record.each do |record| %>
 				<%if @i%2 == 0 %>
-					<div style="background:#b6ccda" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
+					<div style="background:#b6ccda ; margin:1%" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
 					<%= record.last_name %> <%= record.first_name %>
 					 died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)	
 					</div>
 				<%else%>
-					<div style="background:#96b6ca" onclick="showPerson('<%= record.i%>')" class="duplicates_panel">
+					<div style="background:#96b6ca;margin:1%" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
 					<%= record.last_name %> 	<%= record.first_name %> 
 					died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)
 					</div>

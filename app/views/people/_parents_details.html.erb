@@ -1,11 +1,11 @@
 <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
-              <%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
+              <% if false %>
+                <%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
                      :helpText =>"Mother's details available?",
                      :tt_requireNextClick => false,
                      :tt_onLoad=>"if(!flag){hideConfirmation()};flag=true") %>
-
-                <%= text_field_tag "person[mother_last_name]",nil, 
+                 <%= text_field_tag "person[mother_last_name]",nil, 
                           {:helpText => "Mother's Surname",
                             :optional => true,
                             :allowFreeText =>true, 
@@ -13,6 +13,19 @@
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad=>"validateName('person_mother',4)",
                             :condition => "__$('mother_details_available').value =='Yes'"} %>
+              <%else%>
+                  <input type="hidden" id="mother_details_available" value="Yes">
+                   <%= text_field_tag "person[mother_last_name]",nil, 
+                          {:helpText => "Mother's Surname",
+                            :optional => true,
+                            :allowFreeText =>true, 
+                            :ajaxURL => "/get_last_names?search=",
+                            :tt_onLoad=> "removeUnknown();checkSpace(); if(!flag){hideConfirmation()};flag=true", 
+                            :tt_onUnLoad=>"validateName('person_mother',4)",
+                            :condition => "__$('mother_details_available').value =='Yes'"} %>
+              <%end%>
+
+               
 
                 <%= text_field_tag "person[mother_first_name]",nil,
                           {:helpText => "Mother's First Name",
@@ -40,9 +53,13 @@
                              :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
             </sub>
             <sub id="details_father" name="Details of father">
+              <%if false%>
               <%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
                       :helpText =>"Father's details available?",
                       :tt_requireNextClick => false) %>
+              <%else%>
+                  <input type="hidden" id="father_details_available" value="Yes">
+              <%end%>
 
                 <%= text_field_tag "person[father_last_name]",nil,
                           {:helpText => "Father's Surname",

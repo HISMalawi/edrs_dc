@@ -274,9 +274,13 @@ class DcController < ApplicationController
 	    @existing_record = []
 
 	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
+
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
-	    		@existing_record << Person.find(log['duplicates'])
+	    		ids = log['duplicates'].split(",")
+	    		ids.each do |id|
+	    			 @existing_record << Person.find(id)
+	    		end
 	    	end
 	    end
 	    @section = "Resolve Duplicate"
