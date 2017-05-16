@@ -2039,9 +2039,7 @@ function showPhoneSummary(){
  }
 
  var spaceInterval ;
- function 
-
- checkSpace(){
+ function checkSpace(){
  	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
  	spaceInterval = setInterval(function(){
  		var text_input = __$('touchscreenInput'+tstCurrentPage).value
