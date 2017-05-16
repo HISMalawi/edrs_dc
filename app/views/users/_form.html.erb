@@ -2,15 +2,20 @@
       String.prototype.capitalize = function(lower) {
             return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
       }
-      
+      var spaceInterval = null;
       function checkSpace(){
           spaceInterval = setInterval(function(){
-            var text_input = __$('touchscreenInput'+tstCurrentPage).value
+            var text_input = __$('touchscreenInput'+tstCurrentPage).value;
+            console.log(text_input);
             if(text_input.length > 0){
               __$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
             }   
           },20);
       
+     }
+
+     function removeCheckSpace(){
+          clearInterval(spaceInterval);
      }
 </script>
 <%= form_for(@user) do |f| %>
@@ -28,18 +33,18 @@
       <% end %>
       <% if request.path.match(/new/) %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username"%>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username" %>
 
       <%else %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username" %>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username"%>
 
       <% end %>
 
-            <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name", :tt_onLoad=>"checkSpace()" %>
+            <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name" %>
 
         
-            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Last Name",:tt_onLoad=>"checkSpace()"  %>
+            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Last Name" %>
 
             <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles" %>
       
