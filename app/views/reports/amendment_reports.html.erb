@@ -53,7 +53,7 @@
 </style>
 <table style="width:96%;margin:auto; margin-top: 1.5%;height:300px !important">
 	<tr>
-		<td style="text-align:right"><div id="time_line" style="float:left;text-align:center">Today</div><button onclick="window.location.href ='/pick_dates?next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="text-align:right"><div id="time_line" style="float:left;text-align:center">Today</div><button onclick="window.location.href ='/pick_dates?url=/amendment_report_data&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
 		<td  colspan="2">
@@ -92,12 +92,7 @@
     resizeDiv();
 
     function loadReport(element){
-    	var list = __$("statuses").getElementsByTagName('li');
-    	for(var i = 0 ; i < list.length ; i++){
-    		list[i].style.background ="#ffffff";
-    	}
-    	element.style.background ="#9ec6e2";
-    	var url ="/report_data/"+element.id;
+    	var url ="/amendment_report_data";
     	if(start_date.length > 2){
     		__$("time_line").innerHTML = (new Date(start_date).format())+" to "+(new Date(end_date).format());
     		url = url + "?start_date="+start_date+"&end_date="+end_date;

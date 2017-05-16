@@ -1015,6 +1015,10 @@ class Person < CouchRest::Model::Base
 
     view :by_district_code_and_registration_type
 
+    view :by_voided_date
+
+    view :by_district_code_and_voided_date
+
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 
