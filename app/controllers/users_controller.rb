@@ -283,14 +283,27 @@ class UsersController < ApplicationController
 
     if params[:active].present? && params[:active] == "true"
 
-      users = User.active_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-
+      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
+        key = [CONFIG['facility_code'], eval(params[:active])]
+        users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      else
+         users = User.active_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      end
     elsif params[:active].present? && params[:active] == "false"
 
-      users = User.inactive_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-
+      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
+        key = [CONFIG['facility_code'], eval(params[:active])]
+        users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      else
+        users = User.inactive_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      end
     else
-      users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
+        users = User.by_site_code.key(CONFIG['facility_code']).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      else
+        users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      end
+      
     end
 
     users.each do |user|

@@ -50,7 +50,7 @@ class User < CouchRest::Model::Base
     view :by_role
     view :by_created_at
     view :by_updated_at
-
+    view :by_site_code
     # active views
     view :active_users,
          :map => "function(doc){
@@ -67,6 +67,13 @@ class User < CouchRest::Model::Base
               last_name: doc.last_name, email: doc.email,role: doc.role,
               creator: doc.creator, notify: doc.notify, updated_at: doc.updated_at});
             }
+          }"
+    view :by_facility_activation,
+          :map => "function(doc){
+                if(doc['type'] == 'User'){
+                    emit([doc['site_code'], doc['active']],1)
+                }
+                     
           }"
                 
      filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"    
