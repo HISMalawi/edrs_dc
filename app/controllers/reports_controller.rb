@@ -1,6 +1,6 @@
 class ReportsController < ApplicationController
 	before_filter :check_user_level_and_site
-	
+
 	def index
 		@section ="Reports"
 		render :layout => "landing"
@@ -73,7 +73,14 @@ class ReportsController < ApplicationController
 		render :text => {:male => male , :female=>female }.to_json
 	end
 
+	def voided_report_data
+		male = 0
+		female = 0
+		render :text => {:male => male , :female=>female }.to_json
+	end
+
 	def pick_dates
+		@url = params[:url]
 		render :layout => "touch"
 	end
 end
