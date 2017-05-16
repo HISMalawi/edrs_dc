@@ -1,6 +1,9 @@
 <script type="text/javascript">
+      String.prototype.capitalize = function(lower) {
+            return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+      }
+      
       function checkSpace(){
-      //__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
           spaceInterval = setInterval(function(){
             var text_input = __$('touchscreenInput'+tstCurrentPage).value
             if(text_input.length > 0){
@@ -36,7 +39,7 @@
             <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name", :tt_onLoad=>"checkSpace()" %>
 
         
-            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Last Name", :required => true, :helpText => "Last Name",:tt_onLoad=>"checkSpace()"  %>
+            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Last Name",:tt_onLoad=>"checkSpace()"  %>
 
             <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles" %>
       
