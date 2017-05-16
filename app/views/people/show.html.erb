@@ -65,7 +65,7 @@
 		}
 		.clickable:hover{
 
-				color: #3e98c6;
+				color: #00bce0;
 
 				cursor: pointer;
 
@@ -235,7 +235,12 @@
 <div id="table_container">
 
 		<table id="summary" style="">
-			
+			<tr>
+				<td style="border-right:none"><b>Registration Category : </b></td>
+				<td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
+				<td colspan="2" style="border-right:none"><b>Record Status : </b></td>
+				<td colspan="7" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+			</tr>
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased</th>
 			</tr>
@@ -1055,6 +1060,7 @@
 		   		__$('facility').setAttribute('disabled','disabled')
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
+
 
 		   	//duplicatesPopup();
 </script>
