@@ -147,6 +147,7 @@ class DcController < ApplicationController
 	end
 
 	def reject_record
+			person = Person.find(params[:id])
 			PersonRecordStatus.change_status(person, "DC REJECTED")			
 			Audit.create({
 							:record_id => params[:id].to_s    , 
