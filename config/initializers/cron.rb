@@ -1,4 +1,6 @@
-AssignDen.perform_in(3)
+if CONFIG['site_type'] != "facility"
+	AssignDen.perform_in(3)
+end
 if Rails.env == 'development'
      SyncData.perform_in(30)
 else
