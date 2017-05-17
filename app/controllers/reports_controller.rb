@@ -102,7 +102,7 @@ class ReportsController < ApplicationController
 		male = 0
 		female = 0
 		data.each do |record|
-			if record.person.gender == "Male"
+			if record.gender == "Male"
 				male = male + 1
 			else
 				female = female + 1
