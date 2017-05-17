@@ -1,6 +1,5 @@
 <style type="text/css">
-		
-		#table_container{
+	#table_container{
 
 				height: calc(88% - 20px);
 
@@ -16,147 +15,85 @@
 				margin-top: 1%;
 
 
-		}
-		#summary1{
-
-			margin-bottom: 1%;
-			width:80% !important;
-			float: left;
-
-		}
-		#summary1 td {
-
-				background: #ffffff;
-				text-align: left !important;
-		}
-		#summary2{
-
-			margin-bottom: 1%;
-			width:40% !important;
-			float: right;
-
-		}
-		#summary2 td {
-
-				background: #ffffff;
-				text-align: left !important;
-
-		}
-		.clickable{
-
-			font-weight: bold;
-		}
-		.clickable:hover{
-
-				color: #3e98c6;
-
-				cursor: pointer;
-
-		}
-		.scroll{
-			background: #bed5de;
-
-            border : 0.005em solid #b3b1b1;
-
-            font-size: 3.8em;
-
-            min-width: 20px;
-
-            margin: 0.3%;
-
-            box-shadow: 2.5px 2.5px 1px #888888;
-
-           	padding: 0.1%;
-
-           	text-align: center
-		}
-		#up {
-			position: absolute;
-
-			right: 3%;
-
-			top :13%;
-		}
-
-		#down {
-			position: absolute;
-
-			right: 3%;
-
-			bottom :20%;
-		}
-		#existing{
-
-				width: 55%;
-				float: left;
-				height: 300px;
-		}
-
-		#duplicates{
-			width: 38%;
-			float: right;
-			height: 300px;
-			margin-right: 5%;
-		}
-		#details td {
-
-			border: none !important;
-			padding: 0.3em !important;
-			text-align: left !important;
-			padding-left:5% !important;
-			font-size: 1.2em;
-
-		}
-		.duplicates_panel{
-
-			width: 90%;
-			padding: 0.8em;
-			font-size: 1.2em;
-			text-align: center;
-			border: 1.5px solid #a2a09d;
-			box-shadow: 3.5px 3.5px 1.5px #888888;
-			border-radius: 5px;
-		}
-		.duplicates_panel:hover{
-
-			background: #83a8bf !important;
-			font-weight: bold;
-			color: #ffffff;
-		}
-		#popup_details{
-			width: 90%;
-			margin: auto;
-		}
-		#popup_details th ,#popup_details td {
-
-			text-align: left;
-			font-size: 0.8em;
-			padding: 0.5em;
-		}
-		#popup_details tr:nth-child(odd){
-				background: #ffffff;
-		}
-		.orange{
-			background: #ce731b;
-			border:1px solid #ba6614;
-		}
-
-		.orange:hover{
-
-			background: #d16b07;
-		}
-
+	}
+	.details{
+		
+	}
+	.details td {
+		padding: 0.25em !important;
+	}
 </style>
-
-<div style="position : absolute; width : 80%; bottom:58px;; right :10%; margin-right : 2%">
-
-</div>
-
 <div id="table_container">
-	<div id="existing" >
-		<div style="width:98% ; text-align :center ; font-size: 1.5em;padding: 0.3em;background:#fbf7e2;color:#DEB887;border:1px solid #ffffff" ;text-shadow: -1px 0 #ffffff, 0 1px #ffffff, 1px 0 #ffffff, 0 -1px #ffffff;"><b>Duplicate Record</b></div>
-		<div>
-			<table style="width:100% !important" id="details">
+	<table style="width:48% !important;float:left" class="details">
+					<tr>
+						<th colspan="2">Potential Duplicate (<%= @person.status %>)</th>
+					</tr>
+					<tr>
+						<td><b>Surname</b></td>
+						<td><%= @person.last_name %></td>
+					</tr>
+					<tr>
+						<td><b>First Name</b></td>
+						<td><%= @person.first_name %></td>
+					</tr>
+					<tr>
+						<td><b>Nationality</b></td>
+						<td><%= @person.nationality%></td>
+					</tr>
+					<tr>
+						<td><b>Sex</b></td>
+						<td><%= @person.gender %></td>
+					</tr>
+					<tr>
+						<td><b>Date of Birth</b></td>
+						<td><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
+					</tr>
+					<tr>
+						<td><b>Date of Death</b></td>
+						<td><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
+					</tr>
+
+					<tr>
+						<td><b>Place of Death</b></td>
+						<% if @person.place_of_death == 'Hospital/Institution'%>
+
+					 	<td><%= @person.hospital_of_death %></td>
+
+						<%elsif @person.place_of_death == 'Home'%>
+
+							 <td><%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%> , <%= @person.place_of_death_village%> District</td>
+
+						<%elsif @person.place_of_death == 'Other' %>
+
+							 <td><%= @person.other_place_of_death rescue '' %></td>
+
+						<% end %>
+					</tr>
+					<tr>
+						<td><b>Mother surname</b></td>
+						<td><%= @person.mother_last_name %></td>
+					</tr>
+					<tr>
+						<td><b>Mother Firstname</b></td>
+						<td><%= @person.mother_first_name %></td>
+					</tr>
+					<tr>
+						<td><b>Father Surname</b></td>
+						<td><%= @person.father_last_name %></td>
+					</tr>
+					<tr>
+						<td><b>Father Firstname</b></td>
+						<td><%= @person.father_first_name %></td>
+					</tr>
+
+	</table>
+	<table style="width:48% !important;float:right" class="details">
+				<thead>
+					<tr>
+						<th colspan="2" id="existing_head">Potential Duplicate (<%= @person.status %>) </th>
+					</tr>
+				</thead>
+				<tbody id="existing">
 					<tr>
 						<td><b>Surname</b></td>
 						<td><%= @person.last_name %></td>
@@ -222,38 +159,9 @@
 						<td><b>Father Firstname</b></td>
 						<td><%= @person.father_first_name %></td>
 					</tr>
-
-			</table>
-		</div>
-	</div>
-	<div id="duplicates" >
-		<div style="width:100% ; text-align :center ; font-size: 1.5em;padding:0.3em"><b>Existing Record(s)</b></div>
-		<% @i = 0 %>
-		<% @existing_record.each do |record| %>
-				<%if @i%2 == 0 %>
-					<div style="background:#b6ccda ; margin:1%" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
-					<%= record.last_name %> <%= record.first_name %>
-					 died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)	
-					</div>
-				<%else%>
-					<div style="background:#96b6ca;margin:1%" onclick="showPerson('<%= record.id%>')" class="duplicates_panel">
-					<%= record.last_name %> 	<%= record.first_name %> 
-					died on (<%= Date.parse(record.date_of_death.to_s).strftime("%d/%b/%Y") %>)
-					</div>
-				<%end%>
-				<% @i = @i + 1 %>
-		<%end%>
-	</div>
+				</tbody>
+	</table>
 </div>
-<% if false %>
-  <div id="up" class="scroll" onmousedown="up()">
-     <i class=" fa fa-arrow-up"></i>
- </div>
- <div id="down" class="scroll" onmousedown="down()">
-     <i class=" fa fa-arrow-down"></i>
- </div>
-<%end%>
-
  <div style="position : absolute; width : 80%; bottom:58px;; right :2%; margin-right : 2%">
  	<% if params[:next_url] %>
         <button  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
@@ -266,9 +174,9 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
 
- 		<button class="green" style="float: right; margin-right:1%" onmousedown="recordNotDuplicate()"><span>Not a duplicate</span></button>
+ 		<button class="green" style="float: right; margin-right:1%" onmousedown="showNext()"><span>Next Similar Record</span></button>
 
- 		<button class="red" style="float: right; margin-right:3%" onmousedown="recordIsDuplicate()"><span>Duplicate</span></button>
+ 		<button class="green" style="float: right; margin-right:3%" onmousedown="resolveDuplicate()"><span>Resolve duplicate</span></button>
 
 </div>
 <script type="text/javascript">
@@ -288,255 +196,31 @@
 					showPopupMessage("<%=params[:error]%>","<%= params[:topic]%>")
 
 			<% end %>
-	
-			function recordNotDuplicate(){
-
-					var url ="/confirm_record_not_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id%>?next_url=<%=params[:next_url]%>";
-
-							
-					showConfirmMessage("","Are you sure record is not duplicate <%= @existing_record.length %> other(s)?",url,"#79a3c1")
-
-					popUpRecordDetails();
 			
 
-			}
 
-			function recordIsDuplicate(){
+			var ids = "<%= @existing_ids %>".split(",");
 
-					var url ="/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
+			var number = 0;
 
-							
-					showConfirmMessage("","Are you sure record is dupliacte with <%= @existing_record.length %> other(s)?",url,"#8a0120")
+			function showNext(){
 
-					popUpRecordDetails();
-			
-
-			}
-
-			function popUpRecordDetails(){
-
-					var popup_container = __$("msg.popup")
-
-					popup_container.style.width = "40%";
-
-					popup_container.style.left =  "calc(43% - 210px)";
-
-					popup_container.style.top =  "10%";
-
-					popup_container.style.height= "500px";
-
-					var control = __$("msg.content");
-
-					control.style.height = "350px"
-
-					var table = document.createElement("table");
-
-					table.id = "popup_details"
-
-					table.style.width = "80%";
-
-					table.style.margin ="auto";
-
-					control.appendChild(table);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Surname";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.last_name %>";
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "First Name";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.first_name %>";
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Nationality";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.nationality %>";
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Sex";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.gender %>";
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Date of Birth";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.birthdate.to_date.strftime('%d/%b/%Y') %>";
-
-					tr.appendChild(td);
-
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Date of Death";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "<%= @person.date_of_death.to_date.strftime('%d/%b/%Y') %>";
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("th");
-
-					td.innerHTML = "Place of Death";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					<% if @person.place_of_death == 'Hospital/Institution'%>
-
-					 	td.innerHTML = "<%= @person.hospital_of_death %>";
-
-					<%elsif @person.place_of_death == 'Home'%>
-						 td.innerHTML = "<%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%>,"+
-						 				" <%= @person.place_of_death_village%> District";
-					<%elsif @person.place_of_death == 'Other' %>
-						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
-					<% end %>
-
-					tr.appendChild(td);
-
-
-			}
-
-			function editField(field){
-
-					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
-
-							showConfirmMessage("Are you sure u want to edit the field?", "Edit field", "/people/edit/<%= @person.id %>/"+field,"#e2a648")
-
-					<%end%>
-
-			}
-
-			function up(){
-
-				//alert("Yeeeeeei up")
-				__$("table_container").scrollBy(0, -100);
-				
-			}
-
-			function down(){
-
-				__$("table_container").scrollBy(0,100);
-
-			}
-
-
-			function showPerson(id){
-
-				var url = "/people/find/"+id
+				var url = "/people/find/"+ids[number];
 				ajaxGETRequest(url, function(data){
 
 					console.log(url);
-
-					showPopupMessage("","Existing record","");
-
 					var data  = JSON.parse(data);
-
-					var shield = __$("msg.shield");
-
-                	shield.style.backgroundColor = "rgba(128,128,128,0.2) !important";
-
-					var popup_container = __$("msg.popup")
-
-					popup_container.style.width = "40%";
-
-					popup_container.style.left = "calc(58% - 50px)";
-
-					popup_container.style.top = "calc(22% - 50px)";
-
-					popup_container.style.height= "500px";
-
-					var control = __$("msg.content");
-
-					control.style.height = "350px"
-
-					control.style.overflowY= "scroll";
-
-					var table = document.createElement("table");
-
-					table.id = "popup_details"
-
-					table.style.width = "80%";
-
-					table.style.margin ="auto";
-
-					control.appendChild(table);
+					var table = __$("existing");
+					table.innerHTML ="";
 
 					var tr = document.createElement("tr");
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Surname";
-
+					td.style.fontWeight ="bold";
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
@@ -549,15 +233,17 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "First Name";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
 
-					td.innerHTML = data.first_name
+					td.innerHTML = data.first_name;
 
 					tr.appendChild(td);
 
@@ -565,7 +251,9 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
+
+					td.style.fontWeight ="bold";
 
 					td.innerHTML = "Nationality";
 
@@ -581,9 +269,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Sex";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -597,9 +287,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Date of Birth";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -614,9 +306,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Date of Death";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -630,9 +324,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Place of Death";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -657,9 +353,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Mother First Name";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -673,9 +371,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Mother Last Name";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -689,9 +389,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Father First Name";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -705,9 +407,11 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("th");
+					var td = document.createElement("td");
 
 					td.innerHTML = "Fathe Last Name";
+
+					td.style.fontWeight ="bold";
 
 					tr.appendChild(td);
 
@@ -716,8 +420,51 @@
 					td.innerHTML = data.father_last_name
 
 					tr.appendChild(td);
+ 
+					__$("existing_head").innerHTML = "Existing Record ("+data.status+") "+( number + 1 )+"/"+ids.length; 
+
+					number = (number + 1) % ids.length;
+
+				});
+
+				
+			}
+
+			showNext();
+
+			function resolveDuplicate(){
+				showPopupMessage("Record is a potential duplicate to <b>"+ids.length+ "</b> other record(s)", "Resolve Duplicates");
+				var bt_panel = __$("pop_button_panel");
+				bt_panel.innerHTML ="";
+				var duplicate = document.createElement("button");
+				duplicate.innerHTML = "Duplicate";
+				duplicate.className = "red";
+				duplicate.onmousedown = function(){
+					var url ="/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
+					window.location.href = url
+				}
+				bt_panel.appendChild(duplicate);
 
 
-				})
+				var notduplicate = document.createElement("button");
+				notduplicate.innerHTML = "Not Duplicate";
+				notduplicate.className = "green";
+				notduplicate.onmousedown = function(){
+					var url ="/confirm_record_not_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id%>?next_url=<%=params[:next_url]%>";
+					window.location.href = url;
+				}
+				bt_panel.appendChild(notduplicate);
+
+				var close = document.createElement("button");
+				close.innerHTML = "Close";
+				close.className = "blue"
+				close.onmousedown = function(){
+					if(__$("msg.shield")){
+						document.body.removeChild(__$("msg.shield"));
+					}
+					
+				}
+				bt_panel.appendChild(close);
+
 			}
 </script>

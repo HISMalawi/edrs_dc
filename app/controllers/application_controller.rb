@@ -218,6 +218,42 @@ class ApplicationController < ActionController::Base
         search_content = search_content + registration_district + " " 
       end    
 
+      if person.nationality.present?
+        search_content = search_content + person.nationality + " " 
+      end
+
+      return search_content.squish
+
+  end
+
+  def readable_format(result)
+      person = Person.find(result[0])
+      return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
+                    " Born on #{DateTime.parse(person.birthdate.to_s).strftime('%d/%B/%Y')} "+
+                    " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +
+                    " at #{person.place_of_death_district}"]
+  end
+
+  def format_content_back(person)
+     
+     search_content = ""
+      if person.middle_name.present?
+         search_content = person.middle_name + ", "
+      end 
+
+      birthdate_formatted = person.birthdate.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + birthdate_formatted + " "
+      death_date_formatted = person.date_of_death.to_date.strftime("%Y-%m-%d")
+      search_content = search_content + death_date_formatted + " "
+      search_content = search_content + person.gender.upcase + " "
+
+      if person.place_of_death_district.present?
+        search_content = search_content + person.place_of_death_district + " " 
+      else
+        registration_district = District.find(person.district_code).name
+        search_content = search_content + registration_district + " " 
+      end    
+
       if person.mother_first_name.present?
         search_content = search_content + person.mother_first_name + " " 
       end
@@ -244,14 +280,6 @@ class ApplicationController < ActionController::Base
 
       return search_content.squish
 
-  end
-
-  def readable_format(result)
-      person = Person.find(result[0])
-      return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
-                    " Born on #{DateTime.parse(person.birthdate.to_s).strftime('%d/%B/%Y')} "+
-                    " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +
-                    " at #{person.place_of_death_district}"]
   end
   protected
 
@@ -309,6 +337,9 @@ class ApplicationController < ActionController::Base
     user = User.current_user
     if CONFIG['site_type'] == "facility" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code != CONFIG['facility_code']
+    end
+    if CONFIG['site_type'] == "dc" && user.role != "System Administrator"
+      redirect_to "/logout" and return  if user.site_code.present?
     end
   end
 

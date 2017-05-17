@@ -399,6 +399,10 @@ class Person < CouchRest::Model::Base
 
   end
 
+  def self.void_person(person,user_id)
+    person.update_attributes({:voided => true, :voided_date => Time.now, :voided_by => user_id})
+  end
+
   #Identifiers
   def den
     return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier rescue "XXXXXXXX"

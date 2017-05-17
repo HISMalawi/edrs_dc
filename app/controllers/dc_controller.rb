@@ -89,24 +89,33 @@ class DcController < ApplicationController
 					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 					render :text => {marked: true}.to_json
 				else
+					can_mark_as_potential_duplicate = false
+
 					existing = []
 					ids = []
-					 duplicate.each do |dup| 
+					duplicate.each do |dup| 
 					 	if dup[0] != params[:id]
 					 		existing << dup
 					 		ids << dup[0]
+					 		dup_status = Person.find(dup[0]).status rescue ""
+					 		can_mark_as_potential_duplicate = true if dup_status !="DC POTENTIAL DUPLICATE"
 					 	end
-					 end
-					change_log = [{:duplicates => ids.to_s}]
-					Audit.create({
-                      :record_id  => person.id.to_s,
-                      :audit_type => "POTENTIAL DUPLICATE",
-                      :reason     => "Record is a potential",
-                      :change_log => change_log
-				     })
-				     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
+					end
+					if can_mark_as_potential_duplicate 
+						change_log = [{:duplicates => ids.to_s}]
+						Audit.create({
+	                      :record_id  => person.id.to_s,
+	                      :audit_type => "POTENTIAL DUPLICATE",
+	                      :reason     => "Record is a potential",
+	                      :change_log => change_log
+					     })
+					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
 
-				     render :text => {:duplicates=> true, :people => existing}.to_json
+					     render :text => {:duplicates=> true, :people => existing}.to_json
+					else
+						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+						render :text => {marked: true}.to_json
+					end
 				end
 			    #redirect_to "#{params[:next_url].to_s}"
 
@@ -275,16 +284,20 @@ class DcController < ApplicationController
 
 	    @existing_record = []
 
+	    @existing_ids = ""
 	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
 
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
+	    		@existing_ids = log['duplicates']
 	    		ids = log['duplicates'].split(",")
 	    		ids.each do |id|
-	    			 @existing_record << Person.find(id)
+	    			 #@existing_record << Person.find(id)
+	    			 @existing_record << id
 	    		end
 	    	end
 	    end
+	   
 	    @section = "Resolve Duplicate"
 	end
 
@@ -297,7 +310,7 @@ class DcController < ApplicationController
 	end
 
 	def confirm_not_duplicate
-		PersonRecordStatus.change_status(person, "DC APPROVED")
+		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
 		Audit.user = params[:user_id].to_s
 		Audit.create({
 
@@ -325,6 +338,7 @@ class DcController < ApplicationController
 	def confirm_duplicate
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC DUPLICATE")
+		Person.void_person(person,params[:user_id])
 		Audit.user = params[:user_id].to_s
 
 		Audit.create({
