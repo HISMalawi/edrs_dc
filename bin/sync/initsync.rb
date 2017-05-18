@@ -3,7 +3,12 @@ Person.count
 district_code = CONFIG['district_code']
 person_count = Person.count
 
-source = @settings[:dc]
+if CONFIG['site_type'] == "facility"
+	source = @settings[:fc]
+else
+	source = @settings[:dc]
+end
+
 hq = @settings[:hq]
 
 target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
@@ -18,6 +23,10 @@ target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{
 JSON.parse(target_to_source).each do |key, value|
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
 end
+
+puts "\nDistricts :#{District.count} \n"
+puts "\nTAs :#{TraditionalAuthority.count} \n"
+puts "\nVillages :#{Village.count} \n"
 
 
 
