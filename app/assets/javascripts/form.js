@@ -1784,6 +1784,14 @@
 		function validateDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = (new Date(date)).format("YYYY-mm-dd");
+			var today = new Date();
+			today = today.format("YYYY-mm-dd");
+			if (date > today){
+				showMessage("Date of death entered ("+ (new Date(date)).format()+") is greater than today "+(new Date(today)).format(),null,30000);
+				setTimeout(function(){
+					gotoPage(tstCurrentPage -1);
+				},100)
+			}
 			var min = new Date();
 			min.setDate(-42);
 			min = min.format("YYYY-mm-dd");
@@ -1814,6 +1822,14 @@
 		function validateDateInformant(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = new Date(date).format("YYYY-mm-dd");
+			var today = new Date();
+			today = today.format("YYYY-mm-dd");
+			if (date > today){
+				showMessage("Date entered ("+ (new Date(date)).format()+") is greater than today "+(new Date(today)).format(),null,30000);
+				setTimeout(function(){
+					gotoPage(tstCurrentPage -1);
+				},100)
+			}
 			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd")
 			if(date < min){
 				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date informant signed ("+(new Date(date)).format() +")",null,30000);
@@ -1826,6 +1842,14 @@
 		function validateWithDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = new Date(date).format("YYYY-mm-dd");
+			var today = new Date();
+			today = today.format("YYYY-mm-dd");
+			if (date > today){
+				showMessage("Date  entered ("+ (new Date(date)).format()+") is greater than today "+(new Date(today)).format(),null,30000);
+				setTimeout(function(){
+					gotoPage(tstCurrentPage -1);
+				},100)
+			}
 			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd");
 			if(date < min){
 				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date signed ("+(new Date(date)).format() +")",null,30000);

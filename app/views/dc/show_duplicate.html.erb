@@ -175,8 +175,9 @@
    <%end %>
 
  		<button class="green" style="float: right; margin-right:1%" onmousedown="showNext()"><span>Next Similar Record</span></button>
-
+ 		<% if @person.status == "DC POTENTIAL DUPLICATE" %>
  		<button class="green" style="float: right; margin-right:3%" onmousedown="resolveDuplicate()"><span>Resolve duplicate</span></button>
+ 		<% end%>
 
 </div>
 <script type="text/javascript">

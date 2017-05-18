@@ -233,6 +233,7 @@
                  <%=Date.parse(@amendment_audit.change_log['date_of_death'][1].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
                 </td>
                 <td>
+                <%=Date.parse(@amendment_audit.change_log['date_of_death'][0].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('place_of_death')">
