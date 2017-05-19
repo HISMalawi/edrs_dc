@@ -338,7 +338,7 @@ class ApplicationController < ActionController::Base
   def check_user_level_and_site
     user = User.current_user
     if CONFIG['site_type'] == "facility" && user.role != "System Administrator"
-      redirect_to "/logout" and return  if user.site_code != CONFIG['facility_code']
+      redirect_to "/logout" and return  if user.site_code.to_s != CONFIG['facility_code'].to_s
     end
     if CONFIG['site_type'] == "dc" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code.present?
