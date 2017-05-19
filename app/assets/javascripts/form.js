@@ -1214,7 +1214,7 @@
 		   		__$('facility').setAttribute('disabled','disabled')
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
-		   	if(place_of_death.trim().toLowerCase().match('Other')){
+		   	if(place_of_death.trim().toLowerCase().match('other')){
 		   		__$('other').checked = true
 		   		__$('home').setAttribute('disabled','disabled');
 		   		__$('facility').setAttribute('disabled','disabled')

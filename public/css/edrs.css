@@ -298,6 +298,16 @@ button:active {
     background-image: linear-gradient(to bottom, #333, #ccc);
     filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#333, endColorstr=#ccc);
 }
+.button-small {
+    font-size: 15px !important;
+    width: 60px;
+    cursor: pointer;
+    height: 20px !important;
+    padding: 5px 5px 5px 5px;
+    font-weight: bold;
+    color: blue;
+}
+
 #app_header{
 
       width: 100%;
@@ -314,7 +324,7 @@ button:active {
 
     right: 1.5%;
 
-    bottom:7%;
+    bottom:4%;
 
     text-align: center;
 }
