@@ -323,13 +323,15 @@ class ApplicationController < ActionController::Base
   end
 
   def check_den_assignment
-    last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-    job_interval = CONFIG['ben_assignment_interval']
-    job_interval = 1.5 if job_interval.blank?
-    job_interval = job_interval.to_f
-    now = Time.now
-    if (now - last_run_time).to_f > job_interval
-      AssignDen.perform_in(1)
+    if CONFIG['site_type'].to_s != "facility"
+      last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+      job_interval = CONFIG['ben_assignment_interval']
+      job_interval = 1.5 if job_interval.blank?
+      job_interval = job_interval.to_f
+      now = Time.now
+      if (now - last_run_time).to_f > job_interval
+        AssignDen.perform_in(1)
+      end
     end
   end
 
