@@ -1,6 +1,7 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
+  after_create :write_to_mysql
 
   property :person_record_id, String
   property :identifier_type, String #Entry Number|Registration Number|Death Certificate Number| National ID Number
@@ -74,6 +75,10 @@ class PersonIdentifier < CouchRest::Model::Base
   def set_distict_code
     self.district_code = self.person.district_code
 
+  end
+
+  def write_to_mysql
+    
   end
 
   def self.calculate_check_digit(serial_number)
