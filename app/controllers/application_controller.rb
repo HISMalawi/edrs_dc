@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth,:check_den_assignment,:check_database, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_den_assignment,:check_database,:check_den_table, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -359,8 +359,27 @@ class ApplicationController < ActionController::Base
                     PRIMARY KEY (id),
                     FULLTEXT KEY content (content)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
-    SQLSearch.query_exec(create_query)
+    SQLSearch.query_exec(create_query);
+
+
                       
+  end
+
+  def check_den_table
+    raise "Hello".inspect
+    create_query_den_table = "CREATE TABLE IF NOT EXISTS dens (
+                                  den_id int(11) NOT NULL AUTO_INCREMENT,
+                                  person_id varchar(225) NOT NULL,
+                                  den varchar(15) NOT NULL,
+                                  den_sort_value int(11) NOT NULL,
+                                  create_at datetime NOT NULL,
+                                  updated_at datetime NOT NULL,
+                                  PRIMARY KEY (den_id),
+                                  UNIQUE KEY den (den),
+                                  KEY person_id (person_id),
+                                  CONSTRAINT dens_ibfk_1 FOREIGN KEY (person_id) REFERENCES people (person_id)
+                              ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+    SQLSearch.query_exec( create_query_den_table);
   end
 
   def access_denied
