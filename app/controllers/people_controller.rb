@@ -197,9 +197,9 @@ class PeopleController < ApplicationController
         end
 
         if person_keys[0] == key
-            query = "#{query} '#{value}'"
+            query = "#{query} '#{value.to_s.gsub("'","''")}'"
         else
-            query = "#{query},'#{value}'"
+            query = "#{query},'#{value.to_s.gsub("'","''")}'"
         end
     end
 
@@ -840,6 +840,11 @@ end
       end
       people =  PersonRecordStatus.registration_type_and_recent_status.keys(keys).page(page).per(size).each
       render :text =>people.to_json
+  end
+
+  def sync_data
+      `rake edrs:sync`
+      redirect_to "/"
   end
 
 

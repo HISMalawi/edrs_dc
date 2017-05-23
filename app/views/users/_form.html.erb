@@ -33,20 +33,20 @@
       <% end %>
       <% if request.path.match(/new/) %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username" %>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" %>
 
       <%else %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username"%>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username <i style='color: red'>*</i>"%>
 
       <% end %>
 
-            <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name" %>
+            <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name <i style='color: red'>*</i>" %>
 
         
-            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Last Name" %>
+            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Surame <i style='color: red'>*</i>" %>
 
-            <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles" %>
+            <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles <i style='color: red'>*</i>" %>
       
         <% if request.path.match(/new/) %>
 
@@ -56,19 +56,20 @@
                                      :required => true, 
                                      :textCase => "lower",
                                      :absolute_min => 6,
-                										 :absolute_max => 20 ,:helpText => "Password"%>
+                										 :absolute_max => 20 ,:helpText => "Password <i style='color: red'>*</i>",
+                                     :tt_onUnLoad=>"passwordLength()"%>
           
-                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password", :tt_onUnLoad=>"comfirmPassword()"%>
+                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password <i style='color: red'>*</i>", :tt_onUnLoad=>"comfirmPassword()"%>
         
         <% else %>
 
-                <%= f.password_field :password, :class => "input_cell", :placeholder => "Password", :optional => true, :textCase => "lower", :helpText => "Password" %>
+                <%= f.password_field :password, :class => "input_cell", :placeholder => "Password", :optional => true, :textCase => "lower", :helpText => "Password <i style='color: red'>*</i>" %>
 
         <% end %>
 
         <% if CONFIG['site_type'] == "remote" %>
                <%= text_field_tag "user[district]",nil,
-                          {:helpText => "District of user" ,:ajaxURL => "/districts?place=Health Facility&search_string=" }%>
+                          {:helpText => "District of user <i style='color: red'>*</i>" ,:ajaxURL => "/districts?place=Health Facility&search_string=" }%>
         <%end%>
 
             <%= f.text_field :email, :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>
@@ -83,23 +84,35 @@
 </button-->
 
 <script>
-
+        var invalid;
         function comfirmPassword(){
 
                     var confirm_password = __$('touchscreenInput' + tstCurrentPage).value.trim()
 
                     var password = __$("user_password").value.trim();
 
-                    if(confirm_password != password){
+                    if(invalid && confirm_password != password){
 
                           setTimeout(function(){ 
-
+                              showMessage("Password don't match", "Message")
                               gotoPage(tstCurrentPage - 1, false, true); 
-                              showPopupMessage("Password don't match", "Message")
 
-                            })
-
+                            },500);
                     }
+        }
+
+        function passwordLength(){
+              var password = __$('touchscreenInput' + tstCurrentPage).value
+              if(password.length != 0 && password.length < 6 ){
+                    invalide = false;
+                     setTimeout(function(){ 
+                              showMessage("Password length is less than 6 characters", "Message");
+                              gotoPage(tstCurrentPage - 1, false, true);
+
+                     },100);
+              }else{
+                  invalid = true;
+              }
         }
 
 </script>

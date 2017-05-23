@@ -280,32 +280,25 @@ class UsersController < ApplicationController
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
 
     results = []
-
-    if params[:active].present? && params[:active] == "true"
-
+    if params[:active].present?
       if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
-        key = [CONFIG['facility_code'].to_s, eval(params[:active])]
-        users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+          key = [CONFIG['facility_code'].to_s, eval(params[:active])]
+          users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      elsif CONFIG['site_type'] == "dc" && CONFIG['district_code'].present?
+          key = [CONFIG['district_code'],eval(params[:active])]
+          users = User.by_district_actication.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       else
-         users = User.active_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-      end
-    elsif params[:active].present? && params[:active] == "false"
-
-      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
-        key = [CONFIG['facility_code'].to_s, eval(params[:active])]
-        users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-      else
-        users = User.inactive_users.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+           users = User.by_active.key(eval(params[:active])).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       end
     else
       if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
         users = User.by_site_code.key(CONFIG['facility_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      elsif  CONFIG['site_type'] == "dc" && CONFIG['district_code'].present?
+        users = User.by_district_code.key(CONFIG['district_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       else
         users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       end
-      
     end
-
     users.each do |user|
 
       record = {

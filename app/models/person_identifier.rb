@@ -126,14 +126,58 @@ class PersonIdentifier < CouchRest::Model::Base
     num = n.to_s.rjust(7,"0")
     new_den = "#{code}/#{num}/#{year}"
 
-    self.create({
-                    :person_record_id=>person.id.to_s,
-                    :identifier_type =>"DEATH ENTRY NUMBER",
-                    :identifier => new_den,
-                    :creator => creator,
-                    :den_sort_value => (year.to_s + num).to_i,
-                    :district_code => (person.district_code rescue CONFIG['district_code'])
-                })
+    check_new_den = SQLSearch.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
+
+    if check_new_den.blank?
+        sort_value = (year.to_s + num).to_i
+        self.create({
+                        :person_record_id=>person.id.to_s,
+                        :identifier_type =>"DEATH ENTRY NUMBER",
+                        :identifier => new_den,
+                        :creator => creator,
+                        :den_sort_value => sort_value,
+                        :district_code => (person.district_code rescue CONFIG['district_code'])
+                    })
+
+        den_mysql_insert_query = "INSERT INTO dens(person_id,den,den_sort_value,created_at,updated_at) 
+                                  VALUES('#{person.id}','#{new_den}','#{sort_value}',NOW(),NOW())"
+        SQLSearch.query_exec(den_mysql_insert_query)
+
+        status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
+
+        status.update_attributes({:voided => true})
+
+        PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => "DC APPROVED",
+                                  :district_code => (district_code rescue CONFIG['district_code']),
+                                  :creator => creator})
+
+        person.approved = "Yes"
+        person.approved_at = Time.now
+
+        person.save
+
+        Audit.create(record_id: person.id,
+                       audit_type: "Audit",
+                       user_id: creator,
+                       level: "Person",
+                       reason: "Approved record")
+
+        stat = Statistic.by_person_record_id.key(person.id).first
+
+        if stat.present?
+           stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
+        else
+          stat = Statistic.new
+          stat.person_record_id = person.id
+          stat.date_doc_created = person.created_at.to_time
+          stat.date_doc_approved = person.approved_at.to_time
+          stat.save
+        end
+    else
+        puts "DEN already present"
+    end
 
 
   end

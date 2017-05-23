@@ -138,6 +138,8 @@ Rails.application.routes.draw do
 
   get "/query_registration_type_and_printed" => "people#query_registration_type_and_printed"
 
+  get "/people/sync_data" => "people#sync_data"
+
 ##############################################################################################################################################
 
 ################################ Routes for DC controller ####################################################################################
