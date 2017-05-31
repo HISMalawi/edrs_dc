@@ -674,7 +674,6 @@ class Person < CouchRest::Model::Base
   property :facility_code, String
   property :district_code, String
 
-  property :date_created, Date
   property :created_by, String
   property :changed_by, String
 

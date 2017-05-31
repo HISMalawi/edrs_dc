@@ -51,6 +51,7 @@ class User < CouchRest::Model::Base
     view :by_created_at
     view :by_updated_at
     view :by_site_code
+    view :by_district_code
     # active views
     view :active_users,
          :map => "function(doc){
@@ -72,6 +73,13 @@ class User < CouchRest::Model::Base
           :map => "function(doc){
                 if(doc['type'] == 'User'){
                     emit([doc['site_code'], doc['active']],1)
+                }
+                     
+          }"
+    view :by_district_actication,
+          :map =>  "function(doc){
+                if(doc['type'] == 'User'){
+                    emit([doc['district_code'], doc['active']],1)
                 }
                      
           }"
