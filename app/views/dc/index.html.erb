@@ -1,5 +1,15 @@
 <style type="text/css">
-    
+   a {
+      text-decoration:none;
+      color: #2f4f4f;   
+   } 
+   a:hover {
+    color: #076591;
+  } 
+  #stats tr:hover{
+      color: #076591;
+
+  }
 </style>
 <div id="default" style="width: 100%; height: 400px; text-align: center; vertical-align: top;">
 
@@ -127,10 +137,16 @@
                     <td >      
                         <table id="stats">
                               <tr><th colspan="3">Statistics</th></tr>
-                              <tr><td>Newly Registered</td><td> :</td> <td id="reported">0</td></tr>
-                              <tr><td>Newly Approved</td><td> :</td> <td id="approved">0</td></tr>
-                              <tr><td>Rejected</td><td> :</td> <td id="rejected">0</td></tr>
-                              <tr><td>Incomplete</td><td> :</td> <td id="incomplete">0</td></tr>
+                          <% if User.current_user.role == "ADR"%>
+                            <tr onmousedown="window.location.href='/dc/approve_cases'"><td><a href="" >Complete </a><i class="fa fa-envelope"></i></td><td> :</td> <td id ="complete" >0</td></tr>
+                              
+                          <% end %>
+                            <tr onmousedown="window.location.href='/people/view'"><td><a href="">Newly Registered</a></td><td> :</td> <td id="reported">0</td></tr>
+                             <tr onmousedown="window.location.href='/dc/approved_cases'"><td><a href="">Newly Approved</a></td><td> :</td> <td id="approved">0 </td></tr>
+                              <tr onmousedown="window.location.href='/dc/rejected_cases'"><td><a href="">Rejected</a></td><td> :</td> <td id="rejected">0</td></tr>
+                              <tr><td><a href="">Incomplete</a></td><td> :</td> <td id="incomplete">0</td></tr>
+                          
+
                         </table>
                     </td>
               </tr>
@@ -145,6 +161,7 @@
                         Approved     : "DC APPROVED",
                         Rejected     : "DC REJECTED",
                         Incomplete   : "DC INCOMPLETE"
+
           }
 
             simpleAjaxRequest("/dc/counts_by_status?status=NEW", function(data){
@@ -177,6 +194,14 @@
                    __$("incomplete").innerHTML = data.count     
 
             });
+
+             simpleAjaxRequest("/dc/counts_by_status?status=DC COMPLETE", function(data){
+
+                  var data =JSON.parse(data);
+
+                   __$("complete").innerHTML = data.count     
+
+            }); 
             resizeDiv();
 
 </script>

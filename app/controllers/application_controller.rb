@@ -366,7 +366,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_den_table
-    raise "Hello".inspect
+   
     create_query_den_table = "CREATE TABLE IF NOT EXISTS dens (
                                   den_id int(11) NOT NULL AUTO_INCREMENT,
                                   person_id varchar(225) NOT NULL,
