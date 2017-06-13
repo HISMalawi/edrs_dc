@@ -416,7 +416,7 @@ class ApplicationController < ActionController::Base
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
           SQLSearch.query_exec(create_query_den_table)
     end
-  end
+end
 
 
   def access_denied
