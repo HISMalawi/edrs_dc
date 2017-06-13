@@ -1,6 +1,6 @@
 require 'sql_search'
 User.current_user = User.first
-CONFIG = YAML.load_file(Rails.root.join('config', 'couchdb.yml'))[Rails.env]
+#CONFIG = YAML.load_file(Rails.root.join('config', 'couchdb.yml'))[Rails.env]
 def format_content(person)
      
      search_content = ""
@@ -47,10 +47,50 @@ def format_content(person)
 
       return search_content.squish
 
+end
+
+def send_person_to_mysql(person)
+    person_keys = person.keys.sort
+
+    query = "INSERT INTO people ("
+
+    person_keys.each do |key|
+        field = key
+        next if key == "type"
+        if key =="_id"
+          field = "person_id"
+        end
+        if person_keys[0] == key
+            query = "#{query}#{field}"
+        else
+            query = "#{query},#{field}"
+        end
+    end
+
+    query = "#{query}) VALUES("
+
+    person_keys.each do |key|
+        next if key == "type"
+        value = person[key]
+        if value.blank?
+          value ="NULL"
+        end
+
+        if person_keys[0] == key
+            query = "#{query} '#{value.to_s.gsub("'","''")}'"
+        else
+            query = "#{query},'#{value.to_s.gsub("'","''")}'"
+        end
+    end
+
+    query = "#{query})"
+
+    SQLSearch.query_exec(query)
   end
+
 def create
   
-  (1.upto(100000)).each do |n|
+  (1.upto(20000)).each do |n|
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
@@ -73,7 +113,7 @@ def create
     district = District.by_name.key(person.current_district.strip).first
     ta =TraditionalAuthority.by_district_id_and_name.key([district.id, person.current_ta]).first
     person.current_village = Village.by_ta_id.key(ta.id.strip).collect{|f| f.name }.sample
-    
+    person.district_code = CONFIG['district_code']
 
 
 =begin
@@ -111,9 +151,14 @@ def create
 
     person.reload
 
+    send_person_to_mysql(person)
+
+    #status = ["NEW","MARKED APPROVAL"].sample
+    status = "MARKED APPROVAL"
+
     PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
-                                      :status => "NEW",
+                                      :status => status,
                                       :district_code =>  person.district_code,
                                       :created_by => User.current_user.id})
 
