@@ -448,35 +448,40 @@ class UsersController < ApplicationController
   end
 
   def change_password
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Change own password"))
+    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Change own password"))
 
     @section = "Change Password"
 
-    @targeturl = "/"
+    @targeturl = "/change_password"
 
     @user = User.current_user
 
-    render :layout => false#render :layout => "facility"
+    render :layout => "touch"#false#render :layout => "facility"
 
+  end
+  def confirm_password
+      user = User.current_user rescue User.find(params[:user_id])
+      password = params[:old_password]
+      if user.password_matches?(password)
+          render :text => {:response => true}.to_json
+      else
+        render :text => {:response => false}.to_json
+      end
+        
   end
 
   def update_password
      
     user = User.current_user
-
-    result = user.password_matches?(params[:old_password])
+    user.plain_password = params[:user][:new_password]
+    user.password_attempt = 0
+    user.last_password_date = Time.now
+    user.save
     
-    if user && !user.password_matches?(params[:old_password]) 
-    	 result = "not same"
-    elsif user && user.password_matches?(params[:new_password]) 
-    	 result = "same" 
-    else
-      user.update_attributes(:password_hash => params[:new_password], :password_attempt => 0, :last_password_date => Time.now)
-      flash["notice"] = "Your new password has been changed succesfully" 
-      Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
-    end
+    flash["notice"] = "Your new password has been changed succesfully" 
+    Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
     
-    render :text => result
+    redirect_to '/my_account'
 
   end
 

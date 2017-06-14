@@ -260,6 +260,14 @@ Rails.application.routes.draw do
   get 'create_mysql_database/:page_number/:records_per_page/:model_name/:table_name/:table_primary_key' => 'users#create_mysql_database'
   
   post '/database_load' => 'users#database_load'
+
+  post "/confirm_password" =>"users#confirm_password"
+
+  get "/confirm_password" =>"users#confirm_password"
+
+  post "/update_password" => "users#update_password"
+
+  get "/update_password" => "users#update_password"
   
   get 'database_load_progress/:table_name' => 'users#database_load_progress'
 
