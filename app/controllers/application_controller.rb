@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
                                                   "mark_as_pending","mark_for_reprint","search_barcode","proceed_amend",
-                                                  "block_user","unblock_user","database_load"]
+                                                  "block_user","unblock_user","database_load","confirm_password","update_password","samePassword","passwordLength"]
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied

@@ -48,7 +48,10 @@
   </div>
   <div class="right">
         <table style="margin-top:15%">
-            <tr><td><button>Change Password</button></td></tr>
+         
+            <tr><td><button onclick="window.location='/change_password'">Change Password</button></td></tr>
+
+         
         <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") %>
             <tr><td><button onclick="window.location='/users/<%= @user.id %>/edit'">Edit demographics</button></td></tr>
         <%end%>
