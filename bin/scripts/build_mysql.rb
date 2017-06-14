@@ -1,6 +1,7 @@
  require 'sql_search'
+
  sql = "SET FOREIGN_KEY_CHECKS = 0;"
- SQLSearch..query_exec(sql)
+ SQLSearch.query_exec(sql)
  PersonIdentifier.can_assign_den = false
  @@file_path = "#{Rails.root.to_s}/app/assets/data/MySQL_data/"
  @couchdb_files = {
@@ -248,4 +249,4 @@ load_sql_files
 PersonIdentifier.can_assign_den = true
 
 sql = "SET FOREIGN_KEY_CHECKS = 1;"
-SQLSearch..query_exec(sql)
+SQLSearch.query_exec(sql)

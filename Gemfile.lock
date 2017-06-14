@@ -87,6 +87,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multi_json (1.12.1)
+    mysql2 (0.3.16)
     netrc (0.11.0)
     nokogiri (1.7.0.1)
       mini_portile2 (~> 2.1.0)
@@ -178,6 +179,7 @@ DEPENDENCIES
   global_phone_dbgen
   jbuilder (~> 2.0)
   jquery-rails
+  mysql2 (= 0.3.16)
   passenger (= 4.0.53)
   rails (= 4.1.15)
   rake (= 10.3.2)
