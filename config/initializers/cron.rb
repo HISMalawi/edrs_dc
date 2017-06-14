@@ -17,7 +17,7 @@ else
 end
 
 if Rails.env == 'development'
-        	LoadMysql.perform_in(600)
+    LoadMysql.perform_in(600)
 else
     midnight = (Date.today).to_date.strftime("%Y-%m-%d 23:59:59").to_time
     now = Time.now
