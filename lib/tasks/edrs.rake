@@ -18,4 +18,8 @@ namespace :edrs do
   task update_sync_status: :environment do
     require Rails.root.join('bin','./scripts/update_sync_status.rb')
   end
+
+  task build_mysql: :environment do
+    require Rails.root.join('bin','./scripts/build_mysql.rb')
+  end
 end

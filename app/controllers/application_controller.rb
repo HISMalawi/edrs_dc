@@ -361,7 +361,41 @@ class ApplicationController < ActionController::Base
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
     SQLSearch.query_exec(create_query);
 
+    create_status_table = "CREATE TABLE IF NOT EXISTS person_record_status (
+                            person_record_status_id varchar(225) NOT NULL,
+                            person_record_id varchar(255) DEFAULT NULL,
+                            status varchar(255) DEFAULT NULL,
+                            prev_status varchar(255) DEFAULT NULL,
+                            district_code varchar(255) DEFAULT NULL,
+                            facility_code varchar(255) DEFAULT NULL,
+                            voided tinyint(1) NOT NULL DEFAULT '0',
+                            reprint tinyint(1) NOT NULL DEFAULT '0',
+                            registration_type  varchar(255) DEFAULT NULL,
+                            creator varchar(255) DEFAULT NULL,
+                            updated_at datetime DEFAULT NULL,
+                            created_at datetime DEFAULT NULL,
+                          PRIMARY KEY (person_record_status_id)
+                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+    SQLSearch.query_exec(create_status_table);   
 
+    create_identifier_table = "CREATE TABLE person_identifier (
+                                person_identifier_id varchar(225) NOT NULL,
+                                person_record_id varchar(255) DEFAULT NULL,
+                                identifier_type varchar(255) DEFAULT NULL,
+                                identifier varchar(255) DEFAULT NULL,
+                                check_digit text,
+                                site_code varchar(255) DEFAULT NULL,
+                                den_sort_value int(11) DEFAULT NULL,
+                                drn_sort_value int(11) DEFAULT NULL,
+                                district_code varchar(255) DEFAULT NULL,
+                                creator varchar(255) DEFAULT NULL,
+                                _rev varchar(255) DEFAULT NULL,
+                                updated_at datetime DEFAULT NULL,
+                                created_at datetime DEFAULT NULL,
+                              PRIMARY KEY (person_identifier_id)
+                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"  
+
+    SQLSearch.query_exec(create_identifier_table);            
                       
   end
 
@@ -383,6 +417,7 @@ class ApplicationController < ActionController::Base
           SQLSearch.query_exec(create_query_den_table)
     end
 end
+
 
   def access_denied
     respond_to do |format|

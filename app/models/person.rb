@@ -451,16 +451,20 @@ class Person < CouchRest::Model::Base
   property :place_of_death_foreign_hospital, String
   property :cause_of_death_available, String
   property :cause_of_death1, String
+  property :icd_10_1, String
   property :other_cause_of_death1, String
-  property :cause_of_death2, String
-  property :other_cause_of_death2, String
-  property :cause_of_death3, String
-  property :other_cause_of_death3, String
-  property :cause_of_death4, String
-  property :other_cause_of_death4, String
   property :onset_death_interval1, String
+  property :cause_of_death2, String
+  property :icd_10_2, String
+  property :other_cause_of_death2, String
   property :onset_death_interval2, String
+  property :cause_of_death3, String
+  property :icd_10_3, String
+  property :other_cause_of_death3, String
   property :onset_death_interval3, String
+  property :cause_of_death4, String
+  property :icd_10_4, String
+  property :other_cause_of_death4, String
   property :onset_death_interval4, String
   property :cause_of_death_conditions, String
   property :icd_10_code, String

@@ -492,7 +492,8 @@ class UsersController < ApplicationController
    def build_mysql_database
     @section = "Build MSQL"
     start_date = "1900-01-01 00:00:00".to_time
-    end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+    #end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+    end_date = (Date.today).to_date.strftime("%Y-%m-%d 23:59:59").to_time
 
     @couchdb_files = {
       'Person' => {count: Person.count, name: 'Person doc.', id: 'person_doc', 

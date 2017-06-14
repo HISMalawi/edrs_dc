@@ -1,7 +1,9 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
-  after_create :write_to_mysql
+  after_create :insert_in_mysql
+
+  cattr_accessor :can_assign_den
 
   property :person_record_id, String
   property :identifier_type, String #Entry Number|Registration Number|Death Certificate Number| National ID Number
@@ -13,6 +15,7 @@ class PersonIdentifier < CouchRest::Model::Base
   property :district_code, String
   property :creator, String
   property :_rev, String
+
 
   timestamps!
 
@@ -77,10 +80,6 @@ class PersonIdentifier < CouchRest::Model::Base
 
   end
 
-  def write_to_mysql
-    
-  end
-
   def self.calculate_check_digit(serial_number)
     # This is Luhn's algorithm for checksums
     # http://en.wikipedia.org/wiki/Luhn_algorithm
@@ -128,7 +127,10 @@ class PersonIdentifier < CouchRest::Model::Base
 
     check_new_den = SQLSearch.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
-    if check_new_den.blank?
+    check_den_assigened =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
+
+    if check_new_den.blank? && self.can_assign_den && check_den_assigened.blank?
+        self.can_assign_den = false
         sort_value = (year.to_s + num).to_i
         self.create({
                         :person_record_id=>person.id.to_s,
@@ -175,11 +177,15 @@ class PersonIdentifier < CouchRest::Model::Base
           stat.date_doc_approved = person.approved_at.to_time
           stat.save
         end
+
+        self.can_assign_den = true
+    elsif check_new_den.present?
+        puts "DEN (#{check_new_den})  already present"
+    elsif check_den_assigened.present?
+        puts "Person already assigned DEN (#{check_den_assigened})"
     else
-        puts "DEN already present"
+        puts "Can not assign DEN"
     end
-
-
   end
 
   def self.generate_drn(person)
@@ -211,6 +217,10 @@ class PersonIdentifier < CouchRest::Model::Base
                     :drn_sort_value => drn_sort_value,
                     :district_code => (person.district_code rescue CONFIG['district_code'])
                 })
+  end
+
+  def insert_in_mysql
+    
   end
 
 end

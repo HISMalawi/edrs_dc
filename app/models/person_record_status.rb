@@ -1,6 +1,7 @@
 class PersonRecordStatus < CouchRest::Model::Base
 
 	before_save :set_district_code,:set_facility_code, :set_registration_type
+	after_create :insert_in_mysql
 
 	property :person_record_id, String
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...
@@ -117,6 +118,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
 		if status.present?
 			status.update_attributes({:voided => true})
+			update_status_to_mysql(status)
 			PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
@@ -132,5 +134,42 @@ class PersonRecordStatus < CouchRest::Model::Base
                                   :creator => (User.current_user.id rescue nil)})
 		end
 		
+	end
+
+	def insert_in_mysql
+		query = "INSERT INTO person_record_status(
+				  		person_record_status_id,
+				  		person_record_id,
+				  		status,
+				  		prev_status,
+				  		district_code,
+				  		facility_code,
+				  		registration_type,
+				  		creator,
+				  		updated_at,
+				  		created_at) VALUES (
+				  		'#{self.id}',
+				  		'#{self.person_record_id}',
+				  		'#{self.status}',
+				  		'#{(self.prev_status rescue 'NULL')}',
+				  		'#{self.district_code}',
+				  		'#{self.facility_code rescue 'NULL'}',
+				  		'#{self.registration_type}',
+				  		'#{self.creator}',
+				  		'#{self.updated_at}',
+				  		'#{self.created_at}')"
+
+      	SQLSearch.query_exec(query)
+	end
+	def update_status_to_mysql(status)
+		query = "UPDATE person_record_status SET 
+				  		person_record_id = '#{status.person_record_id}',
+				  		status = '#{status.status}',
+				  		prev_status = '#{status.prev_status}',
+				  		voided = '#{status.voided}',
+				  		updated_at = '#{status.updated_at}' 
+				  		WHERE person_record_status_id = '#{status.id}'"
+
+      	SQLSearch.query_exec(query)
 	end
 end

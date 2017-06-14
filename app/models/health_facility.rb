@@ -21,7 +21,7 @@ class HealthFacility < CouchRest::Model::Base
       view :by_f_type
       view :by_district_id,
            :map=>"function(doc){
-                    if(doc.type == 'HealthFacility'){
+                    if(doc.type == 'HealthFacility' && doc.name.length > 0){
                         emit(doc.district_id,{name : doc.name, created_at : doc.created_at})
                     }
            }"
