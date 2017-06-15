@@ -18,7 +18,7 @@ if Rails.env == "development"
 	end
 
  sql = "SET FOREIGN_KEY_CHECKS = 0;"
- SQLSearch.query_exec(sql)
+ SimpleSQL.query_exec(sql)
 
 	create_query = "DROP TABLE documents;
 					CREATE TABLE IF NOT EXISTS documents (
@@ -34,7 +34,7 @@ if Rails.env == "development"
                     PRIMARY KEY (id),
                     FULLTEXT KEY content (content)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
-    SQLSearch.query_exec(create_query);
+    SimpleSQL.query_exec(create_query);
 
     puts "Drop documents"
 
@@ -54,7 +54,7 @@ if Rails.env == "development"
                             created_at datetime DEFAULT NULL,
                           PRIMARY KEY (person_record_status_id)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SQLSearch.query_exec(create_status_table); 
+    SimpleSQL.query_exec(create_status_table); 
 
      puts "Drop person_record_status"  
 
@@ -76,7 +76,7 @@ if Rails.env == "development"
                               PRIMARY KEY (person_identifier_id)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"  
                             
-    SQLSearch.query_exec(create_identifier_table);
+    SimpleSQL.query_exec(create_identifier_table);
 
     puts "Drop person_record_status"   
 
@@ -94,7 +94,7 @@ if Rails.env == "development"
                                       KEY person_id (person_id),
                                       CONSTRAINT dens_ibfk_1 FOREIGN KEY (person_id) REFERENCES people (person_id)
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-          SQLSearch.query_exec(create_query_den_table)
+          SimpleSQL.query_exec(create_query_den_table)
 
           puts "Drop dens"   
     end
@@ -339,6 +339,6 @@ if Rails.env == "development"
                             PRIMARY KEY (person_id)
                           ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
                           SET FOREIGN_KEY_CHECKS = 1;"
-    SQLSearch.query_exec(create_people_table)    
+    SimpleSQL.query_exec(create_people_table)    
 
 end

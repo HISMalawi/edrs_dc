@@ -85,7 +85,7 @@ class ReportsController < ApplicationController
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
 
-			count_row = SQLSearch.query_exec(query).split("\n")[1]
+			count_row = SimpleSQL.query_exec(query).split("\n")[1]
 			
 			if count_row.present?
 				data[g.downcase] = count_row.split("\s")[0]

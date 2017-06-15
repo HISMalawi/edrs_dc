@@ -159,7 +159,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 				  		'#{self.updated_at}',
 				  		'#{self.created_at}')"
 
-      	SQLSearch.query_exec(query)
+      	SimpleSQL.query_exec(query)
 	end
 	def update_status_to_mysql(status)
 		query = "UPDATE person_record_status SET 
@@ -170,6 +170,6 @@ class PersonRecordStatus < CouchRest::Model::Base
 				  		updated_at = '#{status.updated_at}' 
 				  		WHERE person_record_status_id = '#{status.id}'"
 
-      	SQLSearch.query_exec(query)
+      	SimpleSQL.query_exec(query)
 	end
 end

@@ -124,7 +124,7 @@ class PersonIdentifier < CouchRest::Model::Base
     num = n.to_s.rjust(7,"0")
     new_den = "#{code}/#{num}/#{year}"
 
-    check_new_den = SQLSearch.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
+    check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
     check_den_assigened =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
 
@@ -142,7 +142,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
         den_mysql_insert_query = "INSERT INTO dens(person_id,den,den_sort_value,created_at,updated_at) 
                                   VALUES('#{person.id}','#{new_den}','#{sort_value}',NOW(),NOW())"
-        SQLSearch.query_exec(den_mysql_insert_query)
+        SimpleSQL.query_exec(den_mysql_insert_query)
 
         status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
@@ -185,7 +185,7 @@ class PersonIdentifier < CouchRest::Model::Base
                  '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
                  '#{identifier_record.district_code}','#{identifier_record.creator}',
                  '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
-        SQLSearch.query_exec(query)
+        SimpleSQL.query_exec(query)
 
         self.can_assign_den = true
     elsif check_new_den.present?
@@ -233,7 +233,7 @@ class PersonIdentifier < CouchRest::Model::Base
                  '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
                  '#{identifier_record.district_code}','#{identifier_record.creator}',
                  '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
-        SQLSearch.query_exec(query)
+        SimpleSQL.query_exec(query)
 
         self.can_assign_den = true
     else
@@ -311,7 +311,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
     query = "#{query})"
 
-    SQLSearch.query_exec(query)
+    SimpleSQL.query_exec(query)
   end
 
 end

@@ -185,7 +185,7 @@ class ApplicationController < ActionController::Base
       searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
                   FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
-      results = SQLSearch.query_exec(sql_query).split(/\n/)
+      results = SimpleSQL.query_exec(sql_query).split(/\n/)
       results = results.drop(1)
 
       potential_duplicates = []
@@ -382,7 +382,7 @@ class ApplicationController < ActionController::Base
                     PRIMARY KEY (id),
                     FULLTEXT KEY content (content)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
-    SQLSearch.query_exec(create_query);
+    SimpleSQL.query_exec(create_query);
 
     create_status_table = "CREATE TABLE IF NOT EXISTS person_record_status (
                             person_record_status_id varchar(225) NOT NULL,
@@ -399,7 +399,7 @@ class ApplicationController < ActionController::Base
                             created_at datetime DEFAULT NULL,
                           PRIMARY KEY (person_record_status_id)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SQLSearch.query_exec(create_status_table);   
+    SimpleSQL.query_exec(create_status_table);   
 
     create_identifier_table = "CREATE TABLE person_identifier (
                                 person_identifier_id varchar(225) NOT NULL,
@@ -418,7 +418,7 @@ class ApplicationController < ActionController::Base
                               PRIMARY KEY (person_identifier_id)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"  
 
-    SQLSearch.query_exec(create_identifier_table);            
+    SimpleSQL.query_exec(create_identifier_table);            
                       
   end
 
@@ -437,7 +437,7 @@ class ApplicationController < ActionController::Base
                                       KEY person_id (person_id),
                                       CONSTRAINT dens_ibfk_1 FOREIGN KEY (person_id) REFERENCES people (person_id)
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-          SQLSearch.query_exec(create_query_den_table)
+          SimpleSQL.query_exec(create_query_den_table)
     end
 end
 
