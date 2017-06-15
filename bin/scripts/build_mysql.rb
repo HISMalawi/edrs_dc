@@ -65,7 +65,11 @@ EOF
         when 'Date'
           field_type = "date DEFAULT NULL"
         when 'Integer'
-          field_type = "INT(11) DEFAULT NULL"
+          if field_name.include?("sort_value")
+            field_type = "VARCHAR(255) DEFAULT NULL"
+          else 
+            field_type = "INT(11) DEFAULT NULL"
+          end
         when 'Time'
           field_type = "datetime DEFAULT NULL"
         when 'TrueClass'
@@ -180,7 +184,7 @@ EOF
             sql_statement += "NULL, "
           end
         elsif statement[:type] == 'Integer' || statement[:type] == 'TrueClass'
-          sql_statement += "#{statement[:data]},"
+          sql_statement += "'#{statement[:data]}',"
         elsif statement[:type] == 'Date'
           sql_statement += '"' + "#{statement[:data].to_date.strftime('%Y-%m-%d')}" + '",'
         elsif statement[:type] == 'Time'

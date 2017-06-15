@@ -76,15 +76,15 @@
 				</tr>
 				<tr>
 					<td>Male</td>
-					<td style="text-align:right;padding-right:10%" id="male">100</td>
+					<td style="text-align:right;padding-right:10%" id="male">0</td>
 				</tr>
 				<tr>
 					<td>Female</td>
-					<td style="text-align:right;padding-right:10%" id="female">1000</td>
+					<td style="text-align:right;padding-right:10%" id="female">0</td>
 				</tr>
 				<tr>
 					<td style="font-weight:bold">Total</td>
-					<td style="text-align:right;padding-right:10%;font-weight:bold" id="total">1000</td>
+					<td style="text-align:right;padding-right:10%;font-weight:bold" id="total">0</td>
 				</tr>
 			</table>
 		</td>
@@ -117,12 +117,44 @@
     		url = url +"?timeline="+time_line;
     		__$("time_line").innerHTML = time_line;
     	}
+    	status_map ={
+				"Reported" :"NEW",
+				"Registered" : "DC APPROVED",
+				"Duplicates" :"DC DUPLICATE",
+				"Printed" :"HQ CLOSED",
+				"Dispatched" :"HQ DISPATCHED"
+		}
 
     	ajaxGETRequest(url,function(data){
     		var data = JSON.parse(data);
-    		__$('female').innerHTML = data.female;
-    		__$('male').innerHTML = data.male;
-    		__$('total').innerHTML = data.male + data.female;
+    		male = 0;
+    		female = 0
+    		if(data.today_data){
+    			var array = data.today_data
+    			gender = ["Male","Female"]
+    			for(var i =0 ; i < gender.length ; i++){
+    				var a = array.map(function(e){
+    					return [e.gender, e.status]
+    				}).reduce(function(a,e,j){
+    						if(e[0] == gender[i] && e[1] == status_map[element.id])
+    							a.push(e)
+    						return a;
+    				},[]);
+
+    				if(gender[i].toLowerCase() == "female"){
+    					
+    					female = parseInt(data[gender[i].toLowerCase()]) + a.length
+
+    				}else{
+
+    					male = parseInt(data[gender[i].toLowerCase()]) + a.length
+    				}
+    			}
+
+    		}
+    		__$('female').innerHTML = female;
+    		__$('male').innerHTML = male;
+    		__$('total').innerHTML = male + female;
     	});
     }
 

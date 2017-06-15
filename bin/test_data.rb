@@ -90,7 +90,7 @@ def send_person_to_mysql(person)
 
 def create
   
-  (1.upto(20000)).each do |n|
+  (1.upto(300)).each do |n|
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
@@ -174,7 +174,7 @@ def create
     content =  format_content(person)
 
     query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
-              VALUES('#{person.id}','#{title}','#{title} #{content}','#{person.created_at}',NOW(),NOW())"
+              VALUES('#{person.id}','#{title.gsub("'","''")}','#{title.gsub("'","''")} #{content.gsub("'","''")}','#{person.created_at}',NOW(),NOW())"
 
     SQLSearch.query_exec(query)
 

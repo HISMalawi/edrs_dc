@@ -11,7 +11,7 @@ class AssignDen
     FileUtils.touch("#{Rails.root}/public/sentinel")
 
     if Rails.env == 'development' || queue.count > 0
-      SuckerPunch.logger.info "Approving for #{queue.count} record(s)"
+      #SuckerPunch.logger.info "Approving for #{queue.count} record(s)"
     end
     queue.each do |record|
         person = record.person
