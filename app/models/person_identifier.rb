@@ -3,6 +3,7 @@ class PersonIdentifier < CouchRest::Model::Base
   before_save :set_site_code,:set_distict_code,:set_check_digit
 
   cattr_accessor :can_assign_den
+  cattr_accessor :can_assign_drn
 
   property :person_record_id, String
   property :identifier_type, String #Entry Number|Registration Number|Death Certificate Number| National ID Number
