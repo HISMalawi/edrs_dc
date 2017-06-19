@@ -401,7 +401,7 @@ class ApplicationController < ActionController::Base
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
     SimpleSQL.query_exec(create_status_table);   
 
-    create_identifier_table = "CREATE TABLE person_identifier (
+    create_identifier_table = "CREATE TABLE IF NOT EXISTS person_identifier (
                                 person_identifier_id varchar(225) NOT NULL,
                                 person_record_id varchar(255) DEFAULT NULL,
                                 identifier_type varchar(255) DEFAULT NULL,
@@ -439,7 +439,7 @@ class ApplicationController < ActionController::Base
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
           SimpleSQL.query_exec(create_query_den_table)
     end
-end
+  end
 
 
   def access_denied

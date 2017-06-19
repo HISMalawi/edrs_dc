@@ -1,0 +1,15 @@
+production:
+  adapter: mysql2
+  database: ebrs_reporting
+  username: root
+  password: password
+  host: localhost
+  pool: 500
+
+development:
+  adapter: mysql2
+  database: edrs_dc
+  username: root
+  password: password
+  host: localhost
+  pool: 500
