@@ -118,7 +118,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
 		if status.present?
 			status.update_attributes({:voided => true})
-			update_status_to_mysql(status)
+			self.update_status_to_mysql(status)
 			PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
@@ -161,7 +161,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 
       	SimpleSQL.query_exec(query)
 	end
-	def update_status_to_mysql(status)
+	def self.update_status_to_mysql(status)
 		query = "UPDATE person_record_status SET 
 				  		person_record_id = '#{status.person_record_id}',
 				  		status = '#{status.status}',

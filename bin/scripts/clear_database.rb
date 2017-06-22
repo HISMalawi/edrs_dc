@@ -323,6 +323,7 @@ if Rails.env == "development"
                             certifier_first_name varchar(255) DEFAULT NULL,
                             certifier_middle_name varchar(255) DEFAULT NULL,
                             certifier_last_name varchar(255) DEFAULT NULL,
+                            certifier_license_number varchar(255) DEFAULT NULL,
                             certifier_signed varchar(255) DEFAULT NULL,
                             date_certifier_signed date DEFAULT NULL,
                             position_of_certifier varchar(255) DEFAULT NULL,

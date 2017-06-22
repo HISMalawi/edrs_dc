@@ -90,7 +90,8 @@ def send_person_to_mysql(person)
 
 def create
   
-  (1.upto(30)).each do |n|
+  (1.upto(30000)).each do |n|
+    sleep 1
     gender = ["Male","Female"].sample
     person = Person.new()
     person.first_name = Faker::Name.first_name
@@ -151,7 +152,11 @@ def create
 
     person.reload
 
+    sleep 1
+
     send_person_to_mysql(person)
+
+    sleep 1
 
     #status = ["NEW","MARKED APPROVAL"].sample
     status = "MARKED APPROVAL"
@@ -170,6 +175,7 @@ def create
                                       :district_code => CONFIG['district_code'],
                                       :creator => User.current_user.id})
 
+    sleep 1
     title = "#{person.first_name} #{person.last_name}"
     content =  format_content(person)
 

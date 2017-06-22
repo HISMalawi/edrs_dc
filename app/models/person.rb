@@ -667,10 +667,11 @@ class Person < CouchRest::Model::Base
   property :certifier_first_name, String
   property :certifier_middle_name, String
   property :certifier_last_name, String
+  property :certifier_license_number, String
   property :certifier_signed, String
   property :date_certifier_signed, Date
   property :position_of_certifier, String
-  property :other_position_of_certifier, String
+  property :other_position_of_certifier, String  
 
   property :acknowledgement_of_receipt_date, Time, :default => Time.now
 
