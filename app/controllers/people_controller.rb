@@ -303,6 +303,11 @@ class PeopleController < ApplicationController
       
   end
 
+  def view_datatable
+    @section = "View"
+    render :layout => "landing"
+  end
+
   def all
 
       people = Person.all
