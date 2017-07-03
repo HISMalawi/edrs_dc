@@ -1,7 +1,9 @@
+<script src="/assets/edrs.js"></script>
+<script src="/assets/form.js"></script>
 <%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
-    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username", :tt_onLoad =>"setValuetoBlank()") %>
+    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username", :tt_onLoad =>"setValuetoBlank();overRideCancel()") %>
 
-    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password",:tt_onLoad =>"setValuetoBlank()") %>
+    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password",:tt_onLoad =>"setValuetoBlank();overRideCancel()") %>
 
     <input type="submit" value="Login">
 
@@ -10,4 +12,12 @@
 		function setValuetoBlank(){
 				__$('touchscreenInput' + tstCurrentPage).value =""
 		}
+		function cancel(){
+			confirmYesNo("Are you sure you want to cancel the form",function(){window.location.href = '/logout'},null,30000);
+		}
+		function overRideCancel(){
+						
+			__$("cancelButton").setAttribute("onmousedown","cancel()")
+		}
+		
 </script>

@@ -31,7 +31,7 @@ puts "\nVillages :#{Village.count} \n"
 PersonIdentifier.can_assign_den = false
 `rails runner ../../bin/scrpts/build_mysql.rb`
 PersonIdentifier.can_assign_den = true
-put "Tables Creatted"
+puts "Tables Creatted"
 
 
 

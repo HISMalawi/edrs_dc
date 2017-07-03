@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth,:check_den_assignment,:check_database,:check_den_table, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -185,7 +185,7 @@ class ApplicationController < ActionController::Base
       searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
                   FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
-      results = SQLSearch.query_exec(sql_query).split(/\n/)
+      results = SimpleSQL.query_exec(sql_query).split(/\n/)
       results = results.drop(1)
 
       potential_duplicates = []
@@ -322,17 +322,40 @@ class ApplicationController < ActionController::Base
     authorize! :access, :anything
   end
 
-  def check_den_assignment
-    if CONFIG['site_type'].to_s != "facility"
+  def check_cron_jobs
       last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
       job_interval = CONFIG['ben_assignment_interval']
       job_interval = 1.5 if job_interval.blank?
       job_interval = job_interval.to_f
       now = Time.now
       if (now - last_run_time).to_f > job_interval
-        AssignDen.perform_in(1)
+        if CONFIG['site_type'].to_s != "facility"
+          if (defined? PersonIdentifier.can_assign_den).nil?
+            PersonIdentifier.can_assign_den = true
+          end
+          AssignDen.perform_in(2)
+        end
+        if Rails.env == 'development'
+             SyncData.perform_in(60)
+        else
+             SyncData.perform_in(900)
+        end
+
+        if Rails.env == 'development'
+            UpdateSyncStatus.perform_in(10)
+        else
+            UpdateSyncStatus.perform_in(1000)
+        end
+
+        if Rails.env == 'development'
+            LoadMysql.perform_in(600)
+        else
+            midnight = (Date.today).to_date.strftime("%Y-%m-%d 23:59:59").to_time
+            now = Time.now
+            diff = (midnight  - now).to_i
+            LoadMysql.perform_in(diff)
+        end
       end
-    end
   end
 
   def check_user_level_and_site
@@ -359,7 +382,7 @@ class ApplicationController < ActionController::Base
                     PRIMARY KEY (id),
                     FULLTEXT KEY content (content)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
-    SQLSearch.query_exec(create_query);
+    SimpleSQL.query_exec(create_query);
 
     create_status_table = "CREATE TABLE IF NOT EXISTS person_record_status (
                             person_record_status_id varchar(225) NOT NULL,
@@ -376,9 +399,9 @@ class ApplicationController < ActionController::Base
                             created_at datetime DEFAULT NULL,
                           PRIMARY KEY (person_record_status_id)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SQLSearch.query_exec(create_status_table);   
+    SimpleSQL.query_exec(create_status_table);   
 
-    create_identifier_table = "CREATE TABLE person_identifier (
+    create_identifier_table = "CREATE TABLE IF NOT EXISTS person_identifier (
                                 person_identifier_id varchar(225) NOT NULL,
                                 person_record_id varchar(255) DEFAULT NULL,
                                 identifier_type varchar(255) DEFAULT NULL,
@@ -395,7 +418,7 @@ class ApplicationController < ActionController::Base
                               PRIMARY KEY (person_identifier_id)
                             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"  
 
-    SQLSearch.query_exec(create_identifier_table);            
+    SimpleSQL.query_exec(create_identifier_table);            
                       
   end
 
@@ -414,9 +437,9 @@ class ApplicationController < ActionController::Base
                                       KEY person_id (person_id),
                                       CONSTRAINT dens_ibfk_1 FOREIGN KEY (person_id) REFERENCES people (person_id)
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-          SQLSearch.query_exec(create_query_den_table)
+          SimpleSQL.query_exec(create_query_den_table)
     end
-end
+  end
 
 
   def access_denied

@@ -1,0 +1,92 @@
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+	<% if @statuses.present? %>
+		var statuses = "<%= @statuses.join(",") %>".split(",");
+	<%end%>
+</script>
+<div id="table_container">
+
+		<table id="records_table">
+				<thead>
+					<tr>
+						<th>
+							#
+						</th>
+						<th>
+							Name
+						</th>
+						<th>
+							Gender
+						</th>
+						<th>
+							Date of Death
+						</th>
+						<th>
+							Place of Death
+						</th>
+						<th>
+							Physical address
+						</th>
+						<th>
+							Informant
+						</th>
+
+						<th>
+							View Record
+						</th>
+					</tr>
+				</thead>
+				<tbody id="table_body">
+					
+				</tbody>
+		</table>
+	
+</div>
+<style type="text/css">
+	#pagination{
+		width: 20% !important;
+		left : 40%;
+		z-index: 100000;
+	}
+	#records_table_filter{
+			margin-top: 0.3%;
+			margin-right: 0;
+			margin-bottom: 0.3%;
+
+	}
+	#records_table_paginate{
+		float: left;
+		margin-left: 1%;
+	}
+</style>
+<div id="pagination" style="display:none">
+	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
+	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
+		
+</div>
+<div style="position : absolute; min-width : 30%; bottom:4%; right :1%; margin-right : 1%">
+  <% if params[:next_url] %>
+        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+
+  <% elsif @targeturl.present? %>
+
+        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+
+  <%else %>
+         <button class="green" style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+   <%end %>
+  <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+
+		<button style="float: right; margin-right:1%;" onmousedown="window.location = '/people/new_person_type'" ><span>Register New</span></button>
+
+  <%end%>
+</div>
+<%= render :partial => "/dc/landing_resize" %>
+<script type="text/javascript">
+	$("#records_table").dataTable({
+		"lengthChange": false,
+		"bInfo": false
+	});
+</script>

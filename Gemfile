@@ -45,6 +45,8 @@ gem 'couchrest_model'
 
 gem 'bcrypt', '3.1.7'
 
+gem 'mysql2', '0.3.16'
+
 gem 'bcrypt-ruby', :require => 'bcrypt'
 
 gem 'rake', '10.3.2'

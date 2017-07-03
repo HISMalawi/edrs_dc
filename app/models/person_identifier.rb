@@ -1,9 +1,9 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
-  after_create :insert_in_mysql
 
   cattr_accessor :can_assign_den
+  cattr_accessor :can_assign_drn
 
   property :person_record_id, String
   property :identifier_type, String #Entry Number|Registration Number|Death Certificate Number| National ID Number
@@ -125,14 +125,14 @@ class PersonIdentifier < CouchRest::Model::Base
     num = n.to_s.rjust(7,"0")
     new_den = "#{code}/#{num}/#{year}"
 
-    check_new_den = SQLSearch.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
+    check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
     check_den_assigened =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
 
     if check_new_den.blank? && self.can_assign_den && check_den_assigened.blank?
         self.can_assign_den = false
         sort_value = (year.to_s + num).to_i
-        self.create({
+        identifier_record = PersonIdentifier.create({
                         :person_record_id=>person.id.to_s,
                         :identifier_type =>"DEATH ENTRY NUMBER",
                         :identifier => new_den,
@@ -143,7 +143,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
         den_mysql_insert_query = "INSERT INTO dens(person_id,den,den_sort_value,created_at,updated_at) 
                                   VALUES('#{person.id}','#{new_den}','#{sort_value}',NOW(),NOW())"
-        SQLSearch.query_exec(den_mysql_insert_query)
+        SimpleSQL.query_exec(den_mysql_insert_query)
 
         status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
@@ -178,11 +178,65 @@ class PersonIdentifier < CouchRest::Model::Base
           stat.save
         end
 
+        query = "INSERT INTO person_identifier (person_identifier_id,
+                 person_record_id,identifier_type,identifier,site_code,
+                 den_sort_value,district_code,creator,_rev,created_at,updated_at)
+                 VALUES('#{identifier_record.id}','#{identifier_record.person_record_id}',
+                 '#{identifier_record.identifier_type}','#{identifier_record.identifier}',
+                 '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
+                 '#{identifier_record.district_code}','#{identifier_record.creator}',
+                 '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
+        SimpleSQL.query_exec(query)
+
         self.can_assign_den = true
     elsif check_new_den.present?
         puts "DEN (#{check_new_den})  already present"
     elsif check_den_assigened.present?
-        puts "Person already assigned DEN (#{check_den_assigened})"
+        puts "Person already assigned DEN (#{check_den_assigened}) Proceed to approving"
+        status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
+
+        status.update_attributes({:voided => true})
+
+        PersonRecordStatus.create({
+                                  :person_record_id => person.id.to_s,
+                                  :status => "DC APPROVED",
+                                  :district_code => (district_code rescue CONFIG['district_code']),
+                                  :creator => creator})
+
+        person.approved = "Yes"
+        person.approved_at = Time.now
+
+        Audit.create(record_id: person.id,
+                       audit_type: "Audit",
+                       user_id: creator,
+                       level: "Person",
+                       reason: "Approved record")
+
+        stat = Statistic.by_person_record_id.key(person.id).first
+
+        if stat.present?
+           stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
+        else
+          stat = Statistic.new
+          stat.person_record_id = person.id
+          stat.date_doc_created = person.created_at.to_time
+          stat.date_doc_approved = person.approved_at.to_time
+          stat.save
+        end
+
+        identifier_record = PersonIdentifier.by_identifier.key(check_den_assigened).first
+
+        query = "INSERT INTO person_identifier (person_identifier_id,
+                 person_record_id,identifier_type,identifier,site_code,
+                 den_sort_value,district_code,creator,_rev,created_at,updated_at)
+                 VALUES('#{identifier_record.id}','#{identifier_record.person_record_id}',
+                 '#{identifier_record.identifier_type}','#{identifier_record.identifier}',
+                 '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
+                 '#{identifier_record.district_code}','#{identifier_record.creator}',
+                 '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
+        SimpleSQL.query_exec(query)
+
+        self.can_assign_den = true
     else
         puts "Can not assign DEN"
     end
@@ -219,8 +273,46 @@ class PersonIdentifier < CouchRest::Model::Base
                 })
   end
 
-  def insert_in_mysql
-    
+  def self.insert_in_mysql(record)
+
+    identifier_keys = record.keys.sort
+
+    query = "INSERT INTO person_identifier ("
+
+    identifier_keys.each do |key|
+        field = key
+        next if key == "type"
+        if key =="_id"
+          field = "person_identifier_id"
+        end
+        if identifier_keys[0] == key
+            query = "#{query}#{field}"
+        else
+            query = "#{query},#{field}"
+        end
+    end
+
+
+    query = "#{query}) VALUES("
+
+    identifier_keys.each do |key|
+        next if key == "type"
+        value = identifier_keys[key]
+        if value.blank?
+          value ="NULL"
+        end
+
+        if identifier_keys[0] == key
+            query = "#{query} '#{value.to_s.gsub("'","''")}'"
+        else
+            query = "#{query},'#{value.to_s.gsub("'","''")}'"
+        end
+    end
+
+
+    query = "#{query})"
+
+    SimpleSQL.query_exec(query)
   end
 
 end

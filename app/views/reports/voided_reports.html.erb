@@ -105,7 +105,7 @@
     		var data = JSON.parse(data);
     		__$('female').innerHTML = data.female;
     		__$('male').innerHTML = data.male;
-    		__$('total').innerHTML = data.male + data.female;
+    		__$('total').innerHTML = parseInt(data.male) + parseInt(data.female);
     	});
     }
 

@@ -88,7 +88,7 @@ class PeopleController < ApplicationController
       query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
               VALUES('#{person.id}','#{title}','#{title} #{content}','#{person.created_at}',NOW(),NOW())"
 
-      SQLSearch.query_exec(query)
+      SimpleSQL.query_exec(query)
 
       send_person_to_mysql(person)
 
@@ -205,7 +205,7 @@ class PeopleController < ApplicationController
 
     query = "#{query})"
 
-    SQLSearch.query_exec(query)
+    SimpleSQL.query_exec(query)
   end
 
   def update_person_to_mysql(person)
@@ -227,7 +227,7 @@ class PeopleController < ApplicationController
     end
     query = " WHERE person_id = '#{person.id}'"
 
-    SQLSearch.query_exec(query)
+    SimpleSQL.query_exec(query)
   end
 
   def search_similar_record
@@ -301,6 +301,11 @@ class PeopleController < ApplicationController
 
       render :layout => "landing"
       
+  end
+
+  def view_datatable
+    @section = "View"
+    render :layout => "landing"
   end
 
   def all
@@ -400,7 +405,7 @@ class PeopleController < ApplicationController
                 "place_death" => ['place_of_death', 'place_of_death_district', 'place_of_death_ta', 'place_of_death_village', 'hospital_of_death', 'other_place_of_death']
               }
 
-    results = SQLSearch.query(map, params)
+    results = SimpleSQL.query(map, params)
 
     render :text => results.to_json
   end
@@ -510,7 +515,7 @@ class PeopleController < ApplicationController
 
       query = "UPDATE documents SET title = '#{title}' content = '#{title} #{content}', updated_at = NOW() WHERE couchdb_id = '#{person.id}'"
 
-      SQLSearch.query_exec(query)
+      SimpleSQL.query_exec(query)
 
       update_person_to_mysql(person)
 

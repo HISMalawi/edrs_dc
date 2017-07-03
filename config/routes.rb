@@ -296,6 +296,8 @@ Rails.application.routes.draw do
 
   get "/amendment_report_data" => "reports#amendment_report_data"
 
+  get "/people/view_datatable"
+
 ######################################################################################################################################################################################
   resources :users
 
