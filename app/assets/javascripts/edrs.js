@@ -62,7 +62,7 @@ function showPopupMessage(msg, topic,targeturl) {
                 document.body.appendChild(shield);
 
                 var width = 560;
-                var height = 390;
+                var height = 200;
 
                 var div = document.createElement("div");
                 div.id = "msg.popup";
