@@ -90,7 +90,7 @@ class PeopleController < ApplicationController
 
       SimpleSQL.query_exec(query)
 
-      send_person_to_mysql(person)
+      #send_person_to_mysql(person)
 
       duplicate_index(person)
 

@@ -1,7 +1,23 @@
- require 'sql_search'
+ require 'simple_sql'
 
  sql = "SET FOREIGN_KEY_CHECKS = 0;"
  SimpleSQL.query_exec(sql)
+
+create_query = "CREATE TABLE IF NOT EXISTS documents (
+                    id int(11) NOT NULL AUTO_INCREMENT,
+                    couchdb_id varchar(255) NOT NULL UNIQUE,
+                    group_id varchar(255) DEFAULT NULL,
+                    group_id2 varchar(255) DEFAULT NULL,
+                    date_added datetime DEFAULT NULL,
+                    title TEXT,
+                    content TEXT,
+                    created_at datetime NOT NULL,
+                    updated_at datetime NOT NULL,
+                    PRIMARY KEY (id),
+                    FULLTEXT KEY content (content)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
+  SimpleSQL.query_exec(create_query);
+
  PersonIdentifier.can_assign_den = false
  @@file_path = "#{Rails.root.to_s}/app/assets/data/MySQL_data/"
  @couchdb_files = {

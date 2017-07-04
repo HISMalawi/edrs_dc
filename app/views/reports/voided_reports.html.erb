@@ -100,7 +100,7 @@
     		url = url +"?timeline="+time_line;
     		__$("time_line").innerHTML = time_line;
     	}
-
+    	console.log(url);
     	ajaxGETRequest(url,function(data){
     		var data = JSON.parse(data);
     		__$('female').innerHTML = data.female;

@@ -127,34 +127,9 @@
 
     	ajaxGETRequest(url,function(data){
     		var data = JSON.parse(data);
-    		male = 0;
-    		female = 0
-    		if(data.today_data){
-    			var array = data.today_data
-    			gender = ["Male","Female"]
-    			for(var i =0 ; i < gender.length ; i++){
-    				var a = array.map(function(e){
-    					return [e.gender, e.status]
-    				}).reduce(function(a,e,j){
-    						if(e[0] == gender[i] && e[1] == status_map[element.id])
-    							a.push(e)
-    						return a;
-    				},[]);
-
-    				if(gender[i].toLowerCase() == "female"){
-    					
-    					female = parseInt(data[gender[i].toLowerCase()]) + a.length
-
-    				}else{
-
-    					male = parseInt(data[gender[i].toLowerCase()]) + a.length
-    				}
-    			}
-
-    		}
-    		__$('female').innerHTML = female;
-    		__$('male').innerHTML = male;
-    		__$('total').innerHTML = male + female;
+    		__$('female').innerHTML = data.female;
+    		__$('male').innerHTML = data.male;
+    		__$('total').innerHTML = parseInt(data.male) + parseInt(data.female);
     	});
     }
 

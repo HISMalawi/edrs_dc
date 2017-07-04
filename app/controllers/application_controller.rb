@@ -182,7 +182,7 @@ class ApplicationController < ActionController::Base
       else
         score = CONFIG['duplicate_score'].to_i
       end
-      searchables = "#{person.first_name} #{person.last_name} #{ format_content(person)}"
+      searchables = "#{person.first_name.soundex} #{person.last_name.soundex} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
                   FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
       results = SimpleSQL.query_exec(sql_query).split(/\n/)
@@ -202,7 +202,7 @@ class ApplicationController < ActionController::Base
      
      search_content = ""
       if person.middle_name.present?
-         search_content = person.middle_name + ", "
+         search_content = person.middle_name.soundex + ", "
       end 
 
       birthdate_formatted = person.birthdate.to_date.strftime("%Y-%m-%d")
@@ -347,14 +347,6 @@ class ApplicationController < ActionController::Base
             UpdateSyncStatus.perform_in(1000)
         end
 
-        if Rails.env == 'development'
-            LoadMysql.perform_in(600)
-        else
-            midnight = (Date.today).to_date.strftime("%Y-%m-%d 23:59:59").to_time
-            now = Time.now
-            diff = (midnight  - now).to_i
-            LoadMysql.perform_in(diff)
-        end
       end
   end
 
@@ -437,7 +429,7 @@ class ApplicationController < ActionController::Base
                                       KEY person_id (person_id),
                                       CONSTRAINT dens_ibfk_1 FOREIGN KEY (person_id) REFERENCES people (person_id)
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-          SimpleSQL.query_exec(create_query_den_table)
+          #SimpleSQL.query_exec(create_query_den_table)
     end
   end
 

@@ -5,7 +5,7 @@ def format_content(person)
      
      search_content = ""
       if person.middle_name.present?
-         search_content = person.middle_name + ", "
+         search_content = person.middle_name.soundex + ", "
       end 
 
       birthdate_formatted = person.birthdate.to_date.strftime("%Y-%m-%d")
@@ -90,7 +90,7 @@ def send_person_to_mysql(person)
 
 def create
   
-  (1.upto(30)).each do |n|
+  (1.upto(10)).each do |n|
     sleep 1
     gender = ["Male","Female"].sample
     person = Person.new()
@@ -154,7 +154,7 @@ def create
 
     sleep 1
 
-    send_person_to_mysql(person)
+    #send_person_to_mysql(person)
 
     sleep 1
 
@@ -176,7 +176,7 @@ def create
                                       :creator => User.current_user.id})
 
     sleep 1
-    title = "#{person.first_name} #{person.last_name}"
+    title = "#{person.first_name.soundex} #{person.last_name.soundex}"
     content =  format_content(person)
 
     query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
