@@ -1,0 +1,22 @@
+edrs_dc:
+  User|user:
+      _id: user_id 
+  Person|people:
+      _id: person_id
+  PersonIdentifier|person_identifier:
+      _id: person_identifier_id
+  PersonRecordStatus|person_record_status:
+      _id: person_record_status_id
+  Village|village:
+      _id: village_id
+  TradionalAuthority|traditional_authority:
+      _id: traditional_authority_id
+  District|district:
+      _id: district_id
+  Country|country:
+      _id: country_id
+  Nationality|nationality:
+      _id: nationality_id     
+other_db:
+  User|user:
+      _id: user_id 
