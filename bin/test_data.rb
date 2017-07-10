@@ -90,7 +90,7 @@ def send_person_to_mysql(person)
 
 def create
   
-  (1.upto(100)).each do |n|
+  (1.upto(1000)).each do |n|
     sleep 1
     gender = ["Male","Female"].sample
     person = Person.new()
