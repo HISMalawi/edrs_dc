@@ -184,7 +184,7 @@ class ApplicationController < ActionController::Base
       end
       searchables = "#{person.first_name.soundex} #{person.last_name.soundex} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 
-                  FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 5"
+                  FROM documents WHERE MATCH(title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) ORDER BY score DESC LIMIT 100"
       results = SimpleSQL.query_exec(sql_query).split(/\n/)
       results = results.drop(1)
 

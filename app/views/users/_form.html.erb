@@ -1,4 +1,5 @@
 <script type="text/javascript">
+      tstUserKeyboardPref = "qwerty";
       String.prototype.capitalize = function(lower) {
             return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
       }
@@ -33,11 +34,11 @@
       <% end %>
       <% if request.path.match(/new/) %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" %>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" , :field_type=>"password"%>
 
       <%else %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username <i style='color: red'>*</i>"%>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username <i style='color: red'>*</i>", :field_type=>"password"%>
 
       <% end %>
 
@@ -57,9 +58,9 @@
                                      :textCase => "lower",
                                      :absolute_min => 6,
                 										 :absolute_max => 20 ,:helpText => "Password <i style='color: red'>*</i>",
-                                     :tt_onUnLoad=>"passwordLength()"%>
+                                     :tt_onUnLoad=>"passwordLength()", :field_type=>"password"%>
           
-                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password <i style='color: red'>*</i>", :tt_onUnLoad=>"comfirmPassword()"%>
+                <%= f.password_field :confirm_password, :class => "input_cell", :placeholder => "Confirm the password entered", :required => true, :textCase => "lower", :helpText => "Confirm Password <i style='color: red'>*</i>", :tt_onUnLoad=>"comfirmPassword()", :field_type=>"password"%>
         
         <% else %>
 
@@ -72,7 +73,7 @@
                           {:helpText => "District of user <i style='color: red'>*</i>" ,:ajaxURL => "/districts?place=Health Facility&search_string=" }%>
         <%end%>
 
-            <%= f.text_field :email, :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>
+            <%= f.text_field :email,:field_type=>"password", :class => "input_cell", :placeholder => "Email Address", :optional => true , :helpText => "Email Address"%>
        
         <%#= f.hidden_field :_rev %>
         <%#= f.hidden_field :created_at %>

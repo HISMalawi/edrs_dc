@@ -190,16 +190,20 @@
             simpleAjaxRequest("/dc/counts_by_status?status=DC INCOMPLETE", function(data){
 
                   var data =JSON.parse(data);
+                  if (__$("incomplete")) {
 
-                   __$("incomplete").innerHTML = data.count     
+                   __$("incomplete").innerHTML = data.count ;
+                  }    
 
             });
 
              simpleAjaxRequest("/dc/counts_by_status?status=DC COMPLETE", function(data){
 
                   var data =JSON.parse(data);
+                  if (__$("complete")) {
 
-                   __$("complete").innerHTML = data.count     
+                    __$("complete").innerHTML = data.count;
+                   }  
 
             }); 
             resizeDiv();
