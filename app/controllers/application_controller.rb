@@ -191,7 +191,7 @@ class ApplicationController < ActionController::Base
       potential_duplicates = []
 
       results.each do |result|
-          data = result.split("\t");
+          data = result.split("\t")
           next if person.id.present? && person.id == data[0]
           potential_duplicates << data if data[3].to_i >= score
       end

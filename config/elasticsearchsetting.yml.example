@@ -1,0 +1,4 @@
+elasticsearch:
+  index: edrs_dc
+  port: 9200
+  host: localhost
