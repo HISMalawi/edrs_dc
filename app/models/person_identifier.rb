@@ -19,7 +19,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
   timestamps!
 
-  #validates_uniqueness_of :identifier
+  unique_id :identifier
 
   design do
     view :by__id
@@ -125,118 +125,71 @@ class PersonIdentifier < CouchRest::Model::Base
     num = n.to_s.rjust(7,"0")
     new_den = "#{code}/#{num}/#{year}"
 
-    check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
+    #check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
-    check_den_assigened =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
+    den_assigned_to_person = PersonIdentifier.by_identifier.key(new_den).first
 
-    if check_new_den.blank? && self.can_assign_den && check_den_assigened.blank?
+    person_assigened_den =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
+
+    if self.can_assign_den && person_assigened_den.blank? && den_assigned_to_person.blank?
         self.can_assign_den = false
         sort_value = (year.to_s + num).to_i
-        identifier_record = PersonIdentifier.create({
-                        :person_record_id=>person.id.to_s,
-                        :identifier_type =>"DEATH ENTRY NUMBER",
-                        :identifier => new_den,
-                        :creator => creator,
-                        :den_sort_value => sort_value,
-                        :district_code => (person.district_code rescue CONFIG['district_code'])
-                    })
 
-        den_mysql_insert_query = "INSERT INTO dens(person_id,den,den_sort_value,created_at,updated_at) 
-                                  VALUES('#{person.id}','#{new_den}','#{sort_value}',NOW(),NOW())"
-        SimpleSQL.query_exec(den_mysql_insert_query)
+        identifier_record = PersonIdentifier.new
+        identifier_record.person_record_id = person.id.to_s
+        identifier_record.identifier_type = "DEATH ENTRY NUMBER"
+        identifier_record.identifier =  new_den
+        identifier_record.creator = creator
+        identifier_record.den_sort_value = sort_value
+        identifier_record.district_code = person.district_code
+        if identifier_record.save
 
-        status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
+          status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-        status.update_attributes({:voided => true})
+          status.update_attributes({:voided => true})
 
-        PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC APPROVED",
-                                  :district_code => (district_code rescue CONFIG['district_code']),
-                                  :creator => creator})
+          PersonRecordStatus.create({
+                                    :person_record_id => person.id.to_s,
+                                    :status => "DC APPROVED",
+                                    :district_code => (district_code rescue CONFIG['district_code']),
+                                    :creator => creator})
 
-        person.approved = "Yes"
-        person.approved_at = Time.now
+          person.approved = "Yes"
+          person.approved_at = Time.now
 
-        person.save
+          person.save
 
-        Audit.create(record_id: person.id,
-                       audit_type: "Audit",
-                       user_id: creator,
-                       level: "Person",
-                       reason: "Approved record")
+          Audit.create(record_id: person.id,
+                         audit_type: "Audit",
+                         user_id: creator,
+                         level: "Person",
+                         reason: "Approved record")
 
-        stat = Statistic.by_person_record_id.key(person.id).first
+          stat = Statistic.by_person_record_id.key(person.id).first
 
-        if stat.present?
-           stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
-        else
-          stat = Statistic.new
-          stat.person_record_id = person.id
-          stat.date_doc_created = person.created_at.to_time
-          stat.date_doc_approved = person.approved_at.to_time
-          stat.save
+          if stat.present?
+             stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
+          else
+            stat = Statistic.new
+            stat.person_record_id = person.id
+            stat.date_doc_created = person.created_at.to_time
+            stat.date_doc_approved = person.approved_at.to_time
+            stat.save
+          end
+
         end
-
-        query = "INSERT INTO person_identifier (person_identifier_id,
-                 person_record_id,identifier_type,identifier,site_code,
-                 den_sort_value,district_code,creator,_rev,created_at,updated_at)
-                 VALUES('#{identifier_record.id}','#{identifier_record.person_record_id}',
-                 '#{identifier_record.identifier_type}','#{identifier_record.identifier}',
-                 '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
-                 '#{identifier_record.district_code}','#{identifier_record.creator}',
-                 '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
-        SimpleSQL.query_exec(query)
-
         self.can_assign_den = true
-    elsif check_new_den.present?
-        puts "DEN (#{check_new_den})  already present"
-    elsif check_den_assigened.present?
-        puts "Person already assigned DEN (#{check_den_assigened}) Proceed to approving"
-        status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-        status.update_attributes({:voided => true})
+    elsif den_assigned_to_person.present?
 
-        PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => "DC APPROVED",
-                                  :district_code => (district_code rescue CONFIG['district_code']),
-                                  :creator => creator})
+      puts "DEN is assign to #{den_assigned_to_person.person_record_id rescue ''}"
+      self.can_assign_den = true
 
-        person.approved = "Yes"
-        person.approved_at = Time.now
+    elsif person_assigened_den.present?
 
-        Audit.create(record_id: person.id,
-                       audit_type: "Audit",
-                       user_id: creator,
-                       level: "Person",
-                       reason: "Approved record")
+      puts "Person #{den_assigned_to_person.person_record_id rescue ''} already assigned DEN"
+      self.can_assign_den = true
 
-        stat = Statistic.by_person_record_id.key(person.id).first
-
-        if stat.present?
-           stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
-        else
-          stat = Statistic.new
-          stat.person_record_id = person.id
-          stat.date_doc_created = person.created_at.to_time
-          stat.date_doc_approved = person.approved_at.to_time
-          stat.save
-        end
-
-        identifier_record = PersonIdentifier.by_identifier.key(check_den_assigened).first
-
-        query = "INSERT INTO person_identifier (person_identifier_id,
-                 person_record_id,identifier_type,identifier,site_code,
-                 den_sort_value,district_code,creator,_rev,created_at,updated_at)
-                 VALUES('#{identifier_record.id}','#{identifier_record.person_record_id}',
-                 '#{identifier_record.identifier_type}','#{identifier_record.identifier}',
-                 '#{identifier_record.site_code rescue 'NULL'}','#{identifier_record.den_sort_value}',
-                 '#{identifier_record.district_code}','#{identifier_record.creator}',
-                 '#{identifier_record.rev}','#{identifier_record.created_at}','#{identifier_record.updated_at}');"
-        SimpleSQL.query_exec(query)
-
-        self.can_assign_den = true
     else
         puts "Can not assign DEN"
     end

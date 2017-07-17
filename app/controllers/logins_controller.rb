@@ -66,8 +66,9 @@ class LoginsController < ApplicationController
   def logout
     # session[:touchcontext] = nil
     flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
+
     logout!
-    if CONFIG['app_gate_url'].present?
+    if eval(CONFIG['app_gate_url']).present?
       redirect_to CONFIG['app_gate_url'].to_s
     else
       redirect_to "/", referrer_param => referrer_path

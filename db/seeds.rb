@@ -242,6 +242,8 @@ Person.count rescue nil
 puts "Created Person database"
 Audit.count rescue nil
 puts "Created audit database"
-puts "Application setup succesfully!!!"
 
+`rake edrs:build_mysql`
+
+puts "Application setup succesfully!!!"
 puts "Login details username: #{user.username} password: password"

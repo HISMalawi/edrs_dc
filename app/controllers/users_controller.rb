@@ -354,6 +354,7 @@ class UsersController < ApplicationController
   end
 
   def add_comment
+    @user = User.find(params[:id]);
     if params[:operation] =="Block"
         @action = '/block_user'
     elsif  params[:operation] =="Unblock"

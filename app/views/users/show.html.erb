@@ -29,6 +29,11 @@
 
   
 </style>
+<script type="text/javascript">
+   function blockORUnblock(operation){
+      window.location.href = "/add_user_comment/<%=@user.id%>?operation="+operation+"&next_url=<%=params[:next_url]%>"
+   }
+</script>
 <button id="signout" class="green" onmousedown="window.location ='/'" ><span>Back</span></button>
 <div style="width:100%">
   <div class="left" style="width:70%; text-align:center">
@@ -47,9 +52,13 @@
         </table>
   </div>
   <div class="right">
-        <table style="margin-top:15%">
+        <table style="margin-top:15%;margin-right:1%">
             <tr><td style="width:100%"><button onclick="window.location='/users/<%= @user.id %>/edit'">Edit demographics</button></td></tr>
-            <tr><td style="width:100%"><button style="width:100%">Block User</button></td></tr>
+          <%if @user.active%>
+            <tr><td style="width:100%"><button style="width:100%" class="red" onclick="blockORUnblock('Block')">Block User</button></td></tr>
+          <%else%>
+            <tr><td style="width:100%"><button style="width:100%" class="green" onclick="blockORUnblock('Unblock')">Unblock User</button></td></tr>
+          <%end%>
         </table>
   </div>
 </div>

@@ -1,0 +1,28 @@
+edrs_dc:
+  couchdb:
+    database: edrs_dc
+    username: admin
+    password: password
+    host: localhost
+    port: 5984
+  mysql:
+    adapter: mysql2
+    database:  edrs_dc
+    username: root
+    password: mysql_password
+    host: localhost
+    port: 3306
+other_db:
+  couchdb:
+    database: edrs_local
+    username: admin
+    password: password
+    host: localhost
+    port: 5984
+  mysql:
+    adapter: mysql2
+    database:  test_db
+    username: root
+    password: mysql_password
+    host: localhost
+    port: 3306

@@ -107,7 +107,7 @@
 
                                       
                                     </div>
-
+                                  <% if false%>
                                      <div class="touch_btn" onmousedown="window.location = '/build_mysql_database?next_url=/';" >
                                         <div class="icon">
                                                <i class="fa fa-database"></i>
@@ -117,7 +117,7 @@
 
                                       
                                     </div>
-
+                                  <%end%>
                               <%end%>
 
                                 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
@@ -190,16 +190,20 @@
             simpleAjaxRequest("/dc/counts_by_status?status=DC INCOMPLETE", function(data){
 
                   var data =JSON.parse(data);
+                  if (__$("incomplete")) {
 
-                   __$("incomplete").innerHTML = data.count     
+                   __$("incomplete").innerHTML = data.count ;
+                  }    
 
             });
 
              simpleAjaxRequest("/dc/counts_by_status?status=DC COMPLETE", function(data){
 
                   var data =JSON.parse(data);
+                  if (__$("complete")) {
 
-                   __$("complete").innerHTML = data.count     
+                    __$("complete").innerHTML = data.count;
+                   }  
 
             }); 
             resizeDiv();

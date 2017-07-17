@@ -1,7 +1,7 @@
 class PersonRecordStatus < CouchRest::Model::Base
 
 	before_save :set_district_code,:set_facility_code, :set_registration_type
-	after_create :insert_in_mysql
+	#after_create :insert_in_mysql
 
 	property :person_record_id, String
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...

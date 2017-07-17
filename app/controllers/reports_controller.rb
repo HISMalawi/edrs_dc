@@ -34,46 +34,30 @@ class ReportsController < ApplicationController
 				"Dispatched" => "HQ DISPATCHED"
 		}
 
-		include_today = false
 		if params[:timeline].blank?
 			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
-			end_date =	(Date.today - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-			include_today = true
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 		else
 			case params[:timeline]
 			when "Today"
 				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	(Date.today - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-				include_today = true
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current week"
 				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	(Date.today - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-				include_today = true
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current month"
 				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	(Date.today - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-				include_today = true
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current year"
 				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
-				end_date =	(Date.today - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-				include_today = true
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			end
 		end
 		data = {}
 		if params[:start_date].present?
 			start_date = DateTime.parse(params[:start_date]).strftime("%Y-%m-%d 00:00:00:000Z")
 			end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-			today = Time.now.strftime("%Y-%m-%d")	
-			if end_date > 
-				include_today = true
-				(end_date.to_date - 1.day).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
-				include_today = true
-			end
 		end
-		if include_today
-			data["today_data"] = today_data
-		end
-		#data = PersonRecordStatus.by_district_code_and_status_and_created_at.startkey([User.current_user.district_code,status_map[params[:status]],start_date]).endkey([User.current_user.district_code,status_map[params[:status]],end_date]).each
 
 		gender = ["Female","Male"]
 
@@ -84,7 +68,7 @@ class ReportsController < ApplicationController
 					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
-
+	
 			count_row = SimpleSQL.query_exec(query).split("\n")[1]
 			
 			if count_row.present?
@@ -99,52 +83,145 @@ class ReportsController < ApplicationController
 
 	def voided_report_data
 		if params[:timeline].blank?
-			start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
-			end_date =	Time.now.strftime("%Y-%m-%dT23:59:59.999Z")
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 		else
 			case params[:timeline]
 			when "Today"
 				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Time.now.strftime("%Y-%m-%dT23:59:59.999Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current week"
-				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Time.now.strftime("%Y-%m-%dT23:59:59.999Z")
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current month"
-				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Time.now.strftime("%Y-%m-%dT23:59:59.999Z")
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current year"
-				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Time.now.strftime("%Y-%m-%dT23:59:59.999Z")
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		data = {}
+		if params[:start_date].present?
+			start_date = DateTime.parse(params[:start_date]).strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		end
+
+		gender = ["Female","Male"]
+
+		gender.each do |g|
+			query = "SELECT count(person_id) as count, gender FROM people 
+					WHERE people.voided = 1 AND people.voided_date >= '#{start_date}' 
+					AND people.voided_date <='#{end_date}' AND people.gender = '#{g}'
+		 			AND people.district_code = '#{User.current_user.district_code}' GROUP BY gender"
+
+	
+			count_row = SimpleSQL.query_exec(query).split("\n")[1]
+			
+			if count_row.present?
+				data[g.downcase] = count_row.split("\s")[0]
+			else
+				data[g.downcase] = 0
 			end
 		end
 
-		if params[:start_date].present?
-			start_date = DateTime.parse(params[:start_date]).strftime("%Y-%m-%dT00:00:00:000Z")
-			end_date =	DateTime.parse(params[:end_date]).strftime("%Y-%m-%dT23:59:59.999Z")
-		end
-		data = Person.by_district_code_and_voided_date.startkey([User.current_user.district_code,start_date]).endkey([User.current_user.district_code,end_date]).each
-		male = 0
-		female = 0
-		data.each do |record|
-			if record.gender == "Male"
-				male = male + 1
-			else
-				female = female + 1
-			end
-		end
-		render :text => {:male => male , :female=>female }.to_json
+		render :text => data.to_json
 	end
 
 	def lost_damaged_report_data
-		male = 0
-		female = 0
-		render :text => {:male => male , :female=>female }.to_json
+		if params[:timeline].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:timeline]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		data = {}
+		if params[:start_date].present?
+			start_date = DateTime.parse(params[:start_date]).strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		end
+
+		gender = ["Female","Male"]
+
+		gender.each do |g|
+			query = "SELECT count(person_id) as count, gender , status, person_record_status.created_at , person_record_status.updated_at 
+					 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 WHERE status = 'DC REPRINT' AND gender = '#{g}' 
+					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
+					 GROUP BY status,gender"
+	
+			count_row = SimpleSQL.query_exec(query).split("\n")[1]
+			
+			if count_row.present?
+				data[g.downcase] = count_row.split("\s")[0]
+			else
+				data[g.downcase] = 0
+			end
+		end
+
+		render :text => data.to_json
 	end
 
 	def amendment_report_data
-		male = 0
-		female = 0
-		render :text => {:male => male , :female=>female }.to_json
+		if params[:timeline].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:timeline]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		data = {}
+		if params[:start_date].present?
+			start_date = DateTime.parse(params[:start_date]).strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		end
+
+		gender = ["Female","Male"]
+
+		gender.each do |g|
+			query = "SELECT count(person_id) as count, gender , status, person_record_status.created_at , person_record_status.updated_at 
+					 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 WHERE status = 'DC AMEND' AND gender = '#{g}' 
+					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
+					 GROUP BY status,gender"
+
+			count_row = SimpleSQL.query_exec(query).split("\n")[1]
+			
+			if count_row.present?
+				data[g.downcase] = count_row.split("\s")[0]
+			else
+				data[g.downcase] = 0
+			end
+		end
+
+		render :text => data.to_json
 	end
 
 	def pick_dates
