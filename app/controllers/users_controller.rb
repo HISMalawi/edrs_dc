@@ -429,6 +429,21 @@ class UsersController < ApplicationController
 
   end
   
+  def confirm_username
+
+       
+      username = params[:username]
+
+      user = User.by_username.key(username).last
+          
+      if user
+          render :text => {:response => true}.to_json
+      else
+        render :text => {:response => false}.to_json
+      end
+           
+  end
+
   
 
   def username_availability

@@ -261,6 +261,9 @@ Rails.application.routes.draw do
   
   post '/database_load' => 'users#database_load'
 
+  get "/confirm_username" => "users#confirm_username"
+  post "/confirm_username" => "users#confirm_username"
+
   post "/confirm_password" =>"users#confirm_password"
 
   get "/confirm_password" =>"users#confirm_password"
