@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get "/people/sync_data" => "people#sync_data"
 
+ 
+
 ##############################################################################################################################################
 
 ################################ Routes for DC controller ####################################################################################
@@ -275,6 +277,8 @@ Rails.application.routes.draw do
   get 'database_load_progress/:table_name' => 'users#database_load_progress'
 
   get '/load_dumps' =>"users#load_dumps"
+
+   get "keyboard_preference" => "users#keyboard_preference"
 
 ######################################################################################################################################################################################
 

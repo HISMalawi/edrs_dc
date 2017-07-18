@@ -81,6 +81,19 @@ class UsersController < ApplicationController
 
   end
 
+  def keyboard_preference
+      if params[:preferred_keyboard].present?
+           @user = User.current_user rescue nil
+           @user.preferred_keyboard = params[:preferred_keyboard]
+           @user.save
+           flash[:notice] = "Keyboard preference changed succesfully!"
+           redirect_to '/my_account'
+      else
+       @user = User.current_user rescue nil
+      end
+
+  end
+
   def edit_account
 
     @user = @current_user
@@ -453,6 +466,7 @@ class UsersController < ApplicationController
   end
 
   def my_account
+    
     redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Change own password"))
 
     @section = "My Account"

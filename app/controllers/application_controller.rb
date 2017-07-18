@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
-  before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
+  before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => ['login', 'logout', 'update_password', 'search_by_hospital',
                                                  'search_by_district', 'search_by_ta', 'search_by_village',
                                                  "update_field","reject_record","search_similar_record",
                                                   "confirm_not_duplicate", "confirm_duplicate","create_burial_report",
@@ -27,6 +27,10 @@ class ApplicationController < ActionController::Base
 
   def facility    
       return HealthFacility.by_facility_code.key(CONFIG['facility_code'].to_s).first rescue nil
+  end
+
+  def current_user_keyboard_preference
+     @preferred_keyboard = User.current_user.preferred_keyboard rescue 'qwerty'
   end
   
   def district
