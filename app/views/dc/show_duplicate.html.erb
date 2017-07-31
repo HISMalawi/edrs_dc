@@ -174,7 +174,7 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
    <%end %>
 
- 		<button class="green" style="float: right; margin-right:1%" onmousedown="showNext()"><span>Next Similar Record</span></button>
+ 		<button id="next_similar" class="green" style="float: right; margin-right:1%" onmousedown="showNext()"><span>Next Similar Record</span></button>
  		<% if @person.status == "DC POTENTIAL DUPLICATE" %>
  		<button class="green" style="float: right; margin-right:3%" onmousedown="resolveDuplicate()"><span>Resolve duplicate</span></button>
  		<% end%>
@@ -423,6 +423,9 @@
 					tr.appendChild(td);
  
 					__$("existing_head").innerHTML = "Existing Record ("+data.status+") "+( number + 1 )+"/"+ids.length; 
+					if(ids.length <= 1){
+						__$("next_similar").style.display="none"
+					}
 
 					number = (number + 1) % ids.length;
 
