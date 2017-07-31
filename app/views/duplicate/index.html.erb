@@ -1,0 +1,24 @@
+
+<style type="text/css">
+  
+     
+</style>
+<div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
+        <h2><u>Adjusting precision percent</u></h2>
+        <div class="left" style="height:60px;width:100%;margin:auto;margin-top:1%">
+              <input id="range" onchange="setValues(this)" type="range" min="1" max="100" value="60" step="1" style="width:40%;margin-top:0.4%"> 
+              <input id="number" onchange="setValues(this)" type="number" min="1" max="100" step="1"  value="60" style="width:60px;height:30px;font-size:1.5em;color:#2e5d91"/> 
+              <button>Query</button>
+        </div>     
+</div>
+<script type="text/javascript">
+      function setValues(element){
+          if (element.id=="range") {
+              __$("number").value = element.value;
+          }
+          if (element.id=="number") {
+              __$("range").value = element.value;
+          }
+      }
+</script>
+<%= render :partial => "/dc/landing_resize" %>
