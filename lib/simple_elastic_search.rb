@@ -51,7 +51,6 @@ class SimpleElasticSearch
   def self.escape_single_quotes(string)
     if string.present?
         string = string.gsub("'", "'\\\\''")
-
     end
     return string
   end
@@ -63,7 +62,7 @@ class SimpleElasticSearch
      else
           registration_district = District.find(person.district_code).name
      end
-     elastic_search_index = "curl -XPUT 'http://#{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}/documents/#{person.id}' -d '
+     elastic_search_index = "curl -XPUT 'http://#{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}/documents/#{person.id}'  -d '
               {
                 \"user\" : \"#{User.current_user.id}\",
                 \"first_name\": \"#{self.escape_single_quotes(person.first_name)}\",
@@ -77,13 +76,55 @@ class SimpleElasticSearch
                 \"mother_last_name\": \"#{self.escape_single_quotes(person.mother_last_name)}\",
                 \"father_first_name\": \"#{self.escape_single_quotes(person.father_first_name)}\",
                 \"father_last_name\": \"#{self.escape_single_quotes(person.father_last_name)}\",
-                \"content\" : \"#{self.escape_single_quotes(person.first_name)} #{self.escape_single_quotes(person.last_name)} #{content}\"
+                \"content\" : \"#{self.escape_single_quotes(person.first_name)} #{self.escape_single_quotes(person.last_name)} #{self.escape_single_quotes(content)}\"
               }'"
 
       return elastic_search_index
   end
+
   def self.add(person)
     #puts self.elastic_format(person)
    puts `#{self.elastic_format(person)}`
+  end
+
+  def self.query(field,query_content,precision)
+    if precision.blank?
+      precision = SETTING['precision']
+    end
+    puts precision
+    query = "curl -XGET 'http://#{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}/documents/_search?pretty=true' -H 'Content-Type: application/json' -d'
+            {
+              \"query\": {
+                  \"match\": {
+                    \"#{field}\":{
+                          \"query\":\"#{self.escape_single_quotes(query_content)}\",
+                          \"minimum_should_match\": \"#{precision}%\"
+                    }
+                  }
+                }
+              }'"
+      
+      data = JSON.parse(`#{query}`)
+
+      if data["error"].blank?
+         return data["hits"]["hits"]
+      else
+         return []
+      end
+     
+  end
+
+  def self.query_duplicate(person,precision)
+      content =  self.format_content(person)
+      query_string = "#{person.first_name} #{person.last_name} #{content}"
+
+      potential_duplicates = []
+      hits = self.query("content",query_string,precision)
+      hits.each do |hit|
+        next if Person.find(hit["_id"]).voided
+        potential_duplicates << hit if hit["_id"] != person.id
+      end
+
+      return potential_duplicates
   end
 end

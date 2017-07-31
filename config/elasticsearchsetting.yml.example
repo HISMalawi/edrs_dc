@@ -2,3 +2,4 @@ elasticsearch:
   index: edrs_dc
   port: 9200
   host: localhost
+  precision: 75 #percentage for precision control

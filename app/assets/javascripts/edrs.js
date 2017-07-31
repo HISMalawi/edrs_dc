@@ -492,7 +492,7 @@ function duplicatesPopup(people,checkbox){
         th.style.color = "#ffffff";
         th.style.fontSize = "1.2em";
         th.style.backgroundColor = "#526a83";
-        th.innerHTML = "The record is potential duplicate to "+ (people && people.length ? people.length : "0")  +" records";
+        th.innerHTML = "The record is potential duplicate to "+ (people && people.length ? people.length : "0")  +" record(s)";
         tr.appendChild(th);
         if(people){
             for(var i = 0; i < people.length ; i++){

@@ -68,7 +68,7 @@ class DcController < ApplicationController
 
 
 		if record_complete?(person)
-				duplicate =  potential_duplicate_full_text?(person)
+				duplicate =   SimpleElasticSearch.query_duplicate(person,CONFIG['duplicate_precision'])
 				if duplicate.blank?
 					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 

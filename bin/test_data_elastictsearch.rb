@@ -2,15 +2,13 @@
 User.current_user = User.first
 
 def create
-  `curl -XDELETE localhost:9200/edrs_dc`
-
-  (1.upto(3)).each do |n|
+  (1.upto(100)).each do |n|
     sleep 0.3
     gender = ["Male","Female"].sample
     person = Person.new()
-    name = ["N'gambi","Ng'ombe","O'neal"]
-    person.first_name = name.sample#Faker::Name.first_name
-    person.last_name =  name.sample #Faker::Name.last_name
+    #name = ["N'gambi","Ng'ombe","O'neal"]
+    person.first_name = Faker::Name.first_name
+    person.last_name =  Faker::Name.last_name
     person.middle_name = [Faker::Name.first_name,""].sample
     person.gender = gender
     person.birthdate = Faker::Time.between("1964-01-01".to_time, Time.now()).to_date
@@ -65,7 +63,25 @@ def create
     person.save
     person.reload
     sleep 0.5
+    status = "MARKED APPROVAL"
+
+    PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => status,
+                                      :district_code =>  person.district_code,
+                                      :created_by => User.current_user.id})
+
+    identifier = PersonIdentifier.create({
+                                      :person_record_id => person.id.to_s,
+                                      :identifier_type => "Form Barcode", 
+                                      :identifier => rand(10 ** 10),
+                                      :site_code => CONFIG['site_code'],
+                                      :district_code => CONFIG['district_code'],
+                                      :creator => User.current_user.id})
+    sleep 0.5
     SimpleElasticSearch.add(person)
+
+    puts "#{person.first_name} #{person.last_name}"
   end
 
 end

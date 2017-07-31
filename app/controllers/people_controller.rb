@@ -82,17 +82,7 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
-      title = "#{person.first_name} #{person.last_name}"
-      content =  format_content(person)
-
-      query = "INSERT INTO documents(couchdb_id,title,content,date_added,created_at,updated_at) 
-              VALUES('#{person.id}','#{title}','#{title} #{content}','#{person.created_at}',NOW(),NOW())"
-
-      SimpleSQL.query_exec(query)
-
-      #send_person_to_mysql(person)
-
-      duplicate_index(person)
+      SimpleElasticSearch.add(person)
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
 
@@ -169,67 +159,6 @@ class PeopleController < ApplicationController
         	
   end
 
-  def send_person_to_mysql(person)
-    person_keys = person.keys.sort
-
-    query = "INSERT INTO people ("
-
-    person_keys.each do |key|
-        field = key
-        next if key == "type"
-        if key =="_id"
-          field = "person_id"
-        end
-        if person_keys[0] == key
-            query = "#{query}#{field}"
-        else
-            query = "#{query},#{field}"
-        end
-    end
-
-    query = "#{query}) VALUES("
-
-    person_keys.each do |key|
-        next if key == "type"
-        value = person[key]
-        if value.blank?
-          value ="NULL"
-        end
-
-        if person_keys[0] == key
-            query = "#{query} '#{value.to_s.gsub("'","''")}'"
-        else
-            query = "#{query},'#{value.to_s.gsub("'","''")}'"
-        end
-    end
-
-    query = "#{query})"
-
-    SimpleSQL.query_exec(query)
-  end
-
-  def update_person_to_mysql(person)
-    query = "UPDATE people SET "
-    person_keys = person.keys.sort
-
-    person_keys.each do |key|
-      next if key =="_id" || key =="type"
-      value = person[key]
-      if value.blank?
-          value ="NULL"
-      end
-      if person_keys[0] == key
-            query = "#{query} #{key} = '#{value}'"
-      else
-            query = "#{query},#{key} = '#{value}'"
-      end
-
-    end
-    query = " WHERE person_id = '#{person.id}'"
-
-    SimpleSQL.query_exec(query)
-  end
-
   def search_similar_record
 
       field_hash = {
@@ -249,9 +178,8 @@ class PeopleController < ApplicationController
                     }
 
       person  = Person.new(field_hash)
-      #people = potential_duplicate?(person)
       people = []
-      results = potential_duplicate_full_text?(person)
+      results = SimpleElasticSearch.query_duplicate(person,CONFIG['duplicate_precision'])
 
       results.each do |result|
           people << readable_format(result) if readable_format(result).present?
@@ -510,14 +438,7 @@ class PeopleController < ApplicationController
 
       person.update_person(params[:id],params[:person])
 
-      title = "#{person.first_name} #{person.last_name}"
-      content =  format_content(person)
-
-      query = "UPDATE documents SET title = '#{title}' content = '#{title} #{content}', updated_at = NOW() WHERE couchdb_id = '#{person.id}'"
-
-      SimpleSQL.query_exec(query)
-
-      update_person_to_mysql(person)
+      SimpleElasticSearch.add(person)
 
       redirect_to "/people/view/#{params[:id]}"
     

@@ -6,11 +6,18 @@ application up and running.
 Things you may want to cover:
 
 * Ruby version
+	2.1.2
 
 * System dependencies
+	* The application needs the following installed on the server
+		* couchDB >= 1.6.1 
+		* MYSQL	  >= 5.5.0
+		* elasticsearch any version
 
 * Configuration
-
+	 * MYSQL
+	 	* copy database.yml.example to database.yml
+	 	* edit database.yml to match your mysql credentials
 * Database creation
 
 * Database initialization
