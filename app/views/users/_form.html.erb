@@ -1,5 +1,5 @@
+<script type="text/javascript" src="/javascripts/edrs.js"></script>
 <script type="text/javascript">
-      tstUserKeyboardPref = "qwerty";
       String.prototype.capitalize = function(lower) {
             return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
       }
@@ -34,7 +34,8 @@
       <% end %>
       <% if request.path.match(/new/) %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" , :field_type=>"password"%>
+
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" , :tt_onUnLoad=>"uniqueUsername()",:field_type=>"password" %>
 
       <%else %>
 
@@ -45,7 +46,7 @@
             <%= f.text_field :first_name, :class => "input_cell", :placeholder => "First Name", :required => true , :helpText => "First Name <i style='color: red'>*</i>" %>
 
         
-            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Surame <i style='color: red'>*</i>" %>
+            <%= f.text_field :last_name, :class => "input_cell", :placeholder => "Surname", :required => true, :helpText => "Surname <i style='color: red'>*</i>" %>
 
             <%= select_tag "user[role]", options_for_select(@roles, @user.role), :class => 'input_cell', :placeholder => "Select user role", :required => true, :style => "width: 81.4% !important;", :helpText => "Roles <i style='color: red'>*</i>" %>
       
@@ -86,6 +87,35 @@
 
 <script>
         var invalid;
+
+
+
+   function uniqueUsername(){
+        
+
+           var username = __$('touchscreenInput' + tstCurrentPage).value.trim()
+                          
+           data = { "username" : username }
+
+
+
+           postAjax("/confirm_username", data, function(response){
+                  console.log(response);
+                  var response = JSON.parse(response).response;
+                  if(response && eval(response)){
+                  
+                     setTimeout(function(){ 
+                            showMessage("Username already exist, please enter new username","Message");
+                            gotoPage(tstCurrentPage - 1, false, true); 
+
+                    },500);
+                  }
+              })
+               
+        }
+
+              
+
         function comfirmPassword(){
 
                     var confirm_password = __$('touchscreenInput' + tstCurrentPage).value.trim()

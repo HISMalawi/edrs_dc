@@ -29,6 +29,11 @@
 
   
 </style>
+<% if flash[:notice].present? %>
+  <script type="text/javascript">
+      showPopupMessage("<%= flash[:notice] %>","Message")
+  </script>
+<%end%>
 <button id="signout" class="green" onmousedown="window.location ='/'" ><span>Back</span></button>
 <div style="width:100%">
   <div class="left" style="width:70%; text-align:center">
@@ -49,12 +54,13 @@
   <div class="right">
         <table style="margin-top:15%">
          
-            <tr><td><button onclick="window.location='/change_password'">Change Password</button></td></tr>
+            <tr><td><button onclick="window.location='/change_password'" style="width: 250px">Change Password</button></td></tr>
 
          
         <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") %>
-            <tr><td><button onclick="window.location='/users/<%= @user.id %>/edit'">Edit demographics</button></td></tr>
+            <tr><td><button onclick="window.location='/users/<%= @user.id %>/edit'" style="width: 250px">Edit demographics</button></td></tr>
         <%end%>
+        <tr><td><button onclick="window.location='/keyboard_preference?id=<%= @user.id %>'" style="width: 250px">Keyboard Preference</button></td></tr>
         </table>
   </div>
 </div>

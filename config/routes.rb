@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get "/people/sync_data" => "people#sync_data"
 
+ 
+
 ##############################################################################################################################################
 
 ################################ Routes for DC controller ####################################################################################
@@ -261,6 +263,9 @@ Rails.application.routes.draw do
   
   post '/database_load' => 'users#database_load'
 
+  get "/confirm_username" => "users#confirm_username"
+  post "/confirm_username" => "users#confirm_username"
+
   post "/confirm_password" =>"users#confirm_password"
 
   get "/confirm_password" =>"users#confirm_password"
@@ -273,7 +278,7 @@ Rails.application.routes.draw do
 
   get '/load_dumps' =>"users#load_dumps"
 
-##############################################################################################################################
+  get "keyboard_preference" => "users#keyboard_preference"
 
 #################################Routes for duplicates#########################################################################
   get "/duplicate" =>"duplicate#index"
