@@ -18,9 +18,16 @@ Things you may want to cover:
 	 * MYSQL
 	 	* copy database.yml.example to database.yml
 	 	* edit database.yml to match your mysql credentials
-* Database creation
+	 *CouchDB
+	 *Elasticsearch
+	 *Setting
+	 	* copy setting.yml.example to setting.yml
+	 	* edit to march your coucg database settings for both DC and HQ and Facility
+* Setting application dependencies
+	*bundle install --local
 
-* Database initialization
+* Database creation and  initialization
+	* run bundle exec rake edrs:initsync
 
 * How to run the test suite
 

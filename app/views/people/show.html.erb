@@ -629,23 +629,15 @@
 					table.appendChild(tr);
 
 					var td = document.createElement("th");
-					td.innerHTML = "Surname";
+					td.innerHTML = "Name";
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-					td.innerHTML = "<%= @person.last_name %>";
+					td.innerHTML = "<%= @person.first_name %> <%= @person.last_name %>";
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
 					table.appendChild(tr);
-
-					var td = document.createElement("th");
-					td.innerHTML = "First Name";
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-					td.innerHTML = "<%= @person.first_name %>";
-					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
 					table.appendChild(tr);
