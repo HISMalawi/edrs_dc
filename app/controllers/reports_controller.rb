@@ -68,6 +68,7 @@ class ReportsController < ApplicationController
 					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
+			puts query
 	
 			count_row = SimpleSQL.query_exec(query).split("\n")[1]
 			

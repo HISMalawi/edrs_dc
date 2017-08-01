@@ -134,16 +134,16 @@ class Person < CouchRest::Model::Base
 
   def set_district_code
     unless self.district_code.present?
-      self.district_code = CONFIG["district_code"]
+      self.district_code = SETTINGS["district_code"]
     end 
-    if CONFIG['site_type'] == "remote"
+    if SETTINGS['site_type'] == "remote"
       self.district_code = User.current_user.district_code
     end   
   end
 
   def set_facility_code
     unless self.facility_code.present?
-      self.facility_code = (CONFIG['facility_code'] rescue nil)
+      self.facility_code = (SETTINGS['facility_code'] rescue nil)
     end 
   end
 
@@ -157,7 +157,7 @@ class Person < CouchRest::Model::Base
     PersonRecordStatus.create({
                         :person_record_id => self.id.to_s,
                         :status => nextstatus,
-                        :district_code =>(self.district_code rescue CONFIG['district_code']),
+                        :district_code =>(self.district_code rescue SETTINGS['district_code']),
                         :creator => User.current_user.id})
   end
 

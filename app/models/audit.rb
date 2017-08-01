@@ -51,15 +51,15 @@ class Audit < CouchRest::Model::Base
   end
   
   def set_site_id
-    if CONFIG['site_type'] =="facility"
-      self.site_id = (CONFIG["facility_code"] rescue (self.person.facility_code rescue self.person.district_code))
+    if SETTINGS['site_type'] =="facility"
+      self.site_id = (SETTINGS["facility_code"] rescue (self.person.facility_code rescue self.person.district_code))
     else
-      self.site_id = (self.person.district_code rescue CONFIG["district_code"])
+      self.site_id = (self.person.district_code rescue SETTINGS["district_code"])
     end
   end  
   
   def set_site_type
-     if CONFIG['site_type'] =="facility"
+     if SETTINGS['site_type'] =="facility"
         self.site_type = "facility"
     else
         self.site_type = "DC"

@@ -163,7 +163,7 @@
 			<!--button class="gray" style="float: right; margin-right:1%"><span>Completeness Check</span></button-->
 
 		<%end%>
-		<%if ["NEW"].include? @status.status %>
+		<%if ["NEW"].include? @status.status && false%>
 		
 			<button style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
 		<%end%>
@@ -172,7 +172,7 @@
 	<% end %>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-		<%if CONFIG['site_type'] == 'remote'%>
+		<%if SETTINGS['site_type'] == 'remote'%>
 			<%if  (@status.present? && @status.status == "NEW") || (@status.present? && @status.status == "HQ REJECTED") %>
 
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
@@ -188,7 +188,7 @@
 	<%end%>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-		<%if CONFIG['site_type'] == 'remote'%>
+		<%if SETTINGS['site_type'] == 'remote'%>
 			<%if  (@status.present? && @status.status == "NEW")%>
 
 					<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
@@ -218,7 +218,7 @@
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
 	<%end%>
-	<% if CONFIG['site_type'] == "dc"%>
+	<% if SETTINGS['site_type'] == "dc"%>
 
 		<% if @burial_report.blank? && User.current_user.role != "ADR"%>
 
@@ -515,6 +515,65 @@
 				var url ="/check_completeness/<%= @person.id %>?next_url=<%=params[:next_url]%>";		
 				showConfirmMessage("","Data Completeness check",url)
 				popUpRecordDetails();
+				var panel = __$("pop_button_panel")
+				panel.innerHTML = "";
+				var btnCancel = document.createElement("button");
+                btnCancel.className = "red";
+                btnCancel.innerHTML = "<span>Cancel</span>";
+                btnCancel.style.minWidth = "100px";
+
+                  btnCancel.onclick = function () {
+
+                      if (__$("msg.shield")) {
+
+                          document.body.removeChild(__$("msg.shield"));
+
+                      }
+
+                  }
+
+                  panel.appendChild(btnCancel);
+
+                  var btnIncomplete = document.createElement("button");
+                  btnIncomplete.id = "incomplete"
+                  btnIncomplete.style.marginLeft = "5%"
+                  btnIncomplete.style.marginRight = "5%"
+                  btnIncomplete.innerHTML = "<span>Incomplete</span>";
+                  btnIncomplete.style.minWidth = "100px";
+
+
+                  btnIncomplete.onclick = function () {
+
+                          if (__$("msg.shield")) {
+
+                              document.body.removeChild(__$("msg.shield"));
+                              window.location = "/dc/add_pending_comment/<%=@person.id%>?next_url=<%=params[:next_url]%>";
+
+                      }
+
+                  }
+
+                  panel.appendChild(btnIncomplete);
+
+                  var btnOK = document.createElement("button");
+                  btnOK.id = "ok_button"
+                  btnOK.className = "green";
+                  btnOK.innerHTML = "<span>Complete</span>";
+                  btnOK.style.minWidth = "100px";
+
+
+                  btnOK.onclick = function () {
+
+                          if (__$("msg.shield")) {
+
+                              document.body.removeChild(__$("msg.shield"));
+                              window.location = url;
+
+                      }
+
+                  }
+
+                  panel.appendChild(btnOK);
 			}
 
 			function approveRecord(){
@@ -596,7 +655,7 @@
 				popUpRecordDetails();
 			}
 
-			function popUpRecordDetails(){
+			function popUpRecordDetails(operation){
 
 					var popup_container = __$("msg.popup")
 					popup_container.style.width = "40%";

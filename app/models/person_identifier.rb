@@ -36,7 +36,7 @@ class PersonIdentifier < CouchRest::Model::Base
                 }"
     view :by_den_sort_value,
          :map => "function(doc) {
-                  if (doc['type'] == 'PersonIdentifier' && doc['district_code'] == '#{CONFIG['district_code']}') {
+                  if (doc['type'] == 'PersonIdentifier' && doc['district_code'] == '#{SETTINGS['district_code']}') {
                     emit(doc['den_sort_value']);
                   }
                 }"
@@ -68,7 +68,7 @@ class PersonIdentifier < CouchRest::Model::Base
   end
 
   def set_site_code
-    if CONFIG['site_type'] == "facility"
+    if SETTINGS['site_type'] == "facility"
       self.site_code = self.person.facility_code rescue nil
     else
       self.site_code = nil
@@ -100,7 +100,7 @@ class PersonIdentifier < CouchRest::Model::Base
   end
 
   def self.assign_den(person, creator)
-    if CONFIG['site_type'] =="remote"
+    if SETTINGS['site_type'] =="remote"
       year = Date.today.year
       district_code = User.find(creator).district_code
 
@@ -151,7 +151,7 @@ class PersonIdentifier < CouchRest::Model::Base
           PersonRecordStatus.create({
                                     :person_record_id => person.id.to_s,
                                     :status => "DC APPROVED",
-                                    :district_code => (district_code rescue CONFIG['district_code']),
+                                    :district_code => (district_code rescue SETTINGS['district_code']),
                                     :creator => creator})
 
           person.approved = "Yes"
@@ -222,7 +222,7 @@ class PersonIdentifier < CouchRest::Model::Base
                     :identifier => drn,
                     :creator => creator,
                     :drn_sort_value => drn_sort_value,
-                    :district_code => (person.district_code rescue CONFIG['district_code'])
+                    :district_code => (person.district_code rescue SETTINGS['district_code'])
                 })
   end
 

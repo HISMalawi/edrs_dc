@@ -83,7 +83,7 @@ if Rails.env == "development"
 
         puts "Drop person_record_status"   
 
-        if CONFIG['site_type'] != "facility"
+        if SETTINGS['site_type'] != "facility"
             create_query_den_table = "DROP TABLE  IF EXISTS dens ;
             						  CREATE TABLE IF NOT EXISTS dens (
                                           den_id int(11) NOT NULL AUTO_INCREMENT,

@@ -1,9 +1,9 @@
 Person.count
-@settings = SETTINGS
-district_code = CONFIG['district_code']
+@settings = SYNC_SETTINGS
+district_code = SETTINGS['district_code']
 person_count = Person.count
 
-if CONFIG['site_type'] == "facility"
+if SETTINGS['site_type'] == "facility"
 	source = @settings[:fc]
 else
 	source = @settings[:dc]

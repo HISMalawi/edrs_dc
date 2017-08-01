@@ -63,9 +63,9 @@
                 <div style="width :40%;margin:auto; margin-top : 0.5em ; font-weight:bold; font-style:italic; text-align:center;font-weight:400">
                       <% if @facility_type.present? &&  @facility_type=="Facility" %>
                            <%= User.current_user.username %>@<%= @facility.name %>, <%= "#{@district.name}" rescue "" %> District on <%= Time.now.strftime("%d/%b/%Y") %>
-                      <%elsif CONFIG['site_type'] == "remote"%>
+                      <%elsif SETTINGS['site_type'] == "remote"%>
                           <%= User.current_user.username %>@<%= "#{District.find(User.current_user.district_code).name rescue 'HQ'}" rescue "" %> Remote DC on <%= Time.now.strftime("%d/%b/%Y") %>
-                      <%elsif CONFIG['site_type'] == "dc"%>
+                      <%elsif SETTINGS['site_type'] == "dc"%>
                           <%= User.current_user.username %>@<%= @district.name rescue (District.find(User.current_user.district_code).name rescue '') %> DC on <%= Time.now.strftime("%d/%b/%Y") %>
                       <%end%>
         

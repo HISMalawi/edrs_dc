@@ -18,7 +18,7 @@
             <div class="button_label">Unnatural deaths</div>
                 <div class="button_description"> </div>
           </div>
-          <% if CONFIG['site_type'] == "facility" %>
+          <% if SETTINGS['site_type'] == "facility" %>
           <div class="touch_btn" onmousedown="window.location = '/people/new_split?registration_type=Dead on Arrival'" >
             <div class="icon">
                 <i class="fa fa-edit"></i>
@@ -42,7 +42,7 @@
             <div class="button_label">Missing Persons</div>
                 <div class="button_description"> </div>
           </div>
-          <% if CONFIG['site_type'] != "facility" %>
+          <% if SETTINGS['site_type'] != "facility" %>
           <div class="touch_btn" onmousedown="window.location = '/people/new_split?registration_type=Deaths Abroad'" >
             <div class="icon">
                 <i class="fa fa-edit"></i>

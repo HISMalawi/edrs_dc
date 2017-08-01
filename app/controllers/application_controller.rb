@@ -22,11 +22,11 @@ class ApplicationController < ActionController::Base
   end
 
   def site_type
-    configs['site_type']
+    SETTINGS['site_type'].to_s
   end
 
   def facility    
-      return HealthFacility.by_facility_code.key(CONFIG['facility_code'].to_s).first rescue nil
+      return HealthFacility.by_facility_code.key(SETTINGS['facility_code'].to_s).first rescue nil
   end
 
   def current_user_keyboard_preference
@@ -37,11 +37,11 @@ class ApplicationController < ActionController::Base
       if facility.present?
            return District.find(facility.district_id) rescue nil
       else
-          if CONFIG['district_code'].blank?
+          if SETTINGS['district_code'].blank?
             district_code = User.current_user.district_code.to_s
 
           else
-            district_code = CONFIG['district_code'].to_s
+            district_code = SETTINGS['district_code'].to_s
           end
            
           district = District.find(district_code) rescue nil
@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
 
   #Root index of app
   def index
-    if CONFIG['site_type'] =="facility" || User.current_user.role == "Data Clerk" ||  User.current_user.role == "Nurse/Midwife"
+    if SETTINGS['site_type'] =="facility" || User.current_user.role == "Data Clerk" ||  User.current_user.role == "Nurse/Midwife"
       redirect_to "/people/"
     else
       redirect_to "/dc/"
@@ -106,9 +106,9 @@ class ApplicationController < ActionController::Base
   def facility_info
     @facility = facility
     @district = district
-    if CONFIG['site_type'] =="facility"
+    if SETTINGS['site_type'] =="facility"
       @facility_type = "Facility"
-    elsif CONFIG['site_type'] =="dc"
+    elsif SETTINGS['site_type'] =="dc"
       @facility_type = "DC"
     else
       @facility_type = "Remote"
@@ -189,12 +189,12 @@ class ApplicationController < ActionController::Base
 
   def check_cron_jobs
       last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-      job_interval = CONFIG['ben_assignment_interval']
+      job_interval = SETTINGS['ben_assignment_interval']
       job_interval = 1.5 if job_interval.blank?
       job_interval = job_interval.to_f
       now = Time.now
       if (now - last_run_time).to_f > job_interval
-        if CONFIG['site_type'].to_s != "facility"
+        if SETTINGS['site_type'].to_s != "facility"
           if (defined? PersonIdentifier.can_assign_den).nil?
             PersonIdentifier.can_assign_den = true
           end
@@ -217,10 +217,10 @@ class ApplicationController < ActionController::Base
 
   def check_user_level_and_site
     user = User.current_user
-    if CONFIG['site_type'] == "facility" && user.role != "System Administrator"
-      redirect_to "/logout" and return  if user.site_code.to_s != CONFIG['facility_code'].to_s
+    if SETTINGS['site_type'] == "facility" && user.role != "System Administrator"
+      redirect_to "/logout" and return  if user.site_code.to_s != SETTINGS['facility_code'].to_s
     end
-    if CONFIG['site_type'] == "dc" && user.role != "System Administrator"
+    if SETTINGS['site_type'] == "dc" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code.present?
     end
   end
@@ -281,7 +281,7 @@ class ApplicationController < ActionController::Base
 
   def check_den_table
 
-    if CONFIG['site_type'] != "facility"
+    if SETTINGS['site_type'] != "facility"
         create_query_den_table = "CREATE TABLE IF NOT EXISTS dens (
                                       den_id int(11) NOT NULL AUTO_INCREMENT,
                                       person_id varchar(225) NOT NULL,

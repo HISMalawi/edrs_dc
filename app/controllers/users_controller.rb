@@ -45,7 +45,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/users"
 
-    if CONFIG['site_type']=="facility"
+    if SETTINGS['site_type']=="facility"
 
         @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
 
@@ -67,7 +67,7 @@ class UsersController < ApplicationController
 
     @targeturl = "/view_users"
 
-     if CONFIG['site_type']=="facility"
+     if SETTINGS['site_type']=="facility"
 
         @roles = Role.by_level.keys(["Facility"]).each.collect{|x| x.role}.uniq
 
@@ -138,13 +138,13 @@ class UsersController < ApplicationController
 
       @user.email = params[:user]['email']
 
-      if CONFIG['site_type'] == "remote"
+      if SETTINGS['site_type'] == "remote"
 
         @user.district_code = District.by_name.key(params[:user]['district']).first.id 
 
       else
 
-        @user.district_code = CONFIG['district_code']
+        @user.district_code = SETTINGS['district_code']
         
       end
 
@@ -294,20 +294,20 @@ class UsersController < ApplicationController
 
     results = []
     if params[:active].present?
-      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
-          key = [CONFIG['facility_code'].to_s, eval(params[:active])]
+      if SETTINGS['site_type'] == "facility" && SETTINGS['facility_code'].present?
+          key = [SETTINGS['facility_code'].to_s, eval(params[:active])]
           users = User.by_facility_activation.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-      elsif CONFIG['site_type'] == "dc" && CONFIG['district_code'].present?
-          key = [CONFIG['district_code'],eval(params[:active])]
+      elsif SETTINGS['site_type'] == "dc" && SETTINGS['district_code'].present?
+          key = [SETTINGS['district_code'],eval(params[:active])]
           users = User.by_district_actication.key(key).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       else
            users = User.by_active.key(eval(params[:active])).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       end
     else
-      if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
-        users = User.by_site_code.key(CONFIG['facility_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
-      elsif  CONFIG['site_type'] == "dc" && CONFIG['district_code'].present?
-        users = User.by_district_code.key(CONFIG['district_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      if SETTINGS['site_type'] == "facility" && SETTINGS['facility_code'].present?
+        users = User.by_site_code.key(SETTINGS['facility_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
+      elsif  SETTINGS['site_type'] == "dc" && SETTINGS['district_code'].present?
+        users = User.by_district_code.key(SETTINGS['district_code'].to_s).page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       else
         users = User.all.page((params[:page].to_i rescue 1)).per((params[:size].to_i rescue 8)).each
       end
@@ -719,7 +719,7 @@ EOF
 
     @district = district
 
-    if CONFIG['site_type'] =="facility"
+    if SETTINGS['site_type'] =="facility"
 
           @facility_type = "Facility"
 

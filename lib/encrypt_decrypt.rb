@@ -23,7 +23,7 @@ class EncryptDecrypt
 
     private_key_file = "#{Rails.root}/config/private.pem"
 
-    password = CONFIG["crtkey"] rescue nil
+    password = SETTINGS["crtkey"] rescue nil
 
     return value if password.nil?
 

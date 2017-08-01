@@ -1,0 +1,23 @@
+:fc:
+  :protocol: 'http'
+  :host: localhost
+  :port: '5984'
+  :primary: edrs_facility
+  :username: admin
+  :password: password
+:dc:
+  :protocol: 'http'
+  :host: localhost
+  :port: '5984'
+  :primary: edrs_dc
+  :username: admin
+  :password: password
+  :bidirectional: false
+:hq:
+  :protocol: 'http'
+  :host: localhost
+  :port:  '5984'
+  :primary: 'edrs_local'
+  :username: admin
+  :password: password
+  :bidirectional: false

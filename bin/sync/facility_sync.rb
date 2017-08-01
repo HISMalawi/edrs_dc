@@ -1,6 +1,6 @@
-@settings = SETTINGS
-facility_code = CONFIG['facility_code']
-district_code = CONFIG['district_code']
+@settings = SYNC_SETTINGS
+facility_code = SETTINGS['facility_code']
+district_code = SETTINGS['district_code']
 person_count = Person.count
 
 fc = @settings[:fc]

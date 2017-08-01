@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	var site_type = "<%= site_type %>";
+	var site_type = "<%= @site_type %>";
     String.prototype.capitalize = function(lower) {
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
@@ -49,11 +49,11 @@
                                     :tt_onUnLoad => "validateDeathDate()"}%>
                                     
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
-                <% if site_type == "facility" && params[:registration_type] != 'Dead on Arrival' %>
+                <% if @site_type == "facility" && params[:registration_type] != 'Dead on Arrival' %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                     <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
-                <% elsif site_type =="dc" || site_type =="remote" || params[:registration_type] == 'Dead on Arrival' %>
+                <% elsif @site_type =="dc" || @site_type =="remote" || params[:registration_type] == 'Dead on Arrival' %>
                     <% if params[:registration_type] == 'Dead on Arrival' %>
                         <%= select_tag("person[place_of_death]", options_for_select(["","Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
@@ -61,7 +61,7 @@
                               :tt_onUnLoad =>"setAjaxUrl(-1)",
                               :tt_requireNextClick => false,
                               :tt_pageStyleClass =>"NoKeyboard") %>
-                    <%else%>
+                <%else%>
                         <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
                               :helpText =>"Place of Death <i style='color: red'>*</i>", 

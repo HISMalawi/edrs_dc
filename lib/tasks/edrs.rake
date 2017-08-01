@@ -6,7 +6,7 @@ namespace :edrs do
   end
 
   task sync: :environment do
-  	if CONFIG['site_type'] =="facility"
+  	if SETTINGS['site_type'] =="facility"
   		puts "Facility Sync"
     	require Rails.root.join('bin','./sync/facility_sync.rb')
     else

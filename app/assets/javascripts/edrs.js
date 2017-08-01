@@ -259,7 +259,7 @@ function showPopupMessage(msg, topic,targeturl) {
 
                   var tdf = document.createElement("td");
                   tdf.align = "center";
-
+                  tdf.id = "pop_button_panel"
                   trf.appendChild(tdf);
 
                   var btnCancel = document.createElement("button");

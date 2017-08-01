@@ -131,13 +131,13 @@ user = User.find('admin')
 
 if user.blank?
 
-    if CONFIG['site_type'] == "facility" && CONFIG['facility_code'].present?
+    if SETTINGS['site_type'] == "facility" && SETTINGS['facility_code'].present?
 
-        username = "admin#{CONFIG['facility_code']}"
+        username = "admin#{SETTINGS['facility_code']}"
 
     else
 
-        username = "admin#{CONFIG['district_code'].downcase}"
+        username = "admin#{SETTINGS['district_code'].downcase}"
 
     end
 

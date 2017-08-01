@@ -1,4 +1,5 @@
- require 'simple_sql'
+require "rails"
+require 'simple_sql'
 
  sql = "SET FOREIGN_KEY_CHECKS = 0;"
  SimpleSQL.query_exec(sql)

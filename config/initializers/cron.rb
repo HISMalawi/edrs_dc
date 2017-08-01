@@ -1,4 +1,4 @@
-if CONFIG['site_type'].to_s != "facility"
+if SETTINGS['site_type'].to_s != "facility"
     if (defined? PersonIdentifier.can_assign_den).nil?
        PersonIdentifier.can_assign_den = true
     end

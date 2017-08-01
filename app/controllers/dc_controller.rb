@@ -68,7 +68,7 @@ class DcController < ApplicationController
 
 
 		if record_complete?(person)
-				duplicate =   SimpleElasticSearch.query_duplicate(person,CONFIG['duplicate_precision'])
+				duplicate =   SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
 				if duplicate.blank?
 					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
@@ -79,7 +79,7 @@ class DcController < ApplicationController
 					end
 					
 					last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-			        job_interval = CONFIG['ben_assignment_interval']
+			        job_interval = SETTINGS['ben_assignment_interval']
 			        job_interval = 1.5 if job_interval.blank?
 			        job_interval = job_interval.to_f
 			        now = Time.now
@@ -396,8 +396,8 @@ class DcController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Reprint Barcode", 
                                       :identifier => params[:barcode].to_s,
-                                      :site_code => (person.site_code rescue (CONFIG['site_code'] rescue nil)),
-                                      :district_code => (person.district_code rescue CONFIG['district_code']),
+                                      :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
+                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
                                       :creator => params[:user_id]})
 
 		Audit.create({
@@ -502,8 +502,8 @@ class DcController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "AMENDMENT Barcode", 
                                       :identifier => params[:barcode].to_s,
-                                      :site_code => (person.site_code rescue (CONFIG['site_code'] rescue nil)),
-                                      :district_code => (person.district_code rescue CONFIG['district_code']),
+                                      :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
+                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
                                       :creator => params[:user_id]})
 
 		redirect_to "#{params[:next_url].to_s}"
@@ -511,8 +511,8 @@ class DcController < ApplicationController
 
 	def counts_by_status
 		status = params[:status]
-		district_code = CONFIG['district_code']
-		if CONFIG['site_type'] == "remote"
+		district_code = SETTINGS['district_code']
+		if SETTINGS['site_type'] == "remote"
 			district_code = User.current_user.district_code
 		end
 		key = [district_code,status]
@@ -534,7 +534,7 @@ class DcController < ApplicationController
 	end
 
 	def sync
-		if CONFIG['site_type'] = "dc"
+		if SETTINGS['site_type'] = "dc"
 			@section ="Synced to HQ"
 			@url = "/dc/query_hq_sync"
 		else
@@ -548,8 +548,8 @@ class DcController < ApplicationController
 		page = params[:page] rescue 1
 	    size = params[:size] rescue 7
 	    people = []
-	    if CONFIG['site_type']=="dc"
-	    	district_code = CONFIG['district_code'].to_s
+	    if SETTINGS['site_type']=="dc"
+	    	district_code = SETTINGS['district_code'].to_s
 	    else
 	    	district_code = User.current_user.district_code
 	    end

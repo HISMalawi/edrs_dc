@@ -1,5 +1,5 @@
-@settings = SETTINGS
-district_code = CONFIG['district_code']
+@settings = SYNC_SETTINGS
+district_code = SETTINGS['district_code']
 person_count = Person.count
 
 source = @settings[:dc]

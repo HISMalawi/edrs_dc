@@ -38,8 +38,8 @@ class User < CouchRest::Model::Base
   end
 
   def set_site
-    if CONFIG['site_type'] =="facility"
-      self.site_code = CONFIG["facility_code"]
+    if SETTINGS['site_type'] =="facility"
+      self.site_code = SETTINGS["facility_code"]
     end
   end
 
@@ -142,8 +142,10 @@ class User < CouchRest::Model::Base
     user.role = (params[:role] rescue nil || params[:user]['role'] rescue nil)
 
 
-    if CONFIG['site_type'] == 'remote'
-      user.district_code = (District.by_name.key(params[:user]['district'] ) rescue CONFIG['district_code'])
+    if SETTINGS['site_type'] == 'remote'
+      user.district_code = (District.by_name.key(params[:user]['district']).code rescue SETTINGS['district_code'])
+    else
+      user.district_code = SETTINGS['district_code']
     end
    
     user.email = (params[:email] rescue nil || params[:user]['email'] rescue nil)

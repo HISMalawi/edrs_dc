@@ -12,8 +12,8 @@ class LoginsController < ApplicationController
     if user and user.password_matches?(password)
 
       ############## Checking if the user is from the district ####################################
-      if CONFIG['site_type'] != "remote"
-          if (user.district_code != CONFIG['district_code']) 
+      if SETTINGS['site_type'] != "remote"
+          if (user.district_code != SETTINGS['district_code']) 
             if (user.role !="System Administrator") && (user.site_code != "HQ")
                 logout!
                 flash[:error] = 'Your user credentilas is not from this district'
@@ -26,7 +26,7 @@ class LoginsController < ApplicationController
 
       ###############################################################################################
       
-      site_type = CONFIG['site_type']
+      site_type = SETTINGS['site_type']
       if site_type =="dc"
         site_type = "DC"
       else
@@ -68,8 +68,8 @@ class LoginsController < ApplicationController
     flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
 
     logout!
-    if eval(CONFIG['app_gate_url']).present?
-      redirect_to CONFIG['app_gate_url'].to_s
+    if eval(SETTINGS['app_gate_url']).present?
+      redirect_to SETTINGS['app_gate_url'].to_s
     else
       redirect_to "/", referrer_param => referrer_path
     end

@@ -3,9 +3,9 @@ require 'simple_sql'
 
    def potential_duplicate_full_text?(person)
       if person.middle_name.blank?
-        score = (CONFIG['duplicate_score'].to_i - 1)
+        score = (SETTINGS['duplicate_score'].to_i - 1)
       else
-        score = CONFIG['duplicate_score'].to_i
+        score = SETTINGS['duplicate_score'].to_i
       end
       searchables = "#{person.first_name.soundex} #{person.last_name.soundex} #{ format_content(person)}"
       sql_query = "SELECT couchdb_id,title,content,MATCH (title,content) AGAINST ('#{searchables}' IN BOOLEAN MODE) AS score 

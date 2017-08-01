@@ -34,6 +34,7 @@ class PeopleController < ApplicationController
 
   def new
 	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
+     @site_type = site_type.to_s
      @current_nationality = Nationality.by_nationality.key("Malawian").last
 	   if !params[:id].blank?
 	   else
@@ -90,8 +91,8 @@ class PeopleController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Form Barcode", 
                                       :identifier => person_params[:barcode].to_s,
-                                      :site_code => CONFIG['site_code'],
-                                      :district_code => CONFIG['district_code'],
+                                      :site_code => SETTINGS['site_code'],
+                                      :district_code => SETTINGS['district_code'],
                                       :creator => User.current_user.id})
         
       end
@@ -102,8 +103,8 @@ class PeopleController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "National ID", 
                                       :identifier => person_params[:id_number],
-                                      :site_code => CONFIG['site_code'],
-                                      :district_code => CONFIG['district_code'],
+                                      :site_code => SETTINGS['site_code'],
+                                      :district_code => SETTINGS['district_code'],
                                       :creator => User.current_user.id} )
         
       end
@@ -114,8 +115,8 @@ class PeopleController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Birth Certificate Number", 
                                       :identifier => person_params[:birth_certificate_number],
-                                      :site_code => CONFIG['site_code'],
-                                      :district_code => CONFIG['district_code'],
+                                      :site_code => SETTINGS['site_code'],
+                                      :district_code => SETTINGS['district_code'],
                                       :creator => User.current_user.id} )
         
       end
@@ -179,7 +180,7 @@ class PeopleController < ApplicationController
 
       person  = Person.new(field_hash)
       people = []
-      results = SimpleElasticSearch.query_duplicate(person,CONFIG['duplicate_precision'])
+      results = SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
 
       results.each do |result|
           people << readable_format(result) if readable_format(result).present?
@@ -199,7 +200,7 @@ class PeopleController < ApplicationController
 
       facility_number = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id],"FACILITY NUMBER"]).first
 
-      if false && CONFIG['facility_code'] && !CONFIG['facility_code'].blank?  && !facility_number.present?
+      if false && SETTINGS['facility_code'] && !SETTINGS['facility_code'].blank?  && !facility_number.present?
 
           NationalIdNumberCounter.assign_serial_number(person,facility.facility_code)
           
@@ -250,7 +251,7 @@ class PeopleController < ApplicationController
     size = params[:size] rescue 7
     people = []
 
-    if CONFIG['site_type'] == "remote"
+    if SETTINGS['site_type'] == "remote"
       record_status = []
       statuses = params[:statuses]
 
@@ -350,7 +351,7 @@ class PeopleController < ApplicationController
       PersonIdentifier.by_identifier.key(params[:death_entry_number]).page(page).per(size).each do |pid|
         
           person = pid.person
-          if CONFIG['site_type'] == "remote"
+          if SETTINGS['site_type'] == "remote"
               next if User.current_user.district_code != person.district_code
           end
           people << person_selective_fields(person)
@@ -686,7 +687,7 @@ class PeopleController < ApplicationController
   end
 ########## Render sync status page ##################################################################################################################
   def view_sync
-   @site_type = CONFIG['site_type'].to_s
+   @site_type = SETTINGS['site_type'].to_s
     if @site_type == "dc"
       @section ="Synced to HQ"
       @url = "/dc/query_hq_sync"
@@ -708,7 +709,7 @@ class PeopleController < ApplicationController
     page = params[:page] rescue 1
       size = params[:size] rescue 7
       people = []
-    Sync.by_facility_code.key(CONFIG['facility_code'].to_s).page(page).per(size).each do |sync|
+    Sync.by_facility_code.key(SETTINGS['facility_code'].to_s).page(page).per(size).each do |sync|
       person = sync.person
       person_details = {
             id:           person.id,
@@ -788,7 +789,7 @@ end
 
     @current_nation = current_nationality
 
-    if CONFIG['site_type'] =="facility"
+    if SETTINGS['site_type'] =="facility"
 
           @facility_type = "Facility"
 

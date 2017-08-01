@@ -33,7 +33,7 @@
                           <%end%>
 
                           <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record")%>
-                                <% if  CONFIG['site_type'] == "dc" || CONFIG['site_type'] == "remote"%>
+                                <% if  SETTINGS['site_type'] == "dc" || SETTINGS['site_type'] == "remote"%>
                                   <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                     <div class="icon">
                                            <i class="fa fa-users"></i>

@@ -1,4 +1,4 @@
-config = CONFIG
+config = SETTINGS
 if config['site_type']=='dc'
 	sync_records = Sync.by_dc_unsynced.each
 	count = 0

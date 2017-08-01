@@ -43,13 +43,13 @@ class Sync < CouchRest::Model::Base
 
 	def set_district_code
 		unless self.district_code.present?
-			self.district_code = (self.person.district_code rescue CONFIG["district_code"])
+			self.district_code = (self.person.district_code rescue SETTINGS["district_code"])
 		end      
 	end
 
 	def set_facility_code
 		unless self.facility_code.present?
-			self.facility_code = (self.person.facility_code rescue (CONFIG['facility_code'] rescue nil))
+			self.facility_code = (self.person.facility_code rescue (SETTINGS['facility_code'] rescue nil))
 		end	
 	end
 end

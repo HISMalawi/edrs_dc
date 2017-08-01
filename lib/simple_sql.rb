@@ -1,6 +1,7 @@
+require "rails"
 class SimpleSQL
 
-  CONFIGS = YAML.load_file("#{Rails.root}/config/mysql_connection.yml")['connection']
+  CONFIGS = YAML.load_file("#{Rails.root}/config/database.yml")[Rails.env]
 
   def self.query(options, selected, accept_blanks=false)
     join_ext = ""
@@ -27,7 +28,7 @@ class SimpleSQL
     people = []
     ids.each do |id|
       person = Person.find(id)
-      if CONFIG['site_type'] == "remote"
+      if SETTINGS['site_type'] == "remote"
               next if (User.current_user.district_code != person.district_code ) && (user.role !="System Administrator") && (user.site_code != "HQ")
           end
       people << person

@@ -44,7 +44,7 @@
               <tr><td>Surname</td><td><%= @user.last_name %></td></tr>
               <tr><td>Role</td><td><%= @user.role %></td></tr>
               <tr><td>Email</td><td><%= @user.email %></td></tr>
-          <% if CONFIG['site_type'] == "remote" %>
+          <% if SETTINGS['site_type'] == "remote" %>
               <tr><td>District</td><td><%= District.find(@user.district_code).name rescue "HQ"%></td></tr>
           <%end%>
               <tr><td>Created at</td><td><%= @user.created_at.to_date.strftime("%d/%b/%Y") rescue nil %></td></tr>
