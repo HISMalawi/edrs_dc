@@ -1,0 +1,15 @@
+
+
+
+
+<script type="text/javascript" src="/javascripts/edrs.js"></script>
+<form method="get" action ="">
+
+            <input type="hidden" id="user_id" name="id" value="<%=  @user.id %>">
+
+            <%= select_tag :preferred_keyboard, options_for_select([['ABC','abc'],['QWERTY','qwerty']]), :class =>'input_cell', :helpText => "Choose Keyboard Preference",:placeholder => "Keyboard"%>
+
+    	
+
+           
+</form>
