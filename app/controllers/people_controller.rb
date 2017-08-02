@@ -83,7 +83,9 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
-      SimpleElasticSearch.add(person)
+      if eval(SETTINGS["potential_duplicate"].to_s)
+          SimpleElasticSearch.add(person)
+      end
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
 
@@ -180,8 +182,12 @@ class PeopleController < ApplicationController
 
       person  = Person.new(field_hash)
       people = []
-      results = SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
-
+      if eval(SETTINGS["potential_duplicate"].to_s)
+        results = SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
+      else
+        #exact search
+        results = []
+      end
       results.each do |result|
           people << readable_format(result) if readable_format(result).present?
       end
