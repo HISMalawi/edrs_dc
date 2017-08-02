@@ -1,13 +1,12 @@
 <section name="Details of parents">
             <sub id="details_mother" name="Details of mother">
-              <% if false %>
+              <% if true %>
                 <%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
-                     :helpText =>"Mother's details available?",
+                     :helpText =>"Mother's details available? <i style='color: red'>*</i>",
                      :tt_requireNextClick => false,
                      :tt_onLoad=>"if(!flag){hideConfirmation()};flag=true") %>
                  <%= text_field_tag "person[mother_last_name]",nil, 
-                          {:helpText => "Mother's Surname",
-                            :optional => true,
+                          {:helpText => "Mother's Surname <i style='color: red'>*</i>",
                             :allowFreeText =>true, 
                             :ajaxURL => "/get_last_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
@@ -28,8 +27,8 @@
                
 
                 <%= text_field_tag "person[mother_first_name]",nil,
-                          {:helpText => "Mother's First Name",
-                            :allowFreeText =>true,:optional => true,
+                          {:helpText => "Mother's First Name <i style='color: red'>*</i>",
+                            :allowFreeText =>true,
                             :ajaxURL => "/get_first_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()",
                             :tt_onUnLoad=>"validateName('person_mother',5)",
@@ -37,8 +36,8 @@
 
                 <%= text_field_tag "person[mother_middle_name]",nil, 
                           {:helpText => "Mother's Other Names",
-                          :allowFreeText =>true, 
-                          :optional => true, 
+                          :allowFreeText =>true,
+                          :optional => :true,  
                           :ajaxURL => "/get_first_names?search=",
                           :tt_onLoad=> "removeUnknown();checkSpace()",
                           :tt_onUnLoad =>"validateOtherName('person_mother',6)",
@@ -53,7 +52,7 @@
                              :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
             </sub>
             <sub id="details_father" name="Details of father">
-              <%if false%>
+              <%if true %>
               <%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
                       :helpText =>"Father's details available?",
                       :tt_requireNextClick => false) %>
@@ -62,18 +61,16 @@
               <%end%>
 
                 <%= text_field_tag "person[father_last_name]",nil,
-                          {:helpText => "Father's Surname",
-                            :allowFreeText =>true,
-                            :optional => true, 
+                          {:helpText => "Father's Surname <i style='color: red'>*</i>",
+                            :allowFreeText =>true, 
                             :ajaxURL => "/get_last_names?search=", 
                             :condition => "__$('father_details_available').value =='Yes'",
                             :tt_onUnLoad =>"validateName('person_father',7)",
                             :tt_onLoad=> "removeUnknown();checkSpace()" }%>
 
                <%= text_field_tag "person[father_first_name]",nil,
-                          {:helpText => "Father's First Name",
+                          {:helpText => "Father's First Name <i style='color: red'>*</i>",
                             :allowFreeText =>true,
-                            :optional => true,
                             :ajaxURL => "/get_first_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateName('person_father',8)",

@@ -1,5 +1,13 @@
 <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
+                 <%= select_tag("person[mother_informant]",options_for_select([" ", "Yes", "No"], "Yes"),
+                     :helpText =>"Is mother informant? <i style='color: red'>*</i>",
+                     :tt_requireNextClick => false, :condition => "__$('person_mother_first_name').value.length > 0") %>
+
+                 <%= select_tag("person[father_informant]",options_for_select([" ", "Yes", "No"], "Yes"),
+                     :helpText =>"Is father informant? <i style='color: red'>*</i>",
+                     :tt_requireNextClick => false, :condition => "__$('person_mother_informant').value =='No' &&__$('person_father_first_name').value.length > 0") %>
+
                 <%= text_field_tag "person[informant_last_name]", nil,
                           {:helpText => "Informant's  Surname <i style='color: red'>*</i>",
                                                      :allowFreeText =>true,
