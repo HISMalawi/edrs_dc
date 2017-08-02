@@ -1,12 +1,28 @@
+<script type="text/javascript">
+  function parentAsInformant(parent){
+      __$("person_informant_first_name").value = (__$("person_"+parent+"_first_name") ? __$("person_"+parent+"_first_name").value : "");
+      __$("person_informant_last_name").value = (__$("person_"+parent+"_last_name") ? __$("person_"+parent+"_last_name").value : "");
+      __$("person_informant_middle_name").value = (__$("person_"+parent+"_middle_name") ? __$("person_"+parent+"_middle_name").value : "");
+      __$("person_informant_id_number").value = (__$("person_"+parent+"_id_number") ? __$("person_"+parent+"_id_number").value : "");
+      if(parent == "mother"){
+         __$("person_informant_relationship_to_deceased").value = "Mother"
+      }else{
+         __$("person_informant_relationship_to_deceased").value = "Father"
+      }
+     
+
+     
+  } 
+</script>
 <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
                  <%= select_tag("person[mother_informant]",options_for_select([" ", "Yes", "No"], "Yes"),
                      :helpText =>"Is mother informant? <i style='color: red'>*</i>",
-                     :tt_requireNextClick => false, :condition => "__$('person_mother_first_name').value.length > 0") %>
+                     :tt_requireNextClick => false, :condition => "__$('person_mother_first_name').value.length > 0",:tt_onUnLoad=>"parentAsInformant('mother')") %>
 
                  <%= select_tag("person[father_informant]",options_for_select([" ", "Yes", "No"], "Yes"),
                      :helpText =>"Is father informant? <i style='color: red'>*</i>",
-                     :tt_requireNextClick => false, :condition => "__$('person_mother_informant').value =='No' &&__$('person_father_first_name').value.length > 0") %>
+                     :tt_requireNextClick => false, :condition => "__$('person_mother_informant').value =='No' &&__$('person_father_first_name').value.length > 0", :tt_onUnLoad=>"parentAsInformant('father')") %>
 
                 <%= text_field_tag "person[informant_last_name]", nil,
                           {:helpText => "Informant's  Surname <i style='color: red'>*</i>",
@@ -46,7 +62,7 @@
                              'Uncle', 'Aunt',
                              'Other'], @person[:informant_relationship_to_deceased]),
                              :helpText =>"Informant's relationship to deceased <i style='color: red'>*</i>",
-                             :tt_pageStyleClass =>"NoKeyboard longSelectList",:tt_requireNextClick => false) %>
+                             :tt_requireNextClick => false) %>
 
                 <%= text_field_tag "person[informant_relationship_to_deceased_other]",nil,
                         {:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",

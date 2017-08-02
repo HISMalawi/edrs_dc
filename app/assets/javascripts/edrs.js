@@ -542,8 +542,3 @@ function duplicatesPopup(people,checkbox){
 
 
 }
-function parentAsInformant(parent){
-      __$("person_informant_first_name").value = (__$("person_"+parent+"_first_name") ? __$("person_"+parent+"_first_name").value : "")
-      __$("person_informant_last_name").value = (__$("person_"+parent+"_last_name") ? __$("person_"+parent+"_last_name").value : "")
-      __$("person_informant_middle_name").value = (__$("person_"+parent+"_middle_name") ? __$("person_"+parent+"_middle_name").value : "")
-} 
