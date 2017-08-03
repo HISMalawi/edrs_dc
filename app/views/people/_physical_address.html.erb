@@ -6,18 +6,21 @@
               <%else%>
                     <%= text_field_tag "person[current_country]", @person[:current_country], {
                             :helpText => "Country (<i>Physical residential address</i>) <i style='color: red'>*</i>",
-                            :ajaxURL => "/countries?search_string="} %>
+                            :ajaxURL => "/countries?search_string=",
+                            :tt_requireNextClick => false} %>
               <%end%>
 
               <%= text_field_tag "person[current_district]", @person[:current_district], {
                   :helpText => "District (<i>Physical residential address</i>) <i style='color: red'>*</i>",
                                 :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)"} %>
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)",
+                                :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[current_ta]",@person[:current_ta] , {
                         :helpText => "Traditional Authority (<i>Physical residential address</i>)  <i style='color: red'>*</i>",
                         :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                        :tt_onUnLoad => "setAjaxUrl(7)"} %>
+                        :tt_onUnLoad => "setAjaxUrl(7)",
+                        :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_current_ta]", @person[:other_current_ta], {
                         :helpText => "Other Traditional Authority specify (<i>Physical residential address</i>) <i style='color: red'>*</i>",
@@ -25,7 +28,8 @@
 
                 <%= text_field_tag "person[current_village]",@person[:current_village], {
                         :helpText => "Village (<i>Physical residential address</i>)  <i style='color: red'>*</i>",
-                        :condition => "__$('person_current_ta').value.length > 0 && __$('person_current_ta').value != 'Other'"} %>
+                        :condition => "__$('person_current_ta').value.length > 0 && __$('person_current_ta').value != 'Other'",
+                        :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_current_village]",@person[:other_current_village], 
                       {:helpText => "Other Village specify(<i>Physical residential address</i>)  <i style='color: red'>*</i>",

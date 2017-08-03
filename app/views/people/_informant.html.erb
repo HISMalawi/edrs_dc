@@ -1,18 +1,35 @@
 <script type="text/javascript">
   function parentAsInformant(parent){
-      __$("person_informant_first_name").value = (__$("person_"+parent+"_first_name") ? __$("person_"+parent+"_first_name").value : "");
-      __$("person_informant_last_name").value = (__$("person_"+parent+"_last_name") ? __$("person_"+parent+"_last_name").value : "");
-      __$("person_informant_middle_name").value = (__$("person_"+parent+"_middle_name") ? __$("person_"+parent+"_middle_name").value : "");
-      __$("person_informant_id_number").value = (__$("person_"+parent+"_id_number") ? __$("person_"+parent+"_id_number").value : "");
-      if(parent == "mother"){
-         __$("person_informant_relationship_to_deceased").value = "Mother"
+      var input = __$('touchscreenInput'+tstCurrentPage).value
+      if (input == "Yes"){
+          __$("person_informant_first_name").value = (__$("person_"+parent+"_first_name") ? __$("person_"+parent+"_first_name").value : "");
+          __$("person_informant_last_name").value = (__$("person_"+parent+"_last_name") ? __$("person_"+parent+"_last_name").value : "");
+          __$("person_informant_middle_name").value = (__$("person_"+parent+"_middle_name") ? __$("person_"+parent+"_middle_name").value : "");
+          __$("person_informant_id_number").value = (__$("person_"+parent+"_id_number") ? __$("person_"+parent+"_id_number").value : "");
+          if(parent == "mother"){
+             __$("person_informant_relationship_to_deceased").value = "Mother"
+          }else{
+             __$("person_informant_relationship_to_deceased").value = "Father"
+          }
       }else{
-         __$("person_informant_relationship_to_deceased").value = "Father"
+          __$("person_informant_first_name").value = ""
+          __$("person_informant_last_name").value = ""
+          __$("person_informant_middle_name").value = ""
+          __$("person_informant_id_number").value = ""
+          __$("person_informant_relationship_to_deceased").value = ""
       }
-     
 
      
   } 
+
+  function adjustViewPortHeight(){
+    setTimeout(function(){
+        __$("options").style.height = "200px !important"; 
+        __$("options").style.overflowY = "scroll"
+    },200)
+      
+  }
+ 
 </script>
 <section name="Informant's details">
             <sub id="info_details" name="Basic demographics">
@@ -62,7 +79,7 @@
                              'Uncle', 'Aunt',
                              'Other'], @person[:informant_relationship_to_deceased]),
                              :helpText =>"Informant's relationship to deceased <i style='color: red'>*</i>",
-                             :tt_requireNextClick => false) %>
+                             :tt_pageStyleClass => "NoKeyboard", :tt_onLoad => "adjustViewPortHeight()" ) %>
 
                 <%= text_field_tag "person[informant_relationship_to_deceased_other]",nil,
                         {:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",
@@ -71,18 +88,21 @@
             <sub id="info_home_address" name="Address">
               <%= text_field_tag "person[informant_current_country]", nil, {
                         :helpText => "Country (<i>Informant's address</i>)<i style='color: red'>*</i>",
-                        :ajaxURL => "/countries?search_string="} %>
+                        :ajaxURL => "/countries?search_string=",
+                        :tt_requireNextClick => false} %>
 
               <%= text_field_tag "person[informant_current_district]", nil, {
                     :helpText => "District (<i>Informant's address</i>)<i style='color: red'>*</i>",
                     :ajaxURL =>"/districts?search_string=",
                     :tt_onUnLoad => "setAjaxUrl(4)",
-                    :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'"} %>
+                    :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'",
+                    :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[informant_current_ta]", nil, {
                           :helpText => "Traditional Authority (<i>Informant's address</i>)<i style='color: red'>*</i>",
                           :tt_onUnLoad => "setAjaxUrl(5)",
-                          :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'"} %>
+                          :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'",
+                          :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_informant_current_ta]", nil, {
                           :helpText => "Other Traditional Authority specify (<i>Informant's address</i>)<i style='color: red'>*</i>",
@@ -90,7 +110,8 @@
           
                 <%= text_field_tag "person[informant_current_village]", nil, {
                     :helpText => "Village (<i>Informant's address</i>)<i style='color: red'>*</i>", 
-                    :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other' && __$('person_informant_current_country').value.trim() == 'Malawi'"} %>
+                    :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other' && __$('person_informant_current_country').value.trim() == 'Malawi'",
+                    :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_informant_current_village]", nil, {
                   :helpText => "Other village specify (<i>Informant's address</i>)<i style='color: red'>*</i>",

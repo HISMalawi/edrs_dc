@@ -33,7 +33,8 @@
                 <%else%>
                       <%= text_field_tag "person[nationality]",nil , {
                           :helpText => "Nationality <i style='color: red'>*</i>",
-                          :ajaxURL => "/nationalities?search_string="} %>
+                          :ajaxURL => "/nationalities?search_string=",
+                          :tt_requireNextClick => false} %>
                 <%end%>
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
                           :helpText =>"Sex <i style='color: red'>*</i>",

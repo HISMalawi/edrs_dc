@@ -4,6 +4,13 @@
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
 </script>
+<style type="text/css">
+    .statusLabel {
+      position: absolute;
+      width: 70% !important;
+      left: -300px;
+  }
+</style>
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 
@@ -71,16 +78,19 @@
                     <%end%>
                     <%= text_field_tag "person[place_of_death_district]", nil, {
                     					:helpText => "Place of Death District <i style='color: red'>*</i>" , 
-                    					:tt_onUnLoad => "setAjaxUrl(0)"} %>
+                    					:tt_onUnLoad => "setAjaxUrl(0)",
+                              :tt_requireNextClick => false} %>
 
                     <%= text_field_tag "person[hospital_of_death]", nil, {
                     					:helpText => "Health Facility (<i>Place of death</i>) <i style='color: red'>*</i>",
-                    					:condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
+                    					:condition => "__$('person_place_of_death').value.trim()=='Health Facility'",
+                              :tt_requireNextClick => false} %>
 
                     <%= text_field_tag "person[place_of_death_ta]", nil, {
                     					:helpText => "Traditional authority (<i>Place of death</i>) <i style='color: red'>*</i>",
                     					:condition => "__$('person_place_of_death').value.match('Home')", 
-                    					:tt_onUnLoad => "setAjaxUrl(1)"} %>
+                    					:tt_onUnLoad => "setAjaxUrl(1)",
+                              :tt_requireNextClick => false} %>
 
                      <%= text_field_tag "person[other_place_of_death_ta]", nil, {
                      					:helpText => "Other Traditional Authority specify (<i>Place of death</i>) <i style='color: red'>*</i>",
@@ -88,7 +98,8 @@
 
                		<%= text_field_tag "person[place_of_death_village]", nil, {
                							:helpText => "Village (<i>Place of death</i>) <i style='color: red'>*</i>",
-               							:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
+               							:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'",
+                            :tt_requireNextClick => false} %>
 
                		<%= text_field_tag "person[other_place_of_death_village]", nil, {
                							:helpText => "Other Village specify (<i>Place of death</i>) <i style='color: red'>*</i>",
