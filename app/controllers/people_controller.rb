@@ -473,22 +473,24 @@ class PeopleController < ApplicationController
 
   def districts
   
+     entry = params["search_string"] rescue nil
+
     if params[:place].present? && params[:place] == "Health Facility"
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
 
-        district = District.by_name.each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
 
         render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
     
     else
-        district = District.by_name.each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
 
         render :text => district.collect { |w| "<li >#{w.name}" }.join("</li>")+"</li>"
     
     end
   end
-
+entry = params["search"].soundex rescue nil
   def facilities
 
     district_param = params[:district] || '';
