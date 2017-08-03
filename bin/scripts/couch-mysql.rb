@@ -25,7 +25,7 @@ mysql_username = mysql_db_settings["username"]
 mysql_password = mysql_db_settings["password"]
 mysql_host = mysql_db_settings["host"]
 mysql_db = mysql_db_settings["database"]
-mysql_port = (mysql_db_settings["port"] rescue 3306)
+mysql_port =  3306
 mysql_adapter = mysql_db_settings["adapter"]
 
 
@@ -33,7 +33,8 @@ mysql_adapter = mysql_db_settings["adapter"]
 db_map_path = DIR.to_s + "/config/db_mapping.yml"
 db_maps = YAML.load_file(db_map_path)
 
-
+puts "http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}"
+puts "#{mysql_adapter}://#{mysql_username}:#{mysql_password}@#{mysql_host}:#{mysql_port}/#{mysql_db}"
 changes "http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}" do
   # Which database should we connect to?
   database "#{mysql_adapter}://#{mysql_username}:#{mysql_password}@#{mysql_host}:#{mysql_port}/#{mysql_db}"
