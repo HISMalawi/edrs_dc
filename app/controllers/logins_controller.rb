@@ -76,6 +76,10 @@ class LoginsController < ApplicationController
     end
   end
 
+  def login_wrapper
+    
+  end
+
   def set_context
     session[:touchcontext] = params[:id]
 

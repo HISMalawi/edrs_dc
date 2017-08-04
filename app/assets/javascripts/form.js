@@ -1591,8 +1591,11 @@
 
 		}
 		function checkForDuplicate(){
+
 				var place_of_death = (__$("person_place_of_death") && __$("person_place_of_death").value? __$("person_place_of_death").value : "" );
 				place_of_death = (__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value? __$("person_place_of_death_foreign").value : place_of_death);	
+				var place_of_death_district = (__$("person_place_of_death_district") ? __$("person_place_of_death_district").value : "Abroad")
+				place_of_death_district  = (__$("place_of_death_foreign_district") ? __$("place_of_death_foreign_district").value : place_of_death_district)
 				var data = {
 								first_name    			: __$("person_first_name").value,
 								last_name 	  			: __$("person_last_name").value,
@@ -1601,7 +1604,7 @@
 								birthdate 	  			: __$("person_birthdate").value,
 								date_of_death 			: __$("person_date_of_death").value,
 								place_of_death 			: place_of_death,
-								place_of_death_district : __$("person_place_of_death_district").value,
+								place_of_death_district : place_of_death_district,
 								informant_last_name 	: __$("person_informant_last_name").value,
 								informant_first_name 	: __$("person_informant_first_name").value
 				}

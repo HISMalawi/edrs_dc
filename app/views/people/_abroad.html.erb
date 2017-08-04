@@ -34,7 +34,8 @@
 
                 <%= text_field_tag "person[place_of_death_country]", nil, {
                     					:helpText => "Place of Death Country <i style='color: red'>*</i>" , 
-                    					:ajaxURL => "/countries?exclude=Malawi&search_string="} %> 
+                    					:ajaxURL => "/countries?exclude=Malawi&search_string=",
+                              :tt_requireNextClick => false} %> 
 
                 <%= select_tag("person[place_of_death_foreign]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death_foreign]),
                                         :id=> "person_place_of_death_foreign",
@@ -82,23 +83,23 @@
             <sub id="info_details" name="Details and designation">
 
                  <%= (f.text_field :informant_last_name, 
-                                  :helpText => "Informant's  Surname",
+                                  :helpText => "Informant's  Surname <i style='color: red'>*</i>",
                                   :allowFreeText =>true,
                                   :ajaxURL => "/get_last_names?search=",
-                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
+                                  :tt_onLoad=> "removeUnknown();checkSpace()") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,
-                                  :helpText => "Informant's First Name",
+                                  :helpText => "Informant's First Name <i style='color: red'>*</i>",
                                   :allowFreeText =>true,
                                   :ajaxURL => "/get_first_names?search=",
-                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
+                                  :tt_onLoad=> "removeUnknown();checkSpace()") rescue "" %>
 
                 <%= (f.text_field :informant_middle_name, 
                                   :helpText => "Informant's Other Names",
                                   :allowFreeText =>true,
                                   :ajaxURL => "/get_first_names?search=",
                                   :optional => :true,
-                                  :tt_onLoad=> "removeUnknown()") rescue "" %>
+                                  :tt_onLoad=> "removeUnknown();checkSpace()") rescue "" %>
 
                 <%= (f.text_field :informant_id_number, 
                                   :helpText => "Informant's ID No.",
@@ -118,8 +119,8 @@
 
                  <%= text_field_tag "person[informant_office_address]",nil , {
                         :name => "barcode",
-                        :placeholder => "e.g P.O. Box 200 Lilongwe",
-                        :helpText=> "Informant's office address"} %>
+                        :placeholder => "e.g P.O. Box 200 Lilongwe ",
+                        :helpText=> "Informant's office address <i style='color: red'>*</i>"} %>
 
                  <%= (f.text_field :informant_phone_number,
                                 :helpText => "Informant Telephone Number",
@@ -127,13 +128,16 @@
                                 :tt_pageStyleClass => "Numeric NumbersWithUnknown",
                                 :tt_onLoad => "showPhoneSummary()",
                                 :optional => :true) rescue "" %>
+
                  <%= text_field_tag "person[informant_current_country]", nil, {
                         :helpText => "Country (<i>Informant's address</i>)<i style='color: red'>*</i>",
-                        :ajaxURL => "/countries?special=true&search_string="} %>
+                        :ajaxURL => "/countries?special=true&search_string=",
+                        :tt_requireNextClick => false} %>
+
                 <%= text_field_tag "person[informant_foreign_state]", nil, {
-                  :helpText => "State (<i>Informant foreign address</i>)",
-                  :optional => true,
-                  :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
+                        :helpText => "State (<i>Informant foreign address</i>)",
+                        :optional => true,
+                        :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
 
                <%= text_field_tag "person[informant_foreign_district]", nil, {
                   :helpText => "District (<i>Informant foreign address</i>)",
@@ -147,7 +151,8 @@
             </sub>
             <sub id="Informant verification" name="Verification">
                 <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
-                                :helpText =>"Informant Signed?") %>
+                  :helpText =>"Informant Signed?",
+                  :tt_requireNextClick => false) %>
 
                 <%= (f.text_field :informant_signature_date,
                                     :helpText => "Date Informant signed",

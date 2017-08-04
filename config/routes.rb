@@ -235,6 +235,8 @@ Rails.application.routes.draw do
 
   get "/login" => "logins#login"
 
+  get "/login_wrapper" => "logins#login_wrapper"
+
   get "/view_users" => "users#view"
 
   get "/edit_account" => "users#edit_account"

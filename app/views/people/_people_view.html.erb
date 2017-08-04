@@ -265,7 +265,7 @@
 									td.innerHTML = data[i].place_of_death_foreign_hospital
 
 								}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim() !="facility"){
-									td.innerHTML = (data[i].place_of_death_foreign_state ? data[i].place_of_death_foreign_state : "") +" " 
+									td.innerHTML = (data[i].place_of_death_country ? data[i].place_of_death_country : "") + (data[i].place_of_death_foreign_state ? data[i].place_of_death_foreign_state : "") +" " 
 									+ (data[i].place_of_death_foreign_district ? data[i].place_of_death_foreign_district : "" ) + " "+ 
 									 (data[i].place_of_death_foreign_village ? data[i].place_of_death_foreign_village : "");
 
@@ -296,7 +296,7 @@
 										if( data[i].current_foreign_village){
 											address = address + " "+ data[i].current_foreign_village
 										}
-										td.innerHTML =  address
+										td.innerHTML =  (data[i].current_country? data[i].current_country : "" ) +address
 									}
 								}else{
 
@@ -329,7 +329,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +data[i]["_id"]+"?next_url=<%= @next_url%>?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>?page="+page+"'");
 
 								td.appendChild(button);
 
