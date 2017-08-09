@@ -133,11 +133,15 @@
 <%else%>
 
 	<%= form_tag("/people/search",:method=>:get) do %>
-
-		<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+		<% if SETTINGS['site_type'].to_s != "facility" %>
+			<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+		<%else%>
+			<%= select_tag "search_criteria", options_for_select(["By Barcode","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+		<%end%>
 
 		<%= text_field_tag "person[barcode]",nil , {:name => "barcode",:helpText=> "Scan Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:condition => "__$('search_criteria').value =='By Barcode'"} %>
 
+		
 		<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'"}  %>
 
 		<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
