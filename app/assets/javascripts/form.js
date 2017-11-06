@@ -1881,7 +1881,7 @@
 				}else {
 				 	var check_number_regex = /\d/;
 				 	var check_space_regex = /\s/;
-				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/
+				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
 				 	if(check_number_regex.test(input)){
 				 		showMessage("The name contains number(s)",null,30000);
 				 	}else if(check_space_regex.test(input)){

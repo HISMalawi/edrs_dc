@@ -547,14 +547,12 @@ button:active {
                 background: #dbdada;
 
               }
-              .prev {
-
-                float: left;
-              }
-              .next {
-
-                float:right;
-              }
+.prev {
+  float: left;
+}
+.next {
+  float:right;
+}
 
 .blue{
   height: 20px !important;

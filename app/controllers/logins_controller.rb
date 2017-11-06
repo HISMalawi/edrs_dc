@@ -2,7 +2,7 @@ class LoginsController < ApplicationController
   skip_before_filter :perform_basic_auth, :only => :logout
 
   def login
-    
+    render :layout => false
   end
 
   def create
