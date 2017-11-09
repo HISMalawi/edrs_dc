@@ -1,26 +1,211 @@
-<script src="/assets/edrs.js"></script>
-<script src="/assets/form.js"></script>
-<script type="text/javascript">
-	tstUserKeyboardPref = "qwerty";
-</script>
-<%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
-    <%= text_field(:user, :username, :textCase => "lower", :placeholder => "username", :helpText=> "Username", :tt_onLoad =>"setValuetoBlank();overRideCancel()", :field_type=>"password") %>
+<link rel="stylesheet" href="/css/edrs.css">
 
-    <%= password_field(:user, :password, :textCase => "lower", :placeholder => "password", :helpText=> "Password",:tt_onLoad =>"setValuetoBlank();overRideCancel()", :field_type=>"password") %>
-
-    <input type="submit" value="Login">
-
-<% end %>
-<script type="text/javascript">
-		function setValuetoBlank(){
-				__$('touchscreenInput' + tstCurrentPage).value =""
-		}
-		function cancel(){
-			confirmYesNo("Are you sure you want to cancel the form",function(){window.location.href = '/logout'},null,30000);
-		}
-		function overRideCancel(){
-						
-			__$("cancelButton").setAttribute("onmousedown","cancel()")
-		}
+<style type="text/css">
+	body{
 		
+	}
+	#inputs {
+		width: 70%;
+		margin:auto;
+		margin-top: 10%;
+	}
+	#container {
+			width: 99%;
+			margin: auto;
+			border: 1px solid #adacac;
+			background: #ffffff;
+			height: calc(100% - 10px);
+			text-align:center;
+
+	}
+
+	#keyboardcontainer{
+		width: 70%;
+		margin: auto;
+		text-align: center;
+		border: 1px solid #adacac;
+		padding:1%;
+		margin-top: 1%;
+		margin-bottom: 1%;
+
+	}
+
+	input{
+		height: 40px;
+		border: 1px solid #4c79a4;
+		width: 250px;
+		border-radius: 5px;
+		font-size: 1.2em
+	}
+	label{
+		font-size: 1em;
+		color: #5c5858;
+	}
+	#app_name{
+		font-size: 2em
+	}
+	#header{
+		width: 100%;
+		background: #dcdbdb;
+		height: 70px;
+		border-bottom: 1px solid #adacac;
+	}
+
+</style>
+
+<div id="container">
+	<div id="header">
+		<table style="min-width :20%; margin-top : 0.5em ;float:right">
+	        <tr>
+	            <td style="text-align:right; "><font style="font-size:2em;vertical-align:bottom">NRB eDRS </font></td>
+	            <td><img src="/images/coa.png" style="width :3.5em; float: right; margin-right : 0.6em"></td>
+	        </tr>         
+	    </table>
+	</div>
+
+	<div id="inputs">
+	  <%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
+		<table style="margin-left:25%">
+			<tr>
+				<td><label for="usename">Username</label></td>
+				<td><input type="" name="user[username]" id="username" onfocus="setFocusToThis(this)"></td>
+				<td rowspan="2"><button  class="green">Login</button></td>
+			</tr>
+			<tr>
+				<td><label for="password">Password</label></td>
+				<td><input id="password" name="user[password]" type="password" onfocus="setFocusToThis(this)"></td></tr>
+		</table>
+	 <%end%>
+	</div>
+	<div id="keyboardcontainer">
+		
+	</div>
+</div>
+<script type="text/javascript">
+
+		var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+		var control;
+		var capcase = false;
+		
+		function __$(id){
+			return document.getElementById(id);
+		}
+		function cap(a){
+			return a.toUpperCase();
+		}
+		function setFocusToThis(element) {
+			control = element;
+		}
+
+		function focusFirstInput(){
+			var inputs = document.getElementsByTagName("input");
+			for(var i = 0 ; i < inputs.length;i++){
+				if(inputs[i].type != "hidden"){
+					inputs[i].focus();
+					break;
+				}
+			}
+		}
+		function appendValue(value){
+			if(control === undefined){
+				focusFirstInput()
+			}
+			control.value = control.value + value
+			control.focus();
+		}
+
+		function deleteFromValue(){
+			control.value = control.value.slice(0, control.value.length - 1)
+		}
+
+		function clear(){
+			control.value = ""
+		}
+		function buildkeyBoard(groups){
+			__$("keyboardcontainer").innerHTML = "";
+			for(var i = 0 ; i < groups.length;i++){
+				var div = document.createElement("div");
+				div.className = "row"
+				__$("keyboardcontainer").appendChild(div);
+				var keys = groups[i].split("");
+				for(var j = 0 ; j < keys.length ; j++){
+					var button = document.createElement("button");
+					var key = capcase ? cap(keys[j]) : keys[j]
+					button.innerHTML = key ;
+					button.className = "blue"
+					button.setAttribute("onmousedown", "appendValue('"+key+"')")
+					button.setAttribute("onmouseup", "control.focus()")
+					div.appendChild(button);
+				}
+
+			}
+
+			var div = document.createElement("div");
+			div.className = "row"
+			__$("keyboardcontainer").appendChild(div);
+
+			var button = document.createElement("button");
+			button.innerHTML = "Clear";
+			button.className = "orange";
+
+			button.onmousedown = function(){
+				clear();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			div.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = capcase ? "cap" : cap("CAP");
+			button.style.marginLeft = "10%";
+			button.onmousedown = function(){
+				if(capcase){
+					capcase = false
+					buildkeyBoard(groups)
+				}else{
+					capcase = true
+					buildkeyBoard(groups)
+				}
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			button.className = "blue"
+			div.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "space";
+			button.className = "blue";
+			button.style.marginLeft = "5%";
+			button.style.marginRight = "5%";
+			button.style.width = "200px"
+			button.setAttribute("onmousedown", "appendValue(' ')")
+			button.setAttribute("onmouseup", "control.focus()")
+			div.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "delete";
+			button.className = "blue"
+			button.onmousedown = function(){
+				deleteFromValue();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+
+			div.appendChild(button);
+
+
+		}
+
+		function resizeDiv(){
+	      var wH = window.innerHeight;
+	      
+	      __$("container").style.minHeight = (wH * 0.96)+"px";
+	    }
+		buildkeyBoard(qwerty);
+		resizeDiv()
+		focusFirstInput();
 </script>
+
