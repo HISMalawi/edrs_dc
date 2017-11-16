@@ -126,7 +126,10 @@ def transform_data(records)
        identifiers = {}
        status = ''
 
+       puts "Migrating doc: #{r['_id']}"
+       
        source_fields.each do |field|
+        
         next if ["_id","_rev"].include?(field.squish)
         if mapped_fields[field].present?
            new_field = (mapped_fields[field][0] rescue '')
