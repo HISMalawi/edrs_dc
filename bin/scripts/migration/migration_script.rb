@@ -63,6 +63,8 @@ def get_distict_id(name)
 end
 
 def transform_data(records)
+
+  begin
     map = CSV.foreach(@@mapping, :headers => true)
     map.collect do |row|
       old_edrs_field = row[0]
@@ -147,7 +149,7 @@ def transform_data(records)
        person.reload
 
        
-
+   
        if identifiers["DEATH ENTRY NUMBER"].present?
           person_identifier = PersonIdentifier.new
           person_identifier.person_record_id = person.id
@@ -202,6 +204,9 @@ def transform_data(records)
 
         sleep 5
    end
+  rescue Exception => e
+      raise "#{e.message} >>>>>>>>>>>>>>>>>>>>".inspect
+  end
 end
 
 def fetch_source_data
