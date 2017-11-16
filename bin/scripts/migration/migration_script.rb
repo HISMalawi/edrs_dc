@@ -204,8 +204,9 @@ def transform_data(records)
 
         sleep 5
    end
+  puts "Records migrated so far: #{Person.count}"
   rescue Exception => e
-      raise "#{e.message} >>>>>>>>>>>>>>>>>>>>".inspect
+      puts "#{e.message} >>>>>>>>>>>>>>>>>>>>"
   end
 end
 
