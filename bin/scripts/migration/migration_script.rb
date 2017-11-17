@@ -126,8 +126,10 @@ def transform_data(records)
        identifiers = {}
        status = ''
 
+    if r['_id'] != '4045a248ef5fde881f6ef6520d75aace'
+
        puts "Migrating doc: #{r['_id']}"
-       
+
        source_fields.each do |field|
         
         next if ["_id","_rev"].include?(field.squish)
@@ -143,16 +145,14 @@ def transform_data(records)
               end
 
            end
-         else
+        else
 
-         end
+        end
        end
 
-       person.save
-       person.reload
+     person.save
+     person.reload
 
-       
-   
        if identifiers["DEATH ENTRY NUMBER"].present?
           person_identifier = PersonIdentifier.new
           person_identifier.person_record_id = person.id
@@ -205,7 +205,9 @@ def transform_data(records)
 
         puts "Migrated #{person.first_name} #{person.last_name}"
 
-        sleep 5
+        sleep 0.5
+    end
+
    end
   puts "Records migrated so far: #{Person.count}"
   rescue Exception => e
