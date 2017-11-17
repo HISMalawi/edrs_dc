@@ -149,7 +149,8 @@ def transform_data(records)
 
         end
        end
-
+     district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
+     person['district_code'] = district_code
      person.save
      person.reload
 
@@ -158,7 +159,7 @@ def transform_data(records)
           person_identifier.person_record_id = person.id
           person_identifier.identifier_type = "DEATH ENTRY NUMBER"
           person_identifier.identifier = identifiers["DEATH ENTRY NUMBER"]
-          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'HQ')
+          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
           person_identifier.district_code = district_code
           sort_value = (identifiers["DEATH ENTRY NUMBER"].split("/")[2] + identifiers["DEATH ENTRY NUMBER"].split("/")[1]).to_i
           person_identifier.den_sort_value = sort_value
@@ -170,7 +171,7 @@ def transform_data(records)
           person_identifier.person_record_id = person.id
           person_identifier.identifier_type = "DEATH REGISTRATION NUMBER"
           person_identifier.identifier = identifiers["DEATH REGISTRATION NUMBER"]
-          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'HQ')
+          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
           person_identifier.district_code = district_code
           person_identifier.save
         end
@@ -181,7 +182,7 @@ def transform_data(records)
           person_identifier.person_record_id = person.id
           person_identifier.identifier_type = "National ID"
           person_identifier.identifier = identifiers["National ID"]
-          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'HQ')
+          district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
           person_identifier.district_code = district_code
           person_identifier.save
         end
@@ -193,13 +194,13 @@ def transform_data(records)
           if status == "Reprinted"
             record_status.reprint = true
           end
-          record_status.district_code =  (District.by_name.key(person.place_of_death_district).first.code  rescue 'HQ')
+          record_status.district_code =  (District.by_name.key(person.place_of_death_district).first.code  rescue 'LL')
           record_status.save
         else
           record_status = PersonRecordStatus.new
           record_status.person_record_id = person.id
           record_status.status = "HQ INCOMPLETE MIGRATION"
-          record_status.district_code =  (District.by_name.key(person.place_of_death_district).first.code  rescue 'HQ')
+          record_status.district_code =  (District.by_name.key(person.place_of_death_district).first.code  rescue 'LL')
           record_status.save
         end
 
@@ -291,6 +292,8 @@ def start
          end
 
     end
+
+
     person.save
     person.reload
     #Death entry Nunmber
