@@ -149,8 +149,18 @@ def transform_data(records)
 
         end
        end
+
      district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
      person['district_code'] = district_code
+
+     if["Home(Place of residence)"].include? r['place_of_death']
+        person['place_of_death'] = "Home"
+     end
+
+     if["Hospital/Institution"].include? r['place_of_death']
+        person['place_of_death'] = "Hospital"
+     end
+
      person.save
      person.reload
 
