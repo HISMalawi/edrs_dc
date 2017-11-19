@@ -530,9 +530,9 @@ button:active {
 
               }
 
-              #pagination{
+#pagination{
 
-                width: 40%;
+    width: 40%;
 
                 margin: auto;
 
@@ -546,7 +546,7 @@ button:active {
 
                 background: #dbdada;
 
-              }
+}
 .prev {
   float: left;
 }
