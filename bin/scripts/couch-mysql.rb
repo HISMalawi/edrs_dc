@@ -14,7 +14,7 @@ couch_db_settings =  db_settings[Rails.env]
 couch_username = couch_db_settings["username"]
 couch_password = couch_db_settings["password"]
 couch_host = couch_db_settings["host"]
-couch_db = couch_db_settings["prefix"] + "_" + couch_db_settings["suffix"] 
+couch_db = couch_db_settings["prefix"] + (couch_db_settings["suffix"] ? "_" + couch_db_settings["suffix"] : "" )
 couch_port = couch_db_settings["port"]
 
 mysql_path = DIR.to_s + "/config/database.yml"

@@ -1,6 +1,0 @@
-connection:
-  username: user
-  database: db_name
-  password: your_password
-  host: localhost
-
