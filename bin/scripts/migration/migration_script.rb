@@ -132,11 +132,14 @@ def transform_data(records)
 
        source_fields.each do |field|
         
-        next if ["_id","_rev"].include?(field.squish)
+        next if ["_rev"].include?(field.squish)
         if mapped_fields[field].present?
            new_field = (mapped_fields[field][0] rescue '')
            if new_field.present?
              person[new_field] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
+             if ["father_id_number","mother_id_number"].include? (field)
+                 puts "id_number:  #{decrypt(r[field])}"
+             end
            else
               if mapped_fields[field][2].present?
                  identifiers[mapped_fields[field][2]] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
