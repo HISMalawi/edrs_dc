@@ -137,9 +137,7 @@ def transform_data(records)
            new_field = (mapped_fields[field][0] rescue '')
            if new_field.present?
              person[new_field] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
-             if ["father_id_number","mother_id_number"].include? (field)
-                 puts "id_number:  #{decrypt(r[field])}"
-             end
+
            else
               if mapped_fields[field][2].present?
                  identifiers[mapped_fields[field][2]] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
@@ -162,6 +160,10 @@ def transform_data(records)
 
      if["Hospital/Institution"].include? r['place_of_death']
         person['place_of_death'] = "Hospital"
+     end
+
+     if !r['place_of_death'].present? && !r['other_place_of_death'].present?
+         person['other_place_of_death'] ="Other"
      end
 
      person.save

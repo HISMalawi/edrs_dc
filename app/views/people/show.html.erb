@@ -284,7 +284,8 @@
 			<tr>
 				<td rowspan="4">8</td>
 				<td class="clickable" onclick="editField('place_of_death')" >Place of Death</td>
-			<%if @person.place_of_death.present? %>
+			
+			<%if (@person.place_of_death.present? || @person.other_place_of_death.present?) %>
 				<td colspan="9"><%= @person.place_of_death %></td>
 			<%else%>
 				<td colspan="9"><%= @person.place_of_death_foreign %>
@@ -296,7 +297,7 @@
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
-			<% if @person.place_of_death_country == 'Malawi'%>
+			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 				<td class="clickable">Address</td>
 				<td class="clickable" onclick="editField('place_of_death_district')" >District</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
@@ -321,7 +322,8 @@
 			</tr>
 			<tr>
 				<td>9</td>
-			<% if @person.current_country == "Malawi" %>
+				
+			<% if (@person.current_country == "Malawi" || @person.current_district) %>
 				<td colspan="3" class="clickable" onclick="editField('current_district')">Physical residential address</td>
 				<td class="clickable" onclick="editField('current_district')" >District </td>
 				<td><%= @person.current_district%></td>
@@ -427,11 +429,11 @@
 				<td rowspan="2">4</td>
 				<td><b>Address</b></td>
 				<td class="clickable" onclick="editField('informant_current_district')">District</td>
-				<td colspan="2"><%= @person_place_details['informant_current_district'] %></td>
+				<td colspan="2"><%= @person.informant_current_district %></td>
 				<td class="clickable" onclick="editField('informant_current_ta')">TA</td>
-				<td colspan="2"><%= @person_place_details['informant_current_ta'] %></td>
+				<td colspan="2"><%= @person.informant_current_ta %></td>
 				<td class="clickable" onclick="editField('informant_current_village')">Village</td>
-				<td><%= @person_place_details['informant_current_village'] %></td>
+				<td><%= @person.informant_current_village %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('informant_address')">Postal address :</td>
