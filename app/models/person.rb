@@ -451,6 +451,8 @@ class Person < CouchRest::Model::Base
   property :place_of_death_foreign_village, String #Town / Village
   property :place_of_death_foreign_hospital, String
   property :cause_of_death_available, String
+  property :autopsy_requested, String, :default => "No"
+  property :autopsy_used_for_certification, String, :default => "No"
   property :cause_of_death1, String
   property :icd_10_1, String
   property :other_cause_of_death1, String
@@ -467,7 +469,7 @@ class Person < CouchRest::Model::Base
   property :icd_10_4, String
   property :other_cause_of_death4, String
   property :onset_death_interval4, String
-  property :cause_of_death_conditions, String
+  property :cause_of_death_conditions, {}
   property :icd_10_code, String
   property :manner_of_death, String
   property :other_manner_of_death, String

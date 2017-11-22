@@ -83,8 +83,26 @@ class PeopleController < ApplicationController
 
       person = Person.create_person(params)
 
-      if eval(SETTINGS["potential_duplicate"].to_s)
-          SimpleElasticSearch.add(person)
+      if SETTINGS["potential_duplicate"]
+
+          record = {}
+          record["first_name"] = params[:person][:first_name]
+          record["last_name"] = params[:person][:last_name]
+          record["middle_name"] = (params[:person][:middle_name] rescue nil)
+          record["gender"] = params[:person][:gender]
+          record["place_of_death_district"] = params[:person][:place_of_death_district]
+          record["birthdate"] = params[:person][:birthdate]
+          record["date_of_death"] = params[:person][:date_of_death]
+          record["mother_last_name"] = (params[:person][:mother_last_name] rescue nil)
+          record["mother_middle_name"] =(params[:person][:mother_middle_name] rescue nil)
+          record["mother_first_name"] = (params[:person][:mother_first_name] rescue nil)
+          record["father_last_name"] = (params[:person][:father_last_name] rescue nil)
+          record["father_middle_name"] = (params[:person][:father_middle_name] rescue nil)
+          record["father_first_name"] = (params[:person][:father_first_name] rescue nil)
+          record["id"] = person.id
+
+          SimpleElasticSearch.add(record)
+          
       end
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil?
@@ -177,7 +195,7 @@ class PeopleController < ApplicationController
                       :mother_first_name => (params[:mother_first_name] rescue nil),
                       :father_last_name => (params[:father_last_name] rescue nil),
                       :father_middle_name => (params[:father_middle_name] rescue nil),
-                      :father_last_name => (params[:father_last_name] rescue nil)
+                      :father_first_name => (params[:father_first_name] rescue nil)
                     }
 
       person  = Person.new(field_hash)
@@ -393,6 +411,26 @@ class PeopleController < ApplicationController
       @person = Person.find(params[:id])
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
+      if SETTINGS["potential_duplicate"]
+          record = {}
+          record["first_name"] = @person.first_name
+          record["last_name"] = @person.last_name
+          record["middle_name"] = (@person.middle_name rescue nil)
+          record["gender"] = @person.gender
+          record["place_of_death_district"] = @person.place_of_death_district
+          record["birthdate"] = @person.birthdate
+          record["date_of_death"] = @person.date_of_death
+          record["mother_last_name"] = (@person.mother_last_name rescue nil)
+          record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
+          record["mother_first_name"] = (@person.mother_first_name rescue nil)
+          record["father_last_name"] = (@person.father_last_name rescue nil)
+          record["father_middle_name"] = (@person.father_middle_name rescue nil)
+          record["father_first_name"] = (@person.father_first_name rescue nil)
+          record["id"] = @person.id
+
+          SimpleElasticSearch.add(record)
+      end
 
       @person_place_details = place_details(@person)
 

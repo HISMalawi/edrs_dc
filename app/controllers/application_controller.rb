@@ -135,10 +135,6 @@ class ApplicationController < ActionController::Base
 
   end
 
-  def mysql_connection
-     YAML.load_file(File.join(Rails.root, "config", "mysql_connection.yml"))['connection']
-  end
-
   def readable_format(result)
       person = Person.find(result['_id'])
       return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+

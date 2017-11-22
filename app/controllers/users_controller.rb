@@ -693,7 +693,7 @@ EOF
   end
 
   def mysql_connection
-     YAML.load_file(File.join(Rails.root, "config", "mysql_connection.yml"))['connection']
+     YAML.load_file(File.join(Rails.root, "config", "database.yml"))[Rails.env]
   end
 
   private

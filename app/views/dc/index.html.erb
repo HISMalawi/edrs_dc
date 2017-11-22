@@ -84,7 +84,7 @@
                                     
                                   </div>
                           <%end%>
-                          <% if User.current_user.role != "Data Clerk"%>
+                        
                               <div class="touch_btn"  onclick="window.location = '/reports?next_url=/'"   >
                                           <div class="icon">
                                                  <i class="fa fa-bar-chart"></i>
@@ -94,9 +94,7 @@
 
                                       
                               </div>
-
-                              <%end %>
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
+                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
                                       User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>

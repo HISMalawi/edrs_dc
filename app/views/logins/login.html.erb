@@ -7,7 +7,7 @@
 	#inputs {
 		width: 70%;
 		margin:auto;
-		margin-top: 10%;
+		margin-top: 6%;
 	}
 	#container {
 			width: 99%;
@@ -27,6 +27,7 @@
 		padding:1%;
 		margin-top: 1%;
 		margin-bottom: 1%;
+		box-shadow: 3.5px 3.5px 1.5px #888888;
 
 	}
 
@@ -65,7 +66,7 @@
 
 	<div id="inputs">
 	  <%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
-		<table style="margin-left:25%">
+		<table style="margin-left:30%" >
 			<tr>
 				<td><label for="usename">Username</label></td>
 				<td><input type="" name="user[username]" id="username" onfocus="setFocusToThis(this)"></td>
@@ -80,12 +81,15 @@
 	<div id="keyboardcontainer">
 		
 	</div>
+	<div>Malawi National Registration Bureau</div>
 </div>
 <script type="text/javascript">
 
 		var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+		var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
 		var control;
 		var capcase = false;
+		var type = "abc"
 		
 		function __$(id){
 			return document.getElementById(id);
@@ -121,8 +125,14 @@
 		function clear(){
 			control.value = ""
 		}
-		function buildkeyBoard(groups){
+
+		function changeKeboardType(keyboard){
+			type  = keyboard;
+			buildkeyBoard(type)
+		}
+		function buildkeyBoard(type){
 			__$("keyboardcontainer").innerHTML = "";
+			var groups = eval(type)
 			for(var i = 0 ; i < groups.length;i++){
 				var div = document.createElement("div");
 				div.className = "row"
@@ -145,12 +155,9 @@
 			__$("keyboardcontainer").appendChild(div);
 
 			var button = document.createElement("button");
-			button.innerHTML = "Clear";
+			button.innerHTML = type == "abc" ? "qwerty" : "abc";
 			button.className = "orange";
-
-			button.onmousedown = function(){
-				clear();
-			}
+			button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
 			button.onmouseup = function(){
 				control.focus()
 			}
@@ -158,14 +165,14 @@
 
 			var button = document.createElement("button");
 			button.innerHTML = capcase ? "cap" : cap("CAP");
-			button.style.marginLeft = "10%";
+			button.style.marginLeft = "1%";
 			button.onmousedown = function(){
 				if(capcase){
 					capcase = false
-					buildkeyBoard(groups)
+					buildkeyBoard(type)
 				}else{
 					capcase = true
-					buildkeyBoard(groups)
+					buildkeyBoard(type)
 				}
 			}
 			button.onmouseup = function(){
@@ -182,6 +189,19 @@
 			button.style.width = "200px"
 			button.setAttribute("onmousedown", "appendValue(' ')")
 			button.setAttribute("onmouseup", "control.focus()")
+			div.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "Clear";
+			button.className = "orange";
+			button.style.marginRight = "1%";
+
+			button.onmousedown = function(){
+				clear();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
 			div.appendChild(button);
 
 			var button = document.createElement("button");
@@ -204,7 +224,7 @@
 	      
 	      __$("container").style.minHeight = (wH * 0.96)+"px";
 	    }
-		buildkeyBoard(qwerty);
+		buildkeyBoard("qwerty");
 		resizeDiv()
 		focusFirstInput();
 </script>
