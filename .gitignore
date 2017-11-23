@@ -19,5 +19,5 @@ config/*.yml
 /app/assets/data/MySQL_data/*.sql
 Gemfile.lock
 passenger-standalone*
-app/assets/data/MySQL_data/*.sql
+app/db/MySQL_data/*.sql
 
