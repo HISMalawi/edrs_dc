@@ -1,7 +1,8 @@
 class PersonRecordStatus < CouchRest::Model::Base
 
 	before_save :set_district_code,:set_facility_code, :set_registration_type
-	#after_create :insert_in_mysql
+	after_create :insert_update_into_mysql
+	after_save :insert_update_into_mysql
 
 	property :person_record_id, String
 	property :status, String #DC Active|HQ Active|HQ Approved|Printed|Reprinted...
@@ -135,41 +136,20 @@ class PersonRecordStatus < CouchRest::Model::Base
 		end
 		
 	end
+	def insert_update_into_mysql
+	    fields  = self.keys.sort
+	    sql_record = RecordStatus.where(person_record_status_id: self.id).first
+	    sql_record = RecordStatus.new if sql_record.blank?
+	    fields.each do |field|
+	      next if field == "type"
+	      next if field == "_rev"
+	      if field =="_id"
+	          sql_record["person_record_status_id"] = self[field]
+	      else
+	          sql_record[field] = self[field]
+	      end
 
-	def insert_in_mysql
-		query = "INSERT INTO person_record_status(
-				  		person_record_status_id,
-				  		person_record_id,
-				  		status,
-				  		prev_status,
-				  		district_code,
-				  		facility_code,
-				  		registration_type,
-				  		creator,
-				  		updated_at,
-				  		created_at) VALUES (
-				  		'#{self.id}',
-				  		'#{self.person_record_id}',
-				  		'#{self.status}',
-				  		'#{(self.prev_status rescue 'NULL')}',
-				  		'#{self.district_code}',
-				  		'#{self.facility_code rescue 'NULL'}',
-				  		'#{self.registration_type}',
-				  		'#{self.creator}',
-				  		'#{self.updated_at}',
-				  		'#{self.created_at}')"
-
-      	SimpleSQL.query_exec(query)
-	end
-	def self.update_status_to_mysql(status)
-		query = "UPDATE person_record_status SET 
-				  		person_record_id = '#{status.person_record_id}',
-				  		status = '#{status.status}',
-				  		prev_status = '#{status.prev_status}',
-				  		voided = '#{status.voided}',
-				  		updated_at = '#{status.updated_at}' 
-				  		WHERE person_record_status_id = '#{status.id}'"
-
-      	SimpleSQL.query_exec(query)
+	    end
+	    sql_record.save
 	end
 end

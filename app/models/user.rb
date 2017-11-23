@@ -195,5 +195,5 @@ class User < CouchRest::Model::Base
   def create_audit
     Audit.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
   end
-
+  
 end
