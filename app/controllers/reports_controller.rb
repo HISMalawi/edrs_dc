@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
 
 	def death_reports
 		@section = "Death report"
+		@data = Report.general(params)
 		render :layout => "landing"
 	end
 
