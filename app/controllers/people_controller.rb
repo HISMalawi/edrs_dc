@@ -435,7 +435,7 @@ class PeopleController < ApplicationController
       @person_place_details = place_details(@person)
 
       @section = "View"
-
+      #raise params[:id].inspect
       @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
       @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],

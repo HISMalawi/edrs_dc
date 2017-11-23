@@ -32,7 +32,7 @@ mysql_adapter = mysql_db_settings["adapter"]
 #reading db_mapping
 db_map_path = DIR.to_s + "/config/db_mapping.yml"
 db_maps = YAML.load_file(db_map_path)
-changes "http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}" do
+changes "http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}" do 
   # Which database should we connect to?
   database "#{mysql_adapter}://#{mysql_username}:#{mysql_password}@#{mysql_host}:#{mysql_port}/#{mysql_db}"
 
@@ -51,6 +51,7 @@ changes "http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/
 			    eval("table :#{db_table}") do
 			    	
 			    	couch_db_fields.each do |field|
+			    		puts field
 			    		eval("column :#{field},:#{db_maps[map][field]}")
 			    	end
 			    end

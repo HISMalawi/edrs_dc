@@ -20,7 +20,7 @@ create_query = "CREATE TABLE IF NOT EXISTS documents (
   SimpleSQL.query_exec(create_query);
 
  PersonIdentifier.can_assign_den = false
- @@file_path = "#{Rails.root.to_s}/app/assets/data/MySQL_data/"
+ @@file_path = "#{Rails.root.to_s}/db/MySQL_data/"
  @couchdb_files = {
       'Person' => {count: Person.count, name: 'Person doc.', id: 'person_doc', 
         doc_primary_key: 'person_id', table_name: 'people'},
@@ -104,9 +104,9 @@ EOF
       PRIMARY KEY (`#{doc_primary_key}`)
     ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 EOF
-
+    
     if !File.exists?(@@file_path + "#{table_name}.sql")
-      file = File.new(@@file_path + "#{table_name}.sql", 'w')
+      file = File.new("#{@@file_path}#{table_name}.sql", 'w')
     end
 
     #deleting all file contents
@@ -252,7 +252,7 @@ def load_sql_files
     password = mysql_connection['password']
     host = mysql_connection['host']
 
-    file_path =  Rails.root.to_s + '/app/assets/data/MySQL_data/'
+    file_path =  Rails.root.to_s + '/db/MySQL_data/'
 
     @documents = Dir.foreach(file_path) do |file|
         if file.match(".sql")
