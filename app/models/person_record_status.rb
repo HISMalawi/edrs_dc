@@ -119,7 +119,6 @@ class PersonRecordStatus < CouchRest::Model::Base
 		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
 		if status.present?
 			status.update_attributes({:voided => true})
-			self.update_status_to_mysql(status)
 			PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,

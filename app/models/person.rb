@@ -424,6 +424,7 @@ class Person < CouchRest::Model::Base
     fields.each do |field|
       next if field == "type"
       next if field == "_rev"
+      next if field == "source_id"
       if field =="_id"
           sql_record["person_id"] = self[field]
       else
