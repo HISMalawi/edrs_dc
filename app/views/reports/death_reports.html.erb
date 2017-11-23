@@ -8,10 +8,13 @@
 		width :100%;
 		font-size: 1.4em;
 		border-collapse: collapse;
+        overflow: auto;
+
 	}
 
 	#report tr:nth-child(odd){
 		background: #dcdbdb;
+
 	}
 
 	#report td, #report th {
@@ -51,43 +54,93 @@
 	}
 
 </style>
-<table style="width:100%; margin-top: 1.5%;height:300px !important">
+<table style="width:100%; margin-top: 1.5%;">
 	<tr>
-		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%">Status</td>
-		<td style="text-align:right"><div id="time_line" style="float:left;text-align:center">Today</div><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%">General Death Report</td>
+		<td style="text-align:right"><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
-		<td style="padding:0;font-size:1em;">
-			<div>
-				<ul id="statuses">
-					<li id="Reported" onclick="loadReport(this)">Reported</li>
-					<li id="Registered" onclick="loadReport(this)">Registered</li>
-					<li id="Duplicates" onclick="loadReport(this)">Duplicates</li>
-					<li id="Printed" onclick="loadReport(this)">Printed</li>
-					<li id="Dispatched" onclick="loadReport(this)">Dispatched</li>
-				</ul>
-			</div>
-		</td>
-		<td>
 			<table id="report">
 				<tr>
-					<th>Gender</th>
-					<th>Number of deaths</th>
+				    <th>Category</th>
+				    <th>Subcategory</th>
+					<th>Male</th>
+					<th>Female</th>
+					<th>Total</th>
+				</tr>
+
+				<tr>
+				    <td rowspan="5"; style="text-align:center"> Registration Types</td>
+					<td style="text-align:center">Natural</td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 				<tr>
-					<td>Male</td>
-					<td style="text-align:right;padding-right:10%" id="male">0</td>
+
+					<td style="text-align:center">Unnatural</td>
+					<td></td>
+					<td></td>
+					<td></td>
 				</tr>
 				<tr>
-					<td>Female</td>
-					<td style="text-align:right;padding-right:10%" id="female">0</td>
+
+					<td style="text-align:center">Unclaimed</td>
+                    <td></td>
+					<td></td>
+					<td></td>
 				</tr>
 				<tr>
-					<td style="font-weight:bold">Total</td>
-					<td style="text-align:right;padding-right:10%;font-weight:bold" id="total">0</td>
+					<td style="text-align:center">Missing Person</td>
+                    <td></td>
+					<td></td>
+					<td></td>
 				</tr>
-			</table>
-		</td>
+
+				<tr>
+					<td style="text-align:center">Death Abroad</td>
+                    <td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+				    <td rowspan="2"; style="text-align:center"; bgcolor="#FFFFFF"> Delayed Registration</td>
+					<td style="text-align:center">Yes</td>
+				    <td></td>
+					<td></td>
+					<td></td>
+				</tr>
+
+                <tr>
+				    <td style="text-align:center">No</td>
+					<td></td>
+				   	<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+				    <td rowspan="3" style="text-align:center"; bgcolor="#FFFFFF"> Place of Death</td>
+					<td style="text-align:center">Home</td>
+				   	<td></td>
+				  	<td></td>
+					<td></td>
+				</tr>
+
+				<tr>
+				    <td style="text-align:center">Health Facility</td>
+					<td></td>
+				    <td></td>
+				    <td></td>
+				</tr>
+
+				<tr>
+				    <td style="text-align:center">Other</td>
+				 	<td></td>
+				 	<td></td>
+				 	<td></td>
+			    </tr>
+          </table>
 	</tr>
 </table>
 <script>
@@ -97,7 +150,7 @@
 
     function resizeDiv(){
       var wH = window.innerHeight;
-      
+
       __$("containt").style.height = (wH * 0.81)+"px";
     }
 
