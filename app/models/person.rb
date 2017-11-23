@@ -435,6 +435,7 @@ class Person < CouchRest::Model::Base
   end
 
   #Person properties
+  property :source_id, String
   property :first_name, String
   property :middle_name, String
   property :last_name, String
@@ -704,10 +705,13 @@ class Person < CouchRest::Model::Base
   property :_deleted, TrueClass, :default => false
   property :_rev, String
 
+
   timestamps!
 
   design do
     view :by__id
+
+    view :by_source_id
 
     view :by_created_at
 

@@ -16,7 +16,6 @@ y# See https://help.github.com/articles/ignoring-files for more about ignoring f
 /tmp
 config/*.pem
 config/*.yml
-/app/assets/data/MySQL_data/*.sql
 Gemfile.lock
 passenger-standalone*
 app/db/MySQL_data/*.sql

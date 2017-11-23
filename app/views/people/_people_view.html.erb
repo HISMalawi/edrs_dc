@@ -274,7 +274,7 @@
 									td.innerHTML = data[i].other_place_of_death;
 
 
-								}else if(data[i].place_of_death  && data[i].place_of_death =="Home"){
+								}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
 
 									td.innerHTML = data[i].place_of_death_district +" " + data[i].place_of_death_ta + " "+  data[i].place_of_death_village;
 
