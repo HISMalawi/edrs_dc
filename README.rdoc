@@ -22,7 +22,7 @@ Things you may want to cover:
 	 *Elasticsearch
 	 *Setting
 	 	* copy setting.yml.example to setting.yml
-	 	* edit to march your coucg database settings for both DC and HQ and Facility
+	 	* edit to march your couch database settings for both DC and HQ and Facility
 * Setting application dependencies
 	*bundle install --local
 
