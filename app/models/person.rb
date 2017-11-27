@@ -23,8 +23,8 @@ class Person < CouchRest::Model::Base
   #before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
-  #after_create :create_status
-  after_create :create_stat
+  after_save :insert_update_into_mysql
+  after_create :create_stat, :insert_update_into_mysql
 
   cattr_accessor :duplicate
   
@@ -415,6 +415,24 @@ class Person < CouchRest::Model::Base
   end
   def drn
       return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier rescue "XXXXXXXX"
+  end
+
+  def insert_update_into_mysql
+    fields  = self.keys.sort
+    sql_record = Record.where(person_id: self.id).first
+    sql_record = Record.new if sql_record.blank?
+    fields.each do |field|
+      next if field == "type"
+      next if field == "_rev"
+      next if field == "source_id"
+      if field =="_id"
+          sql_record["person_id"] = self[field]
+      else
+          sql_record[field] = self[field]
+      end
+
+    end
+    sql_record.save
   end
 
   #Person properties

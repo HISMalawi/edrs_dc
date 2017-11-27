@@ -1,7 +1,8 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
-
+  after_create :insert_update_into_mysql
+  after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
   cattr_accessor :can_assign_drn
 
@@ -226,46 +227,20 @@ class PersonIdentifier < CouchRest::Model::Base
                 })
   end
 
-  def self.insert_in_mysql(record)
-
-    identifier_keys = record.keys.sort
-
-    query = "INSERT INTO person_identifier ("
-
-    identifier_keys.each do |key|
-        field = key
-        next if key == "type"
-        if key =="_id"
-          field = "person_identifier_id"
-        end
-        if identifier_keys[0] == key
-            query = "#{query}#{field}"
+  def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = RecordIdentifier.where(person_identifier_id: self.id).first
+      sql_record = RecordIdentifier.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        if field =="_id"
+            sql_record["person_identifier_id"] = self[field]
         else
-            query = "#{query},#{field}"
-        end
-    end
-
-
-    query = "#{query}) VALUES("
-
-    identifier_keys.each do |key|
-        next if key == "type"
-        value = identifier_keys[key]
-        if value.blank?
-          value ="NULL"
+            sql_record[field] = self[field]
         end
 
-        if identifier_keys[0] == key
-            query = "#{query} '#{value.to_s.gsub("'","''")}'"
-        else
-            query = "#{query},'#{value.to_s.gsub("'","''")}'"
-        end
-    end
-
-
-    query = "#{query})"
-
-    SimpleSQL.query_exec(query)
+      end
+      sql_record.save
   end
-
 end

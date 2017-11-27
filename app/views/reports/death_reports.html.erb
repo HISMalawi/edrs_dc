@@ -8,10 +8,13 @@
 		width :100%;
 		font-size: 1.4em;
 		border-collapse: collapse;
+        overflow: auto;
+
 	}
 
 	#report tr:nth-child(odd){
 		background: #dcdbdb;
+
 	}
 
 	#report td, #report th {
@@ -50,43 +53,90 @@
 		border: 1px solid lightgray;
 	}
 
+    #table{
+        font-size: 1em;
+        color: darkslategray;
+    }
+    #table th{
+        border: 1px solid #6281a7;
+        background-color: rgb(98, 129, 167);
+        width: 2%;
+        color: rgb(238, 238, 238);
+        padding: 0.5em;
+    }
+    #table td{
+       border: 1px solid #d3d3d3;
+       padding: 0.6em;
+    }
+
+    .cat{
+      font-weight: bold;
+    }
+    .mintable{
+      width: 100%; 
+      border:none;
+      border-collapse: collapse;
+    }
+    .mintable td, .mintable th{
+        width: 33.33333% !important;
+        text-align: right;
+        padding-right: 10%;
+    }
+
 </style>
-<table style="width:100%; margin-top: 1.5%;height:300px !important">
+<table style="width:100%; margin-top: 1.5%;">
 	<tr>
-		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%">Status</td>
-		<td style="text-align:right"><div id="time_line" style="float:left;text-align:center">Today</div><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%">General Death Report</td>
+		<td style="text-align:right"><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
-		<td style="padding:0;font-size:1em;">
-			<div>
-				<ul id="statuses">
-					<li id="Reported" onclick="loadReport(this)">Reported</li>
-					<li id="Registered" onclick="loadReport(this)">Registered</li>
-					<li id="Duplicates" onclick="loadReport(this)">Duplicates</li>
-					<li id="Printed" onclick="loadReport(this)">Printed</li>
-					<li id="Dispatched" onclick="loadReport(this)">Dispatched</li>
-				</ul>
-			</div>
-		</td>
-		<td>
-			<table id="report">
-				<tr>
-					<th>Gender</th>
-					<th>Number of deaths</th>
-				</tr>
-				<tr>
-					<td>Male</td>
-					<td style="text-align:right;padding-right:10%" id="male">0</td>
-				</tr>
-				<tr>
-					<td>Female</td>
-					<td style="text-align:right;padding-right:10%" id="female">0</td>
-				</tr>
-				<tr>
-					<td style="font-weight:bold">Total</td>
-					<td style="text-align:right;padding-right:10%;font-weight:bold" id="total">0</td>
-				</tr>
-			</table>
+		<td colspan="2">
+				<div style="width: 100%;height: 500px; overflow-y:scroll;border:1px solid gray;" >
+					
+					<table id='table' style="width: 100%;" cellpadding="5" cellspacing="0">
+
+						  <thead>
+						        <tr>
+						          <th>Category</th>
+						          <th>Sub category</th>
+						          <th>Female</th>
+						          <th>Male</th>
+						          <th>Total</th>
+						        </tr>
+						  </thead>
+
+						  <% @data.each do |cat, data|
+						  %>
+						      <tr>
+						        <td>
+						          <%= cat%>
+						        </td>
+						        <td style="padding:0">
+						            <table style="width: 100%; border:none; border-collapse: collapse; ">
+						                <% data.each do |k, sub_data|
+						                %>
+						                    <tr><td><%= k%></td></tr>
+						                <% end
+						                %>
+						            </table>
+						        </td>
+						        <td colspan="3" style="padding:0">
+						            <table class="mintable">
+						                <% data.each do |k, sub_data|
+						                %>  
+						                    <tr>
+						                        <td><%= sub_data['Female']%></td>
+						                        <td><%= sub_data['Male']%></td>
+						                        <td><%= sub_data['Female'].to_i + sub_data['Male'].to_i %></td>
+						                      </tr>
+						                <% end
+						                %>
+						            </table>
+						        </td>
+						      </tr>
+						  <% end %>
+						</table>
+				</div>
 		</td>
 	</tr>
 </table>
@@ -97,7 +147,7 @@
 
     function resizeDiv(){
       var wH = window.innerHeight;
-      
+
       __$("containt").style.height = (wH * 0.81)+"px";
     }
 
@@ -135,5 +185,5 @@
 
     var reported = __$("Reported");
 
-    loadReport(reported);
+    //loadReport(reported);
 </script>

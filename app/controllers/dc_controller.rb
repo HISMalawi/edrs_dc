@@ -23,8 +23,6 @@ class DcController < ApplicationController
 		if record_complete?(person)
 				PersonRecordStatus.change_status(person, "DC COMPLETE")
 				redirect_to "#{params[:next_url].to_s}"
-
-
 		else
 				PersonRecordStatus.change_status(person, "DC INCOMPLETE")
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
@@ -68,8 +66,29 @@ class DcController < ApplicationController
 
 
 		if record_complete?(person)
-				duplicate =   SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
-				if duplicate.blank?
+			   duplicate = nil
+			   record = {}
+	           record["first_name"] = person.first_name
+	           record["last_name"] = person.last_name
+	           record["middle_name"] = (person.middle_name rescue nil)
+	           record["gender"] = person.gender
+	           record["place_of_death_district"] = person.place_of_death_district
+	           record["birthdate"] = person.birthdate
+	           record["date_of_death"] = person.date_of_death
+	           record["mother_last_name"] = (person.mother_last_name rescue nil)
+	           record["mother_middle_name"] = (person.mother_middle_name rescue nil)
+	           record["mother_first_name"] = (person.mother_first_name rescue nil)
+	           record["father_last_name"] = (person.father_last_name rescue nil)
+	           record["father_middle_name"] = (person.father_middle_name rescue nil)
+	           record["father_first_name"] = (person.father_first_name rescue nil)
+	           record["id"] = person.id
+
+
+	           if SETTINGS["potential_duplicate"]
+	           		duplicate =   SimpleElasticSearch.query_duplicate(record,SETTINGS['duplicate_precision'])
+	           end
+				
+			   if duplicate.blank? 
 					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
 					if status.status =="HQ REJECTED"
