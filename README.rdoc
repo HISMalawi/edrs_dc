@@ -40,3 +40,11 @@ Things you may want to cover:
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
+
+SETTING UP MIGRATION
+====================
+
+1. After you successfully finished setting up the HQ and DC application, add the appropriate values for the following attributes in the couchdb.yml file
+   migration_db ,migration_db_host, migration_db_password, migration_db_username. These are the values for the source database for the migration.
+
+2. On the console of your DC/FC application, type the command rails r bin/migration/migration_script.rb to initiate the migration process.
