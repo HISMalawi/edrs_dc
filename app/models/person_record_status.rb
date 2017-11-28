@@ -9,6 +9,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	property :prev_status, String
 	property :district_code, String
 	property :facility_code, String
+	property :comment, String
 	property :voided, TrueClass, :default => false
 	property :reprint, TrueClass, :default => false
 	property :registration_type, String

@@ -74,7 +74,6 @@ class PeopleController < ApplicationController
   end
 
   def create
-
       person_params = params[:person]
 
       person_params[:created_by] = User.current_user.id
@@ -105,7 +104,7 @@ class PeopleController < ApplicationController
           
       end
 
-      if !person_params[:barcode].blank? && !person_params[:barcode].nil?
+      if !person_params[:barcode].blank? && !person_params[:barcode].nil? 
 
             PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
@@ -158,9 +157,24 @@ class PeopleController < ApplicationController
                           :reason     => "Record is a potential",
                           :change_log => change_log
           })
+
+          if eval(params[:person][:is_exact_duplicate])
+              if SETTINGS['site_type'] =="facility"
+                status = "FC EXACT DUPLICATE"
+              else
+                status = "DC EXACT DUPLICATE"
+              end
+          else
+              if SETTINGS['site_type'] =="facility"
+                status = "FC POTENTIAL DUPLICATE"
+              else
+                status = "DC POTENTIAL DUPLICATE"
+              end
+          end
+
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
-                                      :status => "DC POTENTIAL DUPLICATE",
+                                      :status => status,
                                       :district_code => person.district_code,
                                       :created_by => User.current_user.id})
 
@@ -200,21 +214,31 @@ class PeopleController < ApplicationController
 
       person  = Person.new(field_hash)
       people = []
-      if eval(SETTINGS["potential_duplicate"].to_s)
-        results = SimpleElasticSearch.query_duplicate(person,SETTINGS['duplicate_precision'])
+      exact_duplicate = false
+      if SETTINGS["potential_duplicate"]
+        results = []
+        results = SimpleElasticSearch.query_duplicate(person,100)
+        if results.blank?
+            results = SimpleElasticSearch.query_duplicate_coded(person,SETTINGS['duplicate_precision'])
+        else
+            exact_duplicate  = true
+        end
       else
         #exact search
         results = []
       end
+      people = results
+=begin     
       results.each do |result|
           people << readable_format(result) if readable_format(result).present?
       end
+=end
       if people.count == 0
 
         render :text => {:response => false}.to_json
       else
 
-        render :text => {:response => people}.to_json
+        render :text => {:response => people,:exact => exact_duplicate}.to_json
       end 
   end
 
@@ -246,7 +270,11 @@ class PeopleController < ApplicationController
 
       @section = "View"
 
-      @statuses = ["NEW"]
+      if SETTINGS['site_type'] =="facility"
+          @statuses = ["NEW","FC POTENTIAL DUPLICATE"]
+      else
+          @statuses = ["NEW"]
+      end
 
       @next_url = "/people/view"
 
