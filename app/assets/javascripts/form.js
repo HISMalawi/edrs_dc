@@ -1610,21 +1610,9 @@
 				}
 				//console.log(data)
 				postAjax("/search_similar_record", data, function(response){
-					var people = JSON.parse(response).response;
-					if(people){
-						duplicatesPopup(people)
-
-						var ids = "";
-						for(var i = 0 ; i < people.length ; i++){
-							if(i == people.length -1){
-								ids = ids + people[i][0];
-							}else{
-								ids = ids + people[i][0] + ",";
-							}			
-						}
-						__$("potential_duplicate").setAttribute("condition",true);
-						__$("potential_duplicate").value = ids.toString();
-
+					var results = JSON.parse(response);
+					if(results.response){
+						duplicatesPopup(results)
 					}
 				})
 		}
@@ -2076,6 +2064,8 @@ function showPhoneSummary(){
  	},20);
  	
  }
+
+
 
 
 

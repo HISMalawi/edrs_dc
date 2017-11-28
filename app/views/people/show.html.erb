@@ -246,7 +246,7 @@
 			</tr>
 
 			<tr>
-				<td rowspan="12" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td rowspan="10" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
 				<td>1</td>
 				<td  class="clickable" onclick="editField('last_name')">Surname</td>
 				<td colspan="2" ><%= @person.last_name %></td>
@@ -271,24 +271,19 @@
 			<tr>
 				<td>5</td>
 				<td class="clickable" onclick="editField('birthdate')" >Birth Date</td>
-				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
-				<td rowspan="2">6</td>
-				<td rowspan="2" class="clickable" onclick="editField('birth_certificate_number')" >Birth certificate No.</td>
-				<td rowspan="2" style="border-bottom :1.5px solid black"><%= @person.birth_certificate_number %></td>
+				<td style="border-bottom: 1.5px solid black" colspan="3"><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
+				<td>6</td>
+				<td class="clickable" onclick="editField('date_of_death')" colspan="2" >Date of Death</td>
+				<td style="border-bottom: 1.5px solid black" colspan="2"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
 			</tr>
 			<tr>
-				<td>7</td>
-				<td class="clickable" onclick="editField('date_of_death')" >Date of Death</td>
-				<td style="border-bottom: 1.5px solid black" colspan="5"><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
-			</tr>
-			<tr>
-				<td rowspan="4">8</td>
+				<td rowspan="4">7</td>
 				<td class="clickable" onclick="editField('place_of_death')" >Place of Death</td>
 			
 			<%if (@person.place_of_death.present? || @person.other_place_of_death.present?) %>
-				<td colspan="9"><%= @person.place_of_death %></td>
+				<td colspan="8"><%= @person.place_of_death %></td>
 			<%else%>
-				<td colspan="9"><%= @person.place_of_death_foreign %>
+				<td colspan="8"><%= @person.place_of_death_foreign %>
 			<%end%>
 			</tr>
 			<tr>
@@ -321,7 +316,7 @@
 				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
 			</tr>
 			<tr>
-				<td>9</td>
+				<td>8</td>
 				
 			<% if (@person.current_country == "Malawi" || @person.current_district) %>
 				<td colspan="3" class="clickable" onclick="editField('current_district')">Physical residential address</td>
@@ -344,7 +339,7 @@
 			<%end%>
 			</tr>
 			<tr>
-				<td>10</td>
+				<td>9</td>
 				<td colspan="3" class="clickable" onclick="editField('home_district')">Home address</td>
 				<td class="clickable" onclick="editField('home_district')" >District </td>
 				<td><%= @person.home_district %></td>
@@ -354,7 +349,7 @@
 				<td><%= @person.home_village %></td>
 			</tr>
 			<tr>
-				<td rowspan="2">11</td>
+				<td>10</td>
 				<% if @person.died_while_pregnant == "Yes" ||  @person.died_while_pregnant == "NO" %>
 					<td colspan="8" class="clickable" onclick="editField('died_while_pregnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
 					<td><%= @person.died_while_pregnant rescue "" %></td>
@@ -364,43 +359,45 @@
 				<%end%>
 			</tr>
 			<tr>
-				
-				<td colspan="9"></td>
-			</tr>
-			<tr>
 				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
-				<td rowspan="3">1</td>
-				<td colspan="6" class="clickable" onclick="" >Mother's name</td>
-				<td rowspan="3">2</td>
-				<td rowspan="3" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
-				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.mother_id_number %></td>
+				<td colspan="10" class="clickable" onclick="" ><center>Mother's details</center></td>
 			</tr>
 			<tr>
+				<td rowspan="2">1</td>
 				<td class="clickable" onclick="editField('mother_last_name')" >Surname</td>
 				<td colspan="2"><%= @person.mother_last_name %></td>
 				<td class="clickable" onclick="editField('mother_first_name')" >First name</td>
 				<td colspan="2"><%= @person.mother_first_name %></td>
+				<td rowspan="">2</td>
+				<td rowspan="" class="clickable" onclick="editField('mother_id_number')">ID No.</td>
+				<td rowspan ="" style="border-bottom:1.5px solid black"><%= @person.mother_id_number %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('mother_middle_name')">Other names</td>
 				<td colspan="5"><%= @person.mother_middle_name %></td>
+				<td rowspan="">3</td>
+				<td rowspan="" class="clickable" onclick="editField('mother_nationality')">Nationality </td>
+				<td rowspan ="" style="border-bottom:1.5px solid black"><%= @person.mother_nationality %></td>
 			</tr>
 			<tr>
-				<td rowspan="3">3</td>
-				<td colspan="6" class="clickable" onclick="">Father's name</td>
-				<td rowspan="3">4</td>
-				<td rowspan="3" class="clickable" onclick="editField('father_id_number')">ID No.</td>
-				<td rowspan ="3" style="border-bottom:1.5px solid black"><%= @person.father_id_number %></td>
+				<td colspan="10" class="clickable" onclick=""><center>Father's details</center></td>
 			</tr>
 			<tr>
+				<td rowspan="2">4</td>
 				<td class="clickable" onclick="editField('father_last_name')">Surname</td>
 				<td colspan="2"><%= @person.father_last_name %></td>
 				<td class="clickable" onclick="editField('father_first_name')">First name</td>
 				<td colspan="2"><%= @person.father_first_name %></td>
+				<td rowspan="">5</td>
+				<td rowspan="" class="clickable" onclick="editField('father_id_number')">ID No.</td>
+				<td rowspan ="" style="border-bottom:1.5px solid black"><%= @person.father_id_number %></td>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('father_middle_name')">Other names</td>
 				<td colspan="5"><%= @person.father_middle_name %></td>
+				<td rowspan="">6</td>
+				<td rowspan="" class="clickable" onclick="editField('father_nationality')">Nationality </td>
+				<td rowspan ="" style="border-bottom:1.5px solid black"><%= @person.father_nationality %></td>
 			</tr>
 
 			<tr>

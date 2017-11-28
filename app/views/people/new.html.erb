@@ -1,8 +1,11 @@
-
+<script type="text/javascript">
+	var facility_type = "<%= SETTINGS['site_type'] %>"
+</script>
 <style type="text/css">
 	.capitalize{
 		 text-transform: capitalize;
 	}
+
 </style>
 <% if params[:registration_type].include? "Natural" %>
 	<%= render 'form' %>

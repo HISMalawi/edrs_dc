@@ -70,11 +70,11 @@
 			<tr>
 				<td><label for="usename">Username</label></td>
 				<td><input type="" name="user[username]" id="username" onfocus="setFocusToThis(this)"></td>
-				<td rowspan="2"><button  class="green">Login</button></td>
+				<td rowspan="2" autocomplete="off" ><button  class="green">Login</button></td>
 			</tr>
 			<tr>
 				<td><label for="password">Password</label></td>
-				<td><input id="password" name="user[password]" type="password" onfocus="setFocusToThis(this)"></td></tr>
+				<td><input id="password" name="user[password]"  onfocus="setFocusToThis(this)" autocomplete="off" ></td></tr>
 		</table>
 	 <%end%>
 	</div>
@@ -227,5 +227,9 @@
 		buildkeyBoard("qwerty");
 		resizeDiv()
 		focusFirstInput();
+		setTimeout(function(){
+			__$("username").innerHTML = ""
+			__$("password").setAttribute("type","password")
+		},500)
 </script>
 

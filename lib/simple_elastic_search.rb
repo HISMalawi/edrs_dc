@@ -179,9 +179,6 @@ class SimpleElasticSearch
       potential_duplicates = []
       hits = self.query("coded_content",query_string,precision,10,0)["data"]
       
-      #hits.each do |hit|
-        #potential_duplicates << hit if hit["_id"].squish !=(person["person_id"].squish rescue nil)
-      #end
       potential_duplicates = SimpleElasticSearch.white_similarity(person,hits,precision)
 
       return potential_duplicates

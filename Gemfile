@@ -65,3 +65,5 @@ gem "faker", "~> 1.6.6"
 gem 'sucker_punch', '~> 2.0'
 
 gem 'couch_tap'
+
+gem "whitesimilarity"
