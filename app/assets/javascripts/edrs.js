@@ -439,10 +439,13 @@ function postAjax(url, data, success) {
                   return xhr;
 }
 
-function duplicatesPopup(people,checkbox){
+function duplicatesPopup(data,checkbox){
+       var people = data.response
+
        if (__$("msg.shield")) {
             document.body.removeChild(__$("msg.shield"));
         }
+
 
         var shield = document.createElement("div");
         shield.style.position = "absolute";
@@ -465,6 +468,7 @@ function duplicatesPopup(people,checkbox){
         div.style.width = width + "px";
         div.style.height = height + "px";
         div.style.backgroundColor = "#ffffff";
+        div.style.overflowY = "scroll";
         div.style.borderRadius = "1px";
         div.style.left = "calc(50% - " + (width / 2) + "px)";
         div.style.top = "calc(50% - " + (height * 0.6) + "px)";
@@ -477,39 +481,92 @@ function duplicatesPopup(people,checkbox){
 
         var table = document.createElement("table");
         table.style.marginTop = "0.5%";
-        table.style.border = "1px solid gray";
-        table.style.height = "425px";
-        table.style.width = "98%";
+        table.style.height = "400px";
+        table.style.width = "100%";
         table.style.margin ="auto";
         div.appendChild(table);
 
         var tr = document.createElement("tr");
         tr.style.height = "30px";
         table.appendChild(tr);
+
         var th =  document.createElement("th");
-        th.colSpan = "3";
+        th.colSpan = "5";
         th.style.padding = "0.8em";
         th.style.color = "#ffffff";
         th.style.fontSize = "1.2em";
         th.style.backgroundColor = "#526a83";
-        th.innerHTML = "The record is potential duplicate to "+ (people && people.length ? people.length : "0")  +" record(s)";
+        th.innerHTML = "The record is "+(data.exact ? "exact" : "potential")+" duplicate to "+ (people && people.length ? people.length : "0")  +" record(s)";
         tr.appendChild(th);
+
+        var tr = document.createElement("tr");
+        tr.style.backgroundColor ="#e0dcdc"
+        table.appendChild(tr);
+
+        tr.style.height = "15px";
+
+        var th = document.createElement("th");
+        th.innerHTML = "#";
+        th.style.padding = "0.5em"
+        th.style.float ="left"
+        tr.appendChild(th)
+
+
+        var th = document.createElement("th");
+        th.innerHTML = "Name(Sex)";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Date of Birth";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Mother's name";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Father's name";
+        tr.appendChild(th);
+
+
         if(people){
             for(var i = 0; i < people.length ; i++){
               var tr = document.createElement("tr");
               table.appendChild(tr);
-              tr.style.height = "25px";
-              var td = document.createElement("td");
-              td.style.borderBottom = "1px dotted gray";
-              td.style.width = "5%";
-              td.style.padding = "0.5em";
-              td.innerHTML = (i + 1);
+              tr.style.height = "15px";
 
-              tr.appendChild(td);
               var td = document.createElement("td");
-              td.style.padding = "0.5em";
-              td.style.borderBottom = "1px dotted gray";
-              td.innerHTML =people[i][1];
+              td.style.borderBottom = "1px solid gray";
+              td.style.width = "5%";
+              td.innerHTML = (i + 1);
+              td.style.padding = "0.5em"
+              tr.appendChild(td);
+
+
+              var td = document.createElement("td");
+              td.style.textAlign = "center";
+              td.style.borderBottom = "1px solid gray";
+              td.innerHTML = people[i]["_source"]["first_name"]+" "+ people[i]["_source"]["last_name"] + "("+people[i]["_source"]["gender"].split("")[0]+")";
+              tr.appendChild(td);
+
+              var td = document.createElement("td");
+              td.style.textAlign = "center";
+              td.style.borderBottom = "1px solid gray";
+              td.innerHTML = new Date(people[i]["_source"]["birthdate"]).format();
+              tr.appendChild(td);
+
+              var td = document.createElement("td");
+              td.style.textAlign = "center";
+              td.style.borderBottom = "1px solid gray";
+              td.innerHTML = (people[i]["_source"]["mother_first_name"] ? people[i]["_source"]["mother_first_name"] : "") +
+                             " " +(people[i]["_source"]["mother_last_name"]? people[i]["_source"]["mother_last_name"] : "N/A");
+              tr.appendChild(td);
+
+              var td = document.createElement("td");
+              td.style.textAlign = "center";
+              td.style.borderBottom = "1px solid gray";
+               td.innerHTML = (people[i]["_source"]["father_first_name"] ? people[i]["_source"]["father_first_name"] : "") +
+                              " "+(people[i]["_source"]["father_last_name"]? people[i]["_source"]["father_last_name"] : "N/A");
               tr.appendChild(td);
             }
         }
@@ -521,24 +578,63 @@ function duplicatesPopup(people,checkbox){
         footdiv.style.height = "25%";
         footdiv.style.textAlign = "center";
         div.appendChild(footdiv);
+        if(facility_type  =="facility" && data.exact){
+            var ok = document.createElement("button");
+            ok.innerHTML = "Cancel";
+            ok.className = "red";
+            ok.id = "popup.ok"
+            ok.style.height = "40px";
+            ok.style.width = "15%"
+            ok.onclick = function () {
+               ids = people.map(function(person){
+                    return person["_id"]
+               }).join("|");
+            
+              __$("potential_duplicate").setAttribute("condition",true);
+              __$("potential_duplicate").value = ids.toString();
 
-        /*var duplicate = document.createElement("button");
-        duplicate.innerHTML = "Duplicate";
-        footdiv.appendChild(duplicate);
+              __$("person_is_exact_duplicate").setAttribute("condition",true)
+              __$("person_is_exact_duplicate").value = data.exact
+               window.top.location.href = "/people/new_person_type"
+            }
+            footdiv.appendChild(ok);
 
-        var notduplicate = document.createElement("button");
-        notduplicate.innerHTML = "Not duplicate";
-        footdiv.appendChild(notduplicate);*/
+        }else{
 
-        var ok = document.createElement("button");
-        ok.innerHTML = "OK";
-        ok.id = "popup.ok"
-        ok.onclick = function () {
-           document.body.removeChild(shield);
+            var cancel = document.createElement("button");
+            cancel.innerHTML = "Cancel";
+            cancel.className = "red";
+            cancel.id = "popup.cancel"
+            cancel.style.height = "40px";
+            cancel.style.width = "15%"
+            cancel.style.marginRight ="10%";
+            cancel.onclick = function () {
+               document.body.removeChild(shield);
+            }
+            footdiv.appendChild(cancel);
+
+            var ok = document.createElement("button");
+            ok.innerHTML = "Proceed";
+            ok.className = "blue";
+            ok.id = "popup.ok"
+            ok.style.height = "40px";
+            ok.style.width = "15%"
+            ok.onclick = function () {
+               ids = people.map(function(person){
+                    return person["_id"]
+               }).join("|");
+              __$("potential_duplicate").setAttribute("condition",true);
+              __$("potential_duplicate").value = ids.toString();
+
+              __$("person_is_exact_duplicate").setAttribute("condition",true)
+              __$("person_is_exact_duplicate").value = data.exact
+               if(data.exact && facility_type  =="facility"){
+                   window.top.location.href = "/people/new_person_type"
+               }else{
+                   document.body.removeChild(shield);
+                   document.forms[0].submit();            
+               }
+            }
+            footdiv.appendChild(ok);
         }
-        footdiv.appendChild(ok);
-
-
-
-
 }
