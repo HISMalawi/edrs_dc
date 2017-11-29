@@ -233,12 +233,12 @@ end
 
 def fetch_source_data
 
-   protocol = 'http'
-   password = 'test'
-   username = 'admini'
-   port = '5984'
-   db = 'edrs_death'
-   host = 'localhost'
+   protocol = CONFIG['protocol']
+   password = CONFIG['migration_db_password']
+   username = CONFIG['migration_db_username']
+   port = CONFIG['port']
+   db = CONFIG['migration_db']
+   host = CONFIG['migration_db_host']
    
    records = JSON.parse(`curl -s -X GET #{protocol}://#{username}:#{password}@#{host}:#{port}/#{db}/_design/Person/_view/all?include_docs=true`)
 
