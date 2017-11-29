@@ -53,6 +53,7 @@
                 <%= text_field_tag "person[mother_nationality]",nil , {
                           :helpText => "Mother's Nationality <i style='color: red'>*</i>",
                           :ajaxURL => "/nationalities?search_string=",
+                          :condition => "__$('mother_details_available').value =='Yes'",
                           :tt_requireNextClick => false} %>
             </sub>
             <sub id="details_father" name="Details of father">
@@ -100,6 +101,7 @@
                 <%= text_field_tag "person[father_nationality]",nil , {
                           :helpText => "Father's Nationality <i style='color: red'>*</i>",
                           :ajaxURL => "/nationalities?search_string=",
+                          :condition => "__$('father_details_available').value =='Yes'",
                           :tt_requireNextClick => false} %>
             </sub>
     </section>
