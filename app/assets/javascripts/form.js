@@ -1,3 +1,14 @@
+	function loadMinPersonSummary(){
+		
+		if (__$("keyboard")) {
+			__$("keyboard").style.display = "none";
+		}
+		var tstControl = __$("tt_page_summary");
+		if (tstControl) {
+			 tstControl.innerHTML = "";
+		}
+
+	}
 	function loadPersonSummary(){
 		if (__$("keyboard")) {
 			__$("keyboard").style.display = "none";
