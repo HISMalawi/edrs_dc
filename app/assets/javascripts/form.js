@@ -9,6 +9,8 @@
 		
        var table = document.createElement("table");
 		        table.style.width = "100%";
+		        
+		         
 		        table.style.borderCollapse = "collapse";
 
 		       tstControl.appendChild(table);
@@ -20,6 +22,7 @@
 		        var th = document.createElement("th");
 		        th.style.fontSize = "1.2em";
 		        th.style.textAlign = "center";
+		        th.style.backgroundColor = "#f2f2f2";
 		        th.style.padding = "20px";
 		        th.style.borderBottom = "1px solid #ccc";
 		        th.innerHTML = "PARTICULARS OF THE DECEASED";
