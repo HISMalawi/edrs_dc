@@ -6,6 +6,229 @@
 		var tstControl = __$("tt_page_summary");
 		if (tstControl) {
 			 tstControl.innerHTML = "";
+		
+       var table = document.createElement("table");
+		        table.style.width = "100%";
+		        table.style.borderCollapse = "collapse";
+
+		       tstControl.appendChild(table);
+
+		        var tr = document.createElement("tr");
+
+		        table.appendChild(tr);
+
+		        var th = document.createElement("th");
+		        th.style.fontSize = "1.2em";
+		        th.style.textAlign = "center";
+		        th.style.padding = "20px";
+		        th.style.borderBottom = "1px solid #ccc";
+		        th.innerHTML = "PARTICULARS OF THE DECEASED";
+
+		        tr.appendChild(th);
+
+		        var tr = document.createElement("tr");
+
+		        table.appendChild(tr);
+
+		        var td = document.createElement("td");
+
+		        tr.appendChild(td);
+
+		        var div = document.createElement("div");
+		        div.style.width = "100%";
+		        div.style.height = "calc(100vh - 180px)";
+		        div.style.overflow = "auto";
+
+		        td.appendChild(div);
+
+		        var tableContent = document.createElement("table");
+		        tableContent.style.width = "98%";
+		        tableContent.style.borderCollapse = "collapse";
+		        tableContent.cellPadding = "10px";
+		        tableContent.style.border = "1px solid #ccc"
+		        tableContent.style.fontSize = "1em";
+		        tableContent.style.margin = "auto";
+               
+
+
+		        div.appendChild(tableContent);
+
+		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+
+		        var td = document.createElement("td")
+		        td.innerHTML = "Surname";
+		        td.style.fontWeight = "bold";
+		        td.style.borderLeft = "1px solid #ccc";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.colSpan ="12";
+		        td.innerHTML = __$('person_last_name') && __$('person_last_name').value ? __$("person_last_name").value : "";
+		        tr.appendChild(td)
+
+		        var tr = document.createElement("tr");
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML = "First name";
+		        td.style.fontWeight = "bold";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.colSpan ="12";
+		        td.style.border = "none";
+		        td.innerHTML =__$('person_first_name') && __$('person_first_name').value ? __$("person_first_name").value : "";
+		        tr.appendChild(td)
+
+
+		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.borderLeft = "1px solid #ccc";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "ID No.";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		         td.colSpan ="12";
+		        td.innerHTML = (__$('person_id_number') && __$('person_id_number').value ? __$("person_id_number").value : "");
+		        tr.appendChild(td);
+
+                
+                var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Sex";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML = (__$('person_gender') && __$('person_gender').value ? __$("person_gender").value : "");
+		        td.colSpan ="2";
+		        tr.appendChild(td);
+
+
+
+                var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML = "Date of Birth";
+		        td.style.fontWeight = "bold";
+		        tr.appendChild(td);
+		        		        
+		        var birthdate  = new Date(__$("person_birthdate").value).format();
+		        
+		       	if(__$('person_birthdate_estimated').value == 1) {
+		       		birthdate = "??/??/"+(new Date(__$("person_birthdate").value).format("YYYY-mm-dd").split("-")[0]);
+		       	}
+
+		        var td = document.createElement("td");
+		        td.colSpan ="12";
+		        td.innerHTML = birthdate;
+		        tr.appendChild(td);
+
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Date of death";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.colSpan ="5";
+		        td.innerHTML = (__$("person_date_of_death") && __$("person_date_of_death").value ? (new Date(__$('person_date_of_death').value)).format() : "");
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Place of Death";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		       	 td.colSpan ="12";
+		        td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+		        tr.appendChild(td);
+
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+
+
+                var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Mother's name";
+		        tr.appendChild(td);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML =( __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "") + " " + (__$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "");
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Father's name";
+		        tr.appendChild(td);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") + " " + (__$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "");
+		        tr.appendChild(td);
+
+		        
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Date Reported";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		        td.colSpan= "10"
+		        td.style.borderBottom = "1px solid #ccc";
+		        td.innerHTML =(__$("person_informant_signature_date") && __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "");
+		        tr.appendChild(td);
+		        
+                
+
+
+
+
+
 		}
 
 	}
