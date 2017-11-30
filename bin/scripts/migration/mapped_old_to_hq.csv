@@ -14,7 +14,6 @@ citizenship,nationality,,,
 created_at,created_at,,,
 created_by,created_by,,,
 current_district,current_district,,,
-date_created,date_created,,,
 date_of_death,date_of_death,,,
 death_by_pregnancy,died_while_pregnant,,,
 death_entry_number,,PersonIdentifier,DEATH ENTRY NUMBER,identifier

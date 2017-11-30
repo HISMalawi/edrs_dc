@@ -165,7 +165,11 @@ def transform_data(records)
      if !r['place_of_death'].present? && !r['other_place_of_death'].present?
          person['other_place_of_death'] ="Other"
      end
-
+     
+     if r['place_of_death_district'].present?
+       person['district_code'] = District.by_name.key(r['place_of_death_district']).first.id
+     end
+     
      person.save
      person.reload
 
@@ -233,12 +237,12 @@ end
 
 def fetch_source_data
 
-   protocol = CONFIG['protocol']
-   password = CONFIG['migration_db_password']
-   username = CONFIG['migration_db_username']
-   port = CONFIG['port']
-   db = CONFIG['migration_db']
-   host = CONFIG['migration_db_host']
+   protocol = MIGRATION['protocol']
+   password = MIGRATION['password']
+   username = MIGRATION['username']
+   port = MIGRATION['port']
+   db = MIGRATION['db']
+   host = MIGRATION['host']
    
    records = JSON.parse(`curl -s -X GET #{protocol}://#{username}:#{password}@#{host}:#{port}/#{db}/_design/Person/_view/all?include_docs=true`)
 
