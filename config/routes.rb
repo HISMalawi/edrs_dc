@@ -178,6 +178,8 @@ Rails.application.routes.draw do
 
   get "/dc/potential_duplicates" => "dc#potential_duplicates"
 
+  get "/dc/exact_duplicates" => "dc#exact_duplicates"
+
   get "/dc/show_duplicate/:id" =>"dc#show_duplicate"
 
   get "/confirm_record_not_duplicate_comment/:id/:audit_id" => "dc#confirm_record_not_duplicate_comment"

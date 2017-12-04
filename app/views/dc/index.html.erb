@@ -167,14 +167,14 @@
 <script type="text/javascript">
   
     var stats = {
-                        Reported     : "NEW",
-                        Approved     : "DC APPROVED",
+                        Reported     : "DC ACTIVE",
+                        Approved     : "HQ ACTIVE",
                         Rejected     : "DC REJECTED",
                         Incomplete   : "DC INCOMPLETE"
 
           }
 
-            simpleAjaxRequest("/dc/counts_by_status?status=NEW", function(data){
+            simpleAjaxRequest("/dc/counts_by_status?status=DC ACTIVE", function(data){
 
                   var data =JSON.parse(data);
 
@@ -182,7 +182,7 @@
 
             });  
 
-            simpleAjaxRequest("/dc/counts_by_status?status=DC APPROVED", function(data){
+            simpleAjaxRequest("/dc/counts_by_status?status=HQ ACTIVE", function(data){
 
                   var data =JSON.parse(data);
 

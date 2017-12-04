@@ -28,8 +28,8 @@ class ReportsController < ApplicationController
 	end
 	def report_data
 		status_map ={
-				"Reported" => "NEW",
-				"Registered" => "DC APPROVED",
+				"Reported" => "DC ACTIVE",
+				"Registered" => "HQ ACTIVE",
 				"Duplicates" => "DC DUPLICATE",
 				"Printed" => "HQ CLOSED",
 				"Dispatched" => "HQ DISPATCHED"

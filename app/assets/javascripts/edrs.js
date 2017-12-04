@@ -98,6 +98,7 @@ function showPopupMessage(msg, topic,targeturl) {
                 th.style.fontSize = "20px";
                 th.style.backgroundColor = "#345db5";
                 th.style.color = "#fff";
+                th.id ="msg.topic"
                 th.innerHTML = topic;
                 th.style.border = "2px outset #345db5";
 

@@ -67,7 +67,7 @@ class Person < CouchRest::Model::Base
     if self.duplicate.nil?
       PersonRecordStatus.create({
                                   :person_record_id => self.id.to_s,
-                                  :status => "NEW",
+                                  :status => "DC ACTIVE",
                                   :district_code =>  self.district_code,
                                   :created_by => User.current_user.id})
     else

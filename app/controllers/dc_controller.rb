@@ -203,7 +203,7 @@ class DcController < ApplicationController
 
 		@section ="Approved Cases"
 
-		@statuses = ["DC APPROVED"]
+		@statuses = ["HQ ACTIVE"]
 
 		@next_url = "/dc/approved_cases"
 
@@ -271,17 +271,22 @@ class DcController < ApplicationController
 	end
 
 	def manage_duplicates
-
 		@section = "Manage Duplicates"
-
-		render :layout => "landing"
-		
+		render :layout => "landing"	
 	end
 
 	def potential_duplicates
 		@section = "Potential Duplicate"
 		@statuses = ["DC POTENTIAL DUPLICATE"]
 		@next_url = "/dc/potential_duplicates"
+		@duplicate = true
+		render :template =>"/dc/dc_view_cases"
+	end
+
+	def exact_duplicates
+		@section = "Exact Duplicate"
+		@statuses = ["DC EXACT DUPLICATE"]
+		@next_url = "/dc/exact_duplicates"
 		@duplicate = true
 		render :template =>"/dc/dc_view_cases"
 	end
@@ -306,7 +311,7 @@ class DcController < ApplicationController
 
 	    @existing_ids = ""
 	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
-
+	    @statuses = []
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
 	    		@existing_ids = log['duplicates']
@@ -314,9 +319,12 @@ class DcController < ApplicationController
 	    		ids.each do |id|
 	    			 #@existing_record << Person.find(id)
 	    			 @existing_record << id
+	    			 @statuses << PersonRecordStatus.by_person_recent_status.key(id).last.status
 	    		end
 	    	end
 	    end
+
+	    @statuses = @statuses.join("|")
 	   
 	    @section = "Resolve Duplicate"
 	end
@@ -371,7 +379,9 @@ class DcController < ApplicationController
 						:change_log =>[{:audit_id => params[:audit_id]}]
 		})
 
-
+		if eval(params[:select].to_s)
+			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL")
+		end
 		redirect_to "#{params[:next_url].to_s}"
 
 	end

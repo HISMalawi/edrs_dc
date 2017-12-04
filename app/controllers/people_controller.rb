@@ -144,7 +144,7 @@ class PeopleController < ApplicationController
        if Person.duplicate.nil?
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
-                                      :status => "NEW",
+                                      :status => "DC ACTIVE",
                                       :district_code =>  person.district_code,
                                       :created_by => User.current_user.id})
         else
@@ -184,7 +184,7 @@ class PeopleController < ApplicationController
 
       Sync.create({
                     :person_record_id => person.id.to_s,
-                    :record_status => "NEW"
+                    :record_status => "DC ACTIVE"
       })
       
       #redirect_to "/people/view/#{person.id.to_s}" and return
@@ -271,9 +271,9 @@ class PeopleController < ApplicationController
       @section = "View"
 
       if SETTINGS['site_type'] =="facility"
-          @statuses = ["NEW","FC POTENTIAL DUPLICATE"]
+          @statuses = ["DC ACTIVE","FC POTENTIAL DUPLICATE"]
       else
-          @statuses = ["NEW"]
+          @statuses = ["DC ACTIVE"]
       end
 
       @next_url = "/people/view"

@@ -16,15 +16,28 @@
 
 
 	}
-	.details{
-		
-	}
-	.details td {
-		padding: 0.25em !important;
-	}
+	.record th {
+        padding: 8px;
+        background-color: #666;
+        color: #eee;
+        text-align: center !important;
+    }
+    
+    .record .existing {
+     
+       background-color: #316193;
+       
+    }
+
+    .record td {
+        padding: 8px;
+    }
+    #dup_table td{
+    	padding: 0.5em;
+    }
 </style>
 <div id="table_container">
-	<table style="width:48% !important;float:left" class="details">
+	<table style="width:48% !important;float:left" class="record">
 					<tr>
 						<th colspan="2">Potential Duplicate (<%= @person.status %>)</th>
 					</tr>
@@ -87,10 +100,10 @@
 					</tr>
 
 	</table>
-	<table style="width:48% !important;float:right" class="details">
+	<table style="width:48% !important;float:right" class="record existing">
 				<thead>
 					<tr>
-						<th colspan="2" id="existing_head">Potential Duplicate (<%= @person.status %>) </th>
+						<th colspan="2" id="existing_head" style="background:#6889b1"></th>
 					</tr>
 				</thead>
 				<tbody id="existing">
@@ -175,7 +188,7 @@
    <%end %>
 
  		<button id="next_similar" class="green" style="float: right; margin-right:1%" onmousedown="showNext()"><span>Next Similar Record</span></button>
- 		<% if @person.status == "DC POTENTIAL DUPLICATE" %>
+ 		<% if @person.status == "DC POTENTIAL DUPLICATE" || @person.status == "DC EXACT DUPLICATE"%>
  		<button class="green" style="float: right; margin-right:3%" onmousedown="resolveDuplicate()"><span>Resolve duplicate</span></button>
  		<% end%>
 
@@ -202,6 +215,9 @@
 
 			var ids = "<%= @existing_ids %>".split(",");
 
+			var id_to_void = "";
+
+			var void_url =""
 			var number = 0;
 
 			function showNext(){
@@ -423,6 +439,9 @@
 					tr.appendChild(td);
  
 					__$("existing_head").innerHTML = "Existing Record ("+data.status+") "+( number + 1 )+"/"+ids.length; 
+					if (data.status.toLowerCase().indexOf("voided") >= 0) {
+						 __$("existing_head").style.backgroundColor = "#b4b1b1"
+					}
 					if(ids.length <= 1){
 						__$("next_similar").style.display="none"
 					}
@@ -445,7 +464,13 @@
 				duplicate.className = "red";
 				duplicate.onmousedown = function(){
 					var url ="/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
-					window.location.href = url
+					var statuses = '<%= @statuses%>'
+					if(statuses.indexOf("DC ACTIVE") >= 0){
+						chooseRecordToVoid();
+						
+					}else{
+						window.location.href = url
+					}	
 				}
 				bt_panel.appendChild(duplicate);
 
@@ -470,5 +495,75 @@
 				}
 				bt_panel.appendChild(close);
 
+			}
+
+			function chooseRecordToVoid(url){
+				void_url = "/confirm_duplicate_comment"
+				var ids = "<%= @existing_ids %>".split(",");
+				ids.push("<%= params[:id] %>");
+				ids[ids.length - 1] = ids[0]
+				ids[0] = "<%= params[:id] %>"
+				setTimeout(function(){
+					if (__$("msg.topic")) {
+						__$("msg.topic").innerHTML ="Choose record to void"
+					}
+					
+					var msg = __$("msg.content");
+					msg.innerHTML =""
+					var bt_panel = __$("pop_button_panel");
+					bt_panel.innerHTML ="";
+					var ok = document.createElement("button");
+					ok.innerHTML = "Ok";
+					ok.className = "blue";
+					ok.setAttribute("onmousedown","voidDuplicate()")
+					bt_panel.appendChild(ok);
+					var table = document.createElement("table");
+					table.style.width ="100%";
+					table.id = "dup_table"
+					msg.appendChild(table);
+
+					for(var i = 0 ; i < ids.length; i++){
+						var url = "/people/find/"+ids[i];
+						ajaxGETRequest(url, function(data){
+							var data  = JSON.parse(data);
+							var tr = document.createElement("tr");
+							tr.id = data.id
+							tr.setAttribute("onclick","setRecordToVoid(this)")
+							table.appendChild(tr);
+							var td = document.createElement("td");
+							td.style.width = "20%";
+							var input = document.createElement("input");
+							input.type ="radio";
+							input.name = "choose";
+							input.id ="radio" + data.id;
+							td.appendChild(input)
+							tr.appendChild(td);
+							var td = document.createElement("td");
+							td.innerHTML  = data.first_name+" "+data.last_name+"("+(data.gende=='Male'? 'M':'F')+")"+" "+(new Date(data.birthdate)).format()+" "
+							tr.appendChild(td);
+						})
+					}
+					setTimeout(function(){
+						__$("<%= @person.id %>").click();
+					},500)
+				},500)
+
+			}
+
+			function setRecordToVoid(element){
+				__$("radio"+element.id).checked = true
+				id_to_void = element.id
+			}
+
+			function voidDuplicate(){
+				var person_id = "<%= @person.id %>";
+				var duplicate_id ="<%=@duplicates_audit.id%>";
+				if (id_to_void == person_id){
+					void_url = void_url  +"/"+id_to_void+"/"+duplicate_id+"?next_url=<%=params[:next_url]%>&select=false"
+				}else{
+					void_url = void_url  +"/"+id_to_void+"/"+person_id+"?next_url=<%=params[:next_url]%>&select=true"
+				}
+				
+				window.location.href = void_url;
 			}
 </script>
