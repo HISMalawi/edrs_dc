@@ -217,7 +217,7 @@ class PeopleController < ApplicationController
       exact_duplicate = false
       if SETTINGS["potential_duplicate"]
         results = []
-        results = SimpleElasticSearch.query_duplicate(person,100)
+        results = SimpleElasticSearch.query_duplicate_coded(person,100)
         if results.blank?
             results = SimpleElasticSearch.query_duplicate_coded(person,SETTINGS['duplicate_precision'])
         else
