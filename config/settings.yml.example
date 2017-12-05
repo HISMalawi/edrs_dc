@@ -6,4 +6,4 @@
  duplicate_precision: 80 #percentage precision
  site_type: dc #facility | dc | remote
  den_assignment_interval: 3
- app_gate_url: nil #'http://localhost:3004'
+ app_gate_url:  #'http://localhost:3004'

@@ -68,11 +68,11 @@ class LoginsController < ApplicationController
     flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
 
     logout!
-
+   
     if SETTINGS['app_gate_url'].present?
       redirect_to SETTINGS['app_gate_url'].to_s
     else
-      redirect_to "/", referrer_param => referrer_path
+      redirect_to "/", referrer_param => referrer_path and return
     end
   end
 
