@@ -298,11 +298,12 @@ class PeopleController < ApplicationController
   end
 
   def search_by_status
-    status = params[:status]
+    
+    status = params[:statuses]
     page = params[:page] rescue 1
     size = params[:size] rescue 7
     people = []
-
+   
     if SETTINGS['site_type'] == "remote"
       record_status = []
       statuses = params[:statuses]
@@ -310,7 +311,8 @@ class PeopleController < ApplicationController
       statuses.each do |status|
           record_status << [User.current_user.district_code,status]
       end
-     
+
+    
       PersonRecordStatus.by_district_code_and_record_status.keys(record_status).page(page).per(size).each do |status|
         
           person = status.person
@@ -320,6 +322,7 @@ class PeopleController < ApplicationController
         
       end
     else
+       
         if params[:statuses].include?("DC PENDING")
          record_status = params[:statuses]
          record_status << "DC REJECTED"
@@ -333,17 +336,19 @@ class PeopleController < ApplicationController
              record_status = params[:statuses]
         end
 
+        
+
         PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
       
         person = status.person
-
+       
         person["den"] = person.den rescue ""
 
         people << person
       
+        end
     end
-    end
-
+    
     render  :text => people.to_json
   end
 
@@ -749,6 +754,7 @@ entry = params["search"].soundex rescue nil
 
     render :text => result.to_json
   end
+
   def search_barcode
       if params[:barcode].present?
         count = PersonIdentifier.by_identifier.key(params[:barcode]).count  
@@ -759,6 +765,7 @@ entry = params["search"].soundex rescue nil
         end            
       end
   end
+
 ########## Render sync status page ##################################################################################################################
   def view_sync
    @site_type = SETTINGS['site_type'].to_s

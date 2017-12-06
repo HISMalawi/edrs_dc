@@ -299,6 +299,7 @@ class DcController < ApplicationController
 		render :template =>"/dc/dc_view_cases"
 	end
 
+
 	def show_duplicate
 
 		@person = Person.find(params[:id])
