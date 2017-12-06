@@ -326,6 +326,7 @@ class PeopleController < ApplicationController
         else
              record_status = params[:statuses]
         end
+
         if params[:statuses].include?("HQ REJECTED")
              #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
              record_status = params[:statuses]
