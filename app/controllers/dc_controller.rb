@@ -85,7 +85,7 @@ class DcController < ApplicationController
 
 
 	           if SETTINGS["potential_duplicate"]
-	           		duplicate =   SimpleElasticSearch.query_duplicate(record,SETTINGS['duplicate_precision'])
+	           		duplicate =   SimpleElasticSearch.query_duplicate_coded(record,SETTINGS['duplicate_precision'])
 	           end
 				
 			   if duplicate.blank? 

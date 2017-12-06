@@ -147,9 +147,22 @@ class ApplicationController < ActionController::Base
   def login!(user)
     session[:current_user_id] = user.username
     @current_user = user
+    Audit.ip_address_accessor = request.remote_ip
+    Audit.mac_address_accessor = ` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2]
+    Audit.create({
+                          :record_id  => @current_user.id,
+                          :audit_type => "User Access",
+                          :reason     => "Log in"
+    })
+
   end
 
   def logout!
+    Audit.create({
+                          :record_id  => session[:current_user_id],
+                          :audit_type => "User Access",
+                          :reason     => "Log out"
+    })
     session[:current_user_id] = nil
     @current_user = nil
   end

@@ -67,3 +67,5 @@ gem 'sucker_punch', '~> 2.0'
 gem 'couch_tap'
 
 gem "whitesimilarity"
+
+gem 'mac-address'
