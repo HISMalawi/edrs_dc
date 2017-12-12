@@ -487,6 +487,8 @@ class Person < CouchRest::Model::Base
   property :other_cause_of_death4, String
   property :onset_death_interval4, String
   property :cause_of_death_conditions, {}
+  property :coder, String
+  property :coded_at, Time
   property :icd_10_code, String
   property :manner_of_death, String
   property :other_manner_of_death, String
@@ -527,8 +529,6 @@ class Person < CouchRest::Model::Base
   property :voided, TrueClass, :default => false
   property :form_signed, String
   property :approved, String, :default => 'No'
-  #property :status, String, :default => 'Active' #Active|Approved|Printed|Reprinted
-  property :status_changed_by, String
   property :npid, String
   property :approved_by, String
   property :approved_at, Time
