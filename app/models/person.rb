@@ -290,7 +290,7 @@ class Person < CouchRest::Model::Base
 
   def update_person(id,params)
 
-      person = Person.find(id)
+       person = Person.find(id)
 
        if !params[:place_of_death_district].blank?
 
@@ -447,7 +447,6 @@ class Person < CouchRest::Model::Base
   property :birthdate, Date
   property :birthdate_estimated, Integer, :default => 0
   property :date_of_death, Date
-  property :birth_certificate_number, String
   property :nationality_id, String
   property :nationality, String
   property :place_of_death, String
