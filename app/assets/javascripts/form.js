@@ -1800,7 +1800,7 @@
 		            "April": 3,
 		            "May": 4,
 		            "June": 5,
-		            "Juy": 6,
+		            "July": 6,
 		            "August": 7,
 		            "September": 8,
 		            "October": 9,
