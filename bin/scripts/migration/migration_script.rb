@@ -1,22 +1,45 @@
 require 'csv'
 
-@@mapping = "#{Rails.root}/bin/scripts/migration/mapped_old_to_hq.csv"
-@@mapping_person = "#{Rails.root}//bin/scripts/migration/mapped.csv"
-@@olddata = "#{Rails.root}/bin/scripts/migration/persondata.csv"
+$mapping = "#{Rails.root}/bin/scripts/migration/mapped_old_to_hq.csv"
+$mapping_person = "#{Rails.root}/bin/scripts/migration/mapped.csv"
+$olddata = "#{Rails.root}/bin/scripts/migration/persondata.csv"
 
 password = CONFIG["crtkey"] rescue nil
 password = "password" if password.blank?
 
+$docs_with_issues = ['086d76023d215701f7b430f563ba2386',
+                    '4045a248ef5fde881f6ef6520d75aace',
+                    '2381037872008bd526c50803e48a8541',
+                    '23bb787af2de33cf1c3b94fb4164473f',
+                    '3a2f7759f2b1581211fd6cc1fb853d4b',
+                    '3a2f7759f2b1581211fd6cc1fb854245',
+                    '4c9423434d80b44384e836d6af9236a',
+                    '4c9423434d80b44384e836d6af9236a9',
+                    '4d7466ce4980b01ac80d3d0dfdcd382c',
+                    '4f7c4ffb2f4bc5197521961c9f491ab5',
+                    '5643e09f0494a24918c34f6650c57ab3',
+                    '56d72abbf130cda0c708165391dc1769',
+                    '66a4a7ad9c231650ed73bdcfdb35d799',
+                    '683b474552a375211e6261dafae37bb1',
+                    '7d5a55d4deca257dd7d3d0e8994a8747',
+                    '82a89cb4e21f757eca091c460207faee',
+                    '9244f706eb4f2ca7ff9e2dde63894436',
+                    '9343307ee2783c47bfa17de00e8b19a9',
+                    '9343307ee2783c47bfa17de00e8b41ab',
+                    '9343307ee2783c47bfa17de00e8b4e36',
+                    '99c1e61c0f708f0fbbd095dadfc5b6a6',
+                    'a93c70f1d91e5743069eef75a97916d3']
+
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
-@@status_map ={
+$status_map ={
                 "Printed" =>"HQ DISPATCHED",
                 "Reprinted" =>"HQ DISPATCHED",
                 "Active"     => "DC COMPLETE",
                 "Approved" => "HQ APPROVED"
 }
 
-@@mapped = {}
+$mapped = {}
 
 def decrypt(value)
   string = $private_key.private_decrypt(Base64.decode64(value)) rescue nil
@@ -62,10 +85,19 @@ def get_distict_id(name)
 
 end
 
+def test_func(val)
+
+    if decrypt(val) == ""
+         puts "nil val"
+    else
+      puts "has"
+    end
+end
+
 def transform_data(records)
 
   begin
-    map = CSV.foreach(@@mapping, :headers => true)
+    map = CSV.foreach($mapping, :headers => true)
     map.collect do |row|
       old_edrs_field = row[0]
       new_edrs_field = row[1]
@@ -76,12 +108,12 @@ def transform_data(records)
       field_array = ['','','','']
       unless old_edrs_field.blank?
         unless new_edrs_field.blank?
-          @@mapped[old_edrs_field] = ["#{new_edrs_field}",'','','']
+          $mapped[old_edrs_field] = ["#{new_edrs_field}",'','','']
           #puts ">>>>>>>> #{old_edrs_field} == #{new_edrs_field}"
 
         else
           if not new_edrs_model.blank?
-            @@mapped[old_edrs_field] = ['',"#{new_edrs_model}","#{new_edrs_model_type}","#{new_edrs_model_field}"]
+            $mapped[old_edrs_field] = ['',"#{new_edrs_model}","#{new_edrs_model_type}","#{new_edrs_model_field}"]
            # puts "::::::: #{old_edrs_field} == #{eval(new_edrs_model).count} .......... #{new_edrs_field2}"
 
           end
@@ -93,7 +125,7 @@ def transform_data(records)
               end
         end
     end
-    mapped_fields = JSON.parse(@@mapped.to_json)
+    mapped_fields = JSON.parse($mapped.to_json)
 
     to_decrypt = ['first_name',
                   'last_name',
@@ -126,7 +158,7 @@ def transform_data(records)
        identifiers = {}
        status = ''
 
-    if r['_id'] != '4045a248ef5fde881f6ef6520d75aace'
+    if !$docs_with_issues.include? r['_id']
 
        puts "Migrating doc: #{r['_id']}"
 
@@ -136,12 +168,15 @@ def transform_data(records)
         if mapped_fields[field].present?
            new_field = (mapped_fields[field][0] rescue '')
            if new_field.present?
+            
              person[new_field] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
 
            else
               if mapped_fields[field][2].present?
+                 
                  identifiers[mapped_fields[field][2]] = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
               else
+
                  status = to_decrypt.include?(field) ? decrypt(r[field]) : r[field]
               end
 
@@ -205,11 +240,11 @@ def transform_data(records)
           person_identifier.district_code = district_code
           person_identifier.save
         end
-        #raise @@status_map[status].inspect
-        if @@status_map[status].present? && person.first_name.present?
+        #raise $status_map[status].inspect
+        if $status_map[status].present? && person.first_name.present?
           record_status = PersonRecordStatus.new
           record_status.person_record_id = person.id
-          record_status.status = @@status_map[status]
+          record_status.status = $status_map[status]
           if status == "Reprinted"
             record_status.reprint = true
           end
@@ -251,7 +286,7 @@ def fetch_source_data
 end
 
 def start
-  map = CSV.foreach(@@mapping, :headers => true)
+  map = CSV.foreach($mapping, :headers => true)
   map.collect do |row|
     old_edrs_field = row[0]
     new_edrs_field = row[1]
@@ -262,12 +297,12 @@ def start
     field_array = ['','','','']
     unless old_edrs_field.blank?
       unless new_edrs_field.blank?
-        @@mapped[old_edrs_field] = ["#{new_edrs_field}",'','','']
+        $mapped[old_edrs_field] = ["#{new_edrs_field}",'','','']
         #puts ">>>>>>>> #{old_edrs_field} == #{new_edrs_field}"
 
       else
         if not new_edrs_model.blank?
-          @@mapped[old_edrs_field] = ['',"#{new_edrs_model}","#{new_edrs_model_type}","#{new_edrs_model_field}"]
+          $mapped[old_edrs_field] = ['',"#{new_edrs_model}","#{new_edrs_model_type}","#{new_edrs_model_field}"]
          # puts "::::::: #{old_edrs_field} == #{eval(new_edrs_model).count} .......... #{new_edrs_field2}"
 
         end
@@ -280,11 +315,11 @@ def start
       end
   end
 
-  mapped_fields = JSON.parse(@@mapped.to_json)
+  mapped_fields = JSON.parse($mapped.to_json)
   #puts mapped_fields
 
   headers = []
-  file = File.open(@@olddata).each_line do |line|
+  file = File.open($olddata).each_line do |line|
     row = line.gsub("&#39;","'").split(";");
     if row[0]=='first_name'
       headers = row
@@ -348,10 +383,10 @@ def start
       person_identifier.district_code = district_code
       person_identifier.save
     end
-    if @@status_map[status].present? && person.first_name.present?
+    if $status_map[status].present? && person.first_name.present?
       record_status = PersonRecordStatus.new
       record_status.person_record_id = person.id
-      record_status.status = @@status_map[status]
+      record_status.status = $status_map[status]
       if status == "Reprinted"
         record_status.reprint = true
       end
@@ -370,3 +405,4 @@ end
 
 #start
 fetch_source_data
+
