@@ -1,0 +1,18 @@
+<iframe  id="iframe" src="<%=@url%>" style="width: 99%; margin:auto">
+	
+</iframe>
+<script type="text/javascript">
+		$(document).ready(function(){
+			var iframDoc =  window.frames['iframe'].contentDocument || window.frames['iframe'].contentWindow.document;
+			$(iframDoc).ready(function(){
+				setTimeout(function(){
+
+					iframDoc.getElementById("cancelButton").onmousedown = function(){
+		                window.top.location="<%=@next_url%>"
+		            }
+				},3000);
+			});
+			
+
+		})
+</script>

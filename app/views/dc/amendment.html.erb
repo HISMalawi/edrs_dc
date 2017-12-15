@@ -15,6 +15,7 @@
 
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
+				overflow-y: scroll;
 
 
 		}
@@ -119,8 +120,8 @@
 	<% if params[:next_url] %>
 	        <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
 	<%end%>
-	<% if @person.status  != "DC AMEND"%>
-		<button style="float: right; margin-right:1%" onmousedown="window.location='/dc/add_amendment_comment/<%=params[:id]%>'"><span>Proceed to Re-Print</span></button>
+	<% if @person.status  == "DC AMEND"%>
+		<button style="float: right; margin-right:1%" onmousedown="window.location='/dc/add_amendment_comment/<%=params[:id]%>'"><span>Send Record to HQ</span></button>
 	<%end%>
 	<% if @comments.count > 0 %>
 		<button class="blue" style="float: right; margin-right:3%" onmousedown="viewPersonComment()">View Comment</button>
@@ -378,7 +379,7 @@
 			}
 			function editField(field){
 
-					window.location = "/dc/amendment_edit_field/<%= @person.id %>/"+field+"?next_url=<%=params[:next_url]%>"
+					window.location = "/people/form_container?url=/dc/amendment_edit_field/<%= @person.id %>/"+field+"?next_url=<%=params[:next_url]%>"
 
 			}
 

@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get "/people/sync_data" => "people#sync_data"
 
+  get "/people/form_container"
+
  
 
 ##############################################################################################################################################
@@ -213,6 +215,8 @@ Rails.application.routes.draw do
   get "/dc/manage_requests" => "dc#manage_requests"
 
   get "/dc/amendment_requests" => "dc#amendment_requests"
+
+  get "/dc/do_amend/:id" =>"dc#do_amend"
 
   get "/dc/ammendment/:id" => "dc#amendment"
 

@@ -441,47 +441,52 @@ class PeopleController < ApplicationController
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-      if SETTINGS["potential_duplicate"]
-          record = {}
-          record["first_name"] = @person.first_name
-          record["last_name"] = @person.last_name
-          record["middle_name"] = (@person.middle_name rescue nil)
-          record["gender"] = @person.gender
-          record["place_of_death_district"] = @person.place_of_death_district
-          record["birthdate"] = @person.birthdate
-          record["date_of_death"] = @person.date_of_death
-          record["mother_last_name"] = (@person.mother_last_name rescue nil)
-          record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
-          record["mother_first_name"] = (@person.mother_first_name rescue nil)
-          record["father_last_name"] = (@person.father_last_name rescue nil)
-          record["father_middle_name"] = (@person.father_middle_name rescue nil)
-          record["father_first_name"] = (@person.father_first_name rescue nil)
-          record["id"] = @person.id
+      if @status.status =="DC AMEND"
+        redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 
-          SimpleElasticSearch.add(record)
+      else
+
+          if SETTINGS["potential_duplicate"]
+              record = {}
+              record["first_name"] = @person.first_name
+              record["last_name"] = @person.last_name
+              record["middle_name"] = (@person.middle_name rescue nil)
+              record["gender"] = @person.gender
+              record["place_of_death_district"] = @person.place_of_death_district
+              record["birthdate"] = @person.birthdate
+              record["date_of_death"] = @person.date_of_death
+              record["mother_last_name"] = (@person.mother_last_name rescue nil)
+              record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
+              record["mother_first_name"] = (@person.mother_first_name rescue nil)
+              record["father_last_name"] = (@person.father_last_name rescue nil)
+              record["father_middle_name"] = (@person.father_middle_name rescue nil)
+              record["father_first_name"] = (@person.father_first_name rescue nil)
+              record["id"] = @person.id
+
+              SimpleElasticSearch.add(record)
+          end
+
+          @person_place_details = place_details(@person)
+
+          @section = "View"
+          #raise params[:id].inspect
+          @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+
+          @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
+                                                              [params[:id],"DC REJECTED"],
+                                                              [params[:id],"HQ REJECTED"],
+                                                              [params[:id],"DC REAPPROVED"],
+                                                              [params[:id],"DC DUPLICATE"],
+                                                              [params[:id],"RESOLVE DUPLICATE"],
+                                                              [params[:id],"HQ POTENTIAL INCOMPLETE"],
+                                                              [params[:id],"HQ INCOMPLETE"],
+                                                              [params[:id],"HQ CONFIRMED INCOMPLETE"],
+                                                              [params[:id],"DC AMEND"]
+
+                                                              ]).each
+
+          render :layout => "landing"
       end
-
-      @person_place_details = place_details(@person)
-
-      @section = "View"
-      #raise params[:id].inspect
-      @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
-
-      @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
-                                                          [params[:id],"DC REJECTED"],
-                                                          [params[:id],"HQ REJECTED"],
-                                                          [params[:id],"DC REAPPROVED"],
-                                                          [params[:id],"DC DUPLICATE"],
-                                                          [params[:id],"RESOLVE DUPLICATE"],
-                                                          [params[:id],"HQ POTENTIAL INCOMPLETE"],
-                                                          [params[:id],"HQ INCOMPLETE"],
-                                                          [params[:id],"HQ CONFIRMED INCOMPLETE"],
-                                                          [params[:id],"DC AMEND"]
-
-                                                          ]).each
-
-      render :layout => "landing"
-  	
   end
   def find
       person = Person.find(params[:id])
@@ -847,6 +852,21 @@ end
   def sync_data
       `rake edrs:sync`
       redirect_to "/"
+  end
+
+  def form_container
+      #raise params.inspect
+      if params[:url].present?
+         @url = params[:url]
+      else
+         @url = "/people/new?registration_type=Natural Deaths"
+      end
+      if params[:next_url].present?
+        @next_url = params[:next_url]
+      else
+        @next_url = "/"
+      end
+      render :layout =>"plain_with_header"
   end
 
 

@@ -438,6 +438,12 @@ class DcController < ApplicationController
 		redirect_to "#{params[:next_url].to_s}"		
 	end
 
+	def do_amend
+		person = Person.find(params[:id])
+		PersonRecordStatus.change_status(person, "DC AMEND")
+		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
+	end
+
 	def amendment
 		@person = Person.find(params[:id])
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -526,7 +532,7 @@ class DcController < ApplicationController
 		amendment_audit.level ="Person"
 		amendment_audit.save
 
-		PersonRecordStatus.change_status(person, "DC AMEND")
+		PersonRecordStatus.change_status(person, "HQ AMEND")
 		PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "AMENDMENT Barcode", 

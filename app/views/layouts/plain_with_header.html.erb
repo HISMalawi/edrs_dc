@@ -18,6 +18,7 @@
     <%#= javascript_include_tag "ToolKit/touchscreenToolkit" %>
     <%#= javascript_include_tag "ToolKit/barcode" %>
     <%#= javascript_include_tag "ToolKit/standard" %>
+    <script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
     <script type="text/javascript" language="javascript" src="/touchscreentoolkit/lib/javascripts/touchScreenToolkit.js" defer="true"></script>
     <script type="text/javascript" language="javascript" src="/javascripts/icons.js" defer="true"></script>
     <script type="text/javascript" src="/javascripts/spin.min.js"></script>
@@ -54,23 +55,10 @@
                 </table>
                        
               </div>
-              <div style="width:100;height:calc(90% - 35px);">
+              <div style="width:100;height:calc(95% - 35px);">
                     
                     <%= yield %>
 
-              </div>
-              
-              <div id="footer" style="border-top: 1px solid  #959595; min-height:21px; bottom : 10px">
-
-                <div id="section" >
-                    <%= @section rescue "Home" %>
-                </div>
-                <div style="width :40%;margin:auto; margin-top : 0.5em ; font-weight:bold; font-style:italic; text-align:center">
-
-                      <%= User.current_user.username %>@<%= "#{@district.name}" rescue "" %> DC on <%= Time.now.strftime("%d/%b/%Y") %>
-        
-                </div>
-                   
               </div>
         </div>
       </div>

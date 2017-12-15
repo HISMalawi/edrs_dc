@@ -649,7 +649,7 @@
 			}
 
 			function mark_for_amendment(){
-				var url = "/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+				var url = "/dc/do_amend/<%= @person.id%>?next_url=<%=params[:next_url]%>";
 				showConfirmMessage("","Proceed to amend the record?",url);
 				popUpRecordDetails();
 			}
