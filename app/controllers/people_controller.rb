@@ -298,14 +298,15 @@ class PeopleController < ApplicationController
   end
 
   def search_by_status
-    
+     
     status = params[:statuses]
     page = params[:page] rescue 1
     size = params[:size] rescue 7
     people = []
-   
+    record_status = []
+
     if SETTINGS['site_type'] == "remote"
-      record_status = []
+     
       statuses = params[:statuses]
 
       statuses.each do |status|
@@ -322,23 +323,23 @@ class PeopleController < ApplicationController
         
       end
     else
-       
-        if params[:statuses].include?("DC PENDING")
-         record_status = params[:statuses]
+         
+        if params[:status].include?("DC PENDING")
+         record_status << params[:status]
          record_status << "DC REJECTED"
+         
         else
              record_status = params[:statuses]
         end
 
-        if params[:statuses].include?("HQ REJECTED")
+        if params[:status].include?("HQ REJECTED")
              #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
-             record_status = params[:statuses]
+             record_status << params[:status]
         else
-             record_status = params[:statuses]
+             record_status << params[:status]
         end
 
         
-
         PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
       
         person = status.person
@@ -348,6 +349,7 @@ class PeopleController < ApplicationController
         people << person
       
         end
+       
     end
     
     render  :text => people.to_json

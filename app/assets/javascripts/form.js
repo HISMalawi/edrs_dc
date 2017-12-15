@@ -211,6 +211,40 @@
 		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") + " " + (__$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "");
 		        tr.appendChild(td);
 
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+
+                var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Informant's name";
+		        tr.appendChild(td);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.innerHTML =( __$("person_informant_last_name") && __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "") + " " + (__$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "");
+		        tr.appendChild(td);
+
+
+		        var tr = document.createElement("tr");
+		        tableContent.appendChild(tr);
+
+                var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Informant relationship to deceased";
+		        tr.appendChild(td);
+		       
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        if(__$('person_informant_relationship_to_deceased').value.match('Other')){
+		        	td.innerHTML =( __$("person_informant_relationship_to_deceased_other") && __$("person_informant_relationship_to_deceased_other").value ? __$('person_informant_relationship_to_deceased').value  + "  ," + __$('person_informant_relationship_to_deceased_other').value : "");
+		        } else {
+		        	td.innerHTML =( __$("person_informant_relationship_to_deceased") && __$("person_informant_relationship_to_deceased").value ? __$('person_informant_relationship_to_deceased').value : "");
+		        }
+		        
+		        tr.appendChild(td);
+
 		        
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
@@ -2301,6 +2335,8 @@ function showPhoneSummary(){
  	},20);
  	
  }
+
+
 
 
 

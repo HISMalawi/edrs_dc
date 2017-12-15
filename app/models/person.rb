@@ -49,7 +49,7 @@ class Person < CouchRest::Model::Base
     encryptable = ["first_name","last_name",
                    "middle_name","last_name",
                    "mother_first_name","mother_last_name",
-                   "mother_middle_name","mother_id_number",
+                    "mother_middle_name","mother_id_number",
                    "father_id_number","father_first_name",
                    "father_last_name","father_middle_name",
                    "father_id_number","informant_first_name","informant_last_name",

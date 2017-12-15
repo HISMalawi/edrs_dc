@@ -185,6 +185,7 @@ class DcController < ApplicationController
 		render :layout => "touch"
 		
 	end
+	
 	def mark_as_pending
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC PENDING")
