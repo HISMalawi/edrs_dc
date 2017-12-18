@@ -396,7 +396,9 @@ class DcController < ApplicationController
 
 	def reprint_requests
 		@section ="Reprint Requests"
-		@statuses = ["DC REPRINT"]
+
+		@statuses = ["DC LOST","DC DAMAGED"]
+
 		@next_url = "/dc/reprint_requests"
 		render :template =>"/dc/dc_view_cases"
 	end
@@ -421,8 +423,7 @@ class DcController < ApplicationController
 
 	def mark_for_reprint
 		person = Person.find(params[:id])
-
-		PersonRecordStatus.change_status(person, "DC REPRINT")
+		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish)
 		PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Reprint Barcode", 
@@ -433,13 +434,18 @@ class DcController < ApplicationController
 
 		Audit.create({
 							:record_id => params[:id].to_s    , 
-							:audit_type=>"DC REPRINT",
+							:audit_type=>"DC REPRINT  #{params[:reason].upcase}",
 							:level => "Person",
 							:reason => params[:reason]})
 
 		redirect_to "#{params[:next_url].to_s}"		
 	end
-
+	def sent_to_hq_for_reprint
+		person = Person.find(params[:id])
+		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+		PersonRecordStatus.change_status(person, status.status.gsub("DC","HQ"))
+		redirect_to "/dc/reprint_requests?next_url=/dc/manage_requests?next_url=/"
+	end
 	def do_amend
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC AMEND")
@@ -457,7 +463,8 @@ class DcController < ApplicationController
                                                           [params[:id],"DC REAPPROVED"],
                                                           [params[:id],"DC DUPLICATE"],
                                                           [params[:id],"RESOLVE DUPLICATE"],
-                                                          [params[:id],"DC REPRINT"],
+                                                          [params[:id],"DC REPRINT LOST"],
+                                                          [params[:id],"DC REPRINT DAMAGED"],
                                                           [params[:id],"DC AMEND"]]).each
       	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
       	#@person.change_status("DC AMEND")

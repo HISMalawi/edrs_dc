@@ -89,7 +89,7 @@
 
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role == "ADR"%>
 
-                                  <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases'" >
+                                  <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>

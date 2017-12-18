@@ -323,21 +323,12 @@ class PeopleController < ApplicationController
         
       end
     else
-         
-        if params[:status].include?("DC PENDING")
-         record_status << params[:status]
+        record_status = params[:statuses]
+          
+        if params[:statuses].include?("DC PENDING")
          record_status << "DC REJECTED"
-         
-        else
-             record_status = params[:statuses]
         end
-
-        if params[:status].include?("HQ REJECTED")
-             #record_status = [params[:status],"HQ CONFIRMED INCOMPLETE"]
-             record_status << params[:status]
-        else
-             record_status << params[:status]
-        end
+        
 
         
         PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|

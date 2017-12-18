@@ -226,6 +226,8 @@ Rails.application.routes.draw do
 
   get "/dc/add_amendment_comment/:id" => "dc#add_amendment_comment"
 
+  get "/dc/sent_to_hq_for_reprint/:id" =>"dc#sent_to_hq_for_reprint"
+
   post "/proceed_amend" => "dc#proceed_amend"
 
   get "/dc/sync" => "dc#sync"
