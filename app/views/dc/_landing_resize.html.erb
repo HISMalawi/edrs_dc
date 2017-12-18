@@ -1,4 +1,10 @@
 <script>
+	if (window.top[0] ===undefined) {
+
+    }else{
+        
+        window.top.location = window.top[0].location.href
+    }
 	function __$(id){
         return document.getElementById(id);
     }
@@ -10,4 +16,5 @@
     }
 
     resizeDiv();
+
 </script>

@@ -201,7 +201,9 @@
 
 			<%end%>
 		<%end%>
-
+		<% if @person.status  == "DC LOST" || @person.status  == "DC DAMAGED"%>
+			<button style="float: right; margin-right:1%" onmousedown="window.location='/dc/sent_to_hq_for_reprint/<%= @person.id%>'"><span>Send Record to HQ</span></button>
+		<%end%>
 	<%end%>
 	<% if @comments.count > 0 %>
 		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Comment</span></button>
@@ -649,7 +651,7 @@
 			}
 
 			function mark_for_amendment(){
-				var url = "/dc/ammendment/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+				var url = "/dc/do_amend/<%= @person.id%>?next_url=<%=params[:next_url]%>";
 				showConfirmMessage("","Proceed to amend the record?",url);
 				popUpRecordDetails();
 			}

@@ -140,6 +140,8 @@ Rails.application.routes.draw do
 
   get "/people/sync_data" => "people#sync_data"
 
+  get "/people/form_container"
+
  
 
 ##############################################################################################################################################
@@ -214,6 +216,8 @@ Rails.application.routes.draw do
 
   get "/dc/amendment_requests" => "dc#amendment_requests"
 
+  get "/dc/do_amend/:id" =>"dc#do_amend"
+
   get "/dc/ammendment/:id" => "dc#amendment"
 
   get "/dc/amendment_edit_field/:id/:field" => "dc#amendment_edit_field"
@@ -221,6 +225,8 @@ Rails.application.routes.draw do
   post "/amend_field" => "dc#amend_field"
 
   get "/dc/add_amendment_comment/:id" => "dc#add_amendment_comment"
+
+  get "/dc/sent_to_hq_for_reprint/:id" =>"dc#sent_to_hq_for_reprint"
 
   post "/proceed_amend" => "dc#proceed_amend"
 
