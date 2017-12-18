@@ -141,15 +141,15 @@
                 }
             }
 
-            setTimeout("updateNavButtons()", 1000);
+            setTimeout("updateNavButtons()", 500);
         }
 
         function updateNavButtons(){
             form.setAttribute("target", "_parent");
-            window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
+            /*window.frames['iframe'].contentDocument.getElementById("cancelButton").onmousedown = function(){
                 //cancelEntry();
                 window.top.location="/people/new_person_type"
-            }
+            }*/
         }
 
         function checkCurPos(){
@@ -191,7 +191,7 @@
 
         }
 
-        setTimeout("setup()", 1000);
+        setTimeout("setup()", 500);
 
         interval = window.setInterval(function(){
             checkCurPos();

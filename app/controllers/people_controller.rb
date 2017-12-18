@@ -488,7 +488,7 @@ class PeopleController < ApplicationController
   end
   def find
       person = Person.find(params[:id])
-
+      person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
       render :text => person_selective_fields(person).to_json
   end
 

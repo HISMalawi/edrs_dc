@@ -317,9 +317,8 @@ class DcController < ApplicationController
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
 	    		@existing_ids = log['duplicates']
-	    		ids = log['duplicates'].split(",")
+	    		ids = log['duplicates'].split("|")
 	    		ids.each do |id|
-	    			 #@existing_record << Person.find(id)
 	    			 @existing_record << id
 	    			 @statuses << PersonRecordStatus.by_person_recent_status.key(id).last.status
 	    		end

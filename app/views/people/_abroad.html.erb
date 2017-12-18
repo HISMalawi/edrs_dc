@@ -12,14 +12,14 @@
 	<% if params[:registration_type].include? "Deaths Abroad"%>
         <section name="Commissioner's documents">
             <sub id="person_commissioner_documents_section" name="Documents attached">
-                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Commissioner's documents attached?",:tt_requireNextClick => false) %>
+                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Commissioner's documents attached?",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
             </sub>
         </section>
     <%end%>
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel()"} %>
 			</sub>
 		</section>
 	<%end%>
