@@ -323,15 +323,18 @@ class PeopleController < ApplicationController
         
       end
     else
-        record_status = params[:statuses]
+        statuses = params[:statuses]
           
         if params[:statuses].include?("DC PENDING")
-         record_status << "DC REJECTED"
+         statuses << "DC REJECTED"
         end
         
+        statuses.each do |status|
+          record_status << [SETTINGS['district_code'],status]
+        end
 
         
-        PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
+        PersonRecordStatus.by_district_code_and_record_status.keys(record_status).page(page).per(size).each  do |status|
       
         person = status.person
        
