@@ -28,7 +28,18 @@ $docs_with_issues = ['086d76023d215701f7b430f563ba2386',
                     '9343307ee2783c47bfa17de00e8b41ab',
                     '9343307ee2783c47bfa17de00e8b4e36',
                     '99c1e61c0f708f0fbbd095dadfc5b6a6',
-                    'a93c70f1d91e5743069eef75a97916d3']
+                    'a93c70f1d91e5743069eef75a97916d3',
+                    'ad8ca9a29dc8f7775462d4fc5bd6f1f1',
+                    'cfccdf4f0dea663f448049c52df18a32',
+                    '004ea7ae876299e6e945a45b01c86d89',
+                    '004ea7ae876299e6e945a45b01c87c4e',
+                    '004ea7ae876299e6e945a45b01c8804c',
+                    '007e82e69b059ef5850e9c1461d24045',
+                    '007e82e69b059ef5850e9c1461d249e8',
+                    'dc4c5dcf715efa5cb4a76c23d72f41d2',
+                    'e1a6ac6087c2e9b964d011cf2977baf2',
+                    'e1a6ac6087c2e9b964d011cf2977c285',
+                    'e48596041b3e7cc65c0ef8def85554ee','e78aeed89e0d5e1e3265a958d5544170']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
@@ -131,7 +142,7 @@ def transform_data(records)
                   'last_name',
                   'middle_name',
                   'status',
-                  'birth_certificate_number',
+                  #'birth_certificate_number',
                   'father_first_name',
                   'father_last_name',
                   'father_middle_name',
