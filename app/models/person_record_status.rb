@@ -124,7 +124,6 @@ class PersonRecordStatus < CouchRest::Model::Base
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
                                   :prev_status => status.status,
-                                  :reprint => reprint,
                                   :comment => comment,
                                   :district_code => person.district_code,
                                   :creator => (User.current_user.id rescue nil)})
@@ -132,8 +131,6 @@ class PersonRecordStatus < CouchRest::Model::Base
 			PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
-                                  :prev_status => status.status,
-                                  :reprint => reprint,
                                   :comment => comment,
                                   :district_code => person.district_code,
                                   :creator => (User.current_user.id rescue nil)})
