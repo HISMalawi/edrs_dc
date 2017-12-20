@@ -145,6 +145,7 @@ class PeopleController < ApplicationController
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
                                       :status => "DC ACTIVE",
+                                      :comment =>"Record Created",
                                       :district_code =>  person.district_code,
                                       :created_by => User.current_user.id})
         else
@@ -176,6 +177,7 @@ class PeopleController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :status => status,
                                       :district_code => person.district_code,
+                                      :comment =>"System mark record as a potential",
                                       :created_by => User.current_user.id})
 
           Person.duplicate = nil
@@ -473,18 +475,12 @@ class PeopleController < ApplicationController
           #raise params[:id].inspect
           @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
-          @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
-                                                              [params[:id],"DC REJECTED"],
-                                                              [params[:id],"HQ REJECTED"],
-                                                              [params[:id],"DC REAPPROVED"],
-                                                              [params[:id],"DC DUPLICATE"],
-                                                              [params[:id],"RESOLVE DUPLICATE"],
-                                                              [params[:id],"HQ POTENTIAL INCOMPLETE"],
-                                                              [params[:id],"HQ INCOMPLETE"],
-                                                              [params[:id],"HQ CONFIRMED INCOMPLETE"],
-                                                              [params[:id],"DC AMEND"]
 
-                                                              ]).each
+
+          @comments = []
+          PersonRecordStatus.by_person_record_id.key("a7b00ba8123bc3e93af903bdcbf81bd9").each do |status|
+            @comments << status.comment if status.comment.present?
+          end
 
           render :layout => "landing"
       end
