@@ -1,0 +1,121 @@
+<script type="text/javascript">
+		function postAjax(url, data, success) {
+
+                  var params = typeof data == 'string' ? data : Object.keys(data).map(
+
+                          function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+
+                      ).join('&');
+
+              
+                  var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+                  xhr.open('POST', url);
+
+                  xhr.onreadystatechange = function() {
+
+                      if (xhr.readyState>3 && xhr.status==200) { success(xhr.responseText); }
+
+                  };
+                  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+                  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                  xhr.send(params);
+
+                  return xhr;
+        }
+        function removeDollar(){
+			var input_element = __$('touchscreenInput' + tstCurrentPage);
+			if (input_element && input_element.value.match(/.+\$$/i) != null){
+				 setTimeout(function(){
+						barcode_element.value = input_element.value.substring(0,input_element.value.length-1);
+				},1000);		
+			}
+			else{
+				//console.log("No dollar");
+			}
+		}
+		var patnum = ""
+		var setFocusTimeout = 5000;
+		var checkForBarcodeTimeout = 1500;
+		var barcodeFocusTimeoutId = null;
+		var barcodeFocusOnce = false;
+		var barcodeId = '';
+		var focusOnce = false;
+		var barcode_element;
+
+		function loadBarcodePage() {
+
+		  focusForBarcodeInput()
+
+		  checkForBarcode()
+
+		}
+
+		function focusForBarcodeInput(){
+
+			if (!barcodeId) {
+				barcodeId = "person_barcode";
+			}
+
+		  	barcode_element = document.getElementById(barcodeId);
+
+			if (barcode_element) {
+				barcode_element.focus();
+				if (!focusOnce) barcodeFocusTimeoutId = window.setTimeout("focusForBarcodeInput()", setFocusTimeout);
+			}
+		}
+
+		function checkForBarcode(validAction){
+
+			if (__$("person_barcode")){
+
+				var input_element = __$('touchscreenInput' + tstCurrentPage);
+
+				if (input_element && input_element.value.match(/.+\$$/i) != null){
+					 barcode_element.value = input_element.value.substring(0,input_element.value.length-1);				 
+					 checkBarcode();
+					 gotoNextPage();									
+				}else{
+					window.setTimeout("checkForBarcode()", checkForBarcodeTimeout)
+				}
+			}
+		}
+
+		function checkBarcode(){
+			var value = __$('touchscreenInput' + tstCurrentPage).value;
+			if (value && value.match(/.+\$$/i) != null){
+
+				value = value.substring(0,value.length-1);
+			}
+			if(value.length > 0){
+				postAjax("/search_barcode",{barcode : value},function(response){
+					var response = JSON.parse(response).response
+					if(response){
+						confirmYesNo("Scanned Barcode ("+value+") already exist for another record",
+							function(){
+								top.location.reload();
+							},
+							function(){
+								top.location ="/people/view/"+response+"?next_url=/people/new_person_type";
+							},300000);
+						__$("yes").innerHTML ="Dismiss"
+						__$("yes").className = "red";
+						__$("no").innerHTML ="View Record"
+						setTimeout(function(){
+							gotoPage(tstCurrentPage -1);
+						},100);
+					}
+				});	
+			}							
+		}
+
+		window.addEventListener("load", loadBarcodePage, false);
+</script>
+<form action="<%= @action%>" method="post">
+		<input type="hidden" name="next_url" value="<%= params[:next_url]%>"> 
+		<input type="hidden" name="id" value="<%= params[:id]%>">
+		<input type="hidden" name="user_id" value="<%=User.current_user.id%>">
+		<input name="reason" helpText ="Reason for reaproving record <i style='color: red'>*</i>" id="reason">
+</form>

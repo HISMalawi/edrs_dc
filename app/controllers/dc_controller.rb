@@ -165,6 +165,18 @@ class DcController < ApplicationController
 		render :layout =>"touch"
 	end
 
+	def add_reaprove_comment
+		@action ="/reaprove_record"
+		@section = "Reaprove Comment"
+		render :layout =>"plain_with_header"
+	end
+
+	def reaprove_record
+		person = Person.find(params[:id])
+		PersonRecordStatus.change_status(person, "DC REAPPROVED")
+		redirect_to params[:next_url]
+	end
+
 	def reject_record
 			person = Person.find(params[:id])
 			PersonRecordStatus.change_status(person, "DC REJECTED",params[:reason])			

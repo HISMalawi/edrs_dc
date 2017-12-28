@@ -359,5 +359,5 @@
  				<%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
 
  		<%end%>
- 		<%= text_field_tag "summary" ,nil, {:helpText => "Summary", :tt_onLoad=>"showSummary('Details Summary')"} %>
+ 		<%= text_field_tag "summary" ,nil, {:helpText => "Summary", :tt_onLoad=>"showModified('Details Summary')"} %>
 <%end %>

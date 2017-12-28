@@ -1,3 +1,11 @@
+<script type="text/javascript">
+			if (window.top[0] ===undefined) {
+
+			}else{
+				
+				window.top.location = window.top[0].location.href
+			}
+</script>
 <style type="text/css">
 		input[type=radio].css-checkbox {
 			position:absolute; z-index:-1000; left:-1000px; overflow: hidden; clip: rect(0 0 0 0); height:1px; width:1px; margin:-1px; padding:0; border:0;
@@ -173,16 +181,22 @@
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 		<%if SETTINGS['site_type'] == 'remote'%>
-			<%if  (@status.present? && @status.status == "DC ACTIVE") || (@status.present? && @status.status == "HQ REJECTED") %>
+			<%if  (@status.present? && @status.status == "DC ACTIVE") %>
 
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
 			<%end%>
+			<% if (@status.present? && @status.status == "HQ REJECTED") %>
+				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>'"><span>Reapprove</span></button>
+			<%end%>
 		<%else%>
-			<%if  (@status.present? && @status.status == "DC COMPLETE") || (@status.present? && @status.status == "HQ REJECTED") %>
-
+			<%if  (@status.present? && @status.status == "DC COMPLETE") %>
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
+			<%end%>
+
+			<% if (@status.present? && @status.status == "HQ REJECTED") %>
+				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>'"><span>Reapprove</span></button>
 			<%end%>
 		<%end%>
 	<%end%>
@@ -244,7 +258,11 @@
 				<td colspan="7" style="color:#4775a1;border-left:none"><%= @person.status%></td>
 			</tr>
 			<tr>
-				<th colspan="11">Section 1 : Particulars of the deceased</th>
+				<th colspan="11">Section 1 : Particulars of the deceased 
+					<% if ["DC ACTIVE", "HQ REJECTED"].include?(@person.status) %>
+						( <i style='font-size:0.8em'>Click respective field to edit </i> )
+					<%end%>
+				</th>
 			</tr>
 
 			<tr>
@@ -962,9 +980,12 @@
 
 			function editField(field){
 
-					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+					var editable_statuses =["DC ACTIVE", "HQ REJECTED"]
 
-							window.location = "/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"
+					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){
+								window.location = "/people/form_container?url=/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"
+							}
 
 					<%end%>
 
