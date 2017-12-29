@@ -83,34 +83,6 @@
 			}
 		}
 
-		function checkBarcode(){
-			var value = __$('touchscreenInput' + tstCurrentPage).value;
-			if (value && value.match(/.+\$$/i) != null){
-
-				value = value.substring(0,value.length-1);
-			}
-			if(value.length > 0){
-				postAjax("/search_barcode",{barcode : value},function(response){
-					var response = JSON.parse(response).response
-					if(response){
-						confirmYesNo("Scanned Barcode ("+value+") already exist for another record",
-							function(){
-								top.location.reload();
-							},
-							function(){
-								top.location ="/people/view/"+response+"?next_url=/people/new_person_type";
-							},300000);
-						__$("yes").innerHTML ="Dismiss"
-						__$("yes").className = "red";
-						__$("no").innerHTML ="View Record"
-						setTimeout(function(){
-							gotoPage(tstCurrentPage -1);
-						},100);
-					}
-				});	
-			}							
-		}
-
 		window.addEventListener("load", loadBarcodePage, false);
 </script>
 <form action="<%= @action%>" method="post">

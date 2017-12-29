@@ -173,7 +173,7 @@ class DcController < ApplicationController
 
 	def reaprove_record
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC REAPPROVED")
+		PersonRecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
 		redirect_to params[:next_url]
 	end
 

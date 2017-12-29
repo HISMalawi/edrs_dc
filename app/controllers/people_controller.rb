@@ -512,9 +512,19 @@ class PeopleController < ApplicationController
 
       person = Person.find(params[:id])
 
-      person.update_person(params[:id],params[:person])
+      if person.update_person(params[:id],params[:person])
+          change_log = {}
+          params[:person].keys.each do |key|
+            change_log[key] = params[:person][key]
+          end
+          Audit.create({
+                          :record_id  => person.id.to_s,
+                          :audit_type => "UPDATE RECORD",
+                          :reason     => "Record update",
+                          :change_log => change_log
+          })
 
-      if SETTINGS["potential_duplicate"]
+          if SETTINGS["potential_duplicate"]
               record = {}
               record["first_name"] = person.first_name
               record["last_name"] = person.last_name
@@ -532,6 +542,7 @@ class PeopleController < ApplicationController
               record["id"] = person.id
 
               SimpleElasticSearch.add(record)
+          end
       end
 
       redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}"
