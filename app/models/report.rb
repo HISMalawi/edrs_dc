@@ -84,29 +84,81 @@ class Report < ActiveRecord::Base
 	end
 
 	def self.general(params)
-		status = "Reported"
+		if params[:time_line].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:time_line]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Date range"
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
 		total_male   =  0
 	    total_female =  0
+	    gender = ['Male','Female']
+	    connection = ActiveRecord::Base.connection
 
 	    reg_type = {}
 	    types = ["Natural Deaths","Unnatural Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
 	    types.each do |type|
 	    	reg_type[type] = {}
-	    	reg_type[type]['Male']  = 0
-	    	reg_type[type]['Female']  = 0
+	    	gender.each do |g|
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+					 	 AND people.registration_type = '#{type}'"
+				reg_type[type][g] = connection.select_all(query).as_json.last['total'] rescue 0
+	    	end
 	    end
+
 	    delayed = {}
 	    ["Yes","No"].each do |response|
 	    	delayed[response] = {}
-	    	delayed[response]["Male"] = 0
-	    	delayed[response]["Female"] = 0
+	    	gender.each do |g|
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
+	    				 AND people.delayed_registration = '#{response}'"
+				delayed[response][g] = connection.select_all(query).as_json.last['total'] rescue 0
+	    	end
 		end
 
 		places = {}
 		["Home","Health Facility", "Other"].each do |place|
 			places[place] = {}
-			places[place]["Male"] = 0
-			places[place]["Female"] = 0
+			gender.each do |g|
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+	    				 AND people.place_of_death = '#{place}' "
+				places[place][g] = connection.select_all(query).as_json.last['total'] rescue 0
+
+				if g =="Male"
+					total_male = total_male + places[place][g]
+				else
+					total_female = total_female + places[place][g]
+				end
+	    	end
 		end
 
 		total = {"Total" =>{"Male" => total_male, "Female" => total_female}}.as_json

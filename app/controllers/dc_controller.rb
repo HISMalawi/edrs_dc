@@ -128,7 +128,7 @@ class DcController < ApplicationController
 	                      :reason     => "Record is a potential",
 	                      :change_log => change_log
 					     })
-					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE")
+					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE","Record is a potential")
 
 					     render :text => {:duplicates=> true, :people => existing}.to_json
 					else
@@ -139,7 +139,7 @@ class DcController < ApplicationController
 			    #redirect_to "#{params[:next_url].to_s}"
 
 		else
-			PersonRecordStatus.change_status(person, "DC INCOMPLETE")
+			PersonRecordStatus.change_status(person, "DC INCOMPLETE","Approve record not successful")
 			Audit.create({
 				:record_id => params[:id].to_s    , 
 				:audit_type=>"DC INCOMPLETE",
@@ -165,9 +165,21 @@ class DcController < ApplicationController
 		render :layout =>"touch"
 	end
 
+	def add_reaprove_comment
+		@action ="/reaprove_record"
+		@section = "Reaprove Comment"
+		render :layout =>"plain_with_header"
+	end
+
+	def reaprove_record
+		person = Person.find(params[:id])
+		PersonRecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
+		redirect_to params[:next_url]
+	end
+
 	def reject_record
 			person = Person.find(params[:id])
-			PersonRecordStatus.change_status(person, "DC REJECTED")			
+			PersonRecordStatus.change_status(person, "DC REJECTED",params[:reason])			
 			Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECTED",
@@ -188,7 +200,7 @@ class DcController < ApplicationController
 	
 	def mark_as_pending
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC PENDING")
+		PersonRecordStatus.change_status(person, "DC PENDING","Mark pending : #{params[:reason]}")
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC PENDING",
@@ -317,9 +329,8 @@ class DcController < ApplicationController
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
 	    		@existing_ids = log['duplicates']
-	    		ids = log['duplicates'].split(",")
+	    		ids = log['duplicates'].split("|")
 	    		ids.each do |id|
-	    			 #@existing_record << Person.find(id)
 	    			 @existing_record << id
 	    			 @statuses << PersonRecordStatus.by_person_recent_status.key(id).last.status
 	    		end
@@ -341,7 +352,7 @@ class DcController < ApplicationController
 
 	def confirm_not_duplicate
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+		PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
 		Audit.user = params[:user_id].to_s
 		Audit.create({
 
@@ -368,7 +379,7 @@ class DcController < ApplicationController
 
 	def confirm_duplicate
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC DUPLICATE")
+		PersonRecordStatus.change_status(person, "DC DUPLICATE",params[:comment])
 		Person.void_person(person,params[:user_id])
 		Audit.user = params[:user_id].to_s
 
@@ -382,7 +393,7 @@ class DcController < ApplicationController
 		})
 
 		if eval(params[:select].to_s)
-			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL")
+			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL",params[:comment])
 		end
 		redirect_to "#{params[:next_url].to_s}"
 
@@ -410,8 +421,7 @@ class DcController < ApplicationController
 
 	def approve_reprint
 		person = Person.find(params[:id])
-		person.change_status("HQ REPRINT")
-
+		PersonRecordStatus.change_status(person, "HQ REPRINT",params[:reason])
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC APPROVE REPRINT",
@@ -423,7 +433,7 @@ class DcController < ApplicationController
 
 	def mark_for_reprint
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish)
+		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
 		PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "Reprint Barcode", 

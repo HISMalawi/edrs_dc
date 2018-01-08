@@ -153,6 +153,7 @@ class PersonIdentifier < CouchRest::Model::Base
                                     :person_record_id => person.id.to_s,
                                     :status => "HQ ACTIVE",
                                     :district_code => (district_code rescue SETTINGS['district_code']),
+                                    :comment=> "Record approved",
                                     :creator => creator})
 
           person.approved = "Yes"

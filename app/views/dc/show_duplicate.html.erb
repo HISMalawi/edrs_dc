@@ -1,18 +1,17 @@
 <style type="text/css">
 	#table_container{
+		height: calc(88% - 20px);
 
-				height: calc(88% - 20px);
+		overflow-y: hidden;
 
-				overflow-y: hidden;
+		margin-bottom : 0.3em;
 
-				margin-bottom : 0.3em;
+		box-shadow: 3.5px 3.5px 1.5px #888888;
 
-				box-shadow: 3.5px 3.5px 1.5px #888888;
-
-				width: 96%;
-				margin: auto;
-				border: 1px solid #bcb5b5;
-				margin-top: 1%;
+		width: 96%;
+		margin: auto;
+		border: 1px solid #bcb5b5;
+		margin-top: 1%;
 
 
 	}
@@ -213,7 +212,7 @@
 			
 
 
-			var ids = "<%= @existing_ids %>".split(",");
+			var ids = "<%= @existing_ids %>".split("|");
 
 			var id_to_void = "";
 
@@ -463,9 +462,9 @@
 				duplicate.innerHTML = "Duplicate";
 				duplicate.className = "red";
 				duplicate.onmousedown = function(){
-					var url ="/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
+					var url ="/people/form_container?url=/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
 					var statuses = '<%= @statuses%>'
-					if(statuses.indexOf("DC ACTIVE") >= 0){
+					if(statuses.indexOf("DC ACTIVE") >= 0 && "<%= @existing_ids %>".split("|").length == 1){
 						chooseRecordToVoid();
 						
 					}else{
@@ -479,7 +478,7 @@
 				notduplicate.innerHTML = "Not Duplicate";
 				notduplicate.className = "green";
 				notduplicate.onmousedown = function(){
-					var url ="/confirm_record_not_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id%>?next_url=<%=params[:next_url]%>";
+					var url ="/people/form_container?url=/confirm_record_not_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id%>?next_url=<%=params[:next_url]%>";
 					window.location.href = url;
 				}
 				bt_panel.appendChild(notduplicate);
@@ -498,8 +497,8 @@
 			}
 
 			function chooseRecordToVoid(url){
-				void_url = "/confirm_duplicate_comment"
-				var ids = "<%= @existing_ids %>".split(",");
+				void_url = "/people/form_container?url=/confirm_duplicate_comment"
+				var ids = "<%= @existing_ids %>".split("|");
 				ids.push("<%= params[:id] %>");
 				ids[ids.length - 1] = ids[0]
 				ids[0] = "<%= params[:id] %>"
@@ -531,7 +530,7 @@
 							tr.setAttribute("onclick","setRecordToVoid(this)")
 							table.appendChild(tr);
 							var td = document.createElement("td");
-							td.style.width = "20%";
+							td.style.width = "10%";
 							var input = document.createElement("input");
 							input.type ="radio";
 							input.name = "choose";
@@ -539,7 +538,7 @@
 							td.appendChild(input)
 							tr.appendChild(td);
 							var td = document.createElement("td");
-							td.innerHTML  = data.first_name+" "+data.last_name+"("+(data.gende=='Male'? 'M':'F')+")"+" "+(new Date(data.birthdate)).format()+" "
+							td.innerHTML  = data.first_name+" "+data.last_name+" ("+(data.gende=='Male'? 'M':'F')+") "+(new Date(data.birthdate)).format()+" "+ " -- "+ (data.status.indexOf("DUPLICATE") > 0 ? "DUPLICATE" : data.status)
 							tr.appendChild(td);
 						})
 					}

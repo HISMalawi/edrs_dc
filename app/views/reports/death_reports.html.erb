@@ -82,15 +82,31 @@
         text-align: right;
         padding-right: 10%;
     }
+    .clickable{
+		list-style: none;
+		margin-right:2em;
+	}
+	.clickable li {
+		font-size: 1.3em;
+		display:  block;
+		padding: 0.4em;
+		border-bottom: 1px dotted lightgray;
+	}
 
+	.clickable li:hover {
+		background: #9ec6e2;
+	}
 </style>
 <table style="width:100%; margin-top: 1.5%;">
 	<tr>
 		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%">General Death Report</td>
-		<td style="text-align:right"><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="text-align:right;width:10%">
+			<button onclick="loadStates()">Select status</button>
+		</td>
+		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
-		<td colspan="2">
+		<td colspan="3">
 				<div style="width: 100%;height: 500px; overflow-y:scroll;border:1px solid gray;" >
 					
 					<table id='table' style="width: 100%;" cellpadding="5" cellspacing="0">
@@ -140,6 +156,12 @@
 		</td>
 	</tr>
 </table>
+
+<form method="get" action="/death_reports" id="form">
+	<input type="hidden" name="time_line" value="<%=params[:time_line]%>">
+	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+	<input type="hidden" name="status" id="status">
+</form>
 <script>
 	function __$(id){
         return document.getElementById(id);
@@ -186,4 +208,96 @@
     var reported = __$("Reported");
 
     //loadReport(reported);
+    var statuses = {
+    					"Reported" 			: "DC ACTIVE",
+    					"Completed by LO" 	: "DC COMPLETE",
+    					"Approved by ADR" 	: "HQ ACTIVE",
+    					"Voided" 			: "DC VOIDED",
+    					"Amended" 			: "DC AMEND",
+    					"Lost" 				: 	"DC LOST",
+    					"Damaged"  			: "DC DAMAGED"
+    }
+
+    function loadStates(){
+    	loadTab();
+    	var popup = __$("msg.popup");
+    	popup.style.textAlign = "center";
+    	var title = document.createElement("h2");
+    	title.innerHTML = "Select Status";
+    	popup.appendChild(title);
+    	
+    	var ul = document.createElement("ul");
+    	ul.className = "clickable"
+    	popup.appendChild(ul);
+
+    	var states = Object.keys(statuses);
+    	for(var i = 0 ; i < states.length ; i++){
+    		var li = document.createElement("li");
+    		li.id = states[i];
+    		li.setAttribute("onclick","activate(statuses,this)")
+    		li.innerHTML = states[i];
+    		ul.appendChild(li);
+    	}
+
+    	var buttonCancel = document.createElement("button");
+    	buttonCancel.innerHTML = "Cancel";
+    	buttonCancel.className ="red";
+    	buttonCancel.style.marginRight = "15%";
+    	buttonCancel.onmousedown = function(){
+    		document.body.removeChild(__$("msg.shield"));
+    	}
+    	popup.appendChild(buttonCancel);
+
+    	var button = document.createElement("button");
+    	button.innerHTML = "Fetch data";
+    	button.onmousedown = function(){
+    		__$("form").submit();
+    	}
+    	popup.appendChild(button);
+    }
+
+    function activate(elements,element){
+    	var ids = Object.keys(elements);
+    	for(var i = 0 ; i < ids.length ; i++){
+    		__$(ids[i]).style.background = "#ffffff";
+    	}
+
+    	__$("status").value = statuses[element.id]
+    	__$(element.id).style.background = "#9ec6e2";
+    	
+    }
+
+    function loadTab(){
+    	var shield = document.createElement("div");
+        shield.style.position = "absolute";
+        shield.style.top = "0px";
+        shield.style.left = "0px";
+        shield.style.width = "100%";
+        shield.style.height = "100%";
+        shield.id = "msg.shield";
+        shield.style.backgroundColor = "rgba(128,128,128,0.5)";
+        shield.style.zIndex = 1050;
+
+        document.body.appendChild(shield);
+
+        var width = 500;
+        var height = 500;
+
+        var div = document.createElement("div");
+        div.id = "msg.popup";
+        div.style.position = "absolute";
+        div.style.width = width + "px";
+        div.style.height = height + "px";
+        div.style.backgroundColor = "#ffffff";
+        div.style.border = "1px solid #26262b"
+        div.style.borderRadius = "1px";
+        div.style.left = "calc(50% - " + (width / 2) + "px)";
+        div.style.top = "calc(50% - " + (height * 0.6) + "px)";
+        div.style.border = "1px outset #fff";
+        div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+        div.style.fontFamily = "arial, helvetica, sans-serif";
+        div.style.MozUserSelect = "none";
+
+        shield.appendChild(div);
+    }
 </script>

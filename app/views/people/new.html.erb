@@ -15,3 +15,10 @@
 <%else%>
 	<%= render 'form' %>
 <%end%>
+<script type="text/javascript">
+	function overRideCancel(){
+			document.getElementById("cancelButton").onmousedown = function(){
+                window.top.location="/people/new_person_type"
+            }
+	}
+</script>

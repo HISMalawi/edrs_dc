@@ -145,8 +145,9 @@ class PeopleController < ApplicationController
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
                                       :status => "DC ACTIVE",
+                                      :comment =>"Record Created",
                                       :district_code =>  person.district_code,
-                                      :created_by => User.current_user.id})
+                                      :creator => User.current_user.id})
         else
           
           change_log = [{:duplicates => Person.duplicate.to_s}]
@@ -176,7 +177,8 @@ class PeopleController < ApplicationController
                                       :person_record_id => person.id.to_s,
                                       :status => status,
                                       :district_code => person.district_code,
-                                      :created_by => User.current_user.id})
+                                      :comment =>"System mark record as a potential",
+                                      :creator => User.current_user.id})
 
           Person.duplicate = nil
 
@@ -228,11 +230,7 @@ class PeopleController < ApplicationController
         results = []
       end
       people = results
-=begin     
-      results.each do |result|
-          people << readable_format(result) if readable_format(result).present?
-      end
-=end
+      
       if people.count == 0
 
         render :text => {:response => false}.to_json
@@ -323,15 +321,18 @@ class PeopleController < ApplicationController
         
       end
     else
-        record_status = params[:statuses]
+        statuses = params[:statuses]
           
         if params[:statuses].include?("DC PENDING")
-         record_status << "DC REJECTED"
+         statuses << "DC REJECTED"
         end
         
+        statuses.each do |status|
+          record_status << [SETTINGS['district_code'],status]
+        end
 
         
-        PersonRecordStatus.by_record_status.keys(record_status).page(page).per(size).each do |status|
+        PersonRecordStatus.by_district_code_and_record_status.keys(record_status).page(page).per(size).each  do |status|
       
         person = status.person
        
@@ -434,7 +435,6 @@ class PeopleController < ApplicationController
   end
 
   def show
-
       @person = Person.find(params[:id])
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -470,25 +470,19 @@ class PeopleController < ApplicationController
           #raise params[:id].inspect
           @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
-          @comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
-                                                              [params[:id],"DC REJECTED"],
-                                                              [params[:id],"HQ REJECTED"],
-                                                              [params[:id],"DC REAPPROVED"],
-                                                              [params[:id],"DC DUPLICATE"],
-                                                              [params[:id],"RESOLVE DUPLICATE"],
-                                                              [params[:id],"HQ POTENTIAL INCOMPLETE"],
-                                                              [params[:id],"HQ INCOMPLETE"],
-                                                              [params[:id],"HQ CONFIRMED INCOMPLETE"],
-                                                              [params[:id],"DC AMEND"]
 
-                                                              ]).each
 
+          @comments = []
+          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["created_at"]}.each do |status|
+            @comments << {created_at: status.created_at,status: status.status , reason: status.comment } if status.comment.present?
+          end
+          #raise @comments.inspect
           render :layout => "landing"
       end
   end
   def find
       person = Person.find(params[:id])
-
+      person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
       render :text => person_selective_fields(person).to_json
   end
 
@@ -513,11 +507,40 @@ class PeopleController < ApplicationController
 
       person = Person.find(params[:id])
 
-      person.update_person(params[:id],params[:person])
+      if person.update_person(params[:id],params[:person])
+          change_log = {}
+          params[:person].keys.each do |key|
+            change_log[key] = params[:person][key]
+          end
+          Audit.create({
+                          :record_id  => person.id.to_s,
+                          :audit_type => "UPDATE RECORD",
+                          :reason     => "Record update",
+                          :change_log => change_log
+          })
 
-      SimpleElasticSearch.add(person)
+          if SETTINGS["potential_duplicate"]
+              record = {}
+              record["first_name"] = person.first_name
+              record["last_name"] = person.last_name
+              record["middle_name"] = (person.middle_name rescue nil)
+              record["gender"] = person.gender
+              record["place_of_death_district"] = person.place_of_death_district
+              record["birthdate"] = person.birthdate
+              record["date_of_death"] = person.date_of_death
+              record["mother_last_name"] = (person.mother_last_name rescue nil)
+              record["mother_middle_name"] = (person.mother_middle_name rescue nil)
+              record["mother_first_name"] = (person.mother_first_name rescue nil)
+              record["father_last_name"] = (person.father_last_name rescue nil)
+              record["father_middle_name"] = (person.father_middle_name rescue nil)
+              record["father_first_name"] = (person.father_first_name rescue nil)
+              record["id"] = person.id
 
-      redirect_to "/people/view/#{params[:id]}"
+              SimpleElasticSearch.add(record)
+          end
+      end
+
+      redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}"
     
   end
 

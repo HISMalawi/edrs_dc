@@ -97,7 +97,7 @@
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
 	<input type="hidden" name="person_record_id" value="<%= params[:id] %>">
 	<input type="" ajaxURL="/get_last_names?search=" name="cemetery_authority_last_name" helpText ="Surname (<i>Village Headman /Caretaker of cemetery</i>)" allowFreeText = true >
-	<input type="" ajaxURL="/get_first_names?search=" name="cemetery_authority_first_name" helpText ="First name (<i>Village Headman /Caretaker of cemetery</i>)">
+	<input type="" ajaxURL="/get_first_names?search=" name="cemetery_authority_first_name" helpText ="First name (<i>Village Headman /Caretaker of cemetery</i>)" allowFreeText = true>
 	<input type="" name="cemetery_name" helpText="Cemetery name">
 	<input type="" name="district" id="district" helpText ="Cemetery district" ajaxURL = "/districts?search_string=" tt_onUnLoad="setAjaxUrl(0)">
 	<input type="" name="ta" id="ta" helpText ="Cemetery Traditional Authority/Town" tt_onUnLoad="setAjaxUrl(1)" allowFreeText ="true">

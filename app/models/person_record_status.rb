@@ -116,7 +116,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	    return Person.find(self.person_record_id)    	
 	end
 
-	def self.change_status(person,currentstatus)
+	def self.change_status(person,currentstatus,comment=nil)
 		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
 		if status.present?
 			status.update_attributes({:voided => true})
@@ -124,13 +124,14 @@ class PersonRecordStatus < CouchRest::Model::Base
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
                                   :prev_status => status.status,
+                                  :comment => comment,
                                   :district_code => person.district_code,
                                   :creator => (User.current_user.id rescue nil)})
 		else
 			PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
-                                  :prev_status => nil,
+                                  :comment => comment,
                                   :district_code => person.district_code,
                                   :creator => (User.current_user.id rescue nil)})
 		end

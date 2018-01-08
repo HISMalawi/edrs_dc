@@ -96,6 +96,14 @@
         
 
            var username = __$('touchscreenInput' + tstCurrentPage).value.trim()
+
+           if (username.length < 4) {
+               setTimeout(function(){ 
+                            showMessage("Number of characters of the username is less than 4","Message");
+                            gotoPage(tstCurrentPage - 1, false, true); 
+
+                    },200);
+           }
                           
            data = { "username" : username }
 

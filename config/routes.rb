@@ -158,6 +158,12 @@ Rails.application.routes.draw do
 
   get "/dc/approve_record/:id" => "dc#approve_record"
 
+  get "/dc/add_reaprove_comment/:id" => "dc#add_reaprove_comment"
+
+  post "/reaprove_record" =>"dc#reaprove_record"
+
+  get "/reaprove_record" =>"dc#reaprove_record"
+
   get "/dc/check_approval_status/:id"=> "dc#check_approval_status"
 
   get "/dc/add_rejection_comment/:id" => "dc#add_rejection_comment"
