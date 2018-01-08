@@ -3,6 +3,9 @@
 		if (__$("keyboard")) {
 			__$("keyboard").style.display = "none";
 		}
+
+		__$("clearButton").style.display ="none";
+		
 		var tstControl = __$("tt_page_summary");
 		if (tstControl) {
 			 tstControl.innerHTML = "";

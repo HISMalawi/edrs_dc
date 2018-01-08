@@ -147,7 +147,7 @@ class PeopleController < ApplicationController
                                       :status => "DC ACTIVE",
                                       :comment =>"Record Created",
                                       :district_code =>  person.district_code,
-                                      :created_by => User.current_user.id})
+                                      :creator => User.current_user.id})
         else
           
           change_log = [{:duplicates => Person.duplicate.to_s}]
@@ -178,7 +178,7 @@ class PeopleController < ApplicationController
                                       :status => status,
                                       :district_code => person.district_code,
                                       :comment =>"System mark record as a potential",
-                                      :created_by => User.current_user.id})
+                                      :creator => User.current_user.id})
 
           Person.duplicate = nil
 
@@ -230,11 +230,7 @@ class PeopleController < ApplicationController
         results = []
       end
       people = results
-=begin     
-      results.each do |result|
-          people << readable_format(result) if readable_format(result).present?
-      end
-=end
+      
       if people.count == 0
 
         render :text => {:response => false}.to_json
@@ -439,7 +435,6 @@ class PeopleController < ApplicationController
   end
 
   def show
-
       @person = Person.find(params[:id])
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
@@ -478,10 +473,10 @@ class PeopleController < ApplicationController
 
 
           @comments = []
-          PersonRecordStatus.by_person_record_id.key("a7b00ba8123bc3e93af903bdcbf81bd9").each do |status|
-            @comments << status.comment if status.comment.present?
+          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["created_at"]}.each do |status|
+            @comments << {created_at: status.created_at,status: status.status , reason: status.comment } if status.comment.present?
           end
-
+          #raise @comments.inspect
           render :layout => "landing"
       end
   end
