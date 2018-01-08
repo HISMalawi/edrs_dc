@@ -19,7 +19,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 
 	design do 
 		view :by_status
-		view :by_distrit_code
+		view :by_district_code
 		view :by_voided
 		view :by_creator
 		view :by_created_at
