@@ -2060,11 +2060,15 @@
 			var min = new Date();
 			min.setDate(-42);
 			min = min.format("YYYY-mm-dd");
-			if(date < __$("person_birthdate").value){
+			var birthdate = (new Date(__$("person_birthdate").value)).format("YYYY-mm-dd");
+
+			if(date < birthdate){
 				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
+
+				return;
 			}
 			if(site_type == "facility"){
 					
