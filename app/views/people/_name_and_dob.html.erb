@@ -25,6 +25,7 @@
                 <%= text_field_tag "person[id_number]",nil , {
                           :helpText => "ID No", 
                           :optional => true, 
+                          :tt_onLoad=> "removeUnknown()",
                           :validationRule=>"^[a-zA-Z0-9]{8}$",
                           :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
