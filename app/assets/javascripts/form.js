@@ -3,6 +3,9 @@
 		if (__$("keyboard")) {
 			__$("keyboard").style.display = "none";
 		}
+
+		__$("clearButton").style.display ="none";
+		
 		var tstControl = __$("tt_page_summary");
 		if (tstControl) {
 			 tstControl.innerHTML = "";
@@ -175,8 +178,23 @@
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
-		       	 td.colSpan ="12";
-		        td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+		       	td.colSpan ="12";
+		       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+		       	
+		       	if (place_of_death == 'Health Facility'){
+
+		       		td.innerHTML = __$("person_hospital_of_death").value;
+
+		        }else if(place_of_death == 'Home') {
+
+		       		td.innerHTML = __$("person_place_of_death_district").value +" "+ __$("person_place_of_death_ta").value +" "+
+						 				__$("person_place_of_death_village").value;
+
+		        }else{
+
+		       		 td.innerHTML = __$("person_other_place_of_death").value
+		       	}
+		        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 		        tr.appendChild(td);
 
 
@@ -1635,7 +1653,7 @@
 		        "April": 3,
 		        "May": 4,
 		        "June": 5,
-		        "Juy": 6,
+		        "July": 6,
 		        "August": 7,
 		        "September": 8,
 		        "October": 9,
@@ -1752,7 +1770,7 @@
 		        "April": 3,
 		        "May": 4,
 		        "June": 5,
-		        "Juy": 6,
+		        "July": 6,
 		        "August": 7,
 		        "September": 8,
 		        "October": 9,
@@ -2057,11 +2075,15 @@
 			var min = new Date();
 			min.setDate(-42);
 			min = min.format("YYYY-mm-dd");
-			if(date < __$("person_birthdate").value){
+			var birthdate = (new Date(__$("person_birthdate").value)).format("YYYY-mm-dd");
+
+			if(date < birthdate){
 				showMessage("Birth date ("+(new Date(__$("person_birthdate").value)).format()+") is greater than <br/> Date of death ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
+
+				return;
 			}
 			if(site_type == "facility"){
 					
@@ -2324,6 +2346,32 @@ function showPhoneSummary(){
         }
  }
 
+function checkIdentifier(identifier_type){
+		var value = __$('touchscreenInput' + tstCurrentPage).value;
+		if (value.length == 0) {
+			return;
+		}
+		postAjax("/find_identifier", {identifier : value}, function(response){
+				var response = JSON.parse(response).response
+				if(response){
+					confirmYesNo("The "+identifier_type +" ("+value+") already exist for another record",
+						function(){
+							top.location.reload();
+						},
+						function(){
+							__$('touchscreenInput' + tstCurrentPage).value = ""
+							__$("confirmation").style.display = "none";
+							gotoNextPage();
+						},300000);
+					__$("yes").innerHTML ="Dismiss"
+					__$("yes").className = "red";
+					__$("no").innerHTML ="Continue"
+					setTimeout(function(){
+						gotoPage(tstCurrentPage -1);
+					},100);
+				}
+		})
+}
  var spaceInterval ;
  function checkSpace(){
  	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";

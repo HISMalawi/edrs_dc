@@ -187,7 +187,7 @@
 
 			<%end%>
 			<% if (@status.present? && @status.status == "HQ REJECTED") %>
-				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>'"><span>Reapprove</span></button>
+				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>?'"><span>Reapprove</span></button>
 			<%end%>
 		<%else%>
 			<%if  (@status.present? && @status.status == "DC COMPLETE") %>
@@ -238,7 +238,7 @@
 
 		<% if @burial_report.blank? && User.current_user.role != "ADR"%>
 
-			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/new_burial_report/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Add Burial Report</span></button>
+			<button style="float: right; margin-right:3%" onmousedown="window.location = '/people/form_container?url=/dc/new_burial_report/<%= @person.id %>?next_url=<%=request.env['REQUEST_URI']%>'"><span>Add Burial Report</span></button>
 		<%else  @burial_report.present? %>
 		
 			<button style="float: right; margin-right:3%" onmousedown="viewBurialReport()"><span>View Burial Report</span></button>
@@ -280,7 +280,7 @@
 			<tr>
 				<td>2</td>
 				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
-				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
+				<td style="border-bottom :1.5px solid black"><%= @person.national_id rescue ""%></td>
 				<td>3</td>
 				<td class="clickable" onclick="editField('nationality')">Nationality</td>
 				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
@@ -1054,13 +1054,27 @@
 
 				td.style.background = "#868687";
 
-				td.style.width = "60%";
+				td.style.width = "40%";
 
 				td.style.paddingLeft = "2em";
 
 				td.style.color ="#ffffff";
 
 				tr.appendChild(td);
+
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="Status";
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
 
 				var td = document.createElement("th");
 
@@ -1093,13 +1107,19 @@
 
 					tr.appendChild(td);
 
-					td.innerHTML = "<%= comment.reason%>";
+					td.innerHTML = "<%= comment[:reason]%>";
 
 					var td = document.createElement("td");
 
 					tr.appendChild(td);
 
-					td.innerHTML = "<%= Date.parse(comment.created_at.to_s).strftime('%d/%b/%Y') rescue '' %>";
+					td.innerHTML = "<%= comment[:status]%>";
+
+					var td = document.createElement("td");
+
+					tr.appendChild(td);
+
+					td.innerHTML = "<%= Date.parse(comment[:created_at].to_s).strftime('%d/%b/%Y') rescue '' %>";
 
 				<%end%>
 			}

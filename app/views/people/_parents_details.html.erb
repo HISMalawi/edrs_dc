@@ -49,7 +49,8 @@
                             :allowFreeText =>true,
                             :condition => "__$('mother_details_available').value =='Yes'",
                             :validationRule=>"^[a-zA-Z0-9]{8}$",
-                             :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
+                            :tt_onLoad=> "removeUnknown()",
+                            :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
                 <%= text_field_tag "person[mother_nationality]",nil , {
                           :helpText => "Mother's Nationality <i style='color: red'>*</i>",
                           :ajaxURL => "/nationalities?search_string=",
@@ -96,6 +97,7 @@
                             :allowFreeText =>true, 
                             :condition => "__$('father_details_available').value =='Yes'",
                             :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                            :tt_onLoad=> "removeUnknown()",
                             :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
                 <%= text_field_tag "person[father_nationality]",nil , {

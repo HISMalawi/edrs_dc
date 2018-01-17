@@ -84,7 +84,29 @@ class Report < ActiveRecord::Base
 	end
 
 	def self.general(params)
-		status = "Reported"
+		if params[:time_line].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:time_line]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Date range"
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
 		total_male   =  0
 	    total_female =  0
 	    gender = ['Male','Female']
@@ -95,7 +117,12 @@ class Report < ActiveRecord::Base
 	    types.each do |type|
 	    	reg_type[type] = {}
 	    	gender.each do |g|
-	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND registration_type = '#{type}' "
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+					 	 AND people.registration_type = '#{type}'"
 				reg_type[type][g] = connection.select_all(query).as_json.last['total'] rescue 0
 	    	end
 	    end
@@ -104,7 +131,12 @@ class Report < ActiveRecord::Base
 	    ["Yes","No"].each do |response|
 	    	delayed[response] = {}
 	    	gender.each do |g|
-	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND delayed_registration = '#{response}' "
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
+	    				 AND people.delayed_registration = '#{response}'"
 				delayed[response][g] = connection.select_all(query).as_json.last['total'] rescue 0
 	    	end
 		end
@@ -113,7 +145,12 @@ class Report < ActiveRecord::Base
 		["Home","Health Facility", "Other"].each do |place|
 			places[place] = {}
 			gender.each do |g|
-	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND place_of_death = '#{place}' "
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+	    				 AND people.place_of_death = '#{place}'"
 				places[place][g] = connection.select_all(query).as_json.last['total'] rescue 0
 
 				if g =="Male"

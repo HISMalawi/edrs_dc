@@ -124,6 +124,10 @@ Rails.application.routes.draw do
 
   get "/search_barcode" => "people#search_barcode"
 
+  post "/find_identifier" =>"people#find_identifier"
+
+  get "/find_identifier" =>"people#find_identifier"
+
   get "/global_phone_validation" => "people#global_phone_validation"
 
   get "/people/sync" => "people#view_sync"
