@@ -25,14 +25,15 @@ def create
     district = District.by_name.key(person.current_district.strip).first
     ta =TraditionalAuthority.by_district_id_and_name.key([district.id, person.current_ta]).first
     person.current_village = Village.by_ta_id.key(ta.id.strip).collect{|f| f.name }.sample
-    person.district_code = District.all.each.collect{|d| d.id unless d.name.include?("City")}.sample
+    person.district_code = SETTINGS[' district_code']
+    #District.all.each.collect{|d| d.id unless d.name.include?("City")}.sample
 
 
     person.save
 
     person.reload
 
-    status = "MARKED APPROVAL"
+    status = "HQ COMPLETE"
 
     record_status = PersonRecordStatus.new 
     record_status.person_record_id = person.id.to_s
