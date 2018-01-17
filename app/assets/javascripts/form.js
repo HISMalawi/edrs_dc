@@ -2346,8 +2346,31 @@ function showPhoneSummary(){
         }
  }
 
-function checkIdentifier(identifier){
-
+function checkIdentifier(identifier_type){
+		var value = __$('touchscreenInput' + tstCurrentPage).value;
+		if (value.length == 0) {
+			return;
+		}
+		postAjax("/find_identifier", {identifier : value}, function(response){
+				var response = JSON.parse(response).response
+				if(response){
+					confirmYesNo("The "+identifier_type +" ("+value+") already exist for another record",
+						function(){
+							top.location.reload();
+						},
+						function(){
+							__$('touchscreenInput' + tstCurrentPage).value = ""
+							__$("confirmation").style.display = "none";
+							gotoNextPage();
+						},300000);
+					__$("yes").innerHTML ="Dismiss"
+					__$("yes").className = "red";
+					__$("no").innerHTML ="Continue"
+					setTimeout(function(){
+						gotoPage(tstCurrentPage -1);
+					},100);
+				}
+		})
 }
  var spaceInterval ;
  function checkSpace(){

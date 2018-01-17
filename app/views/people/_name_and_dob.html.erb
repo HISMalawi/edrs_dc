@@ -27,6 +27,7 @@
                           :optional => true, 
                           :tt_onLoad=> "removeUnknown()",
                           :validationRule=>"^[a-zA-Z0-9]{8}$",
+                          :tt_onUnLoad => "checkIdentifier('National ID')",
                           :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
                 <% if params[:registration_type]=='Deaths Abroad'%>

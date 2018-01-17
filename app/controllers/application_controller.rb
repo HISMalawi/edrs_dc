@@ -29,7 +29,8 @@ class ApplicationController < ActionController::Base
                 "samePassword",
                 "passwordLength",
                 "confirm_username",
-                "reaprove_record"]
+                "reaprove_record",
+               "find_identifier"]
   before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
