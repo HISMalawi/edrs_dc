@@ -87,26 +87,41 @@ class Report < ActiveRecord::Base
 		status = "Reported"
 		total_male   =  0
 	    total_female =  0
+	    gender = ['Male','Female']
+	    connection = ActiveRecord::Base.connection
 
 	    reg_type = {}
 	    types = ["Natural Deaths","Unnatural Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
 	    types.each do |type|
 	    	reg_type[type] = {}
-	    	reg_type[type]['Male']  = 0
-	    	reg_type[type]['Female']  = 0
+	    	gender.each do |g|
+	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND registration_type = '#{type}' "
+				reg_type[type][g] = connection.select_all(query).as_json.last['total'] rescue 0
+	    	end
 	    end
+
 	    delayed = {}
 	    ["Yes","No"].each do |response|
 	    	delayed[response] = {}
-	    	delayed[response]["Male"] = 0
-	    	delayed[response]["Female"] = 0
+	    	gender.each do |g|
+	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND delayed_registration = '#{response}' "
+				delayed[response][g] = connection.select_all(query).as_json.last['total'] rescue 0
+	    	end
 		end
 
 		places = {}
 		["Home","Health Facility", "Other"].each do |place|
 			places[place] = {}
-			places[place]["Male"] = 0
-			places[place]["Female"] = 0
+			gender.each do |g|
+	    		query = "SELECT count(*) as total FROM people WHERE  gender='#{g}' AND place_of_death = '#{place}' "
+				places[place][g] = connection.select_all(query).as_json.last['total'] rescue 0
+
+				if g =="Male"
+					total_male = total_male + places[place][g]
+				else
+					total_female = total_female + places[place][g]
+				end
+	    	end
 		end
 
 		total = {"Total" =>{"Male" => total_male, "Female" => total_female}}.as_json

@@ -230,11 +230,7 @@ class PeopleController < ApplicationController
         results = []
       end
       people = results
-=begin     
-      results.each do |result|
-          people << readable_format(result) if readable_format(result).present?
-      end
-=end
+      
       if people.count == 0
 
         render :text => {:response => false}.to_json
