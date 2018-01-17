@@ -283,8 +283,20 @@ class PeopleController < ApplicationController
   end
 
   def view_datatable
-    @section = "View"
-    render :layout => "landing"
+
+      @section = "View"
+
+      if SETTINGS['site_type'] =="facility"
+          @statuses = ["DC ACTIVE","FC POTENTIAL DUPLICATE"]
+      else
+          @statuses = ["DC ACTIVE"]
+      end
+      @next_url = "/people/view_datatable"
+
+      @search = true
+
+      render :layout => "landing"
+      
   end
 
   def all
@@ -890,6 +902,17 @@ end
         @next_url = "/"
       end
       render :layout =>"plain_with_header"
+  end
+
+  def find_identifier
+      if params[:identifier].present?
+        count = PersonIdentifier.by_identifier.key(params[:identifier]).count  
+        if count >= 1
+            render :text => {:response =>  PersonIdentifier.by_identifier.key(params[:identifier]).first.person_record_id}.to_json
+        else
+           render :text => {:response => false}.to_json
+        end            
+      end
   end
 
 
