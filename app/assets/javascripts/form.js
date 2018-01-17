@@ -178,8 +178,23 @@
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
-		       	 td.colSpan ="12";
-		        td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+		       	td.colSpan ="12";
+		       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+		       	
+		       	if (place_of_death == 'Health Facility'){
+
+		       		td.innerHTML = __$("person_hospital_of_death").value;
+
+		        }else if(place_of_death == 'Home') {
+
+		       		td.innerHTML = __$("person_place_of_death_district").value +" "+ __$("person_place_of_death_ta").value +" "+
+						 				__$("person_place_of_death_village").value;
+
+		        }else{
+
+		       		 td.innerHTML = __$("person_other_place_of_death").value
+		       	}
+		        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 		        tr.appendChild(td);
 
 
