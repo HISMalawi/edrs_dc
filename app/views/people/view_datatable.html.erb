@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
-<script type="text/javascript" language="javascript" src="/datatable/js/jquery.js"></script>
-<script type="text/javascript" language="javascript" src="/datatable/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 	<% if @statuses.present? %>
 		var statuses = "<%= @statuses.join(",") %>".split(",");
@@ -176,6 +176,8 @@
 	var table = __$("table_body");
 
 	table.innerHTML ="";
+
+	var datatable;
 	function loadTable(page){
 
 		var content = __$("table_container")
@@ -321,18 +323,164 @@
 
 							}
 
-							$("#records_table").dataTable({
+							datatable = $("#records_table").dataTable({
 									"lengthChange": false,
 									"bInfo": false
 							});
 
-							var search =__$('example_filter').getElementsByTagName("input")[0];
-    						search.setAttribute("onclick","changeFocusToMe(this)")
+							var search =__$('records_table_filter').getElementsByTagName("input")[0];
+    						search.setAttribute("onfocus","changeFocusToMe(this)")
+    						//search.setAttribute("onblur","__$('keyboardcontainer').style.display='none'")
 
 					});
 
 	}
 
+	var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+	var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
+	var capcase = false;
+	var type = "abc"
+
+	function cap(a){
+			return a.toUpperCase();
+	}
+	function appendValue(value){
+			if(control === undefined){
+				focusFirstInput()
+			}
+			control.value = control.value + value
+			control.focus();
+			datatable.fnFilter(control.value)
+	}
+
+	function deleteFromValue(){
+			control.value = control.value.slice(0, control.value.length - 1)
+	}
+
+	function clear(){
+			control.value = ""
+	}
+
+	function changeKeboardType(keyboard){
+			type  = keyboard;
+			changeFocusToMe(control)
+	}
+
+	function changeFocusToMe(element){
+			control = element
+			var container = __$("table_container")
+            var width = 700;
+            var height = 380;
+            if(__$("keyboardcontainer")){
+            	__$("keyboardcontainer").style.display ="block"
+            	__$("keyboardcontainer").innerHTML = "";
+            }else{
+            	var div = document.createElement("div");
+            	div.id = "keyboardcontainer";
+            	div.style.textAlign ="center"
+            	div.style.position = "absolute";
+            	div.style.width = width + "px";
+            	div.style.height = height + "px";
+            	div.style.backgroundColor = "#eee";
+            	div.style.border = "1px solid #26262b";
+            	div.style.display ="block"
+            	div.style.padding ="0.5%";
+            	div.style.borderRadius = "1px";
+            	div.style.left = "calc(50% - " + (width / 2) + "px)";
+            	div.style.top = "calc(50% - " + (height * 0.3) + "px)";
+            	div.style.border = "1px outset #fff";
+            	div.style.boxShadow = "3px 1.5px 3px 0px rgba(0,0,0,0.75)";
+            	div.style.fontFamily = "arial, helvetica, sans-serif";
+            	div.style.MozUserSelect = "none";
+            	container.appendChild(div);
+            }
+
+			var groups = eval(type)
+			
+			for(var i = 0 ; i < groups.length;i++){
+					var row = document.createElement("div");
+					row.className = "row"
+					__$("keyboardcontainer").appendChild(row);
+					var keys = groups[i].split("");
+					for(var j = 0 ; j < keys.length ; j++){
+						var button = document.createElement("button");
+						var key = capcase ? cap(keys[j]) : keys[j]
+						button.innerHTML = key ;
+						button.className = "blue"
+						button.setAttribute("onmousedown", "appendValue('"+key+"')");
+						button.setAttribute("onmouseup", "control.focus()")
+						row.appendChild(button);
+					}
+
+			}
+
+			var row = document.createElement("div");
+			row.className = "row"
+			__$("keyboardcontainer").appendChild(row);
+
+			var button = document.createElement("button");
+			button.innerHTML = type == "abc" ? "qwerty" : "abc";
+			button.className = "orange";
+			button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = capcase ? "cap" : cap("CAP");
+			button.style.marginLeft = "1%";
+			button.onmousedown = function(){
+				if(capcase){
+					capcase = false
+					buildkeyBoard(type)
+				}else{
+					capcase = true
+					buildkeyBoard(type)
+				}
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			button.className = "blue"
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "space";
+			button.className = "blue";
+			button.style.marginLeft = "5%";
+			button.style.marginRight = "5%";
+			button.style.width = "200px"
+			button.setAttribute("onmousedown", "appendValue(' ')")
+			button.setAttribute("onmouseup", "control.focus()")
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "Clear";
+			button.className = "orange";
+			button.style.marginRight = "1%";
+
+			button.onmousedown = function(){
+				clear();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "delete";
+			button.className = "blue"
+			button.onmousedown = function(){
+				deleteFromValue();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+
+			row.appendChild(button);
+
+	}
 	loadTable(page);
 
 </script>
