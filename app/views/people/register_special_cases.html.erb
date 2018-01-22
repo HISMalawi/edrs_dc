@@ -1,0 +1,13 @@
+<form method="get" action="/people/new_split">
+	<select name="registration_type" helpText ="Select Special Category" >
+		<option>Unusual Deaths</option>
+	 <% if SETTINGS['site_type'] == "facility" %>
+		<option>Dead on Arrival</option>
+	<%end%>
+		<option>Unclaimed bodies</option>
+	<% if SETTINGS['site_type'] != "facility" %>
+		<option>Missing Persons</option>
+		<option>Deaths Abroad</option>
+	<%end%>
+	</select>
+</form>

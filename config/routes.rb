@@ -120,6 +120,8 @@ Rails.application.routes.draw do
 
   get "/people/new_person_type" => "people#new_person_type"
 
+  get "/people/register_special_cases" =>"people#register_special_cases"
+
   post "/search_barcode" => "people#search_barcode"
 
   get "/search_barcode" => "people#search_barcode"

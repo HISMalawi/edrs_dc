@@ -2384,6 +2384,13 @@ function checkIdentifier(identifier_type){
  	
  }
 
+ function parentDetailAvailable(parent){
+ 		var response = __$('touchscreenInput'+tstCurrentPage).value
+ 		if (response == "No") {
+ 			 showMessage("Details of "+parent + " not available");
+ 		}
+ }
+
 
 
 

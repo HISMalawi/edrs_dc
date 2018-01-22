@@ -5,10 +5,15 @@
                             :ajaxURL => "/countries?special=true&exclude=Malawi&search_string=",
                             :tt_requireNextClick => false} %>
               <%else%>
+                  <% if false %>
                     <%= text_field_tag "person[current_country]", @person[:current_country], {
                             :helpText => "Country (<i>Physical residential address</i>) <i style='color: red'>*</i>",
                             :ajaxURL => "/countries?search_string=",
                             :tt_requireNextClick => false} %>
+                  <%else%>
+                        <input type="hidden" name="person[current_country]" id="person_current_country" value="Malawi">
+                  <%end%>
+
               <%end%>
 
               <%= text_field_tag "person[current_district]", @person[:current_district], {

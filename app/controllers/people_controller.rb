@@ -32,6 +32,10 @@ class PeopleController < ApplicationController
       render :layout => "landing" 
   end
 
+  def register_special_cases
+      render :layout => "touch"
+  end
+
   def new
 	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
@@ -875,7 +879,7 @@ end
       page = params[:page] rescue 1
       size = params[:size] rescue 7
       keys = []
-      special_cases = ["Unnatural Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+      special_cases = ["Unusual Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
       special_cases.each do |special_case|
           keys << [special_case,"HQ CLOSED"]
           keys << [special_case,"HQ DISPATCHED"]
@@ -894,7 +898,7 @@ end
       if params[:url].present?
          @url = params[:url]
       else
-         @url = "/people/new?registration_type=Natural Deaths"
+         @url = "/people/new?registration_type=Normal Cases"
       end
       if params[:next_url].present?
         @next_url = params[:next_url]
