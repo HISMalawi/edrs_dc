@@ -220,7 +220,9 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/approved_cases"
 
-		render :template =>"/dc/dc_view_cases"
+		@den = true 
+
+		render :template =>"/people/view"
 		
 	end
 
@@ -232,7 +234,9 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/rejected_cases"
 
-		render :template =>"/dc/dc_view_cases"
+		@den = true 
+
+		render :template =>"/people/view"
 		
 	end
 	def voided
@@ -243,7 +247,7 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/voided"
 
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 		
 	end
 
@@ -255,7 +259,9 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/closed"
 
-		render :template =>"/dc/dc_view_cases"
+		@den = true 
+
+		render :template =>"/people/view"
 		
 	end
 
@@ -267,7 +273,9 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/dispatched"
 
-		render :template =>"/dc/dc_view_cases"
+		@den = true 
+
+		render :template =>"/people/view"
 		
 	end
 
@@ -279,7 +287,7 @@ class DcController < ApplicationController
 
 		@next_url = "/dc/pending_cases"
 
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 
 	end
 
@@ -293,7 +301,7 @@ class DcController < ApplicationController
 		@statuses = ["DC POTENTIAL DUPLICATE"]
 		@next_url = "/dc/potential_duplicates"
 		@duplicate = true
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 	end
 
 	def exact_duplicates
@@ -301,7 +309,7 @@ class DcController < ApplicationController
 		@statuses = ["DC EXACT DUPLICATE"]
 		@next_url = "/dc/exact_duplicates"
 		@duplicate = true
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 	end
 
 	def confirmed_duplicated
@@ -309,7 +317,7 @@ class DcController < ApplicationController
 		@statuses = ["DC DUPLICATE"]
 		@next_url = "/dc/confirmed_duplicated"
 		@duplicate = true
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 	end
 
 
@@ -411,7 +419,10 @@ class DcController < ApplicationController
 		@statuses = ["DC LOST","DC DAMAGED"]
 
 		@next_url = "/dc/reprint_requests"
-		render :template =>"/dc/dc_view_cases"
+
+		@den = true
+
+		render :template =>"/people/view"
 	end
 
 	def add_reprint_comment
@@ -486,6 +497,7 @@ class DcController < ApplicationController
 		@section ="Amendments Requests"
 		@statuses = ["DC AMEND"]
 		@next_url = "/dc/amendment_requests"
+		@den = true
 		render :template =>"/dc/dc_view_cases"
 	end
 
@@ -626,6 +638,4 @@ class DcController < ApplicationController
 	end
 
 	protected
-
-	
 end

@@ -11,12 +11,20 @@
 		<table id="records_table">
 				<thead>
 					<tr>
+					<% if false%>
 						<th>
 							#
 						</th>
+					<%end%>
+					<% if @den.present? && @den %>
+						<th>
+							DEN
+						</th>
+					<%end%>
 						<th>
 							Name
 						</th>
+
 						<th>
 							Gender
 						</th>
@@ -185,11 +193,8 @@
 		var table = __$("table_body");
 
 
-		ajaxGETRequest(url+"&page="+page+"&size=7",function(data){
+		ajaxGETRequest(url+"&page="+page+"&size=40",function(data){
 				var data = JSON.parse(data);
-						if (data.length == 0) {
-							return;
-						}
 						for(var i = 0 ; i < data.length ; i++){
 
 								estimatesize = i + 1;
@@ -199,7 +204,7 @@
 								table.appendChild(tr);
 
 
-								var td = document.createElement("td");
+							/*	var td = document.createElement("td");
 
 								td.style.borderRight= "1px solid black";
 
@@ -208,6 +213,19 @@
 								td.innerHTML = (page - 1)* 7 + (i + 1);
 
 								tr.appendChild(td);
+
+							*/
+							<% if @den.present? && @den %>
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i].den
+
+								tr.appendChild(td);
+							<%end%>
 
 
 								var td = document.createElement("td");
@@ -327,7 +345,10 @@
 
 							datatable = $("#records_table").dataTable({
 									"lengthChange": false,
-									"bInfo": false
+									"pageLength": 6,
+									"order": [[ 0, "asc" ]],
+									"bInfo": false,
+									"autoWidth": true
 							});
 
 							var search =__$('records_table_filter').getElementsByTagName("input")[0];
@@ -335,14 +356,84 @@
     						search.setAttribute("onblur","__$('keyboardcontainer').style.visibility='hidden'")
     						setTimeout(function(){
     							page = page + 1
-    							loadTable(page);
-    						},1000);
+    							addRows(page);
+    						},2000);
     					
 
 					});
 
 	}
 
+	function addRows(page){
+		ajaxGETRequest(url+"&page="+page+"&size=40",function(data){
+				var data = JSON.parse(data);
+				for(var i  = 0 ; i <data.length ; i++){
+					var name = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
+
+					var place_of_death = ""
+
+					if(data[i].place_of_death && data[i].place_of_death.trim().toLowerCase().match("facility")){
+
+									place_of_death = data[i].hospital_of_death;
+
+					}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim().toLowerCase().match("facility")){
+									place_of_death = data[i].place_of_death_foreign_hospital
+
+					}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim() !="facility"){
+									place_of_death = (data[i].place_of_death_country ? data[i].place_of_death_country : "") + (data[i].place_of_death_foreign_state ? data[i].place_of_death_foreign_state : "") +" " 
+									+ (data[i].place_of_death_foreign_district ? data[i].place_of_death_foreign_district : "" ) + " "+ 
+									 (data[i].place_of_death_foreign_village ? data[i].place_of_death_foreign_village : "");
+
+					}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
+
+									place_of_death = data[i].other_place_of_death;
+
+
+					}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
+
+									place_of_death = data[i].place_of_death_district +" " + data[i].place_of_death_ta + " "+  data[i].place_of_death_village;
+
+					}
+
+					var physical_address = ""
+
+					if(data[i].current_country){
+						if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
+										physical_address =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
+									}
+									else{
+										var address = data[i].current_foreign_district ;
+
+										if( data[i].current_foreign_village){
+											address = address + " "+ data[i].current_foreign_village
+										}
+										physical_address =  (data[i].current_country? data[i].current_country : "" ) +address
+									}
+					}else{
+
+					}
+
+					var informant = data[i].informant_first_name +" " + data[i].informant_last_name
+
+					var link = "window.location = \"/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>\"";
+
+					var button = "<button class='blue' onclick='"+link+"'><span>View</span></button>"
+
+				<% if @den.present? && @den %>
+					datatable.api().row.add([data[i].den,name,data[i].gender,new Date(data[i].date_of_death).format(),place_of_death,physical_address,informant,button]).draw()
+				<%else%>
+					datatable.api().row.add([name,data[i].gender,new Date(data[i].date_of_death).format(),place_of_death,physical_address,informant,button]).draw()
+				<%end%>
+				}
+				if(data.length == 0){
+					return;
+				}
+				setTimeout(function(){
+    				page = page + 1
+    				addRows(page);
+    			},2000);
+		});
+	}
 	var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
 	var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
 	var capcase = false;
@@ -359,22 +450,34 @@
 			datatable.fnFilter(control.value);
 			setTimeout(function(){
 				control.focus();
-			},5);
+			},1);
 
 			
 	}
 
 	function deleteFromValue(){
 			control.value = control.value.slice(0, control.value.length - 1)
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
 	}
 
 	function clear(){
 			control.value = ""
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
 	}
 
 	function changeKeboardType(keyboard){
 			type  = keyboard;
-			changeFocusToMe(control)
+			changeFocusToMe(control);
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
 	}
 
 	function changeFocusToMe(element){

@@ -14,6 +14,11 @@
 						<th>
 							Name
 						</th>
+					<% if @den.present? && @den %>
+						<th>
+							DEN
+						</th>
+					<%end%>
 						<th>
 							Gender
 						</th>
@@ -234,6 +239,17 @@
 
 								tr.appendChild(td);
 
+							<% if @den.present? && @den %>
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i].den
+
+								tr.appendChild(td);
+							<%end%>
 
 								var td = document.createElement("td");
 
