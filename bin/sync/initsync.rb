@@ -21,7 +21,28 @@ def finalize_setup
     PersonIdentifier.can_assign_den = false
     `rake edrs:build_mysql`
     PersonIdentifier.can_assign_den = true
-    puts "Tables Creatted"
+    
+    if SETTINGS['site_type'] == "facility"
+      surfix = SETTINGS['facility_code']
+    else
+      surfix = SETTINGS['district_code']
+    end
+    
+    user = User.by_username.key("admin#{surfix}".downcase).first
+
+    if user.blank?
+
+      username = "admin#{surfix}".downcase
+      user = User.create(username: username, plain_password: "password", last_password_date: Time.now,
+                         password_attempt: 0, login_attempt: 0, first_name: "EDRS #{surfix}",
+                         last_name: "Administrator", role: "System Administrator",
+                         email: "admin@baobabhealth.org")
+
+          puts "Setup successfull !\n"
+          puts "login with username: #{username} , password: password"
+    else
+      puts "System admin User already exists"
+    end
   else
       puts "Sync from HQ please wait..."
       sleep 10
