@@ -366,7 +366,7 @@ class PeopleController < ApplicationController
 
   def search_by_status_with_prev_status
       sql = "SELECT c.person_record_id FROM person_record_status c INNER JOIN person_record_status p ON p.person_record_id = c.person_record_id
-             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') LIMIT 10 OFFSET #{(params[:page].to_i - 1) * 10}"
+             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') LIMIT 40 OFFSET #{(params[:page].to_i - 1) * 40}"
       connection = ActiveRecord::Base.connection
       data = connection.select_all(sql).as_json
 

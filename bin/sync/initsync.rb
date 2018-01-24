@@ -1,26 +1,33 @@
-=begin
-puts "Clearing Elasticsearch"
-SETTING = YAML.load_file("#{Rails.root}/config/elasticsearchsetting.yml")['elasticsearch']
-puts `curl -XDELETE #{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}`
+def check_sync
+    sync = false
+    if Village.count >= 33555
+        if District.count >= 32
+          if TraditionalAuthority.count >= 355
+            if HealthFacility.count >= 1048
+              sync = true
+              return sync
+            end
+          end
+        end
+    end
+    return sync
+end
+def finalize_setup
+  if check_sync
+    puts "\nDistricts :#{District.count} \n"
+    puts "\nTAs :#{TraditionalAuthority.count} \n"
+    puts "\nVillages :#{Village.count} \n"
 
-puts "Cleaning mysql"
-SimpleSQL.query_exec("DROP DATABASE #{MYSQL['database']}") 
-
-puts "Cleaning couch"
-db_settings = YAML.load_file("#{Rails.root}/config/couchdb.yml")
-couch_db_settings =  db_settings[Rails.env]
-
-couch_username = couch_db_settings["username"]
-couch_password = couch_db_settings["password"]
-couch_host = couch_db_settings["host"]
-couch_db = couch_db_settings["prefix"] + (couch_db_settings["suffix"] ? "_" + couch_db_settings["suffix"] : "" )
-couch_port = couch_db_settings["port"]
-
-`curl -X DELETE http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}`
-
-puts "Databases cleared"
-=end
-
+    PersonIdentifier.can_assign_den = false
+    `rake edrs:build_mysql`
+    PersonIdentifier.can_assign_den = true
+    puts "Tables Creatted"
+  else
+      puts "Sync from HQ please wait..."
+      sleep 10
+      finalize_setup
+  end
+end
 Person.count
 @settings = SYNC_SETTINGS
 district_code = SETTINGS['district_code']
@@ -47,14 +54,8 @@ target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{
 JSON.parse(target_to_source).each do |key, value|
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
 end
-puts "\nDistricts :#{District.count} \n"
-puts "\nTAs :#{TraditionalAuthority.count} \n"
-puts "\nVillages :#{Village.count} \n"
 
-PersonIdentifier.can_assign_den = false
-`rake edrs:build_mysql`
-PersonIdentifier.can_assign_den = true
-puts "Tables Creatted"
+finalize_setup
 
 
 
