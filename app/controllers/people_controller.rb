@@ -363,6 +363,26 @@ class PeopleController < ApplicationController
     render  :text => people.to_json
   end
 
+
+  def search_by_status_with_prev_status
+      sql = "SELECT c.person_record_id FROM person_record_status c INNER JOIN person_record_status p ON p.person_record_id = c.person_record_id
+             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') LIMIT 10 OFFSET #{(params[:page].to_i - 1) * 10}"
+      connection = ActiveRecord::Base.connection
+      data = connection.select_all(sql).as_json
+
+      cases = []
+
+      data.each do |row|
+          person = Person.find(row["person_record_id"])
+          person["den"] = person.den rescue ""
+          person["drn"] = person.drn rescue ""
+          people << person
+          cases << people
+      end
+
+      render text: cases.to_json and return
+  end
+
   def search
 
     if params[:search_criteria].present?

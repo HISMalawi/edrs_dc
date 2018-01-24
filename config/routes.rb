@@ -88,6 +88,8 @@ Rails.application.routes.draw do
 
   get '/search_by_status' => "people#search_by_status"
 
+  get "/search_by_status_with_prev_status" =>"people#search_by_status_with_prev_status"
+
   post 'update_field' => "people#update_field"
 
   get '/people/all' => "people#all"
@@ -241,6 +243,8 @@ Rails.application.routes.draw do
   get "/dc/sent_to_hq_for_reprint/:id" =>"dc#sent_to_hq_for_reprint"
 
   post "/proceed_amend" => "dc#proceed_amend"
+
+  get "/printed_amendmets" => "dc#printed_amendmets"
 
   get "/dc/sync" => "dc#sync"
 

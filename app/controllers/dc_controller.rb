@@ -575,6 +575,13 @@ class DcController < ApplicationController
 		redirect_to "#{params[:next_url].to_s}"
 	end
 
+	def printed_amendmets
+		@prev_statuses = ["DC AMEND","DC LOST","DC DAMAGED"]
+	    @statuses = ["HQ CAN PRINT"]
+	    @section = "Printed Amended Certificates"
+		@next_url = "/dc/confirmed_duplicated"
+	    render :template =>"/people/view"
+	end
 	def counts_by_status
 		status = params[:status]
 		district_code = SETTINGS['district_code']

@@ -5,6 +5,9 @@
 	<% if @statuses.present? %>
 		var statuses = "<%= @statuses.join(",") %>".split(",");
 	<%end%>
+	<% if @prev_statuses.present? %>
+		var prev_statuses = "<%= @prev_statuses.join(",") %>".split(",");
+	<%end%>
 </script>
 <div id="table_container">
 
@@ -96,7 +99,7 @@
 
 	var url =""
 
-	<% if params[:search_criteria].present? %>
+	    <% if params[:search_criteria].present? %>
 			
 			<%if params[:death_entry_number].present? %>
 				url = "/search_by_fields?death_entry_number=<%=params[:death_entry_number]%>"
@@ -118,10 +121,21 @@
 		<%elsif @special_case_print.present?%>
 				url = "/query_registration_type_and_printed?"
 		<%else%>
+
+			<% if @prev_statuses.present? %>
+				  url = "/search_by_status_with_prev_status?";
+				  for (var i = 0 ; i < statuses.length ; i++){
+					url = url+"&statuses[]="+statuses[i];
+				  }
+				  for (var i = 0 ; i < prev_statuses.length ; i++){
+					url = url+"&prev_statuses[]="+prev_statuses[i];
+				  }
+			<%else%>
 				url ="/search_by_status?";
 				for (var i = 0 ; i < statuses.length ; i++){
 					url = url+"&statuses[]="+statuses[i];
 				}
+			<%end%>
 		<%end%>
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
