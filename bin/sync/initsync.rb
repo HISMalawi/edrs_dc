@@ -32,8 +32,8 @@ def finalize_setup
 
     if user.blank?
 
-      username = "admin#{surfix}".downcase
-      user = User.create(username: username, plain_password: "password", last_password_date: Time.now,
+         username = "admin#{surfix}".downcase
+         user = User.create(username: username, plain_password: "password", last_password_date: Time.now,
                          password_attempt: 0, login_attempt: 0, first_name: "EDRS #{surfix}",
                          last_name: "Administrator", role: "System Administrator",
                          email: "admin@baobabhealth.org")
