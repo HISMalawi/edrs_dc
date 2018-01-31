@@ -1841,7 +1841,7 @@
 
 		        birthdate.value = estimateBirthDate
 
-		        __$("estimate").value = 1;
+		        __$("person_birthdate_estimated").value = 1;
 
 		    } else {
 
@@ -2391,6 +2391,109 @@ function checkIdentifier(identifier_type){
  		}
  }
 
+ function displayBirthDate(){
+ 		if (__$("keyboard")) {
+			__$("keyboard").style.display = "none";
+		}
+		//__$("clearButton").style.display ="none";
+		
+		var tstControl = __$("inputFrame"+tstCurrentPage);
+		if (tstControl) {
+			 tstControl.innerHTML = "";
+			 tstControl.style.textAlign = "center";
+			 var table = document.createElement("table");
+			 table.style.width ="70%"
+			 tstControl.appendChild(table);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Year";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Month";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Day";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 td.innerHTML = __$("person_birth_year").value
+
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 td.innerHTML = __$("person_birth_month").value
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 td.innerHTML = __$("person_birth_day").value ;
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 button.className = "blue";
+			 button.innerHTML ="<span>Change</span>";
+			 button.onmousedown = function(){
+			 	 gotoPage(tstCurrentPage - 3, false, true);
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center";
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 button.className = "blue";
+			 button.innerHTML ="<span>Change</span>";
+			 button.onmousedown = function(){
+			 	 gotoPage(tstCurrentPage - 2, false, true);
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center";
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 button.className = "blue";
+			 button.innerHTML ="<span>Change</span>"
+			 button.onmousedown = function(){
+			 	 gotoPage(tstCurrentPage - 1, false, true);
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+		}
+ }
 
 
 

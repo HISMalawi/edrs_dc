@@ -50,7 +50,7 @@
                           :absoluteMax => Date.today.year, 
                           :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
-                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {
+                <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December","Unknown"], " "), {
                            :helpText => "Month of Birth <i style='color: red'>*</i>", 
                            :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',
                            :validationJS => "validateDOB();",
@@ -76,6 +76,13 @@
                           :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', 
                           :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,
                           :tt_onUnLoad => "setAgeValues()"%>
+
+
+
                 <input type="hidden" id="person_birthdate" name="person[birthdate]">
                 <input type="hidden" id="person_birthdate_estimated" name="person[birthdate_estimated]">
+
+                <%= text_field_tag "person[birth_date]",  nil,
+                          :helpText => "Birth Date <i style='color: red'>*</i>",
+                          :tt_onLoad=>"displayBirthDate()" %>
 </sub>
