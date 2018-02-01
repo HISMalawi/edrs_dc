@@ -2391,7 +2391,13 @@ function checkIdentifier(identifier_type){
  		}
  }
 
+ var year_positon;
+
+ function setYearPosition(){
+ 	year_positon = tstCurrentPage
+ }
  function displayBirthDate(){
+
  		if (__$("keyboard")) {
 			__$("keyboard").style.display = "none";
 		}
@@ -2433,8 +2439,11 @@ function checkIdentifier(identifier_type){
 			 td.textAlign = "center"
 			 td.style.backgroundColor = "#a09898";
 			 td.style.padding = "0.8em";
-			 td.innerHTML = __$("person_birth_year").value
-
+			 if (__$("person_birth_year").value == "Unknown") {
+			 	td.innerHTML = __$("person_birthdate").value.split("-")[0]
+			 }else{
+			 	td.innerHTML = __$("person_birth_year").value
+			 }
 			 td.style.fontSize = "2em"
 			 tr.appendChild(td);
 
@@ -2443,6 +2452,13 @@ function checkIdentifier(identifier_type){
 			 td.style.backgroundColor = "#a09898";
 			 td.style.padding = "0.8em";
 			 td.innerHTML = __$("person_birth_month").value
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	td.innerHTML = "?"
+			 }else if(__$("person_birthdate_estimated").value == 1){
+			 	td.innerHTML = "?"
+			 }else{
+			 	td.innerHTML = __$("person_birth_month").value ;
+			 }
 			 td.style.fontSize = "2em"
 			 tr.appendChild(td);
 
@@ -2450,7 +2466,13 @@ function checkIdentifier(identifier_type){
 			 td.textAlign = "center"
 			 td.style.backgroundColor = "#a09898";
 			 td.style.padding = "0.8em";
-			 td.innerHTML = __$("person_birth_day").value ;
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	td.innerHTML = "?"
+			 }else if(__$("person_birthdate_estimated").value == 1){
+			 	td.innerHTML = "?"
+			 }else{
+			 	td.innerHTML = __$("person_birth_day").value ;
+			 }
 			 td.style.fontSize = "2em"
 			 tr.appendChild(td);
 
@@ -2464,7 +2486,7 @@ function checkIdentifier(identifier_type){
 			 button.className = "blue";
 			 button.innerHTML ="<span>Change</span>";
 			 button.onmousedown = function(){
-			 	 gotoPage(tstCurrentPage - 3, false, true);
+			 	 gotoPage(year_positon, false, true);
 			 }
 			 td.appendChild(button);
 			 tr.appendChild(td);
@@ -2476,6 +2498,7 @@ function checkIdentifier(identifier_type){
 			 button.className = "blue";
 			 button.innerHTML ="<span>Change</span>";
 			 button.onmousedown = function(){
+			 	__$("person_birth_year").value = __$("person_birthdate").value.split("-")[0]
 			 	 gotoPage(tstCurrentPage - 2, false, true);
 			 }
 			 td.appendChild(button);
@@ -2485,10 +2508,16 @@ function checkIdentifier(identifier_type){
 			 td.textAlign = "center";
 			 td.style.padding = "0.4em";
 			 var button = document.createElement("button");
-			 button.className = "blue";
-			 button.innerHTML ="<span>Change</span>"
-			 button.onmousedown = function(){
-			 	 gotoPage(tstCurrentPage - 1, false, true);
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	 button.className = "gray";
+				 button.innerHTML ="<span>Change</span>"
+				 
+			 }else{
+				 button.className = "blue";
+				 button.innerHTML ="<span>Change</span>"
+				 button.onmousedown = function(){
+				 	 gotoPage(tstCurrentPage - 1, false, true);
+				 }
 			 }
 			 td.appendChild(button);
 			 tr.appendChild(td);

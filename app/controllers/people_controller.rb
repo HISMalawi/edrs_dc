@@ -366,7 +366,8 @@ class PeopleController < ApplicationController
 
   def search_by_status_with_prev_status
       sql = "SELECT c.person_record_id FROM person_record_status c INNER JOIN person_record_status p ON p.person_record_id = c.person_record_id
-             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') LIMIT 40 OFFSET #{(params[:page].to_i - 1) * 40}"
+             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') AND p.voided = 1 
+             LIMIT 40 OFFSET #{(params[:page].to_i - 1) * 40}"
       connection = ActiveRecord::Base.connection
       data = connection.select_all(sql).as_json
 
@@ -899,7 +900,7 @@ end
       page = params[:page] rescue 1
       size = params[:size] rescue 7
       keys = []
-      special_cases = ["Unusual Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+      special_cases = ["Abnormal Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
       special_cases.each do |special_case|
           keys << [special_case,"HQ CLOSED"]
           keys << [special_case,"HQ DISPATCHED"]

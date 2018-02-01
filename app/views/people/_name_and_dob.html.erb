@@ -48,6 +48,7 @@
                           :absoluteMin => "1890", 
                           :min => (Date.today.year-120), 
                           :absoluteMax => Date.today.year, 
+                          :tt_onLoad => "setYearPosition()",
                           :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
                 <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December","Unknown"], " "), {

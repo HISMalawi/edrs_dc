@@ -113,7 +113,7 @@ class Report < ActiveRecord::Base
 	    connection = ActiveRecord::Base.connection
 
 	    reg_type = {}
-	    types = ["Normal Cases","Unusual Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+	    types = ["Normal Cases","Abnormal Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
 	    types.each do |type|
 	    	reg_type[type] = {}
 	    	gender.each do |g|
