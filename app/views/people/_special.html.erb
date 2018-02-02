@@ -123,28 +123,26 @@
                 <% elsif site_type =="dc" %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onUnLoad =>"setAjaxUrl(-1)",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard") %>
 
-                    <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death District" ,  :tt_onUnLoad => "setAjaxUrl(0)"} %>
+                    <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death (<i>District</i>)" ,  :tt_onUnLoad => "setAjaxUrl(0)"} %>
 
-                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Health Facility of death",:condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
+                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Place of death (<i>Health Facility</i>)",:condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
 
-                    <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Traditional authority of death",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)"} %>
+                    <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Place of death (<i>Traditional authority </i>)",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)"} %>
 
                      <%= text_field_tag "person[other_place_of_death_ta]", nil, {:helpText => "Other place of death Traditional Authority specify",:condition => "__$('person_place_of_death_ta').value =='Other'"} %>
 
-               		<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Village of death",:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
+               		<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Place of death (<i>Village</i>)",:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
 
-               		<%= text_field_tag "person[other_place_of_death_village]", nil, {:helpText => "Other place of death Village specify",:condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
+               		<%= text_field_tag "person[other_place_of_death_village]", nil, {:helpText => "Place of death (<i>Other Village specify</i>)",:condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
 
-                	<%= (f.text_field :other_place_of_death,:helpText => "Other place of death specify",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
+                	<%= (f.text_field :other_place_of_death,:helpText => "Place of death (<i>Other place of death specify</i>)",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
                 <% end %>
-
-
              
             </sub>
 
   			<%= render :partial => "special_physical_address" %>
 
-            <%= render :partial => "home_address" %>
+        <%= render :partial => "home_address" %>
 
 
            	<sub id='pregnancy_status' name="Pregnancy status">
@@ -156,7 +154,7 @@
             </sub>
   	</section>
 
-	<%= render :partial => "parents_details" %>
+	  <%= render :partial => "parents_details" %>
 
     <section name="Informant's details">
             <sub id="info_details" name="Details and designation">
