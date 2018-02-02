@@ -2146,7 +2146,7 @@
 		var cont = {}
 		function validateName(person,level){
 			var input  = __$('touchscreenInput' + tstCurrentPage).value.trim();
-			var regex = /^[a-zA-Z']{2,24}$/;
+			var regex = /^[a-zA-Z'\s]{2,24}$/;
 			var name_length = (__$(person+'_last_name') ? __$(person+'_last_name').value.length : "") + 
 							(__$(person+'_first_name') ?  __$(person+'_first_name').value.length : "");
 			if(__$(person+'_middle_name') && __$(person+'_middle_name').value.length > 0){
@@ -2165,7 +2165,7 @@
 				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
 				 	if(check_number_regex.test(input)){
 				 		showMessage("The name contains number(s)",null,30000);
-				 	}else if(check_space_regex.test(input)){
+				 	}else if(check_space_regex.test(input) && false){
 				 		showMessage("The name contains space(s) it should be one word",null,30000);
 				 	}else if(special_characters.test(input)){
 				 		showMessage("The name should not contains special character(s)",null,30000);
