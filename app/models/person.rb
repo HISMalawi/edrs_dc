@@ -724,6 +724,27 @@ class Person < CouchRest::Model::Base
                   }
                 }"
 
+    view :by_name_codes,
+         :map =>"function(doc){
+                    if(doc['type'] == 'Person'){
+                        if(doc['first_name_code'] != null){
+                             emit(doc['first_name_code'], 1);
+                             emit(doc['last_name_code'], 1);
+                        }
+                        if(doc['mother_first_name_code'] != null){
+                            emit(doc['mother_first_name_code'], 1);
+                            emit(doc['mother_last_name_code'], 1);
+                        }
+                        if(doc['father_first_name_code'] != null){
+                            emit(doc['father_first_name_code'], 1);
+                            emit(doc['father_last_name_code'], 1);                          
+                        }
+                        if(doc['father_first_name_code'] != null){
+                            emit(doc['informant_first_name_code'], 1);
+                            emit(doc['informant_last_name_code'], 1);                          
+                        }
+                    }
+                }"
     view :by_first_name_code
 
     view :by_last_name_code

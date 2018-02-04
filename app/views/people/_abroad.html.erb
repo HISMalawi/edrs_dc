@@ -33,7 +33,7 @@
                 				  :tt_onUnLoad => "validateDeathDate()") rescue "" %>
 
                 <%= text_field_tag "person[place_of_death_country]", nil, {
-                    					:helpText => "Place of Death Country <i style='color: red'>*</i>" , 
+                    					:helpText => "Place of Death (<i>Country</i>) <i style='color: red'>*</i>" , 
                     					:ajaxURL => "/countries?exclude=Malawi&search_string=",
                               :tt_requireNextClick => false} %> 
 
@@ -44,18 +44,20 @@
                                         :tt_pageStyleClass =>"NoKeyboard") %>
 
                 <%= text_field_tag "person[place_of_death_foreign_hospital]", @person[:place_of_death_foreign_hospital], {
-                  :helpText => "Hospital of death (<i>Foreign  place of death</i>)", :condition => "__$('person_place_of_death_foreign').value == 'Health Facility'"} %>
+                  :helpText => "Place of death (<i>Foreign Health Facility</i>)", 
+                  :optional => true,
+                  :condition => "__$('person_place_of_death_foreign').value == 'Health Facility'"} %>
 
                 <%= text_field_tag "person[place_of_death_foreign_state]", @person[:place_of_death_foreign_state], {
-                  :helpText => "State (<i>Foreign  place of death</i>)",
+                  :helpText => "Place of death (<i>Foreign  State</i>)",
                   :optional => true} %>
 
                 <%= text_field_tag "person[place_of_death_foreign_district]", @person[:place_of_death_foreign_district], {
-                                    :helpText => "District (<i>Foreign place of death</i>)",
+                                    :helpText => "Place of death (<i>Foreign District</i>)",
                                     :optional => true} %>
 
                 <%= text_field_tag "person[place_of_death_foreign_village]", @person[:place_of_death_foreign_village], {
-                                    :helpText => "Village/Town (<i>Foreign place of death</i>)",
+                                    :helpText => "Place of death  (<i>Foreign Village/Town</i>)",
                                     :optional => true} %>
 
                   <%= text_field_tag "person[other_place_of_death]",nil,

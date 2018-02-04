@@ -583,7 +583,7 @@ class PeopleController < ApplicationController
 
   def get_first_names
       entry = params["search"].soundex rescue nil
-        data = Person.by_first_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
+        data = Person.by_name_codes.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
 		  		render :text => data.collect{ |w| "<li>#{w.first_name}" }.uniq.join("</li>")+"</li>"
 		  	else
@@ -593,7 +593,7 @@ class PeopleController < ApplicationController
 
   def get_last_names
         entry = params["search"].soundex rescue nil
-        data = Person.by_last_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
+        data = Person.by_name_codes.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
           render :text => data.collect{ |w| "<li>#{w.last_name}" }.uniq.join("</li>")+"</li>"
         else

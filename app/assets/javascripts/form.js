@@ -2373,15 +2373,22 @@ function checkIdentifier(identifier_type){
 		})
 }
  var spaceInterval ;
- function checkSpace(){
+ function checkSpace(pos){
+ 	console.log(pos);
  	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
- 	spaceInterval = setInterval(function(){
- 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
-	 	if(text_input.length > 0){
-	 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
-	 	}		
- 	},20);
- 	
+ 	if(pos){
+ 		spaceInterval = setInterval(function(){
+ 			var text_input = __$('touchscreenInput'+tstCurrentPage).value;
+ 			__$('touchscreenInput'+tstCurrentPage).value = text_input.charAt(0).toUpperCase()+text_input.slice(1,this.lenght);
+ 		},20);
+ 	}else{
+	 	spaceInterval = setInterval(function(){
+	 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
+		 	if(text_input.length > 0){
+		 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
+		 	}		
+	 	},20);
+ 	}
  }
 
  function parentDetailAvailable(parent){
@@ -2524,7 +2531,27 @@ function checkIdentifier(identifier_type){
 		}
  }
 
+function removeAutoComplete(){
+	setInterval(function(){
+		var control = __$('touchscreenInput' + tstCurrentPage)
+		if(control.getAttribute("autocomplete") != null){
+			//console.log(control.getAttribute("autocomplete"));
+			return;
+		}else{
+			control.setAttribute("autocomplete","off")
+		}
+	}, 500)
+}
 
+function setSubTitle(source,title){
+	var source_value = __$(source).value
+	if (source_value.match("City")) {
+		setTimeout(function(){
+			__$("helpText"+ tstCurrentPage).innerHTML = title;
+		},50)
+		
+	}
+}
 
 
 

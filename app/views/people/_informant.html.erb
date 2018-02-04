@@ -92,31 +92,34 @@
                         :tt_requireNextClick => false} %>
 
               <%= text_field_tag "person[informant_current_district]", nil, {
-                    :helpText => "District (<i>Informant's address</i>)<i style='color: red'>*</i>",
+                    :helpText => "Informant's address (<i>District</i>)<i style='color: red'>*</i>",
                     :ajaxURL =>"/districts?search_string=",
                     :tt_onUnLoad => "setAjaxUrl(4)",
                     :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'",
                     :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[informant_current_ta]", nil, {
-                          :helpText => "Traditional Authority (<i>Informant's address</i>)<i style='color: red'>*</i>",
+                          :helpText => "Informant's address (<i>Traditional Authority</i>)<i style='color: red'>*</i>",
                           :tt_onUnLoad => "setAjaxUrl(5)",
+                          :tt_onLoad => "setSubTitle('person_informant_current_district','Informant address(<i>Town/Area</i>) <i style=\"color: red\">*</i>')",
                           :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'",
                           :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_informant_current_ta]", nil, {
-                          :helpText => "Other Traditional Authority specify (<i>Informant's address</i>)<i style='color: red'>*</i>",
+                          :helpText => "Informant's address (<i>Other Traditional Authority specify</i>)<i style='color: red'>*</i>",
+                          :tt_onLoad => "setSubTitle('person_informant_current_district','Informant address(<i>Other Town/Area specify</i>) <i style=\"color: red\">*</i>')",
                           :condition => "__$('person_informant_current_ta').value =='Other' && __$('person_informant_current_country').value.trim() == 'Malawi'"} %>
           
                 <%= text_field_tag "person[informant_current_village]", nil, {
-                    :helpText => "Village (<i>Informant's address</i>)<i style='color: red'>*</i>", 
+                    :helpText => "Informant's address (<i>Village</i>)<i style='color: red'>*</i>", 
+                    :tt_onLoad => "setSubTitle('person_informant_current_district','Informant address(<i>Location</i>) <i style=\"color: red\">*</i>')",
                     :condition => "__$('person_informant_current_ta').value.length > 0 && __$('person_informant_current_ta').value != 'Other' && __$('person_informant_current_country').value.trim() == 'Malawi'",
                     :tt_requireNextClick => false} %>
 
                 <%= text_field_tag "person[other_informant_current_village]", nil, {
-                  :helpText => "Other village specify (<i>Informant's address</i>)<i style='color: red'>*</i>",
+                  :helpText => "Informant's address (<i>Other village specify</i>)<i style='color: red'>*</i>",
                   :condition => "(__$('person_informant_current_ta').value =='Other' || __$('person_informant_current_village').value =='Other') && __$('person_informant_current_country').value.trim() == 'Malawi'",
-                  :tt_onLoad=>"setOtherTofield('person_informant_current_village')"} %>
+                  :tt_onLoad=>"setOtherTofield('person_informant_current_village');setSubTitle('person_informant_current_district','Informant address(<i>Other Location Specify</i>) <i style=\"color: red\">*</i>')"} %>
 
                 <%= text_field_tag "person[informant_addressline1]",@person.informant_addressline1,
                         {:helpText => "Informant's Postal address",
@@ -125,22 +128,22 @@
                                                  :condition => "__$('person_informant_current_country').value.trim() == 'Malawi'"} %>
 
               <%= text_field_tag "person[informant_foreign_state]", nil, {
-                  :helpText => "State (<i>Informant foreign address</i>)",
+                  :helpText => "Informant foreign address (<i>State</i>)",
                   :optional => true,
                   :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
 
                <%= text_field_tag "person[informant_foreign_district]", nil, {
-                  :helpText => "District (<i>Informant foreign address</i>)",
+                  :helpText => "Informant foreign address (<i>District</i>)",
                   :optional => true,
                   :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
 
                 <%= text_field_tag "person[informant_foreign_village]", nil, {
-                        :helpText => "Village/Town (<i>Informant foreign address</i>)",
+                        :helpText => "Informant foreign address (<i>Village/Town</i>)",
                         :optional => true,
                         :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
 
                 <%= text_field_tag "person[informant_foreign_address]", nil, {
-                        :helpText => "Adrress (<i>Informant foreign postal address</i>)",
+                        :helpText => "Informant foreign address (<i>Postal address</i>)",
                         :optional => true,
                         :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'",
                         :placeholder => "e.g P.O. Box 200 Lilongwe 3 , Malawi"} %>
