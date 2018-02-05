@@ -288,7 +288,7 @@
 
 								}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
 
-									td.innerHTML = data[i].other_place_of_death + ","+ data[i].place_of_death_district;
+									td.innerHTML = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death + "," : "")+ data[i].place_of_death_district;
 
 
 								}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
@@ -438,15 +438,31 @@
 
 					}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
 
-									place_of_death = data[i].other_place_of_death;
+									place_of_death = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death + "," : "")+ data[i].place_of_death_district
 
 
 					}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
 
-									place_of_death = data[i].place_of_death_district +" "+
-													(data[i].place_of_death_ta != "Unknown" ?
-															(data[i].place_of_death_ta + " "+ 
-																(data[i].place_of_death_village != null && data[i].place_of_death_village != "Unknown" ? data[i].place_of_death_village : "")) : "");
+									var home_village_ta = "";
+									if (data[i].place_of_death_village == "Unknown"){
+										 
+									}else if (data[i].place_of_death_village == "Other"){
+										home_village_ta = data[i].other_place_of_death_village
+
+									}else if (data[i].place_of_death_village != null && data[i].place_of_death_village.length > 0){
+										home_village_ta = data[i].place_of_death_village
+									}
+
+									if (data[i].place_of_death_ta == "Unknown"){
+										 
+									}else if (data[i].place_of_death_ta == "Other"){
+										home_village_ta = home_village_ta +","+ data[i].other_place_of_death_ta
+
+									}else if (data[i].place_of_death_ta != null && data[i].place_of_death_village.length > 0){
+										home_village_ta = home_village_ta +","+ data[i].place_of_death_ta
+									}
+
+									place_of_death = (home_village_ta.length > 0 ? home_village_ta + ",": "")+  data[i].place_of_death_district;
 
 					}
 
@@ -454,7 +470,25 @@
 
 					if(data[i].current_country){
 						if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
-										physical_address =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
+										var physical_village_ta = "";
+										if (data[i].current_village == "Unknown"){
+											 
+										}else if (data[i].current_village == "Other"){
+											physical_village_ta = data[i].other_current_village
+
+										}else if (data[i].current_village != null && data[i].current_village.length > 0){
+											physical_village_ta = data[i].current_village
+										}
+
+										if (data[i].current_ta == "Unknown"){
+											 
+										}else if (data[i].current_ta == "Other"){
+											physical_village_ta = (physical_village_ta.length > 0 ?physical_village_ta +"," : "")+ data[i].other_current_ta
+
+										}else if (data[i].current_ta != null && data[i].current_ta.length > 0){
+											physical_village_ta = (physical_village_ta.length > 0 ? physical_village_ta +"," : "")+ data[i].current_ta
+										}
+										physical_address =  (physical_village_ta.length > 0 ? physical_village_ta + "," : "") + data[i].current_district;
 									}
 									else{
 										var address = data[i].current_foreign_district ;

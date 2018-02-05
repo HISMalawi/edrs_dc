@@ -771,12 +771,24 @@
 
 					var td = document.createElement("td");
 					<% if @person.place_of_death == 'Health Facility'%>
-					 	td.innerHTML = " <%= @person.hospital_of_death %>";
+					 	td.innerHTML = ("<%= @person.hospital_of_death.to_s %>".length > 0 ? "<%= @person.hospital_of_death.to_s %>"+"," : "") + "<%= @person.place_of_death_district rescue '' %>";
 					<%elsif @person.place_of_death == 'Home'%>
-						 td.innerHTML = "<%= @person.place_of_death_district %> <%= @person.place_of_death_ta%> "+
-						 				" <%= @person.place_of_death_village%>";
+						var place_of_death = "";
+						<%if @person.place_of_death_village == "Unknown" %>
+						<%elsif @person.place_of_death_village == "Other"%>
+							 place_of_death = place_of_death + "<%= @person.other_place_of_death_village %>,"
+						<%elsif @person.place_of_death_village.present?%>
+							 place_of_death = place_of_death + "<%= @person.place_of_death_village %>,"
+						<%end%>
+						<%if @person.place_of_death_ta == "Unknown" %>
+						<%elsif @person.place_of_death_ta == "Other"%>
+							 place_of_death = place_of_death + "<%= @person.other_place_of_death_ta %>,"
+						<%elsif @person.place_of_death_ta.present?%>
+							 place_of_death = place_of_death + "<%= @person.place_of_death_ta %>,"
+						<%end%>
+						td.innerHTML = place_of_death + "<%= @person.place_of_death_district rescue '' %>";
 					<%elsif @person.place_of_death == 'Other' %>
-						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
+						 td.innerHTML = ("<%= @person.other_place_of_death rescue '' %>".length > 0 ? "<%= @person.other_place_of_death rescue '' %>" + "," : "")+ "<%= @person.place_of_death_district rescue '' %>"
 					<% end %>
 					tr.appendChild(td);
 
