@@ -541,7 +541,6 @@ class PeopleController < ApplicationController
   end
 
   def update_field
-
       person = Person.find(params[:id])
 
       if person.update_person(params[:id],params[:person])

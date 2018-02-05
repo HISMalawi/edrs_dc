@@ -7,9 +7,9 @@ class SimpleElasticSearch
          search_content = self.escape_single_quotes(person["middle_name"]) + ", "
       end 
 
-      birthdate_formatted = person["birthdate"].to_date.strftime("%Y-%m-%d")
+      birthdate_formatted = person["birthdate"].to_date.strftime("%Y %m %d")
       search_content = search_content + birthdate_formatted + " "
-      death_date_formatted = person["date_of_death"].to_date.strftime("%Y-%m-%d")
+      death_date_formatted = person["date_of_death"].to_date.strftime("%Y %m %d")
       search_content = search_content + death_date_formatted + " "
       search_content = search_content + person["gender"].upcase + " "
 

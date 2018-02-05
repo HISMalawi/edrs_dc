@@ -22,7 +22,7 @@
 <%= form_for @person, :url => '/update_field', :method => :post do |f| %>
 
 		<input type="hidden" name="id" value="<%= params[:id] %>">
-
+    <input type="hidden" name="next_url" value="<%= params[:next_url]%>">
 		<% if @field  == "person[birthdate]" %>
 
 					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
