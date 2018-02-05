@@ -11,10 +11,10 @@
 			 tstControl.innerHTML = "";
 		
        var table = document.createElement("table");
-		        table.style.width = "100%";
+	   table.style.width = "100%";
 		        
 		         
-		        table.style.borderCollapse = "collapse";
+	   table.style.borderCollapse = "collapse";
 
 		       tstControl.appendChild(table);
 
@@ -183,16 +183,16 @@
 		       	
 		       	if (place_of_death == 'Health Facility'){
 
-		       		td.innerHTML = __$("person_hospital_of_death").value;
+		       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
 
 		        }else if(place_of_death == 'Home') {
 
-		       		td.innerHTML = __$("person_place_of_death_district").value +" "+ __$("person_place_of_death_ta").value +" "+
-						 				__$("person_place_of_death_village").value;
+		       		td.innerHTML =(__$("person_place_of_death_village").value.length > 0 && __$("person_place_of_death_village").value != "Unknown" ? __$("person_place_of_death_village").value+", " : "")+
+		       					  (__$("person_place_of_death_ta").value !="Unknown"? __$("person_place_of_death_ta").value + "," : "")
+						 		   + __$("person_place_of_death_district").value;
 
 		        }else{
-
-		       		 td.innerHTML = __$("person_other_place_of_death").value
+		       		 td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
 		       	}
 		        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 		        tr.appendChild(td);
@@ -210,7 +210,8 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "") + " " + (__$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "");
+		        td.innerHTML =( __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "") + " " 
+		        			 + (__$("person_mother_first_name") && __$("person_mother_first_name").value && __$("person_mother_first_name").value.length > 0 ? __$('person_mother_first_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -226,7 +227,8 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") + " " + (__$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "");
+		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") 
+		        			  + " " + (__$("person_father_first_name") && __$("person_father_first_name").value && __$("person_father_first_name").value.length > 0 ? __$('person_father_first_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -240,7 +242,8 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_informant_last_name") && __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "") + " " + (__$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "");
+		        td.innerHTML =( __$("person_informant_last_name") && __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "") 
+		        			 + " " + (__$("person_informant_first_name") && __$("person_informant_first_name").value && __$("person_informant_first_name").value.length > 0 ? __$('person_informant_first_name').value : "N/A");
 		        tr.appendChild(td);
 
 
@@ -2383,6 +2386,9 @@ function checkIdentifier(identifier_type){
  		},20);
  	}else{
 	 	spaceInterval = setInterval(function(){
+	 		if (!__$('touchscreenInput'+tstCurrentPage)) {
+	 			return;
+	 		}
 	 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
 		 	if(text_input.length > 0){
 		 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
@@ -2534,6 +2540,7 @@ function checkIdentifier(identifier_type){
 function removeAutoComplete(){
 	setInterval(function(){
 		var control = __$('touchscreenInput' + tstCurrentPage)
+		if (!control){ return }
 		if(control.getAttribute("autocomplete") != null){
 			//console.log(control.getAttribute("autocomplete"));
 			return;

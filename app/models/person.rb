@@ -188,11 +188,11 @@ class Person < CouchRest::Model::Base
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
-                     params[:place_of_death_ta_id] = place_ta.id
+                     params[:place_of_death_ta_id] = place_ta.id rescue nil
 
                      if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
-                        params[:place_of_death_village_id] = place_village.id
+                        params[:place_of_death_village_id] = place_village.id rescue nil
                        
                      end
                   
@@ -218,11 +218,11 @@ class Person < CouchRest::Model::Base
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
-               params[:home_ta_id] = ta.id
+               params[:home_ta_id] = ta.id rescue nil
 
                if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
-                  params[:home_village_id] = village.id
+                  params[:home_village_id] = village.id rescue nil
                  
                end
             
@@ -245,13 +245,13 @@ class Person < CouchRest::Model::Base
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
-               params[:current_ta_id] = current_ta.id
+               params[:current_ta_id] = current_ta.id rescue nil
 
                if !params[:current_village].blank? && params[:current_village] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
-                  params[:current_village_id] = current_village.id
+                  params[:current_village_id] = current_village.id rescue nil
                  
                end
             
@@ -268,13 +268,13 @@ class Person < CouchRest::Model::Base
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
-               params[:informant_current_ta_id] = informant_ta.id
+               params[:informant_current_ta_id] = informant_ta.id rescue nil
 
                if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
-                  params[:informant_current_village_id] = informant_village.id
+                  params[:informant_current_village_id] = informant_village.id rescue nil
                end
             
           end
@@ -302,18 +302,18 @@ class Person < CouchRest::Model::Base
 
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
-                params[:hospital_of_death_id] = health_facility.id
+                params[:hospital_of_death_id] = health_facility.id rescue nil
             else
 
                 if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
-                     params[:place_of_death_ta_id] = place_ta.id
+                     params[:place_of_death_ta_id] = place_ta.id rescue nil
 
                      if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
-                        params[:place_of_death_village_id] = place_village.id
+                        params[:place_of_death_village_id] = place_village.id rescue nil
                        
                      end
                   
@@ -339,11 +339,11 @@ class Person < CouchRest::Model::Base
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
-               params[:home_ta_id] = ta.id
+               params[:home_ta_id] = ta.id rescue nil
 
                if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
-                  params[:home_village_id] = village.id
+                  params[:home_village_id] = village.id rescue nil
                  
                end
             
@@ -360,13 +360,13 @@ class Person < CouchRest::Model::Base
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
-               params[:current_ta_id] = current_ta.id
+               params[:current_ta_id] = current_ta.id rescue nil
 
                if !params[:current_village].blank? && params[:place_of_death_ta] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
-                  params[:current_village_id] = current_village.id
+                  params[:current_village_id] = current_village.id rescue nil
                  
                end
             
@@ -383,13 +383,13 @@ class Person < CouchRest::Model::Base
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
-               params[:informant_current_ta_id] = informant_ta.id
+               params[:informant_current_ta_id] = informant_ta.id rescue nil
 
                if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
-                  params[:informant_village_id] = informant_village.id
+                  params[:informant_village_id] = informant_village.id rescue nil
                end
             
           end

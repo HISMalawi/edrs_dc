@@ -196,7 +196,11 @@
         }
 
         function loadInnerPage(pos){
-           document.getElementById("iframe").contentWindow.gotoPage(pos);
+           console.log(pos);
+           console.log(document.getElementById("iframe").contentWindow.tstCurrentPage);
+           document.getElementById("iframe").contentWindow.tstCurrentPage = parseInt(pos);
+           console.log(document.getElementById("iframe").contentWindow.tstCurrentPage);
+           document.getElementById("iframe").contentWindow.gotoPage(parseInt(pos));
 
         }
 
@@ -205,7 +209,7 @@
             if (sub_cur_page === undefined){
 
             }else{
-                //loadInnerPage(sub_cur_page)
+                loadInnerPage(sub_cur_page)
             }
         }
 

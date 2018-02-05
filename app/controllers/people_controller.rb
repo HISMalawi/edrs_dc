@@ -620,7 +620,7 @@ class PeopleController < ApplicationController
     
     end
   end
-entry = params["search"].soundex rescue nil
+
   def facilities
 
     district_param = params[:district] || '';
@@ -725,7 +725,7 @@ entry = params["search"].soundex rescue nil
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Unknown</li><li>Other</li>"
   end
 
 
@@ -755,7 +755,7 @@ entry = params["search"].soundex rescue nil
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Unknown</li><li>Other</li>"
 
   end
 

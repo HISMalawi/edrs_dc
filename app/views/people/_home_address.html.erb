@@ -28,7 +28,7 @@
 
           <%= text_field_tag "person[home_village]", @person[:home_village], 
                           {:helpText => "Home address (<i>Village</i>) <i style='color: red'>*</i>",
-                           :condition => "__$('person_home_ta').value.length > 0 && __$('person_home_ta').value != 'Other'",
+                           :condition => "__$('person_home_ta').value.length > 0 && (__$('person_home_ta').value != 'Other' && __$('person_home_ta').value != 'Unknown')",
                             :tt_onLoad => "setSubTitle('person_home_district','Home address(<i>Location</i>) <i style=\"color: red\">*</i>')",
                            :tt_requireNextClick => false} %>
 
