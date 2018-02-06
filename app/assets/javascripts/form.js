@@ -278,7 +278,7 @@
 		        var td = document.createElement("td");
 		        td.colSpan= "10"
 		        td.style.borderBottom = "1px solid #ccc";
-		        td.innerHTML =(__$("person_informant_signature_date") && __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "");
+		        td.innerHTML =(__$("person_acknowledgement_of_receipt_date") && __$("person_acknowledgement_of_receipt_date").value ? (new Date( __$('person_acknowledgement_of_receipt_date').value)).format() : "N/A");
 		        tr.appendChild(td);
 		        
                 
@@ -2128,6 +2128,9 @@
 
 		function validateWithDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			if (date == null || date.length ==0) {
+				return;
+			}
 			date = new Date(date).format("YYYY-mm-dd");
 			var today = new Date();
 			today = today.format("YYYY-mm-dd");
@@ -2139,7 +2142,7 @@
 			}
 			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd");
 			if(date < min){
-				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date signed ("+(new Date(date)).format() +")",null,30000);
+				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date entered ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
