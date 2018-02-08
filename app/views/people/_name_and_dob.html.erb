@@ -3,14 +3,14 @@
                 <%= text_field_tag "person[last_name]",@person.last_name, 
                          {:helpText => "Surname <i style='color: red'>*</i>",
                                                            :allowFreeText =>true, 
-                                                           :ajaxURL => "/get_last_names?search=",
+                                                           :ajaxURL => "/get_names?search=",
                                                            :tt_onUnLoad=>"validateName('person',1)",
                                                            :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
                 <%= text_field_tag "person[first_name]",@person.first_name,
                           {:helpText => "First name <i style='color: red'>*</i>",
                                                     :allowFreeText =>true,  
-                                                    :ajaxURL => "/get_first_names?search=",
+                                                    :ajaxURL => "/get_names?search=",
                                                     :tt_onUnLoad=>"validateName('person',2)",
                                                     :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 
@@ -18,7 +18,7 @@
                           {:helpText => "Other names",
                                                      :allowFreeText =>true, 
                                                      :optional => :true, 
-                                                     :ajaxURL => "/get_first_names?search=",
+                                                     :ajaxURL => "/get_names?search=",
                                                      :tt_onUnLoad=>"validateOtherName('person',3)",
                                                      :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 

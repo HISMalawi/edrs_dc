@@ -44,21 +44,21 @@
                 <%= text_field_tag "person[informant_last_name]", nil,
                           {:helpText => "Informant's  Surname <i style='color: red'>*</i>",
                                                      :allowFreeText =>true,
-                                                     :ajaxURL => "/get_last_names?search=",
+                                                     :ajaxURL => "/get_names?search=",
                                                      :tt_onUnLoad =>"validateName('person_informant',10)",
                                                      :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
                 <%= text_field_tag "person[informant_first_name]",nil,
                           {:helpText => "Informant's First Name <i style='color: red'>*</i>",
                             :allowFreeText =>true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onUnLoad =>"validateName('person_informant',11)",
                             :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
                  <%= text_field_tag "person[informant_middle_name]",nil, 
                           {:helpText => "Informant's Other Names",
                           :allowFreeText =>true,
-                          :ajaxURL => "/get_first_names?search=",
+                          :ajaxURL => "/get_names?search=",
                           :tt_onUnLoad =>"validateOtherName('person_informant',12)",
                           :optional => :true,
                           :tt_onLoad=> "removeUnknown();checkSpace()"}%>

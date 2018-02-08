@@ -108,6 +108,8 @@ class PeopleController < ApplicationController
           
       end
 
+      create_directory(params)
+
       if !person_params[:barcode].blank? && !person_params[:barcode].nil? 
 
             PersonIdentifier.create({
@@ -600,6 +602,21 @@ class PeopleController < ApplicationController
         end
   end
 
+  def get_names
+      entry = params["search"] rescue nil
+      if entry.blank?
+          data = []
+      else
+        query = "SELECT name FROM name_directory WHERE name LIKE '#{entry.gsub("'","''")}%' ORDER BY name ASC LIMIT 10"
+        data = NameDirectory.find_by_sql(query);
+      end
+      if data.present?
+          render :text => data.collect{ |w| "<li>#{w.name}" }.uniq.join("</li>")+"</li>"
+      else
+          render :text => "<li></li>"
+      end
+  end
+
   def districts
   
      entry = params["search_string"] rescue nil
@@ -1005,6 +1022,18 @@ end
                       status: (person.status),
                       nationality: person.nationality
                      }
+  end
+
+  def create_directory(params)
+      NameDirectory.create(name: params[:person][:first_name], soundex: params[:person][:first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:last_name], soundex: params[:person][:last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:middle_name], soundex: params[:person][:middle_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_first_name], soundex: params[:person][:mother_first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_last_name], soundex: params[:person][:mother_last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_middle_name], soundex: params[:person][:mother_middle_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_first_name], soundex: params[:person][:father_first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_last_name], soundex: params[:person][:father_last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_middle_name], soundex: params[:person][:father_middle_name].soundex) rescue nil
   end
 
 end

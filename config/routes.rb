@@ -106,6 +106,8 @@ Rails.application.routes.draw do
   
   get "/get_last_names" => "people#get_last_names"
 
+  get "/get_names" => "people#get_names"
+
   get '/facilities' => "people#facilities"
 
   get '/nationalities' => "people#nationalities"

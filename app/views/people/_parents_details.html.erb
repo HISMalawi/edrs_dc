@@ -10,7 +10,7 @@
                  <%= text_field_tag "person[mother_last_name]",nil, 
                           {:helpText => "Mother's Surname <i style='color: red'>*</i>",
                             :allowFreeText =>true, 
-                            :ajaxURL => "/get_last_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad=>"validateName('person_mother',4)",
                             :condition => "__$('mother_details_available').value =='Yes'"} %>
@@ -20,7 +20,7 @@
                           {:helpText => "Mother's Surname",
                             :optional => true,
                             :allowFreeText =>true, 
-                            :ajaxURL => "/get_last_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace(); if(!flag){hideConfirmation()};flag=true", 
                             :tt_onUnLoad=>"validateName('person_mother',4)",
                             :condition => "__$('mother_details_available').value =='Yes'"} %>
@@ -31,7 +31,7 @@
                 <%= text_field_tag "person[mother_first_name]",nil,
                           {:helpText => "Mother's First Name <i style='color: red'>*</i>",
                             :allowFreeText =>true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()",
                             :tt_onUnLoad=>"validateName('person_mother',5)",
                             :condition => "__$('mother_details_available').value =='Yes'"} %>
@@ -40,7 +40,7 @@
                           {:helpText => "Mother's Other Names",
                           :allowFreeText =>true,
                           :optional => :true,  
-                          :ajaxURL => "/get_first_names?search=",
+                          :ajaxURL => "/get_names?search=",
                           :tt_onLoad=> "removeUnknown();checkSpace()",
                           :tt_onUnLoad =>"validateOtherName('person_mother',6)",
                           :condition => "__$('mother_details_available').value =='Yes'"}%>
@@ -73,7 +73,7 @@
                 <%= text_field_tag "person[father_last_name]",nil,
                           {:helpText => "Father's Surname <i style='color: red'>*</i>",
                             :allowFreeText =>true, 
-                            :ajaxURL => "/get_last_names?search=", 
+                            :ajaxURL => "/get_names?search=", 
                             :condition => "__$('father_details_available').value =='Yes'",
                             :tt_onUnLoad =>"validateName('person_father',7)",
                             :tt_onLoad=> "removeUnknown();checkSpace()" }%>
@@ -81,7 +81,7 @@
                <%= text_field_tag "person[father_first_name]",nil,
                           {:helpText => "Father's First Name <i style='color: red'>*</i>",
                             :allowFreeText =>true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateName('person_father',8)",
                             :condition => "__$('father_details_available').value =='Yes'"} %>
@@ -90,7 +90,7 @@
                           {:helpText => "Father's Other Names",
                             :allowFreeText =>true, 
                             :optional => true, 
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateOtherName('person_father',9)",
                             :condition => "__$('father_details_available').value =='Yes'"}%>
