@@ -544,7 +544,6 @@ class PeopleController < ApplicationController
 
   def update_field
       person = Person.find(params[:id])
-
       if person.update_person(params[:id],params[:person])
           change_log = {}
           params[:person].keys.each do |key|
@@ -604,6 +603,7 @@ class PeopleController < ApplicationController
 
   def get_names
       entry = params["search"] rescue nil
+      special_character_regex = /[-!$%^&*()_+|~=`{}\[\]:";<>?\/]/
       if entry.blank?
           data = []
       else
@@ -611,7 +611,7 @@ class PeopleController < ApplicationController
         data = NameDirectory.find_by_sql(query);
       end
       if data.present?
-          render :text => data.collect{ |w| "<li>#{w.name}" }.uniq.join("</li>")+"</li>"
+          render :text => data.collect{ |w| "<li>#{w.name}" unless w.name =~ special_character_regex }.uniq.join("</li>")+"</li>"
       else
           render :text => "<li></li>"
       end
@@ -625,7 +625,7 @@ class PeopleController < ApplicationController
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
 
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
 
         render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
     
@@ -741,7 +741,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Unknown</li><li>Other</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
   end
 
 
@@ -771,7 +771,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Unknown</li><li>Other</li>"
+    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
   end
 

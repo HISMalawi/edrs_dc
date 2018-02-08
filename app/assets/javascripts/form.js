@@ -66,30 +66,16 @@
 		       
 
 		        var td = document.createElement("td")
-		        td.innerHTML = "Surname";
+		        td.innerHTML = "Name of the deceased";
 		        td.style.fontWeight = "bold";
 		        td.style.borderLeft = "1px solid #ccc";
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
 		        td.colSpan ="12";
-		        td.innerHTML = __$('person_last_name') && __$('person_last_name').value ? __$("person_last_name").value : "";
-		        tr.appendChild(td)
-
-		        var tr = document.createElement("tr");
-		        tr.colSpan ="12";
-		        tableContent.appendChild(tr);
-		       
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.innerHTML = "First name";
-		        td.style.fontWeight = "bold";
-		        tr.appendChild(td);
-
-		        var td = document.createElement("td");
-		        td.colSpan ="12";
-		        td.style.border = "none";
-		        td.innerHTML =__$('person_first_name') && __$('person_first_name').value ? __$("person_first_name").value : "";
+		        td.innerHTML = ( __$("person_first_name") && __$("person_first_name").value ? __$('person_first_name').value : "") + " " 
+		        			 + ( __$("person_middle_name") && __$("person_middle_name").value ? " "+__$('person_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_last_name") && __$("person_last_name").value && __$("person_last_name").value.length > 0 ? __$('person_last_name').value : "N/A");
 		        tr.appendChild(td)
 
 
@@ -187,9 +173,25 @@
 
 		        }else if(place_of_death == 'Home') {
 
-		       		td.innerHTML =(__$("person_place_of_death_village").value.length > 0 && __$("person_place_of_death_village").value != "Unknown" ? __$("person_place_of_death_village").value+", " : "")+
-		       					  (__$("person_place_of_death_ta").value !="Unknown"? __$("person_place_of_death_ta").value + "," : "")
-						 		   + __$("person_place_of_death_district").value;
+		        	var place_of_death_details = ""
+
+		        	if(__$("person_place_of_death_village").value == "Unknown"){
+
+		        	}else if (__$("person_place_of_death_village").value == "Other"){
+		        		place_of_death_details = __$("person_other_place_of_death_village").value
+		        	}else{
+		        		place_of_death_details = __$("person_place_of_death_village").value
+		        	}
+
+		        	if(__$("person_place_of_death_ta").value == "Unknown"){
+
+		        	}else if(__$("person_place_of_death_ta").value =="Other"){
+		        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_other_place_of_death_ta").value) : __$("person_other_place_of_death_ta").value)
+		        	}else{
+		        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_place_of_death_ta").value) : __$("person_place_of_death_ta").value)
+		        	}
+
+		       		td.innerHTML = (place_of_death_details.length > 0 ? place_of_death_details +","+__$("person_place_of_death_district").value :  __$("person_place_of_death_district").value)
 
 		        }else{
 		       		 td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
@@ -210,8 +212,9 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "") + " " 
-		        			 + (__$("person_mother_first_name") && __$("person_mother_first_name").value && __$("person_mother_first_name").value.length > 0 ? __$('person_mother_first_name').value : "N/A");
+		        td.innerHTML =( __$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "") + " " 
+		        			 + ( __$("person_mother_middle_name") && __$("person_mother_middle_name").value ? " "+__$('person_mother_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_mother_last_name") && __$("person_mother_last_name").value && __$("person_mother_last_name").value.length > 0 ? __$('person_mother_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -227,8 +230,9 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") 
-		        			  + " " + (__$("person_father_first_name") && __$("person_father_first_name").value && __$("person_father_first_name").value.length > 0 ? __$('person_father_first_name').value : "N/A");
+		        td.innerHTML = ( __$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "") + " " 
+		        			 + ( __$("person_father_middle_name") && __$("person_father_middle_name").value ? " "+__$('person_father_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_father_last_name") && __$("person_father_last_name").value && __$("person_father_last_name").value.length > 0 ? __$('person_father_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
@@ -2168,7 +2172,8 @@
 				}else {
 				 	var check_number_regex = /\d/;
 				 	var check_space_regex = /\s/;
-				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
+//				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
+				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?\/]/
 				 	if(check_number_regex.test(input)){
 				 		showMessage("The name contains number(s)",null,30000);
 				 	}else if(check_space_regex.test(input) && false){
@@ -2384,7 +2389,11 @@ function checkIdentifier(identifier_type){
  	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
  	if(pos){
  		spaceInterval = setInterval(function(){
+ 			if (!__$('touchscreenInput'+tstCurrentPage)) {
+ 				return
+ 			}
  			var text_input = __$('touchscreenInput'+tstCurrentPage).value;
+
  			__$('touchscreenInput'+tstCurrentPage).value = text_input.charAt(0).toUpperCase()+text_input.slice(1,this.lenght);
  		},20);
  	}else{
