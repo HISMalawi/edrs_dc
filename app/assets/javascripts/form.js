@@ -172,12 +172,10 @@
 		       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
 
 		        }else if(place_of_death == 'Home') {
-
 		        	var place_of_death_details = ""
+		        	if(__$("person_place_of_death_village").value.trim() == "Unknown"){
 
-		        	if(__$("person_place_of_death_village").value == "Unknown"){
-
-		        	}else if (__$("person_place_of_death_village").value == "Other"){
+		        	}else if (__$("person_place_of_death_village").value.trim()  == "Other"){
 		        		place_of_death_details = __$("person_other_place_of_death_village").value
 		        	}else{
 		        		place_of_death_details = __$("person_place_of_death_village").value
@@ -246,8 +244,9 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_informant_last_name") && __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "") 
-		        			 + " " + (__$("person_informant_first_name") && __$("person_informant_first_name").value && __$("person_informant_first_name").value.length > 0 ? __$('person_informant_first_name').value : "N/A");
+		        td.innerHTML =( __$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "") + " " 
+		        			 + ( __$("person_informant_middle_name") && __$("person_informant_middle_name").value ? " "+__$('person_informant_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_informant_last_name") && __$("person_informant_last_name").value && __$("person_informant_last_name").value.length > 0 ? __$('person_informant_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 
@@ -2572,6 +2571,16 @@ function setSubTitle(source,title){
 	}
 }
 
+function flagIfEmpty(message){
+	var text = __$("touchscreenInput"+tstCurrentPage).value;
+	if(text.length == 0){
+		flagMessage(message);
+	}
+}
+
+function flagMessage(message){
+		showMessage(message,null,30000);
+}
 
 
 

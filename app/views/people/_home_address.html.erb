@@ -5,7 +5,8 @@
               <%= text_field_tag "person[home_country]", @person[:home_country], {
                           :helpText => "Home address (<i>Home Country </i>)",
                           :ajaxURL => "/countries?search_string=", 
-                          :optional=>true} %>
+                          :optional=>true,
+                          :tt_onUnLoad=>"flagIfEmpty('Home address details not available')"} %>
           <%end%>
 
    				<%= text_field_tag "person[home_district]", @person[:home_district], {

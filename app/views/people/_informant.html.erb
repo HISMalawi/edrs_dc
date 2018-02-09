@@ -89,7 +89,8 @@
               <%= text_field_tag "person[informant_current_country]", nil, {
                         :helpText => "Country (<i>Informant's address</i>)",
                         :ajaxURL => "/countries?search_string=",
-                        :optional => true} %>
+                        :optional => true,
+                        :tt_onUnLoad=>"flagIfEmpty('Informant address details not available')"} %>
 
               <%= text_field_tag "person[informant_current_district]", nil, {
                     :helpText => "Informant's address (<i>District</i>)",

@@ -19,7 +19,7 @@
               <%= text_field_tag "person[current_district]", @person[:current_district], {
                   :helpText => "Physical residential address(<i>District </i>)",
                                 :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
-                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)",
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6);flagIfEmpty('Physical address details not available')",
                                 :optional=>true} %>
 
                 <%= text_field_tag "person[current_ta]",@person[:current_ta] , {
