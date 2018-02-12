@@ -23,11 +23,15 @@ Things you may want to cover:
 	 *Setting
 	 	* copy setting.yml.example to setting.yml
 	 	* edit to march your couch database settings for both DC and HQ and Facility
-* Setting application dependencies
-	*bundle install --local
+* Setting up application 
+	* bundle install --local
 
-* Database creation and  initialization
-	* run bundle exec rake edrs:initsync
+* Database creation and initialization
+	* run bundle exec rake edrs:setup
+
+* How to run the test suite
+	* passenger start or rails s
+	* use username and password shown on terminal to login
 
 * How to run the test suite
 
