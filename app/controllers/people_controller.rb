@@ -603,7 +603,7 @@ class PeopleController < ApplicationController
 
   def get_names
       entry = params["search"] rescue nil
-      special_character_regex = /[-!$%^&*()_+|~=`{}\[\]:";<>?\/]/
+      special_character_regex = /[-!$%^&*()_+|~=`{}\[\]:";<>?\/\d+]/
       if entry.blank?
           data = []
       else

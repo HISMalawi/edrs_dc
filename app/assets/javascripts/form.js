@@ -2266,7 +2266,7 @@
 		function policeReport(registration_type){
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
-					confirmYesNo("Registering "+(registration_type ? registration_type : "Unnatural death")+" requires a police report",function(){cancelForm()},null,30000);
+					confirmYesNo("Registering "+(registration_type ? registration_type : "Abnormal death")+" requires a police report",function(){cancelForm()},null,30000);
 					setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
 					},100);

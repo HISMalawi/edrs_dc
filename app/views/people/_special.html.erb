@@ -12,6 +12,13 @@
         }
     }
 </script>
+<style type="text/css">
+    .statusLabel {
+      position: absolute;
+      width: 70% !important;
+      left: -300px;
+  }
+</style>
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
@@ -20,7 +27,7 @@
     <% if params[:registration_type].include? "Unclaimed bodies"%>
         <section name="Police report">
             <sub id="person_police_report_section" name="Police report attached">
-                <%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()", :tt_onLoad=>"overRideCancel()") %>
+                <%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()", :tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
 
                 <%= text_field_tag "person[police_report_number]", nil, {
                               :helpText => "Police report number <i style='color: red'>*</i>",
@@ -31,26 +38,26 @@
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:tt_onLoad=>"overRideCancel()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
 			</sub>
 		</section>
 	<%end%>
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
                 <%= (f.text_field :last_name, :helpText => "Surname",
-                                  :allowFreeText =>true, :ajaxURL => "/get_last_names?search=",:tt_onUnLoad=>"validateName('person',1);addUnknow('person_last_name')",:optional=> true) rescue "" %>
+                                  :allowFreeText =>true, :ajaxURL => "/get_names?search=",:tt_onUnLoad=>"validateName('person',1);addUnknow('person_last_name')",:optional=> true) rescue "" %>
 
                 <%= (f.text_field :first_name,
                 				  :helpText => "First name",
                 				  :allowFreeText =>true,  
-                				  :ajaxURL => "/get_first_names?search=",
+                				  :ajaxURL => "/get_names?search=",
                 				  :tt_onUnLoad=>"validateName('person',2);addUnknow('person_first_name')",
                 				  :optional=> true) rescue "" %>
 
                 <%= (f.text_field :middle_name, 
                 				  :helpText => "Other names",
                 				  :allowFreeText =>true, 
-                				  :optional => :true, :ajaxURL => "/get_first_names?search=",
+                				  :optional => :true, :ajaxURL => "/get_names?search=",
                 				  :tt_onUnLoad=>"validateName('person',3)",
                 				  :optional=> true) rescue "" %>
 
@@ -63,7 +70,7 @@
                 <%= text_field_tag "person[nationality]",nil , {
                 				:helpText => "Nationality <i style='color: red'>*</i>",
                 				:ajaxURL => "/nationalities?special=Special&search_string=",
-                				:allowFreeText => true} %>
+                				:tt_requireNextClick => false} %>
 
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
                  				:helpText =>"Sex <i style='color: red'>*</i>",
@@ -104,45 +111,76 @@
                           :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block'" ,
                           :tt_onUnLoad => "setAgeValues()"%>
 
-                <%= (f.hidden_field :birthdate) rescue "" %>
 
-                <%= f.hidden_field :birthdate_estimated rescue "" %>
+                <input type="hidden" id="person_birthdate" name="person[birthdate]">
+                <input type="hidden" id="person_birthdate_estimated" name="person[birthdate_estimated]">
 
-                <%= text_field_tag "person[birth_certificate_number]",nil , {
-                					:helpText => "Birth Certificate No.",
-                					:optional => true, :condition=>false} %>
+                <%= text_field_tag "person[birth_date]",  nil,
+                          :helpText => "Captured Birth Date",
+                          :tt_onLoad=>"displayBirthDate()" %>
             </sub>
 
             <sub id="death_details" name="Details of death">
                 <%= (f.text_field :date_of_death,:helpText => "Date of Death <i style='color: red'>*</i>",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
-                <% if site_type == "facility" %>
+                <% if @site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                     <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
-                <% elsif site_type =="dc" %>
-                    <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),:id=> "person_place_of_death",:helpText =>"Place of Death", :tt_onUnLoad =>"setAjaxUrl(-1)",:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard") %>
+                <% elsif @site_type =="dc" %>
+                 <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
+                              :id=> "person_place_of_death",
+                              :helpText =>"Place of Death <i style='color: red'>*</i>", 
+                              :tt_onUnLoad =>"setAjaxUrl(-1)",
+                              :tt_requireNextClick => false,
+                              :tt_pageStyleClass =>"NoKeyboard") %>
+  
+                    <%= text_field_tag "person[place_of_death_district]", nil, {
+                              :helpText => "Place of Death (<i>District</i>) <i style='color: red'>*</i>" , 
+                              :tt_onUnLoad => "setAjaxUrl(0)",
+                              :tt_requireNextClick => false} %>
 
-                    <%= text_field_tag "person[place_of_death_district]", nil, {:helpText => "Place of Death (<i>District</i>)" ,  :tt_onUnLoad => "setAjaxUrl(0)"} %>
+                    <%= text_field_tag "person[hospital_of_death]", nil, {
+                              :helpText => "Place of death (<i>Health Facility</i>) <i style='color: red'>*</i>",
+                              :condition => "__$('person_place_of_death').value.trim()=='Health Facility'",
+                              :tt_requireNextClick => false} %>
 
-                    <%= text_field_tag "person[hospital_of_death]", nil, {:helpText => "Place of death (<i>Health Facility</i>)",:condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
+                    <%= text_field_tag "person[place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='place_of_death_ta_label'>Traditional authority</i>)",
+                              :condition => "__$('person_place_of_death').value.match('Home')", 
+                              :tt_onUnLoad => "setAjaxUrl(1)",
+                              :optional => true,
+                              :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Town/Area</i>)')"} %>
 
-                    <%= text_field_tag "person[place_of_death_ta]", nil, {:helpText => "Place of death (<i>Traditional authority </i>)",:condition => "__$('person_place_of_death').value.match('Home')", :tt_onUnLoad => "setAjaxUrl(1)"} %>
+                     <%= text_field_tag "person[other_place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='other_place_of_death_ta_label'>Other Traditional Authority specify</i>)",
+                              :optional => true,
+                              :tt_onLoad => "removeUnknown();checkSpace(1);setSubTitle('person_place_of_death_district','Place of death (<i>Other Town/Area specify</i>)')",
+                              :condition => "__$('person_place_of_death_ta').value =='Other'"} %>
 
-                     <%= text_field_tag "person[other_place_of_death_ta]", nil, {:helpText => "Other place of death Traditional Authority specify",:condition => "__$('person_place_of_death_ta').value =='Other'"} %>
+                     <%= text_field_tag "person[place_of_death_village]", nil, {
+                            :helpText => "Place of death (<i id='place_of_death_village_label'>Village</i>)",
+                            :condition => "__$('person_place_of_death_ta').value.length > 0 && (__$('person_place_of_death_ta').value != 'Other' &&__$('person_place_of_death_ta').value != 'Unknown')",
+                            :optional => true,
+                            :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Location</i>)')"} %>
 
-               		<%= text_field_tag "person[place_of_death_village]", nil, {:helpText => "Place of death (<i>Village</i>)",:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
+                     <%= text_field_tag "person[other_place_of_death_village]", nil, {
+                            :helpText => "Place of death (<i id='other_place_of_death_village_label'>Other Village specify</i>)",
+                            :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Other Location specify</i>)');checkSpace(1)",
+                            :optional => true,
+                            :condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
 
-               		<%= text_field_tag "person[other_place_of_death_village]", nil, {:helpText => "Place of death (<i>Other Village specify</i>)",:condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
-
-                	<%= (f.text_field :other_place_of_death,:helpText => "Place of death (<i>Other place of death specify</i>)",:condition => "__$('person_place_of_death').value.match('Other')") rescue "" %>
+                     <%= (f.text_field :other_place_of_death,
+                            :helpText => "Place of death (<i id='other_place_of_death_label'>Other specify</i>)",
+                            :optional => true,
+                            :condition => "__$('person_place_of_death').value.match('Other')",:tt_onLoad=> "removeUnknown();checkSpace(1)") rescue "" %>
                 <% end %>
              
             </sub>
 
   			<%= render :partial => "special_physical_address" %>
 
-        <%= render :partial => "home_address" %>
+        <%= render :partial => "special_home_address" %>
 
 
            	<sub id='pregnancy_status' name="Pregnancy status">
@@ -162,19 +200,19 @@
                  <%= (f.text_field :informant_last_name, 
                 				  :helpText => "Informant's  Surname <i style='color: red'>*</i>",
                 				  :allowFreeText =>true,
-                				  :ajaxURL => "/get_last_names?search=",
+                				  :ajaxURL => "/get_names?search=",
                 				  :tt_onLoad=> "removeUnknown()") rescue "" %>
 
                 <%= (f.text_field :informant_first_name,
                 				  :helpText => "Informant's First Name <i style='color: red'>*</i>",
                 				  :allowFreeText =>true,
-                				  :ajaxURL => "/get_first_names?search=",
+                				  :ajaxURL => "/get_names?search=",
                 				  :tt_onLoad=> "removeUnknown()") rescue "" %>
 
                 <%= (f.text_field :informant_middle_name, 
                 				  :helpText => "Informant's Other Names",
                 				  :allowFreeText =>true,
-                				  :ajaxURL => "/get_first_names?search=",
+                				  :ajaxURL => "/get_names?search=",
                 				  :optional => :true,
                 				  :tt_onLoad=> "removeUnknown()") rescue "" %>
 
@@ -277,7 +315,8 @@
             <%end%>
             <sub id="Informant verification" name="Verification">
                 <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
-                				:helpText =>"Informant Signed?") %>
+                        :tt_requireNextClick => false,
+                				:helpText =>"Informant Signed? <i style='color: red'>*</i>") %>
 
                 <%= (f.text_field :informant_signature_date,
                 					:helpText => "Date Informant signed",

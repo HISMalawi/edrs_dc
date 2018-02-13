@@ -27,7 +27,7 @@
             </sub>
     </section>
     <% end %>
-
+<%if false%>
     <section name="Acknowledgement">
           <sub id="acknowledgement_of_receipt" name="Acknowledgement of Receipt">
 
@@ -39,7 +39,7 @@
                           :optional => true}%>
           </sub>
     </section>
-
+<%end%>
     <section name="Captured data">
         <sub id="captured_data" name="Captured Data">
          <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"checkForDuplicate(); loadMinPersonSummary()"} %>

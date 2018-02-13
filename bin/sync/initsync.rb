@@ -1,8 +1,8 @@
 def check_sync
     sync = false
-    if Village.count >= 33555
+    if Village.count >= 33539
         if District.count >= 32
-          if TraditionalAuthority.count >= 355
+          if TraditionalAuthority.count >= 350
             if HealthFacility.count >= 1048
               sync = true
               return sync
