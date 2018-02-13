@@ -120,6 +120,8 @@ Rails.application.routes.draw do
 
   get "/villages" => "people#villages"
 
+  get "/get_disignation" =>"people#get_disignation"
+
   get "/people/find/:id" =>"people#find"
 
   get "/people/new_person_type" => "people#new_person_type"

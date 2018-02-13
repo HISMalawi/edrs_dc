@@ -60,7 +60,6 @@
 		        div.appendChild(tableContent);
 
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
@@ -269,6 +268,7 @@
 		        
 		        tr.appendChild(td);
 
+		        /*
 		        
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
@@ -283,6 +283,8 @@
 		        td.style.borderBottom = "1px solid #ccc";
 		        td.innerHTML =(__$("person_acknowledgement_of_receipt_date") && __$("person_acknowledgement_of_receipt_date").value ? (new Date( __$('person_acknowledgement_of_receipt_date').value)).format() : "N/A");
 		        tr.appendChild(td);
+
+		        */
 		        
                 
 

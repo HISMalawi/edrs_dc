@@ -120,8 +120,10 @@ class SimpleElasticSearch
                 \"date_of_death\": \"#{person.date_of_death.to_date.strftime("%Y-%m-%d")}\",
                 \"place_of_death_district\": \"#{registration_district}\",
                 \"mother_first_name\": \"#{self.escape_single_quotes(person.mother_first_name)}\",
+                \"mother_middle_name\": \"#{self.escape_single_quotes(person.mother_middle_name)}\",
                 \"mother_last_name\": \"#{self.escape_single_quotes(person.mother_last_name)}\",
                 \"father_first_name\": \"#{self.escape_single_quotes(person.father_first_name)}\",
+                \"father_middle_name\": \"#{self.escape_single_quotes(person.father_middle_name)}\",
                 \"father_last_name\": \"#{self.escape_single_quotes(person.father_last_name)}\",
                 \"content\" : \"#{self.escape_single_quotes(person.first_name)} #{self.escape_single_quotes(person.last_name)} #{self.escape_single_quotes(content)}\"
               }'"

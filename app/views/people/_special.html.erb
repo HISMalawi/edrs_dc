@@ -224,9 +224,10 @@
                 				  :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters") rescue "" %>
 
                 <input id="person_informant_designation"
-	               name="person[informant_designation]"
-	              helpText = "Informant's Designation <i style='color: red'>*</i>"
-	               value="<%= @person[:informant_designation] rescue nil %>" />
+	                 name="person[informant_designation]"
+	                 helpText = "Informant's Designation <i style='color: red'>*</i>"
+	                 value="<%= @person[:informant_designation] rescue nil %>"
+                   ajaxURL ="/get_disignation?search="/>
 
 	             <%= text_field_tag "person[informant_office_name]",nil , {
 	             		:name => "barcode",

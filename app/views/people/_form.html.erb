@@ -23,7 +23,7 @@
 		<section name="Proof of reported missing">
 			<sub id="person_court_order_section" name="Documents attached">
 				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),
-                      :helpText =>"Court order  or relevant documents attached?",
+                      :helpText =>"Court order  or relevant documents attached? <i style='color: red'>*</i>",
                       :tt_requireNextClick => false, 
                       :tt_onUnLoad=>"courtOrder()",
                       :tt_onLoad=>"overRideCancel();removeAutoComplete()") %>

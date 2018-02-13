@@ -757,6 +757,36 @@ class Person < CouchRest::Model::Base
 
     view :by_district_code_and_voided_date
 
+    view :by_informant_designation
+
+    view :by_other_ta,
+          :map => "function(doc){
+                   if(doc['other_current_ta'] != null){
+                        emit(doc['other_current_ta'],1);
+                   }
+                   if(doc['other_home_ta'] != null){
+                        emit(doc['other_home_ta'],1);
+                   }
+                  if(doc['other_place_of_death_ta'] != null){
+                        emit(doc['other_place_of_death_ta'],1);
+                   }
+              }"
+
+    view :by_other_villages,
+          :map => "function(doc){
+                   if(doc['other_current_village'] != null){
+                        emit(doc['other_current_village'],1);
+                   }
+                   if(doc['other_home_village'] != null){
+                        emit(doc['other_home_village'],1);
+                   }
+                  if(doc['other_place_of_death_village'] != null){
+                        emit(doc['other_place_of_death_village'],1);
+                   }
+              }"
+
+    view :by_other_villages
+
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
 

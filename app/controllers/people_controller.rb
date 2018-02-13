@@ -775,6 +775,24 @@ class PeopleController < ApplicationController
 
   end
 
+  def get_disignation
+       entry = params["search"] rescue nil
+       data = Person.by_informant_designation.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
+  end
+
+  def get_other_ta
+       entry = params["search"] rescue nil
+       data = Person.by_other_ta.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
+  end
+
+  def get_other_villages
+       entry = params["search"] rescue nil
+       data = Person.by_other_ta.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
+  end
+
   def print_id_label
 
     print_string = person_label(params[:person_id]) #rescue (raise "Unable to find person (#{params[:person_id]}) or generate a national id label for that patient")

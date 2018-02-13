@@ -668,7 +668,9 @@ function duplicatesPopup(data,checkbox){
               var td = document.createElement("td");
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
-              td.innerHTML = people[i]["_source"]["first_name"]+" "+ people[i]["_source"]["last_name"] + "("+people[i]["_source"]["gender"].split("")[0]+")";
+              td.innerHTML = people[i]["_source"]["first_name"]
+                             +" " + (people[i]["_source"]["middle_name"] ? people[i]["_source"]["middle_name"] : "")
+                             +" "+ people[i]["_source"]["last_name"] + "("+people[i]["_source"]["gender"].split("")[0]+")";
               tr.appendChild(td);
 
               var td = document.createElement("td");
@@ -687,13 +689,15 @@ function duplicatesPopup(data,checkbox){
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
               td.innerHTML = (people[i]["_source"]["mother_first_name"] ? people[i]["_source"]["mother_first_name"] : "") +
+                             " " + (people[i]["_source"]["mother_middle_name"] ? people[i]["_source"]["mother_middle_name"] : "")+
                              " " +(people[i]["_source"]["mother_last_name"]? people[i]["_source"]["mother_last_name"] : "N/A");
               tr.appendChild(td);
 
               var td = document.createElement("td");
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
-               td.innerHTML = (people[i]["_source"]["father_first_name"] ? people[i]["_source"]["father_first_name"] : "") +
+              td.innerHTML = (people[i]["_source"]["father_first_name"] ? people[i]["_source"]["father_first_name"] : "") +
+                              " "+(people[i]["_source"]["father_middle_name"] ? people[i]["_source"]["father_middle_name"] : "")+
                               " "+(people[i]["_source"]["father_last_name"]? people[i]["_source"]["father_last_name"] : "N/A");
               tr.appendChild(td);
             }
