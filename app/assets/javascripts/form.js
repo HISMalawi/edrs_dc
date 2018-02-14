@@ -94,8 +94,25 @@
 		        td.innerHTML = (__$('person_id_number') && __$('person_id_number').value ? __$("person_id_number").value : "");
 		        tr.appendChild(td);
 
+
+		        var tr = document.createElement("tr");
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.borderLeft = "1px solid #ccc";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Nationality.";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		         td.colSpan ="12";
+		        td.innerHTML = (__$('person_nationality') && __$('person_nationality').value ? __$("person_nationality").value : "");
+		        tr.appendChild(td);
+
                 
                 var tr = document.createElement("tr");
+                tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 		        
 		        var td = document.createElement("td");
@@ -109,10 +126,29 @@
 		        td.colSpan ="2";
 		        tr.appendChild(td);
 
+		        if(__$('person_gender') && __$('person_gender').value == "Female"){
+		        	if (__$('person_died_while_pregnant') && __$('person_died_while_pregnant').value.length > 0) {
+		        		 	
+		        		 	var tr = document.createElement("tr");
+		        			tableContent.appendChild(tr);
+
+		        		 	var td = document.createElement("td");
+					        td.style.fontWeight = "bold";
+					        td.innerHTML = "Died while pregnant?";
+					        tr.appendChild(td);
+
+					        var td = document.createElement("td");
+					        td.style.border = "none";
+					        td.innerHTML = __$('person_died_while_pregnant').value
+					        td.colSpan ="2";
+					        tr.appendChild(td);
+		        	}
+
+		        }
 
 
                 var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
+		        
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
@@ -135,6 +171,7 @@
 
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 		        
 
@@ -151,7 +188,7 @@
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
+		       
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
@@ -198,6 +235,7 @@
 
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 
 
@@ -215,7 +253,6 @@
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		        
@@ -233,6 +270,7 @@
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 
                 var td = document.createElement("td");

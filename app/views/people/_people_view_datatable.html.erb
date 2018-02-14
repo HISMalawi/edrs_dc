@@ -352,7 +352,7 @@
 										if( data[i].current_foreign_village){
 											address = address + " "+ data[i].current_foreign_village
 										}
-										td.innerHTML =  (data[i].current_country? data[i].current_country : "" ) +address
+										td.innerHTML =  (data[i].current_country? data[i].current_country : "" ) +(address && address != null ? address :"")
 									}
 								}else{
 

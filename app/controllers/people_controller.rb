@@ -480,7 +480,8 @@ class PeopleController < ApplicationController
 
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
-
+      elsif @status.status.include?("DUPLICATE")
+        redirect_to "/dc/show_duplicate/#{params[:id]}?next_url=#{params[:next_url]}"
       else
 
           if SETTINGS["potential_duplicate"]
@@ -659,7 +660,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
   def nationalities
@@ -741,7 +742,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
   end
 
 
@@ -771,7 +772,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
   end
 
