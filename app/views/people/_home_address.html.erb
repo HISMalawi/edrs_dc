@@ -41,6 +41,13 @@
                 					:tt_onLoad=>"hideConfirmation()",
                           :optional=>true} %>
 
+          <%= text_field_tag "person[other_home_country]", @person[:other_home_country], {
+                  :helpText => "Other home address (<i>Country</i>)",
+                  :ajaxUrl=>"/other_countries?search=",
+                  :optional => true,
+                  :condition => "__$('person_home_country').value.length > 0 && __$('person_home_country').value.toLowerCase() =='other'",
+                  :allowFreeText => true} %>
+
           <%= text_field_tag "person[home_foreign_state]", @person[:home_foreign_state], {
                   :helpText => "Foreign home address (<i>State</i>)",
                   :optional => true,

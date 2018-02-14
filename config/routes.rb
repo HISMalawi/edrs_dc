@@ -120,7 +120,7 @@ Rails.application.routes.draw do
 
   get "/villages" => "people#villages"
 
-  get "/get_disignation" =>"people#get_disignation"
+  get "/other_countries" => "people#other_countries"
 
   get "/people/find/:id" =>"people#find"
 

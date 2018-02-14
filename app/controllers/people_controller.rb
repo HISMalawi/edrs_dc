@@ -664,13 +664,18 @@ class PeopleController < ApplicationController
   end
 
   def nationalities
-    nationalities = Nationality.all
+    entry = params[:search_string] rescue nil
+    if entry.present? && false
+        nationalities = Nationality.by_nationality.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+      nationalities = Nationality.all
+    end
+    
     malawi = Nationality.by_nationality.key("Malawian").last
     list = []
     nationalities.each do |n|
-      if n.nationality =="Unknown"
-          next if params[:special].blank?
-      end
+      next if n.nationality.squish =="Unknown"
+      next if n.nationality.squish =="Other"
       if !params[:search_string].blank?
         list << n if n.nationality.match(/#{params[:search_string]}/i)
       else
@@ -682,18 +687,24 @@ class PeopleController < ApplicationController
      if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
       nations = [malawi.nationality] + nations
     end
-    render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
+    render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
   end
 
   def countries
-    countries = Country.all
+    entry = params[:search_string] rescue nil
+    if entry.present? && false
+        countries = Country.by_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+      countries = Country.all
+    end
+    
+    
     malawi = Country.by_country.key("Malawi").last
     list = []
     countries.each do |n|
-      if n.name =="Unknown"
-          next if params[:special].blank?
-      end
+      next if n.name.squish =="Unknown"
+      next if n.name.squish =="Other"
       if n.name =="Malawi"
           next unless params[:exclude].blank?
       end
@@ -714,8 +725,21 @@ class PeopleController < ApplicationController
       countries = [malawi.name] + countries
     end
 
-    render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
+    render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
+  end
+
+  def other_countries
+     entry = params["search"] rescue nil
+     data = Person.by_other_home_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+     other_countries = []
+     data.each do |d|
+        other_countries << d.other_home_country if d.other_home_country.present?
+        other_countries << d.other_current_country if d.other_current_country.present?
+        other_countries << d.other_place_of_death_country if d.other_place_of_death_country.present?
+     end
+
+     render :text => other_countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
   end
 
   def tas

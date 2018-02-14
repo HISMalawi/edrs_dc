@@ -107,7 +107,7 @@
 
 		        var td = document.createElement("td");
 		         td.colSpan ="12";
-		        td.innerHTML = (__$('person_nationality') && __$('person_nationality').value ? __$("person_nationality").value : "");
+		        td.innerHTML = (__$('person_nationality') && __$('person_nationality').value && __$('person_nationality').value !="Other" ? __$("person_nationality").value : __$('person_other_nationality').value);
 		        tr.appendChild(td);
 
                 
@@ -199,40 +199,54 @@
 		        td.innerHTML = "Place of Death";
 		        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		       	td.colSpan ="12";
-		       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
-		       	
-		       	if (place_of_death == 'Health Facility'){
+		        if (registration_type && registration_type == "Deaths Abroad") {
+		        	 var td = document.createElement("td");
+				     td.colSpan ="12";
+				     var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+				     var country = (__$("person_place_of_death_country") && __$("person_place_of_death_country").value.toLowerCase() !='other'? __$("person_place_of_death_country").value : __$("person_other_place_of_death_country").value )
+				     var place_of_death_details = ""
+				     if (place_of_death == 'Health Facility'){
+				     	 place_of_death_details = (__$("person_place_of_death_foreign_hospital") && __$("person_place_of_death_foreign_hospital").value? __$("person_place_of_death_foreign_hospital").value + "," :"") + country;
+				     }else if(place_of_death == 'Home'){
 
-		       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
+				     }
 
-		        }else if(place_of_death == 'Home') {
-		        	var place_of_death_details = ""
-		        	if(__$("person_place_of_death_village").value.trim() == "Unknown"){
+				     tr.appendChild(td);	
+				}else{
+				        var td = document.createElement("td");
+				       	td.colSpan ="12";
+				       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+				       	
+				       	if (place_of_death == 'Health Facility'){
 
-		        	}else if (__$("person_place_of_death_village").value.trim()  == "Other"){
-		        		place_of_death_details = __$("person_other_place_of_death_village").value
-		        	}else{
-		        		place_of_death_details = __$("person_place_of_death_village").value
-		        	}
+				       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
 
-		        	if(__$("person_place_of_death_ta").value == "Unknown"){
+				        }else if(place_of_death == 'Home') {
+				        	var place_of_death_details = ""
+				        	if(__$("person_place_of_death_village").value.trim() == "Unknown"){
 
-		        	}else if(__$("person_place_of_death_ta").value =="Other"){
-		        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_other_place_of_death_ta").value) : __$("person_other_place_of_death_ta").value)
-		        	}else{
-		        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_place_of_death_ta").value) : __$("person_place_of_death_ta").value)
-		        	}
+				        	}else if (__$("person_place_of_death_village").value.trim()  == "Other"){
+				        		place_of_death_details = __$("person_other_place_of_death_village").value
+				        	}else{
+				        		place_of_death_details = __$("person_place_of_death_village").value
+				        	}
 
-		       		td.innerHTML = (place_of_death_details.length > 0 ? place_of_death_details +","+__$("person_place_of_death_district").value :  __$("person_place_of_death_district").value)
+				        	if(__$("person_place_of_death_ta").value == "Unknown"){
 
-		        }else{
-		       		 td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
-		       	}
-		        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
-		        tr.appendChild(td);
+				        	}else if(__$("person_place_of_death_ta").value =="Other"){
+				        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_other_place_of_death_ta").value) : __$("person_other_place_of_death_ta").value)
+				        	}else{
+				        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_place_of_death_ta").value) : __$("person_place_of_death_ta").value)
+				        	}
 
+				       		td.innerHTML = (place_of_death_details.length > 0 ? place_of_death_details +","+__$("person_place_of_death_district").value :  __$("person_place_of_death_district").value)
+
+				        }else{
+				       		 td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
+				       	}
+				        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+				        tr.appendChild(td);					
+				}
 
 		        var tr = document.createElement("tr");
 		        tr.style.backgroundColor = "#f2f2f2";

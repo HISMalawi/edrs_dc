@@ -449,6 +449,7 @@ class Person < CouchRest::Model::Base
   property :date_of_death, Date
   property :nationality_id, String
   property :nationality, String
+  property :other_nationality, String
   property :place_of_death, String
   property :hospital_of_death_id, String
   property :hospital_of_death, String
@@ -462,6 +463,7 @@ class Person < CouchRest::Model::Base
   property :place_of_death_district_id, String
   property :place_of_death_district, String
   property :place_of_death_country, String
+  property :other_place_of_death_country, String
   property :place_of_death_foreign, String
   property :place_of_death_foreign_state, String #State
   property :place_of_death_foreign_district, String #District
@@ -504,6 +506,7 @@ class Person < CouchRest::Model::Base
   property :home_district, String
   property :home_country_id, String
   property :home_country, String
+  property :other_home_country, String
   property :home_foreign_state, String
   property :home_foreign_district, String
   property :home_foreign_village, String
@@ -518,6 +521,7 @@ class Person < CouchRest::Model::Base
   property :current_district, String
   property :current_country_id, String
   property :current_country, String
+  property :other_current_country, String
   property :current_foreign_state, String
   property :current_foreign_district, String
   property :current_foreign_village, String
@@ -568,6 +572,7 @@ class Person < CouchRest::Model::Base
   property :mother_home_district, String
   property :mother_home_country, String
   property :mother_nationality, String
+  property :other_mother_nationality, String
   property :mother_occupation, String
 
   #Address details for foreigner
@@ -618,6 +623,7 @@ class Person < CouchRest::Model::Base
   property :father_home_district, String
   property :father_home_country, String
   property :father_nationality, String
+  property :other_father_nationality, String
   property :father_occupation, String
 
   #Address details for foreigner
@@ -669,6 +675,7 @@ class Person < CouchRest::Model::Base
   property :informant_current_other_ta, String
   property :informant_current_district, String
   property :informant_current_country, String
+  property :other_informant_current_country, String
   property :informant_addressline1, String
   property :informant_addressline2, String
   property :informant_city, String
@@ -761,31 +768,48 @@ class Person < CouchRest::Model::Base
 
     view :by_other_ta,
           :map => "function(doc){
-                   if(doc['other_current_ta'] != null){
-                        emit(doc['other_current_ta'],1);
-                   }
-                   if(doc['other_home_ta'] != null){
-                        emit(doc['other_home_ta'],1);
-                   }
-                  if(doc['other_place_of_death_ta'] != null){
-                        emit(doc['other_place_of_death_ta'],1);
-                   }
+                  if(doc['type'] == 'Person'){
+                     if(doc['other_current_ta'] != null){
+                          emit(doc['other_current_ta'],1);
+                     }
+                     if(doc['other_home_ta'] != null){
+                          emit(doc['other_home_ta'],1);
+                     }
+                    if(doc['other_place_of_death_ta'] != null){
+                          emit(doc['other_place_of_death_ta'],1);
+                     }
+                  }
               }"
 
     view :by_other_villages,
           :map => "function(doc){
-                   if(doc['other_current_village'] != null){
-                        emit(doc['other_current_village'],1);
-                   }
-                   if(doc['other_home_village'] != null){
-                        emit(doc['other_home_village'],1);
-                   }
-                  if(doc['other_place_of_death_village'] != null){
-                        emit(doc['other_place_of_death_village'],1);
-                   }
+                    if(doc['type'] == 'Person'){
+                       if(doc['other_current_village'] != null){
+                            emit(doc['other_current_village'],1);
+                       }
+                       if(doc['other_home_village'] != null){
+                            emit(doc['other_home_village'],1);
+                       }
+                      if(doc['other_place_of_death_village'] != null){
+                            emit(doc['other_place_of_death_village'],1);
+                       }
+                    }
               }"
 
-    view :by_other_villages
+    view :by_other_home_country,
+          :map => "function(doc){
+                        if(doc['type'] == 'Person'){
+                              if(doc['other_home_country'] != null){
+                                  emit(doc['other_home_country'],1);
+                              }
+                              if(doc['other_current_country'] != null){
+                                  emit(doc['other_current_country'],1);
+                              }
+                              if(doc['other_place_of_death_country'] != null){
+                                  emit(doc['other_place_of_death_country'],1);
+                              }
+                        }
+                  }"
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
