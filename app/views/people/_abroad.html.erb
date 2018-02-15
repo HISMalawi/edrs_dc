@@ -14,7 +14,7 @@
 	<% if params[:registration_type].include? "Deaths Abroad"%>
         <section name="Commissioner's documents">
             <sub id="person_commissioner_documents_section" name="Documents attached">
-                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Documents providing proof of death abroad attached? <i style='color: red'>*</i>",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
+                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Documents proving death abroad attached? <i style='color: red'>*</i>",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
             </sub>
         </section>
     <%end%>
