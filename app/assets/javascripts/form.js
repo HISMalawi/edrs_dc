@@ -202,7 +202,7 @@
 		        if (registration_type && registration_type == "Deaths Abroad") {
 		        	 var td = document.createElement("td");
 				     td.colSpan ="12";
-				     var place_of_death =(__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value ? __$('place_of_death_foreign').value : "");
+				     var place_of_death =(__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value ? __$('person_place_of_death_foreign').value : "");
 				     var country = (__$("person_place_of_death_country") && __$("person_place_of_death_country").value.toLowerCase() !='other'? __$("person_place_of_death_country").value : __$("person_other_place_of_death_country").value )
 				     var place_of_death_details = ""
 				     if (place_of_death == 'Health Facility'){

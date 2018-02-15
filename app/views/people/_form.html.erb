@@ -3,6 +3,7 @@
     String.prototype.capitalize = function(lower) {
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
+    var registration_type = "<%=params[:registration_type]%>";
 </script>
 <style type="text/css">
     .statusLabel {
@@ -28,7 +29,8 @@
                       :tt_onUnLoad=>"courtOrder()",
                       :tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
         <%= text_field_tag "person[court_order_number]", nil, {
-                              :helpText => "Court order number <i style='color: red'>*</i>",
+                              :helpText => "Court order number",
+                              :optional => true,
                               :condition=> "__$('person_court_order').value == 'Yes'"} %>
 			</sub>
 		</section>
@@ -37,9 +39,11 @@
 		<section name="Police report">
 			<sub id="person_police_report_section" name="Police report attached">
 				<%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),
-                      :helpText =>"Police report attached?",:tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()",:tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
+                      :helpText =>"Police report attached? <i style='color: red'>*</i>",
+                      :tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()",:tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
         <%= text_field_tag "person[police_report_number]", nil, {
-                              :helpText => "Police report number <i style='color: red'>*</i>",
+                              :helpText => "Police report number",
+                              :optional=>true,
                               :condition=> "__$('person_police_report').value == 'Yes'"} %>
 			</sub>
 		</section>
