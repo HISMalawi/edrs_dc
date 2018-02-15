@@ -315,9 +315,11 @@
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> 
+					<% if @person.place_of_death_foreign_hospital.present? %>
 						<%= @person.place_of_death_foreign_hospital.present? ? "#{@person.place_of_death_foreign_hospital}," :"" %>
 						<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>
-						</td>
+					<%end%>
+					</td>
 			</tr>
 			<%end%>
 			<tr>
