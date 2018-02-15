@@ -306,10 +306,20 @@
 				<td colspan="8"><%= @person.place_of_death_foreign %>
 			<%end%>
 			</tr>
+			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
 			</tr>
+			<%else%>
+			<tr>
+				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
+				<td colspan="8" style="border-bottom: 1.5px solid black"> 
+						<%= @person.place_of_death_foreign_hospital.present? ? "#{@person.place_of_death_foreign_hospital}," :"" %>
+						<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>
+						</td>
+			</tr>
+			<%end%>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
 			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
@@ -322,7 +332,7 @@
 				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
 			<%else%>
 				<td class="clickable" onclick="editField('place_of_death_country')" >Country</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country %></td>
+				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %></td>
 				<td class="clickable" onclick="editField('place_of_death_foreign_state')">State</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_foreign_state %></td>
 				<td class="clickable" onclick="editField('place_of_death_foreign_district')" >District</td>
@@ -349,7 +359,7 @@
 			<%else%>
 				<td class="clickable" onclick="editField('current_district')">Physical address</td>
 				<td class="clickable" onclick="editField('current_country')" >Country</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.current_country %></td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_country.to_s !='Other'? @person.current_country : (@person.other_current_country rescue '') %></td>
 				<td class="clickable" onclick="editField('current_foreign_state')">State</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.current_foreign_state %></td>
 				<td class="clickable" onclick="editField('current_foreign_district')" >District</td>

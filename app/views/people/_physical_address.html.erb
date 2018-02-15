@@ -50,7 +50,8 @@
                       :helpText => "Other physical address (<i>Country</i>)",
                       :optional => true,
                       :ajaxUrl=>"/other_countries?search=",
-                      :condition => "__$('person_current_country').value.toLowerCase() =='other'"} %>
+                      :condition => "__$('person_current_country').value.toLowerCase() =='other'",
+                      :allowFreeText => true} %>
                 
                 <%= text_field_tag "person[current_foreign_state]", @person[:current_foreign_state], {
                       :helpText => "Foreign physical residential address(<i>State </i>)",

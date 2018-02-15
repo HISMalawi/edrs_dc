@@ -21,7 +21,7 @@
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
 			</sub>
 		</section>
 	<%end%>
@@ -41,7 +41,8 @@
                 <%= text_field_tag "person[other_place_of_death_country]", @person[:other_place_of_death_country], {
                         :helpText => "Other place of death (<i>Country</i>) <i style='color: red'>*</i>",
                         :ajaxUrl=>"/other_countries?search=",
-                        :condition =>"__$('person_place_of_death_country').value.toLowerCase() =='other' "
+                        :condition =>"__$('person_place_of_death_country').value.toLowerCase() =='other'",
+                        :allowFreeText => true
                         } %>
 
                 <%= select_tag("person[place_of_death_foreign]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death_foreign]),

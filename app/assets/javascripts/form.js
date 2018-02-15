@@ -206,11 +206,17 @@
 				     var country = (__$("person_place_of_death_country") && __$("person_place_of_death_country").value.toLowerCase() !='other'? __$("person_place_of_death_country").value : __$("person_other_place_of_death_country").value )
 				     var place_of_death_details = ""
 				     if (place_of_death == 'Health Facility'){
-				     	 place_of_death_details = (__$("person_place_of_death_foreign_hospital") && __$("person_place_of_death_foreign_hospital").value? __$("person_place_of_death_foreign_hospital").value + "," :"") + country;
+				     	 place_of_death_details = (__$("person_place_of_death_foreign_hospital") && __$("person_place_of_death_foreign_hospital").value ? __$("person_place_of_death_foreign_hospital").value + "," :"") + country;
 				     }else if(place_of_death == 'Home'){
-
+				     	 place_of_death_details = place_of_death_details + (__$('person_place_of_death_foreign_village') && __$('person_place_of_death_foreign_village').value? __$('person_place_of_death_foreign_village').value : "");
+				     	 place_of_death_details = (__$('person_place_of_death_foreign_district') && __$('person_place_of_death_foreign_district').value.length > 0 ? (place_of_death_details.length > 0 ? place_of_death_details +"," : place_of_death_details)+__$('person_place_of_death_foreign_district').value  : place_of_death_details)
+				     	 place_of_death_details = (__$('person_place_of_death_foreign_state') && __$('person_place_of_death_foreign_state').value.length > 0 ? (place_of_death_details.length > 0 ? place_of_death_details +"," : place_of_death_details)+__$('person_place_of_death_foreign_state').value  : place_of_death_details)
+				     	 place_of_death_details = place_of_death_details.length > 0 ? place_of_death_details + ","+ country : country
+				     }else{
+				     	place_of_death_details = (__$('person_other_place_of_death') && __$('person_other_place_of_death').value.length
+				     	> 0 ? __$('person_other_place_of_death').value + ","+ country : country)
 				     }
-
+				     td.innerHTML = place_of_death_details;
 				     tr.appendChild(td);	
 				}else{
 				        var td = document.createElement("td");
