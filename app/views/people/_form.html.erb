@@ -4,6 +4,8 @@
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
     var registration_type = "<%=params[:registration_type]%>";
+    var facility_name = "<%=@facility.name %>"
+    var district = "<%= @district.name %>"
 </script>
 <style type="text/css">
     .statusLabel {
@@ -24,7 +26,7 @@
 		<section name="Proof of reported missing">
 			<sub id="person_court_order_section" name="Documents attached">
 				<%= select_tag("person[court_order]",options_for_select([" ", "Yes", "No"], nil),
-                      :helpText =>"Court order  or relevant documents attached? <i style='color: red'>*</i>",
+                      :helpText =>"Court order  attached? <i style='color: red'>*</i>",
                       :tt_requireNextClick => false, 
                       :tt_onUnLoad=>"courtOrder()",
                       :tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
@@ -40,11 +42,15 @@
 			<sub id="person_police_report_section" name="Police report attached">
 				<%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),
                       :helpText =>"Police report attached? <i style='color: red'>*</i>",
-                      :tt_requireNextClick => false, :tt_onUnLoad=>"policeReport()",:tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
-        <%= text_field_tag "person[police_report_number]", nil, {
-                              :helpText => "Police report number",
+                      :tt_requireNextClick => false, :tt_onUnLoad=>"policeReport('Abnormal death')",:tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
+        <%= text_field_tag "person[police_report_details]", nil, {
+                              :helpText => "Police report details",
                               :optional=>true,
                               :condition=> "__$('person_police_report').value == 'Yes'"} %>
+        <%= text_field_tag "person[reason_police_report_not_available]", nil, {
+                              :helpText => "Reason police report not attached? <i style='color: red'>*</i>",
+                              :optional=>true,
+                              :condition=> "__$('person_police_report').value == 'No'"} %>
 			</sub>
 		</section>
 	<%end%>
@@ -66,12 +72,62 @@
                                     :tt_onUnLoad => "validateDeathDate()"}%>
                                     
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
-                <% if @site_type == "facility" && params[:registration_type] != 'Dead on Arrival' %>
+                <% if @site_type == "facility" && params[:registration_type] == 'Normal Cases' %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                     <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
+                    <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
+                <% elsif @site_type == "facility" && params[:registration_type] != 'Normal Cases' && params[:registration_type] != 'Dead on Arrival' %>
+                     <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
+                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
+                     <%= (f.hidden_field :hospital_of_death, :value => "") %>
+                     <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
+                                :id=> "person_place_of_death",
+                                :helpText =>"Place of Death <i style='color: red'>*</i>", 
+                                :tt_onUnLoad =>"setActualPlace(facility_name);setAjaxUrl(-1)",
+                                :tt_requireNextClick => false,
+                                :tt_pageStyleClass =>"NoKeyboard") %>
+
+                    <%= text_field_tag "person[place_of_death_district_holder]", nil, {
+                              :helpText => "Place of Death (<i>District</i>) <i style='color: red'>*</i>", 
+                              :tt_onUnLoad => "unLoadSetValue('person_place_of_death_district');setAjaxUrl(0)",
+                              :ajaxUrl => "/districts?search_string=",
+                              :condition => "__$('person_place_of_death').value != 'Health Facility'",
+                              :tt_requireNextClick => false} %>
+
+                    <%= text_field_tag "person[place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='place_of_death_ta_label'>Traditional authority</i>) <i style='color: red'>*</i>",
+                              :condition => "__$('person_place_of_death').value.match('Home')", 
+                              :tt_onUnLoad => "setAjaxUrl(1)",
+                              :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Town/Area</i>) <i style=\"color: red\">*</i>')",
+                              :tt_requireNextClick => false} %>
+
+                     <%= text_field_tag "person[other_place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='other_place_of_death_ta_label'>Other Traditional Authority specify</i>) <i style='color: red'>*</i>",
+                              :tt_onLoad => "removeUnknown();checkSpace(1);setSubTitle('person_place_of_death_district','Place of death (<i>Other Town/Area specify</i>) <i style=\"color: red\">*</i>')",
+                              :condition => "__$('person_place_of_death_ta').value =='Other'"} %>
+
+                     <%= text_field_tag "person[place_of_death_village]", nil, {
+                            :helpText => "Place of death (<i id='place_of_death_village_label'>Village</i>) <i style='color: red'>*</i>",
+                            :condition => "__$('person_place_of_death_ta').value.length > 0 && (__$('person_place_of_death_ta').value != 'Other' &&__$('person_place_of_death_ta').value != 'Unknown')",
+                            :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Location</i>) <i style=\"color: red\">*</i>')",
+                            :tt_requireNextClick => false} %>
+
+                     <%= text_field_tag "person[other_place_of_death_village]", nil, {
+                            :helpText => "Place of death (<i id='other_place_of_death_village_label'>Other Village specify</i>) <i style='color: red'>*</i>",
+                            :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Other Location specify</i>) <i style=\"color: red\">*</i>');checkSpace(1)",
+                            :condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
+
+                     <%= (f.text_field :other_place_of_death,
+                            :helpText => "Place of death (<i id='other_place_of_death_label'>Other specify</i>) <i style='color: red'>*</i>",
+                            :condition => "__$('person_place_of_death').value.match('Other')",:tt_onLoad=> "removeUnknown();checkSpace(1)") rescue "" %>                    
                 <% elsif @site_type =="dc" || @site_type =="remote" || params[:registration_type] == 'Dead on Arrival' %>
                 <% if params[:registration_type] == 'Dead on Arrival' %>
+                      <% if @site_type == "facility" %>
+                          <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
+                      <%else%>
+                          <%= (f.hidden_field :place_of_registration, :value => @district.name ) %>
+                      <%end%>
                         <%= select_tag("person[place_of_death]", options_for_select(["","Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
                               :helpText =>"Place of Death <i style='color: red'>*</i>", 
@@ -132,7 +188,7 @@
             <%= render :partial => "home_address" %>
 
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[died_while_pregnant]", options_for_select(['','No', 'Yes'], (@person[:died_while_pregnant] rescue 'N/A')),
+               <%= select_tag("person[died_while_pregnant]", options_for_select(['','Yes', 'No'], (@person[:died_while_pregnant])),
                         :helpText =>"Did the death occur while pregnant?(<i style='font-size: 18px'> at the time of delivery or within 6 weeks after the end of pregnancy</i>)", 
                         :condition =>"validatePregnancy()",
                         :tt_requireNextClick => false,

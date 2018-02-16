@@ -3,8 +3,9 @@
     String.prototype.capitalize = function(lower) {
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
-
     var registration_type = "<%=params[:registration_type]%>";
+    var facility_name = "<%=@facility.name %>"
+    var district = "<%= @district.name %>"
 </script>
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>

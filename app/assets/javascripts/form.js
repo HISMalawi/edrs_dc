@@ -196,6 +196,36 @@
 		        var td = document.createElement("td");
 		        td.style.border = "none";
 		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Place of Registration";
+		        tr.appendChild(td);
+
+				var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.colSpan ="5";
+		        var place_of_registration = ""
+		        if (site_type == "facility"){
+		        	place_of_registration = __$("person_place_of_registration").value + ","+district
+		        }else{
+		        	place_of_registration = __$("person_place_of_registration").value + " DRO"
+		        }
+		        td.innerHTML = place_of_registration;
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		       
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+
+
+		        var tr = document.createElement("tr");
+		       
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
 		        td.innerHTML = "Place of Death";
 		        tr.appendChild(td);
 
@@ -224,7 +254,6 @@
 				       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 				       	
 				       	if (place_of_death == 'Health Facility'){
-
 				       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
 
 				        }else if(place_of_death == 'Home') {
@@ -253,6 +282,44 @@
 				        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 				        tr.appendChild(td);					
 				}
+
+				if (__$('person_police_report')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Police Reported attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_police_report').value
+				        tr.appendChild(td);
+				}
+
+
+				if (__$('person_court_order')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Court order attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_court_order').value
+				        tr.appendChild(td);
+				}
+
 
 		        var tr = document.createElement("tr");
 		        tr.style.backgroundColor = "#f2f2f2";
@@ -1576,6 +1643,29 @@
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
 		}
+
+		function unLoadSetValue(target){
+				var  value = __$('touchscreenInput' + tstCurrentPage).value;
+				__$(target).value = value;
+		}
+
+		function setUnknownNames(){
+			if(__$('touchscreenInput'+tstCurrentPage).value == "No"){
+					addUnknow('person_last_name');
+					addUnknow('person_fist_name');
+					addUnknow('person_nationality');
+			}
+		}
+
+		function setActualPlace(hospital){
+			var place_of_death = __$('touchscreenInput' + tstCurrentPage).value;
+			if(place_of_death == "Health Facility"){
+				__$('person_hospital_of_death').value = hospital
+			}else{
+				__$('person_hospital_of_death').value = ""
+			}
+		}
+
 		function setAjaxUrl(case_number){
 			switch(case_number) {
 				case -1:
@@ -1946,7 +2036,9 @@
 
 		}
 		function checkForDuplicate(){
-
+				if (registration_type == "Unclaimed bodies") {
+					return;
+				}
 				var place_of_death = (__$("person_place_of_death") && __$("person_place_of_death").value? __$("person_place_of_death").value : "" );
 				place_of_death = (__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value? __$("person_place_of_death_foreign").value : place_of_death);	
 				var place_of_death_district = (__$("person_place_of_death_district") ? __$("person_place_of_death_district").value : "Abroad")
@@ -2326,10 +2418,13 @@
 		function policeReport(registration_type){
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
-					confirmYesNo("Registering "+(registration_type ? registration_type : "Abnormal death")+" requires a police report",function(){cancelForm()},null,30000);
-					setTimeout(function(){
+					showMessage("Registering "+(registration_type ? registration_type : "Abnormal death")+" requires a police report",null,30000);
+					if (registration_type.match("Missing")) {
+						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
-					},100);
+						},100);
+					}
+
 			}
 		}
 		
