@@ -255,7 +255,13 @@
 				<td style="border-right:none"><b>Registration Category : </b></td>
 				<td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
 				<td colspan="2" style="border-right:none"><b>Record Status : </b></td>
-				<td colspan="7" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+				<td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+				<td colspan="2" style="border-right:none"><b>Place of Registration : </b></td>
+				<% if @person.facility_code.to_s.present? %>
+					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> , <%= @district.name %></td>
+				<%else%>
+					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> DRO</td>
+				<%end%>
 			</tr>
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased 
