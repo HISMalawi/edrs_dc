@@ -30,8 +30,8 @@
                       :tt_requireNextClick => false, 
                       :tt_onUnLoad=>"courtOrder()",
                       :tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
-        <%= text_field_tag "person[court_order_number]", nil, {
-                              :helpText => "Court order number",
+        <%= text_field_tag "person[court_order_details]", nil, {
+                              :helpText => "Court order details",
                               :optional => true,
                               :condition=> "__$('person_court_order').value == 'Yes'"} %>
 			</sub>

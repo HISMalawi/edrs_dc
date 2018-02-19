@@ -29,7 +29,6 @@
 		        th.style.padding = "20px";
 		        th.style.borderBottom = "1px solid #ccc";
 		        th.innerHTML = "PARTICULARS OF THE DECEASED";
-
 		        tr.appendChild(th);
 
 		        var tr = document.createElement("tr");
@@ -59,9 +58,48 @@
 
 		        div.appendChild(tableContent);
 
+		        if (__$('person_police_report')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Police Reported attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_police_report').value
+				        tr.appendChild(td);
+				}
+
+
+				if (__$('person_court_order')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Court order attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_court_order').value
+				        tr.appendChild(td);
+				}
+
+
 		        if (__$('person_proof_of_death_abroad')) {
 		        		var tr = document.createElement("tr");
 				        tr.colSpan ="12";
+				        tr.style.backgroundColor = "#f2f2f2";
 				        tableContent.appendChild(tr);
 				       
 
@@ -301,44 +339,6 @@
 				        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 				        tr.appendChild(td);					
 				}
-
-				if (__$('person_police_report')) {
-						var tr = document.createElement("tr");
-				        tr.style.backgroundColor = "#f2f2f2";
-				        tableContent.appendChild(tr);
-
-
-		                var td = document.createElement("td");
-				        td.style.border = "none";
-				        td.style.fontWeight = "bold";
-				        td.innerHTML = "Police Reported attached?";
-				        tr.appendChild(td);
-				       
-				        var td = document.createElement("td");
-				        td.style.border = "none";
-				        td.innerHTML = __$('person_police_report').value
-				        tr.appendChild(td);
-				}
-
-
-				if (__$('person_court_order')) {
-						var tr = document.createElement("tr");
-				        tr.style.backgroundColor = "#f2f2f2";
-				        tableContent.appendChild(tr);
-
-
-		                var td = document.createElement("td");
-				        td.style.border = "none";
-				        td.style.fontWeight = "bold";
-				        td.innerHTML = "Court order attached?";
-				        tr.appendChild(td);
-				       
-				        var td = document.createElement("td");
-				        td.style.border = "none";
-				        td.innerHTML = __$('person_court_order').value
-				        tr.appendChild(td);
-				}
-
 
 		        var tr = document.createElement("tr");
 		        tr.style.backgroundColor = "#f2f2f2";
@@ -2241,12 +2241,15 @@
 		function validateMissingDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = (new Date(date)).format("YYYY-mm-dd");
-			
+
 			if (registration_type == "Missing Persons") {
 				
 				if (parseInt(getAge(date)) < 7) {
 
-					showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is less than 7 years ago",null,30000);
+					showMessage("<b>Death date ("+(new Date(date)).format()+") is Invalid</b>  <i>(Atleast 7 years is required to confirm a person as missing)</i>",null,30000);
+					setTimeout(function(){
+						gotoPage(tstCurrentPage -1);
+					},100)
 				}
 			}
 		}
