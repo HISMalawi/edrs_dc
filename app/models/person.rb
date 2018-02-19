@@ -544,7 +544,7 @@ class Person < CouchRest::Model::Base
   property :police_report, String, :default => "No"
   property :police_report_details, String
   property :reason_police_report_not_available, String
-  property :commissioner_documents, String, :default => "No"
+  property :proof_of_death_abroad, String, :default => "No"
 
   #Person's mother properties
   #property :mother do

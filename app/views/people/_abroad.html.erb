@@ -13,9 +13,9 @@
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
 	<% if params[:registration_type].include? "Deaths Abroad"%>
-        <section name="Commissioner's documents">
+        <section name="Proof of death abroad">
             <sub id="person_commissioner_documents_section" name="Documents attached">
-                <%= select_tag("person[commissioner_documents]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Documents proving death abroad attached? <i style='color: red'>*</i>",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
+                <%= select_tag("person[proof_of_death_abroad]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Documents proving death abroad attached? <i style='color: red'>*</i>",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
             </sub>
         </section>
     <%end%>
@@ -45,6 +45,8 @@
                         :condition =>"__$('person_place_of_death_country').value.toLowerCase() =='other'",
                         :allowFreeText => true
                         } %>
+
+                <%= (f.hidden_field :place_of_registration, :value => @district.name) %>
 
                 <%= select_tag("person[place_of_death_foreign]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death_foreign]),
                                         :id=> "person_place_of_death_foreign",

@@ -50,7 +50,7 @@
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
 			</sub>
 		</section>
 	<%end%>

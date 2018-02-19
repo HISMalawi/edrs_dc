@@ -69,7 +69,7 @@
                 				  {:helpText => "Date of Death <i style='color: red'>*</i>",
                                     :field_type => "date" ,
                                     :tt_onLoad =>"removeUnknown()",
-                                    :tt_onUnLoad => "validateDeathDate()"}%>
+                                    :tt_onUnLoad => "validateDeathDate();validateMissingDate()"}%>
                                     
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
                 <% if @site_type == "facility" && params[:registration_type] == 'Normal Cases' %>
@@ -135,6 +135,7 @@
                               :tt_requireNextClick => false,
                               :tt_pageStyleClass =>"NoKeyboard") %>
                 <%else%>
+                    <%= (f.hidden_field :place_of_registration, :value => @district.name) %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
                               :helpText =>"Place of Death <i style='color: red'>*</i>", 

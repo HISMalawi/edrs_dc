@@ -59,6 +59,25 @@
 
 		        div.appendChild(tableContent);
 
+		        if (__$('person_proof_of_death_abroad')) {
+		        		var tr = document.createElement("tr");
+				        tr.colSpan ="12";
+				        tableContent.appendChild(tr);
+				       
+
+				        var td = document.createElement("td")
+				        td.innerHTML = "Documents proving death abroad attached ?";
+				        td.style.fontWeight = "bold";
+				        td.style.borderLeft = "1px solid #ccc";
+				        tr.appendChild(td);
+
+				        var td = document.createElement("td");
+				        td.colSpan ="12";
+				        td.innerHTML = __$('person_proof_of_death_abroad').value;
+				        tr.appendChild(td)
+		        }
+
+
 		        var tr = document.createElement("tr");
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
@@ -2219,7 +2238,21 @@
 				}
 		}
 
+		function validateMissingDate(){
+			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = (new Date(date)).format("YYYY-mm-dd");
+			
+			if (registration_type == "Missing Persons") {
+				
+				if (parseInt(getAge(date)) < 7) {
+
+					showMessage("Death date ("+(new Date(__$("person_birthdate").value)).format()+") is less than 7 years ago",null,30000);
+				}
+			}
+		}
+
 		function validateDeathDate(){
+
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = (new Date(date)).format("YYYY-mm-dd");
 			var today = new Date();
@@ -2243,9 +2276,14 @@
 
 				return;
 			}
+
+
 			if(site_type == "facility"){
 					
 					if (date < min){
+						if (registration_type == "Missing Persons") {
+							return;
+						}
 						confirmYesNo("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>",function(){cancelForm()},null,30000);
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
@@ -2254,6 +2292,9 @@
 			}else{
 
 				if(date < min){
+					if (registration_type == "Missing Persons") {
+							return;
+					}
 					showMessage("Registration of the record has been delayed by more than 6 weeks",null,30000);
 					__$("person_delayed_registration").value ="Yes"
 				}
