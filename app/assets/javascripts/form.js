@@ -1650,10 +1650,10 @@
 		}
 
 		function setUnknownNames(){
-			if(__$('touchscreenInput'+tstCurrentPage).value == "No"){
-					addUnknow('person_last_name');
-					addUnknow('person_fist_name');
-					addUnknow('person_nationality');
+			if(__$('touchscreenInput' + tstCurrentPage).value.trim() == "No"){
+					addUnknown('person_last_name',true);
+					addUnknown('person_first_name',true);
+					addUnknown('person_nationality',true);
 			}
 		}
 

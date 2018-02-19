@@ -69,6 +69,7 @@
                                                     :allowFreeText =>true,
                                                     :validationRule=>"^[a-zA-Z0-9]{8}$", 
                                                     :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}%>
+            <% if params[:registration_type] != "Unclaimed bodies" %>
 
                 <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
@@ -80,6 +81,9 @@
                              'Other'], @person[:informant_relationship_to_deceased]),
                              :helpText =>"Informant's relationship to deceased <i style='color: red'>*</i>",
                              :tt_pageStyleClass => "NoKeyboard", :tt_onLoad => "adjustViewPortHeight()" ) %>
+          <%else%>
+                <input type="hidden" name="person[informant_relationship_to_deceased]" id="person_informant_relationship_to_deceased" value="Other">
+          <%end%>
 
                 <%= text_field_tag "person[informant_relationship_to_deceased_other]",nil,
                         {:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",
@@ -155,7 +159,7 @@
                 <%= text_field_tag "person[informant_foreign_address]", nil, {
                         :helpText => "Informant foreign address (<i>Postal address</i>)",
                         :optional => true,
-                        :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'",
+                        :condition => "__$('person_informant_current_country').value.length > 0 &&__$('person_informant_current_country').value.toLowerCase() !='malawi'",
                         :placeholder => "e.g P.O. Box 200 Lilongwe 3 , Malawi"} %>
 
 

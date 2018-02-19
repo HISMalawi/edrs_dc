@@ -8,11 +8,12 @@
     var facility_name = "<%=@facility.name %>"
     var district = "<%= @district.name %>"
     
-    function addUnknow(field_id){
-        var value = __$('touchscreenInput'+tstCurrentPage).value;
+    function addUnknown(field_id,available){
+        var value = (!available ? __$('touchscreenInput'+tstCurrentPage).value : "");
         if(value.length == 0){
             setTimeout(function(){
                 __$(field_id).value = "Unknown"
+                console.log(field_id);
             },500);
         }
     }
@@ -68,7 +69,7 @@
                          {:helpText => "Surname",
                                         :allowFreeText =>true, 
                                         :ajaxURL => "/get_names?search=",
-                                        :tt_onUnLoad=>"unLoadSetValue('person_last_name');validateName('person',1);addUnknow('person_last_name');",
+                                        :tt_onUnLoad=>"unLoadSetValue('person_last_name');validateName('person',1);addUnknown('person_last_name');",
                                         :tt_onLoad=> "removeUnknown();checkSpace()",
                                         :optional => true,
                                         :condition => "__$('person_details_available').value == 'Yes'"} %>
@@ -77,7 +78,7 @@
                           {:helpText => "First name",
                             :allowFreeText =>true,  
                             :ajaxURL => "/get_names?search=",
-                            :tt_onUnLoad=>"unLoadSetValue('person_first_name');validateName('person',2);addUnknow('person_last_name')",
+                            :tt_onUnLoad=>"unLoadSetValue('person_first_name');validateName('person',2);addUnknown('person_last_name')",
                             :tt_onLoad=> "removeUnknown();checkSpace()",
                             :condition => "__$('person_details_available').value == 'Yes'",
                             :optional=>true}%>
@@ -104,8 +105,7 @@
                 				:helpText => "Nationality <i style='color: red'>*</i>",
                 				:ajaxURL => "/nationalities?special=Special&search_string=",
                 				:tt_requireNextClick => false,
-                        :tt_onUnLoad=> "unLoadSetValue('person_nationality')",
-                        :condition => "__$('person_details_available').value == 'Yes'"} %>
+                        :tt_onUnLoad=> "unLoadSetValue('person_nationality')"} %>
 
                  <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),
                  				:helpText =>"Sex <i style='color: red'>*</i>",
@@ -159,10 +159,42 @@
                 <%= (f.text_field :date_of_death,:helpText => "Date of Death <i style='color: red'>*</i>",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
                 <% if @site_type == "facility" %>
-                    <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
-                    <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
-                    <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
+                     <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
+                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
+                     <%= (f.hidden_field :hospital_of_death, :value => "") %>
+                     <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
+                                :id=> "person_place_of_death",
+                                :helpText =>"Place of Death <i style='color: red'>*</i>", 
+                                :tt_onUnLoad =>"setActualPlace(facility_name);setAjaxUrl(-1)",
+                                :tt_requireNextClick => false,
+                                :tt_pageStyleClass =>"NoKeyboard") %>
+
+                    <%= text_field_tag "person[place_of_death_district_holder]", nil, {
+                              :helpText => "Place of Death (<i>District</i>) <i style='color: red'>*</i>", 
+                              :tt_onUnLoad => "unLoadSetValue('person_place_of_death_district');setAjaxUrl(0)",
+                              :ajaxUrl => "/districts?search_string=",
+                              :condition => "__$('person_place_of_death').value != 'Health Facility'",
+                              :tt_requireNextClick => false} %>
+
+                    <%= text_field_tag "person[place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='place_of_death_ta_label'>Traditional authority</i>) <i style='color: red'>*</i>",
+                              :condition => "__$('person_place_of_death').value.match('Home')", 
+                              :tt_onUnLoad => "setAjaxUrl(1)",
+                              :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Town/Area</i>) <i style=\"color: red\">*</i>')",
+                              :tt_requireNextClick => false} %>
+
+                     <%= text_field_tag "person[other_place_of_death_ta]", nil, {
+                              :helpText => "Place of death (<i id='other_place_of_death_ta_label'>Other Traditional Authority specify</i>) <i style='color: red'>*</i>",
+                              :tt_onLoad => "removeUnknown();checkSpace(1);setSubTitle('person_place_of_death_district','Place of death (<i>Other Town/Area specify</i>) <i style=\"color: red\">*</i>')",
+                              :condition => "__$('person_place_of_death_ta').value =='Other'"} %>
+
+                     <%= text_field_tag "person[place_of_death_village]", nil, {
+                            :helpText => "Place of death (<i id='place_of_death_village_label'>Village</i>) <i style='color: red'>*</i>",
+                            :condition => "__$('person_place_of_death_ta').value.length > 0 && (__$('person_place_of_death_ta').value != 'Other' &&__$('person_place_of_death_ta').value != 'Unknown')",
+                            :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Location</i>) <i style=\"color: red\">*</i>')",
+                            :tt_requireNextClick => false} %>
                 <% elsif @site_type =="dc" %>
+                 <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                  <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
                               :helpText =>"Place of Death <i style='color: red'>*</i>", 
