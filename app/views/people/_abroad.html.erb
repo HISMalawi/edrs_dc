@@ -4,7 +4,7 @@
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
     var registration_type = "<%=params[:registration_type]%>";
-    var facility_name = "<%=@facility.name %>"
+    var facility_name = "<%=@facility.name rescue ''%>"
     var district = "<%= @district.name %>"
 </script>
 <script src="/assets/edrs.js"></script>

@@ -471,7 +471,7 @@
 				<td>3</td>
 				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
 				<td colspan="8">
-					<%= @person.informant_relationship_to_deceased rescue @person.informant_relationship_to_deceased_other %>
+					<%= (@person.informant_relationship_to_deceased != "Other" ? @person.informant_relationship_to_deceased : @person.informant_relationship_to_deceased_other) %>
 				</td>
 			</tr>
 			<tr>

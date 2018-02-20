@@ -1,5 +1,5 @@
  crtkey: password
- facility_code: '2926' 
+ facility_code: #'2926' 
  district_code:  #BT | LL | ZA
  exact_duplicate: true
  potential_duplicate: false # false when elasticsearch is not present
