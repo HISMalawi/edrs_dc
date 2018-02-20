@@ -18,6 +18,19 @@
      function removeCheckSpace(){
           clearInterval(spaceInterval);
      }
+
+     function removeAutoComplete(){
+      setInterval(function(){
+        var control = __$('touchscreenInput' + tstCurrentPage)
+        if (!control){ return }
+        if(control.getAttribute("autocomplete") != null){
+          //console.log(control.getAttribute("autocomplete"));
+          return;
+        }else{
+          control.setAttribute("autocomplete","off")
+        }
+      }, 500)
+    }
 </script>
 <%= form_for(@user) do |f| %>
 
@@ -35,11 +48,11 @@
       <% if request.path.match(/new/) %>
 
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" , :tt_onUnLoad=>"uniqueUsername()",:field_type=>"password" %>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :textCase => "lower", :uniq_check => "/username_availability?search_str=", :helpText => "Username <i style='color: red'>*</i>" , :tt_onUnLoad=>"uniqueUsername()",:field_type=>"password",:tt_onLoad=>"removeAutoComplete()" %>
 
       <%else %>
 
-                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username <i style='color: red'>*</i>", :field_type=>"password"%>
+                <%= f.text_field :username, :class => "input_cell", :placeholder => "username", :required => true, :disabled => "disabled", :textCase => "lower", :helpText => "Username <i style='color: red'>*</i>", :field_type=>"password",:tt_onLoad=>"removeAutoComplete()"%>
 
       <% end %>
 
