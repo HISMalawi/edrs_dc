@@ -411,12 +411,6 @@
 
 
     <% end %>
-    <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false">
-
-    <section name="Captured data">
-        <sub id="capture_data" name="Captured data">
-		     <%= text_field_tag "summary", nil, {:helpText => 'Summary', :tt_onLoad=>"checkForDuplicate();loadMinPersonSummary()"} %>
-        </sub>
-    </section>  
+    <input type="hidden" name="potential_duplicate" id="potential_duplicate" condition="false"> 
 
 <% end %>
