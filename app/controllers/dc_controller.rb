@@ -88,7 +88,7 @@ class DcController < ApplicationController
 	           		duplicate =   SimpleElasticSearch.query_duplicate_coded(record,SETTINGS['duplicate_precision'])
 	           end
 				
-			   if duplicate.blank? 
+			   if duplicate.blank?  ||  true
 					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
 					if status.status =="HQ REJECTED"
