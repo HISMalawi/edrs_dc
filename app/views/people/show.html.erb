@@ -323,6 +323,7 @@
 			<%if (@person.place_of_death.present? || @person.other_place_of_death.present?) %>
 				<td colspan="8"><%= @person.place_of_death %></td>
 			<%else%>
+
 				<td colspan="8"><%= @person.place_of_death_foreign %>
 			<%end%>
 			</tr>
@@ -335,11 +336,13 @@
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> 
+				<% if @person.place_of_death_foreign =="Health Facility" %>
 					<% if @person.place_of_death_foreign_hospital.present? %>
 						<%= @person.place_of_death_foreign_hospital.present? ? "#{@person.place_of_death_foreign_hospital}," :"" %>
-						<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>
 					<%end%>
-					</td>
+						<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>
+				<%end%>	
+				</td>
 			</tr>
 			<%end%>
 			<tr>
@@ -358,13 +361,29 @@
 				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
 			<%else%>
 				<td class="clickable" onclick="editField('place_of_death_country')" >Country</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %></td>
+				<% if @person.place_of_death_foreign =="Home" %>
+					<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_state')">State</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_foreign_state %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_district')" >District</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_district  %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_village')" >Town</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_village  %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 			<% end %>
 			</tr>
 			<tr>
@@ -829,6 +848,15 @@
 						td.innerHTML = place_of_death + "<%= @person.place_of_death_district rescue '' %>";
 					<%elsif @person.place_of_death == 'Other' %>
 						 td.innerHTML = ("<%= @person.other_place_of_death rescue '' %>".length > 0 ? "<%= @person.other_place_of_death rescue '' %>" + "," : "")+ "<%= @person.place_of_death_district rescue '' %>"
+					<% elsif @person.place_of_death_foreign =="Health Facility" %>
+						var place = ""
+						<% if @person.place_of_death_foreign_hospital.present? %>
+							place ="<%= @person.place_of_death_foreign_hospital.present? ? '#{@person.place_of_death_foreign_hospital},' :'' %>";
+						<%end%>
+								place ="<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>"
+						td.innerHTML = place;
+					<% elsif @person.place_of_death_foreign =="Home" %>
+					<% elsif @person.place_of_death_foreign =="Other" %>
 					<% end %>
 					tr.appendChild(td);
 
@@ -1032,7 +1060,7 @@
 
 			function editField(field){
 
-					var editable_statuses =["DC ACTIVE", "HQ REJECTED"]
+					var editable_statuses =["DC ACTIVE","DC PENDING","DC REJECTED", "HQ REJECTED"]
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){
