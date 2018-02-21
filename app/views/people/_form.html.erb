@@ -41,7 +41,7 @@
 		<section name="Police report">
 			<sub id="person_police_report_section" name="Police report attached">
 				<%= select_tag("person[police_report]",options_for_select([" ", "Yes", "No"], nil),
-                      :helpText =>"Police report attached? <i style='color: red'>*</i>",
+                      :helpText =>"Police report attached? <i style='color: red;font-size:12px'>(Required to choose one option to proceed)</i>",
                       :tt_requireNextClick => false, :tt_onUnLoad=>"policeReport('Abnormal death')",:tt_onLoad=>"overRideCancel();removeAutoComplete()") %>
         <%= text_field_tag "person[police_report_details]", nil, {
                               :helpText => "Police report details",
