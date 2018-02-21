@@ -175,7 +175,7 @@ class Person < CouchRest::Model::Base
 
             district = District.by_name.key(params[:place_of_death_district]).first
 
-            params[:place_of_death_district_id] = district.id
+            params[:place_of_death_district_id] = district.id rescue ''
 
             if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("health facility")
 

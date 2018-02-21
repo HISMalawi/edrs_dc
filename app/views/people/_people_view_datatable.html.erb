@@ -318,7 +318,7 @@
 
 								}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
 
-									td.innerHTML = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death + "," : "")+ data[i].place_of_death_district;
+									td.innerHTML = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death : "")+ (data[i].place_of_death_district != "Not indicated"? ","+data[i].place_of_death_district : "")
 
 
 								}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
@@ -514,7 +514,7 @@
 					}
 					else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
 
-									place_of_death = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death + "," : "")+ data[i].place_of_death_district
+									place_of_death = (data[i].other_place_of_death !=null && data[i].other_place_of_death.length > 0 ? data[i].other_place_of_death : "")+ (data[i].place_of_death_district != "Not indicated"? ","+data[i].place_of_death_district : "");
 
 
 					}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){

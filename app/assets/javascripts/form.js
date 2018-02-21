@@ -334,7 +334,12 @@
 				       		td.innerHTML = (place_of_death_details.length > 0 ? place_of_death_details +","+__$("person_place_of_death_district").value :  __$("person_place_of_death_district").value)
 
 				        }else{
-				       		 td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
+				        	if (__$("person_place_of_death_district").value.trim() != "Not indicated" ) {
+				       		   td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
+				        	}else{
+				        		td.innerHTML = __$("person_other_place_of_death").value
+				        	}
+
 				       	}
 				        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 				        tr.appendChild(td);					

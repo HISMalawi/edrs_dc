@@ -347,7 +347,11 @@
 			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 				<td class="clickable">Address</td>
 				<td class="clickable" onclick="editField('place_of_death_district')" >District</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
+				<% if @person.place_of_death != "Other" %>
+					<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_ta')">TA</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
 				<td class="clickable" onclick="editField('place_of_death_village')" >Village</td>
@@ -365,7 +369,11 @@
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="other" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
-				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
+				<% if @person.place_of_death=="Other" && @person.place_of_death_district != "Not indicated" %>
+					<td colspan="8"><%= @person.other_place_of_death rescue '' %>, <%= @person.place_of_death_district rescue '' %></td>
+				<%else%>
+					<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
+				<%end%>
 			</tr>
 			<tr>
 				<td>8</td>
@@ -1179,7 +1187,7 @@
 				place_of_death ="<%= @person.place_of_death_foreign %>"
 			}
 
-		   	if(place_of_death.trim() == 'Home'){
+		   	if(place_of_death.trim().toLowerCase().match('home')){
 		   		__$('home').checked = true
 		   		__$('home').setAttribute('disabled','disabled');
 		   		__$('facility').setAttribute('disabled','disabled')
@@ -1191,7 +1199,7 @@
 		   		__$('facility').setAttribute('disabled','disabled')
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
-		   	if(place_of_death.trim().toLowerCase().match('Other')){
+		   	if(place_of_death.trim().toLowerCase().match('other')){
 		   		__$('other').checked = true
 		   		__$('home').setAttribute('disabled','disabled');
 		   		__$('facility').setAttribute('disabled','disabled')
