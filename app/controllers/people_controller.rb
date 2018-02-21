@@ -630,9 +630,14 @@ class PeopleController < ApplicationController
         district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
 
         render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
-    
+
+    elsif params[:place].present? && params[:place] == "Other"
+
+         district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+
+         render :text => district.collect { |w| "<li >#{w.name}" }.push("<li>Not indicated").join("</li>")+"</li>"
     else
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
 
         render :text => district.collect { |w| "<li >#{w.name}" }.join("</li>")+"</li>"
     

@@ -82,7 +82,37 @@
                              :helpText =>"Informant's relationship to deceased <i style='color: red'>*</i>",
                              :tt_pageStyleClass => "NoKeyboard", :tt_onLoad => "adjustViewPortHeight()" ) %>
           <%else%>
-                <input type="hidden" name="person[informant_relationship_to_deceased]" id="person_informant_relationship_to_deceased" value="Other">
+                <input type="hidden" name="person[informant_relationship_to_deceased]" id="person_informant_relationship_to_deceased" value="Police">
+
+                <%= text_field_tag "person[informant_id_number]",nil, 
+                          {:helpText => "Informant's Malawi Police ID No.",
+                                                    :optional => :true,
+                                                    :allowFreeText =>true}%>
+
+                <input id="person_informant_designation"
+                   name="person[informant_designation]"
+                   helpText = "Informant's Designation"
+                   value="<%= @person[:informant_designation] rescue nil %>"
+                   ajaxURL ="/get_disignation?search=",
+                   allowFreeText ="true",
+                   optional="true"/>
+
+               <%= text_field_tag "person[informant_office_name]",nil , {
+                       :helpText=> "Police station",
+                       :placeholder => "e.g Area 3 Police station",
+                       :optional=>true} %>
+
+               <%= text_field_tag "person[informant_office_address]",nil , {
+                  :placeholder => "e.g P.O. Box 200 Lilongwe",
+                  :helpText=> "Informant's Institution address",
+                  :optional=>true} %>
+
+               <%= (f.text_field :informant_phone_number,
+                                :helpText => "Informant Telephone Number",
+                                :field_type =>"number",
+                                :tt_pageStyleClass => "Numeric NumbersWithUnknown",
+                                :tt_onLoad => "showPhoneSummary()",
+                                :optional => :true) rescue "" %>
           <%end%>
 
                 <%= text_field_tag "person[informant_relationship_to_deceased_other]",nil,

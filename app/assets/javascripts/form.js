@@ -1689,6 +1689,10 @@
 			switch(case_number) {
 				case -1:
 					var place = __$('touchscreenInput' + tstCurrentPage).value;
+
+					if (__$("person_place_of_death_district_holder")) {
+						__$("person_place_of_death_district_holder").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&not_stated=true&search_string=");
+					}
 					__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
 					break;
 

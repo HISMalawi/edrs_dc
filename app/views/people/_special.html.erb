@@ -171,7 +171,7 @@
                     <%= text_field_tag "person[place_of_death_district_holder]", nil, {
                               :helpText => "Place of Death (<i>District</i>) <i style='color: red'>*</i>", 
                               :tt_onUnLoad => "unLoadSetValue('person_place_of_death_district');setAjaxUrl(0)",
-                              :ajaxUrl => "/districts?search_string=",
+                              :ajaxUrl => "/districts?not_stated=true&search_string=",
                               :condition => "__$('person_place_of_death').value != 'Health Facility'",
                               :tt_requireNextClick => false} %>
 
@@ -192,6 +192,9 @@
                             :condition => "__$('person_place_of_death_ta').value.length > 0 && (__$('person_place_of_death_ta').value != 'Other' &&__$('person_place_of_death_ta').value != 'Unknown')",
                             :tt_onLoad => "setSubTitle('person_place_of_death_district','Place of death (<i>Location</i>) <i style=\"color: red\">*</i>')",
                             :tt_requireNextClick => false} %>
+                     <%= (f.text_field :other_place_of_death,
+                            :helpText => "Place of death (<i id='other_place_of_death_label'>Other specify</i>) <i style='color: red'>*</i>",
+                            :condition => "__$('person_place_of_death').value.match('Other')",:tt_onLoad=> "removeUnknown();checkSpace(1)") rescue "" %>
                 <% elsif @site_type =="dc" %>
                   <%= (f.hidden_field :place_of_registration, :value => @district.name) %>
                  <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
