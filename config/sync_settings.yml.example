@@ -5,6 +5,7 @@
   :primary: edrs_facility
   :username: admin
   :password: password
+  :bidirectional: false
 :dc:
   :protocol: 'http'
   :host: localhost

@@ -2,14 +2,14 @@ class SyncData
 	include SuckerPunch::Job
   	workers 1
   	def perform
-  		`rake edrs:sync`
+  		Kernel.system "bundle exec rake edrs:sync"
   		if Rails.env == "development"
-          SuckerPunch.logger.info "Sync from HQ"
-        end
+          SuckerPunch.logger.info "Sync Data"
+      end
 
-        if Rails.env == 'development'
+      if Rails.env == 'development'
         	SyncData.perform_in(60)
-        else
+      else
   			SyncData.perform_in(900)
   		end
   	end
