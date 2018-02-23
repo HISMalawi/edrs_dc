@@ -5,7 +5,7 @@ if SETTINGS['site_type'].to_s != "facility"
     AssignDen.perform_in(3)
 end
 if Rails.env == 'development'
-     SyncData.perform_in(30)
+     SyncData.perform_in(300)
 else
   	 SyncData.perform_in(900)
 end
