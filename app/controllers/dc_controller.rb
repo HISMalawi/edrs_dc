@@ -21,10 +21,10 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 
 		if record_complete?(person)
-				PersonRecordStatus.change_status(person, "DC COMPLETE")
+				PersonRecordStatus.change_status(person, "DC COMPLETE","Marked as complete")
 				redirect_to "#{params[:next_url].to_s}"
 		else
-				PersonRecordStatus.change_status(person, "DC INCOMPLETE")
+				PersonRecordStatus.change_status(person, "DC INCOMPLETE", "System marked as incomplete")
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
 		
@@ -200,12 +200,12 @@ class DcController < ApplicationController
 	
 	def mark_as_pending
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC PENDING","Mark pending : #{params[:reason]}")
+		PersonRecordStatus.change_status(person, "DC PENDING","Marked as pending : #{params[:reason]}")
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC PENDING",
 							:level => "Person",
-							:reason => "Mark pending : #{params[:reason]}"})
+							:reason => "Marked as pending : #{params[:reason]}"})
 
 		redirect_to "#{params[:next_url].to_s}"
 
@@ -283,7 +283,7 @@ class DcController < ApplicationController
 		
 		@section = "Pending Record"
 
-		@statuses = ["DC PENDING"]
+		@statuses = ["DC PENDING","DC INCOMPLETE"]
 
 		@next_url = "/dc/pending_cases"
 

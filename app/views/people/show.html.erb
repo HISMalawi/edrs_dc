@@ -220,7 +220,7 @@
 		<%end%>
 	<%end%>
 	<% if @comments.count > 0 %>
-		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Comment</span></button>
+		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
@@ -1084,7 +1084,7 @@
 
 			function viewPersonComment(){
 
-				showConfirmMessage("","Comments trail","");
+				showConfirmMessage("","Trail of the record","");
 
 				var popup_container = __$("msg.popup")
 
