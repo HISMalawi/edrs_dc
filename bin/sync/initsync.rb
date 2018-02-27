@@ -24,7 +24,7 @@ def finalize_setup(username,password)
     `rake edrs:build_mysql`
     ActiveRecord::Schema.define(version: 0) do
       create_table "couchdb_sequence", primary_key: "couchdb_sequence_id", force: :cascade do |t|
-        t.bigint "seq", limit: 4, null: false
+         t.integer  "seq", limit: 8, null: false
       end
 
       create_table "name_directory", primary_key: "name_directory_id", force: :cascade do |t|
@@ -42,7 +42,19 @@ def finalize_setup(username,password)
 
     SimpleSQL.load_dump("#{Rails.root}/db/directory.sql");
 
-    changes_link = "#{couch_protocol}://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}/_changes?include_docs=true&limit=500&since=#{0}"
+    couch_mysql_path =  "#{Rails.root}/config/couchdb.yml"
+    db_settings = YAML.load_file(couch_mysql_path)
+
+    couch_db_settings =  db_settings[Rails.env]
+
+    couch_protocol = couch_db_settings["protocol"]
+    couch_username = couch_db_settings["username"]
+    couch_password = couch_db_settings["password"]
+    couch_host = couch_db_settings["host"]
+    couch_db = couch_db_settings["prefix"] + (couch_db_settings["suffix"] ? "_" + couch_db_settings["suffix"] : "" )
+    couch_port = couch_db_settings["port"]
+
+    changes_link = "#{couch_protocol}://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}/_changes"
 
     data = JSON.parse(RestClient.get(changes_link))
 
