@@ -23,6 +23,10 @@ def finalize_setup(username,password)
     puts "Creating mysql databse"
     `rake edrs:build_mysql`
     ActiveRecord::Schema.define(version: 0) do
+      create_table "couchdb_sequence", primary_key: "couchdb_sequence_id", force: :cascade do |t|
+        t.bigint "seq", limit: 4, null: false
+      end
+
       create_table "name_directory", primary_key: "name_directory_id", force: :cascade do |t|
         t.string   "name",        limit: 45,                  null: false
         t.string   "soundex",        limit: 10,                  null: false
@@ -37,6 +41,15 @@ def finalize_setup(username,password)
     puts "Loading directory names"
 
     SimpleSQL.load_dump("#{Rails.root}/db/directory.sql");
+
+    changes_link = "#{couch_protocol}://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}/_changes?include_docs=true&limit=500&since=#{0}"
+
+    data = JSON.parse(RestClient.get(changes_link))
+
+    if data.present?
+        couchdb_sequence = CouchdbSequence.create(seq: data["last_seq"].to_i)
+    end
+
 
     puts "Setup successfull !\n"
     puts "login with username: #{username} , password: #{password}"
@@ -118,6 +131,7 @@ if user.blank?
 else
       puts "System admin User already exists"
 end
+
 finalize_setup(username,"password")
 
 
