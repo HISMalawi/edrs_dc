@@ -19,6 +19,8 @@ def finalize_setup(username,password)
     puts "\nTAs :#{TraditionalAuthority.count} \n"
     puts "\nVillages :#{Village.count} \n"
 
+    Audit.count
+
     PersonIdentifier.can_assign_den = false
     puts "Creating mysql databse"
     `rake edrs:build_mysql`

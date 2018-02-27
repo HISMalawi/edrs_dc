@@ -23,8 +23,8 @@ namespace :edrs do
     require Rails.root.join('bin','./scripts/build_mysql.rb')
   end
   
-  desc "Cummulative MYSQL"
-  task cummulative_mysql: :environment do
-    require Rails.root.join('bin','./scripts/build_mysql_cummulative.rb')
+  desc "Couch MYSQL"
+  task couch_mysql: :environment do
+    require Rails.root.join('bin','./scripts/couch-mysql.rb')
   end
 end
