@@ -6,7 +6,7 @@ person_count = Person.count
 fc = @settings[:fc]
 dc = @settings[:dc]
 
-source_to_target = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
               target: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
               connection_timeout: 60000,
@@ -22,7 +22,7 @@ JSON.parse(source_to_target).each do |key, value|
 end
 
 if dc[:bidirectional] == true
-    target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
                   source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
                   target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
@@ -37,7 +37,7 @@ if dc[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    pid_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    pid_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
                   source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
                   target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
@@ -53,7 +53,7 @@ if dc[:bidirectional] == true
     end
 
 
-    audits_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    audits_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
                   source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
                   target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
@@ -67,7 +67,7 @@ if dc[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    sync_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    sync_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
                 source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
                 target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                 connection_timeout: 60000,
@@ -81,7 +81,7 @@ if dc[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    record_status_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    record_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
               target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
               connection_timeout: 60000,

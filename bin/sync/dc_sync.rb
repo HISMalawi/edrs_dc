@@ -5,7 +5,7 @@ person_count = Person.count
 source = @settings[:dc]
 hq = @settings[:hq]
 
-source_to_target = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
               target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
@@ -22,7 +22,7 @@ end
 
 if hq[:bidirectional] == true
 
-    target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
@@ -36,7 +36,7 @@ if hq[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    person_ids_status_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    person_ids_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
@@ -50,7 +50,7 @@ if hq[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    audits_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    audits_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
@@ -64,7 +64,7 @@ if hq[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    sync_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    sync_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
@@ -78,7 +78,7 @@ if hq[:bidirectional] == true
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
     end
 
-    record_status_target_to_source = %x[curl -k -H 'Content-Type: application/json' -X POST -d '#{{
+    record_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,

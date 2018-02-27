@@ -223,6 +223,7 @@ class ApplicationController < ActionController::Base
       job_interval = 1.5 if job_interval.blank?
       job_interval = job_interval.to_f
       now = Time.now
+
       if (now - last_run_time).to_f > job_interval
         if SETTINGS['site_type'].to_s != "facility"
           if (defined? PersonIdentifier.can_assign_den).nil?
@@ -230,19 +231,26 @@ class ApplicationController < ActionController::Base
           end
           AssignDen.perform_in(2)
         end
-        if Rails.env == 'development'
-             SyncData.perform_in(60)
-        else
-             SyncData.perform_in(900)
-        end
+      end
 
-        if Rails.env == 'development'
-            UpdateSyncStatus.perform_in(10)
-        else
+      cron_job_tracker = CronJobsTracker.first
+
+      if Rails.env == 'development'
+        if (cron_job_tracker.time_last_synced - now).to_i > 90
+            SyncData.perform_in(60)
+        end
+       if (cron_job_tracker.time_last_updated_sync - now).to_i > 120
+            UpdateSyncStatus.perform_in(90)
+        end
+      else
+        if (cron_job_tracker.time_last_synced - now).to_i > 1000
+            SyncData.perform_in(900)
+        end
+        if (cron_job_tracker.time_last_updated_sync - now).to_i > 1060
             UpdateSyncStatus.perform_in(1000)
         end
-
       end
+
   end
 
   def check_user_level_and_site
