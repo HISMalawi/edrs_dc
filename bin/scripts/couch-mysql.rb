@@ -2,26 +2,35 @@ require "rails"
 require "yaml"
 DIR = File.dirname(__FILE__)
 
+
 def save_to_mysql(record,map_key,db_maps)
+	$models = {
+				"people" => "Record",
+				"person_record_status" => "RecordStatus",
+				"person_identifier" => "RecordIdentifier",
+				"user" => "UserModel"
+	}
+
 	table = map_key.split("|")[1]
 	primary_key = db_maps[map_key]["_id"] 
 
-	query ="SELECT #{primary_key} FROM #{table} WHERE #{primary_key}= '#{record['id']}'"
+	return if $models[table].blank?
+	
 
-	connection = ActiveRecord::Base.connection
-	id = connection.select_all(query).as_json.last["#{primary_key}"]
+	mysql_record = eval($models[table]).where("#{primary_key}= '#{record['id']}'").first rescue nil
 
-	if id.present?
-		insert_update_sql = "UPDATE #{table} SET "
-		keys_count = (record["doc"].keys - ["type","_rev"]).sort.count
+	if mysql_record.present?
+		
+		keys_count = (record["doc"].keys - ["type","_rev","_id"]).sort.count
 		i = 0
-		(record["doc"].keys - ["type","_rev"]).sort.each do |field|
+		(record["doc"].keys - ["type","_rev","_id"]).sort.each do |field|
 			i = i + 1
 			next if record["doc"][field].blank?
 			next if field == "_id"
 			next if field == "type"
 
-			value = record["doc"][field].to_s.gsub("'","''")
+			#value = record["doc"][field].to_s.gsub("'","''")
+			value = record["doc"][field]
 			date_field = ["created_at","updated_at","last_password_date","birthdate","date_of_death"]
 			if date_field.include?(field)
 				value = record["doc"][field].to_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -33,43 +42,26 @@ def save_to_mysql(record,map_key,db_maps)
 				value = 0
 			end
 
-			if i == keys_count
-				insert_update_sql = "#{insert_update_sql} #{field}=\"#{value}\""
-			else	
-				insert_update_sql = "#{insert_update_sql} #{field}=\"#{value}\","
-			end
+				
+			mysql_record[field] = value
 			
 		end
-		insert_update_sql = "#{insert_update_sql} WHERE #{primary_key}=\"#{id}\""
-		#puts insert_update_sql
 	else
-		insert_update_sql = "INSERT INTO #{table}("
+		mysql_record = eval($models[table]).new
+		
 		keys_count = (record["doc"].keys - ["type","_rev"]).sort.count
 		i = 0
 		(record["doc"].keys - ["type","_rev"]).sort.each do |field|
 			i = i + 1
+			value = record["doc"][field]
+
 			next if record["doc"][field].blank?
 			next if field == "type"
 			if field == "_id"
 				field = primary_key
 			end
-
-			if i == keys_count
-				insert_update_sql = "#{insert_update_sql} #{field})"
-			else	
-				insert_update_sql = "#{insert_update_sql} #{field},"
-			end
 			
-		end
-		
-		insert_update_sql = "#{insert_update_sql} VALUES("
-
-		i = 0
-		(record["doc"].keys - ["type","_rev"]).sort.each do |field|
-			i = i + 1
-			next if record["doc"][field].blank?
-			next if field == "type"
-			value = record["doc"][field].to_s.gsub("'","''")
+			#value = record["doc"][field].to_s.gsub("'","''")
 			date_field = ["created_at","updated_at","last_password_date","birthdate","date_of_death"]
 			if date_field.include?(field)
 				value = record["doc"][field].to_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -80,16 +72,13 @@ def save_to_mysql(record,map_key,db_maps)
 			if value.to_s == "false"
 				value = 0
 			end
-			if i == keys_count
-				insert_update_sql = "#{insert_update_sql} \"#{value}\")"
-			else	
-				insert_update_sql = "#{insert_update_sql} \"#{value}\","
-			end
+				
+			mysql_record[field] = value
+			
 			
 		end
-		#puts insert_update_sql
 	end
-	connection.execute(insert_update_sql)
+	mysql_record.save
 end
 couch_mysql_path =  "#{Rails.root}/config/couchdb.yml"
 db_settings = YAML.load_file(couch_mysql_path)
@@ -143,5 +132,5 @@ begin
 			last_seq.save
 	end
 rescue Exception => e
-	puts "CouchdbSequence not created yet"
+	puts e.to_s
 end

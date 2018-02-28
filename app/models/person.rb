@@ -23,8 +23,8 @@ class Person < CouchRest::Model::Base
   #before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
-  after_save :insert_update_into_mysql
-  after_create :create_stat, :insert_update_into_mysql
+  #after_save :insert_update_into_mysql
+  after_create :create_stat #, :insert_update_into_mysql
 
   cattr_accessor :duplicate
   

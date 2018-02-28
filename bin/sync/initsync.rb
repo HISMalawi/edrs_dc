@@ -20,6 +20,7 @@ def finalize_setup(username,password)
     puts "\nVillages :#{Village.count} \n"
 
     Audit.count
+    Sync.count
 
     PersonIdentifier.can_assign_den = false
     puts "Creating mysql databse"

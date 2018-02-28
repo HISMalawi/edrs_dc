@@ -1,8 +1,8 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
-  after_create :insert_update_into_mysql
-  after_save :insert_update_into_mysql
+  #after_create :insert_update_into_mysql
+  #after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
   cattr_accessor :can_assign_drn
 

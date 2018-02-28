@@ -237,17 +237,17 @@ class ApplicationController < ActionController::Base
       cron_job_tracker = CronJobsTracker.first
       return if cron_job_tracker.blank?
       if Rails.env == 'development'
-        if (now - cron_job_tracker.time_last_synced).to_i > 90
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 90
             SyncData.perform_in(60)
         end
-       if (now - cron_job_tracker.time_last_updated_sync).to_i > 120
+       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 120
             UpdateSyncStatus.perform_in(90)
         end
       else
-        if (now - cron_job_tracker.time_last_synced).to_i > 1000
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 1000
             SyncData.perform_in(900)
         end
-        if (now - cron_job_tracker.time_last_updated_sync).to_i > 1060
+        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 1060
             UpdateSyncStatus.perform_in(1000)
         end
       end
