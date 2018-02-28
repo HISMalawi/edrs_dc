@@ -119,25 +119,29 @@ mysql_adapter = mysql_db_settings["adapter"]
 db_map_path ="#{Rails.root}/config/db_mapping.yml"
 db_maps = YAML.load_file(db_map_path)
 
-seq = CouchdbSequence.last.seq rescue 0 
+begin
+	seq = CouchdbSequence.last.seq rescue 0 
 
-changes_link = "#{couch_protocol}://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}/_changes?include_docs=true&limit=500&since=#{seq}"
+	changes_link = "#{couch_protocol}://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}/_changes?include_docs=true&limit=500&since=#{seq}"
 
-data = JSON.parse(RestClient.get(changes_link))
-records  = data["results"]
+	data = JSON.parse(RestClient.get(changes_link))
+	records  = data["results"]
 
-records.each do |record|
-		db_maps.keys.each do |key|
-			parts = key.split("|")
-			if record["doc"]["type"] == parts[0]
-				save_to_mysql(record,key,db_maps)
-			else
-				next
+	records.each do |record|
+			db_maps.keys.each do |key|
+				parts = key.split("|")
+				if record["doc"]["type"] == parts[0]
+					save_to_mysql(record,key,db_maps)
+				else
+					next
+				end
 			end
-		end
 
-		last_seq = CouchdbSequence.last
-		last_seq = CouchdbSequence.new if last_seq.blank?
-		last_seq.seq = data["last_seq"] 
-		last_seq.save
+			last_seq = CouchdbSequence.last
+			last_seq = CouchdbSequence.new if last_seq.blank?
+			last_seq.seq = data["last_seq"] 
+			last_seq.save
+	end
+rescue Exception => e
+	puts "CouchdbSequence not created yet"
 end
