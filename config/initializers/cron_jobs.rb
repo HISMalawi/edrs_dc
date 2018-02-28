@@ -17,4 +17,4 @@ else
 end
 
 
-CouchSQL.perform_in(300)
+#CouchSQL.perform_in(300)

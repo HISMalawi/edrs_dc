@@ -231,6 +231,7 @@ class ApplicationController < ActionController::Base
           end
           AssignDen.perform_in(2)
         end
+        CouchSQL.perform_in(15)
       end
 
       cron_job_tracker = CronJobsTracker.first
