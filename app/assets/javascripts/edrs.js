@@ -460,7 +460,7 @@ function duplicatesPopup(data,checkbox){
         shield.style.zIndex = 1050;
         document.body.appendChild(shield);
 
-        var width = 700;
+        var width = 800;
         var height = 500;
 
         var div = document.createElement("div");
@@ -469,35 +469,51 @@ function duplicatesPopup(data,checkbox){
         div.style.width = width + "px";
         div.style.height = height + "px";
         div.style.backgroundColor = "#ffffff";
-        div.style.overflowY = "scroll";
+        //div.style.overflowY = "scroll";
         div.style.borderRadius = "1px";
         div.style.left = "calc(50% - " + (width / 2) + "px)";
         div.style.top = "calc(50% - " + (height * 0.6) + "px)";
         div.style.border = "1px outset #fff";
         div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
         div.style.fontFamily = "arial, helvetica, sans-serif";
+        div.style.textAlign="center";
         div.style.MozUserSelect = "none";
 
         shield.appendChild(div);
+
+        var header = document.createElement("div");
+        header.style.color = "#ffffff";
+        header.style.width = "98%";
+        header.style.backgroundColor = "#526a83";
+        header.style.textAlign = "center";
+        header.style.fontSize = "1.4em";
+        header.style.padding = "1%";
+        header.innerHTML = "The  New record is "+(data.exact ? "exact" : "potential")+" duplicate to "+ (people && people.length ? people.length : "0")  +" record(s)";
+        div.appendChild(header);
+
+        var content = document.createElement("div");
+        content.style.width = "100%";
+        content.style.height = "380px";
+        content.style.overflowY="scroll";
+        div.appendChild(content)
 
         var table = document.createElement("table");
         table.style.marginTop = "0.5%";
         table.style.height = "400px";
         table.style.width = "100%";
         table.style.margin ="auto";
-        div.appendChild(table);
+        content.appendChild(table);
 
         var tr = document.createElement("tr");
         tr.style.height = "30px";
         table.appendChild(tr);
 
         var th =  document.createElement("th");
-        th.colSpan = "5";
+        th.colSpan = "6";
         th.style.padding = "0.8em";
-        th.style.color = "#ffffff";
         th.style.fontSize = "1.2em";
-        th.style.backgroundColor = "#526a83";
-        th.innerHTML = "The record is "+(data.exact ? "exact" : "potential")+" duplicate to "+ (people && people.length ? people.length : "0")  +" record(s)";
+        th.style.color ="orange";
+        th.innerHTML = "New Record";
         tr.appendChild(th);
 
         var tr = document.createElement("tr");
@@ -522,6 +538,11 @@ function duplicatesPopup(data,checkbox){
         tr.appendChild(th);
 
         var th = document.createElement("th");
+        th.innerHTML = "Date of Death";
+        tr.appendChild(th);
+
+
+        var th = document.createElement("th");
         th.innerHTML = "Mother's name";
         tr.appendChild(th);
 
@@ -529,6 +550,106 @@ function duplicatesPopup(data,checkbox){
         th.innerHTML = "Father's name";
         tr.appendChild(th);
 
+        //New record details 
+        var tr = document.createElement("tr");
+        table.appendChild(tr);
+        tr.style.height = "15px";
+
+        var td = document.createElement("td");
+        td.style.borderBottom = "1px solid gray";
+        td.style.width = "5%";
+        td.innerHTML = "1";
+        td.style.padding = "0.5em"
+        tr.appendChild(td);
+
+
+        var td = document.createElement("td");
+        td.style.textAlign = "center";
+        td.style.borderBottom = "1px solid gray";
+        td.innerHTML =( __$("person_first_name") && __$("person_first_name").value ? __$('person_first_name').value : "") + " " 
+                   + ( __$("person_middle_name") && __$("person_middle_name").value ? " "+__$('person_middle_name').value+" " : "") + " " 
+                   + (__$("person_last_name") && __$("person_last_name").value && __$("person_last_name").value.length > 0 ? __$('person_last_name').value : "N/A")
+                   + "("+__$("person_gender").value.split("")[0]+")";
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        td.style.textAlign = "center";
+        td.style.borderBottom = "1px solid gray";
+        var birthdate  = new Date(__$("person_birthdate").value).format();
+            
+        if(__$('person_birthdate_estimated').value == 1) {
+              birthdate = "??/??/"+(new Date(__$("person_birthdate").value).format("YYYY-mm-dd").split("-")[0]);
+        }
+        td.innerHTML = birthdate;
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        td.style.textAlign = "center";
+        td.style.borderBottom = "1px solid gray";
+        td.innerHTML = (__$("person_date_of_death") && __$("person_date_of_death").value ? (new Date(__$('person_date_of_death').value)).format() : "");
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        td.style.textAlign = "center";
+        td.style.borderBottom = "1px solid gray";
+        td.innerHTML =( __$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "") + " " 
+                   + ( __$("person_mother_middle_name") && __$("person_mother_middle_name").value ? " "+__$('person_mother_middle_name').value+" " : "") + " " 
+                   + (__$("person_mother_last_name") && __$("person_mother_last_name").value && __$("person_mother_last_name").value.length > 0 ? __$('person_mother_last_name').value : "N/A");
+        tr.appendChild(td);
+
+        var td = document.createElement("td");
+        td.style.textAlign = "center";
+        td.style.borderBottom = "1px solid gray";
+        td.innerHTML = ( __$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "") + " " 
+                   + ( __$("person_father_middle_name") && __$("person_father_middle_name").value ? " "+__$('person_father_middle_name').value+" " : "") + " " 
+                   + (__$("person_father_last_name") && __$("person_father_last_name").value && __$("person_father_last_name").value.length > 0 ? __$('person_father_last_name').value : "N/A");
+        tr.appendChild(td);
+
+        var tr = document.createElement("tr");
+        tr.style.height = "30px";
+        table.appendChild(tr);
+
+        var th =  document.createElement("th");
+        th.colSpan = "6";
+        th.style.padding = "0.8em";
+        th.style.fontSize = "1.2em";
+        th.style.color ="green";
+        th.innerHTML = "Existing Record(s)";
+        tr.appendChild(th);
+
+        var tr = document.createElement("tr");
+        tr.style.backgroundColor ="#e0dcdc"
+        table.appendChild(tr);
+
+        tr.style.height = "15px";
+
+        var th = document.createElement("th");
+        th.innerHTML = "#";
+        th.style.padding = "0.5em"
+        th.style.float ="left"
+        tr.appendChild(th)
+
+
+        var th = document.createElement("th");
+        th.innerHTML = "Name(Sex)";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Date of Birth";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Date of Death";
+        tr.appendChild(th);
+
+
+        var th = document.createElement("th");
+        th.innerHTML = "Mother's name";
+        tr.appendChild(th);
+
+        var th = document.createElement("th");
+        th.innerHTML = "Father's name";
+        tr.appendChild(th);
 
         if(people){
             for(var i = 0; i < people.length ; i++){
@@ -547,7 +668,9 @@ function duplicatesPopup(data,checkbox){
               var td = document.createElement("td");
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
-              td.innerHTML = people[i]["_source"]["first_name"]+" "+ people[i]["_source"]["last_name"] + "("+people[i]["_source"]["gender"].split("")[0]+")";
+              td.innerHTML = people[i]["_source"]["first_name"]
+                             +" " + (people[i]["_source"]["middle_name"] ? people[i]["_source"]["middle_name"] : "")
+                             +" "+ people[i]["_source"]["last_name"] + "("+people[i]["_source"]["gender"].split("")[0]+")";
               tr.appendChild(td);
 
               var td = document.createElement("td");
@@ -559,14 +682,22 @@ function duplicatesPopup(data,checkbox){
               var td = document.createElement("td");
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
+              td.innerHTML = new Date(people[i]["_source"]["date_of_death"]).format();
+              tr.appendChild(td);
+
+              var td = document.createElement("td");
+              td.style.textAlign = "center";
+              td.style.borderBottom = "1px solid gray";
               td.innerHTML = (people[i]["_source"]["mother_first_name"] ? people[i]["_source"]["mother_first_name"] : "") +
+                             " " + (people[i]["_source"]["mother_middle_name"] ? people[i]["_source"]["mother_middle_name"] : "")+
                              " " +(people[i]["_source"]["mother_last_name"]? people[i]["_source"]["mother_last_name"] : "N/A");
               tr.appendChild(td);
 
               var td = document.createElement("td");
               td.style.textAlign = "center";
               td.style.borderBottom = "1px solid gray";
-               td.innerHTML = (people[i]["_source"]["father_first_name"] ? people[i]["_source"]["father_first_name"] : "") +
+              td.innerHTML = (people[i]["_source"]["father_first_name"] ? people[i]["_source"]["father_first_name"] : "") +
+                              " "+(people[i]["_source"]["father_middle_name"] ? people[i]["_source"]["father_middle_name"] : "")+
                               " "+(people[i]["_source"]["father_last_name"]? people[i]["_source"]["father_last_name"] : "N/A");
               tr.appendChild(td);
             }

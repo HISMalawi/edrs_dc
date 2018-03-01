@@ -23,8 +23,8 @@ class Person < CouchRest::Model::Base
   #before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
-  after_save :insert_update_into_mysql
-  after_create :create_stat, :insert_update_into_mysql
+  #after_save :insert_update_into_mysql
+  after_create :create_stat #, :insert_update_into_mysql
 
   cattr_accessor :duplicate
   
@@ -175,7 +175,7 @@ class Person < CouchRest::Model::Base
 
             district = District.by_name.key(params[:place_of_death_district]).first
 
-            params[:place_of_death_district_id] = district.id
+            params[:place_of_death_district_id] = district.id rescue ''
 
             if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("health facility")
 
@@ -188,11 +188,11 @@ class Person < CouchRest::Model::Base
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
-                     params[:place_of_death_ta_id] = place_ta.id
+                     params[:place_of_death_ta_id] = place_ta.id rescue nil
 
                      if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
-                        params[:place_of_death_village_id] = place_village.id
+                        params[:place_of_death_village_id] = place_village.id rescue nil
                        
                      end
                   
@@ -218,11 +218,11 @@ class Person < CouchRest::Model::Base
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
-               params[:home_ta_id] = ta.id
+               params[:home_ta_id] = ta.id rescue nil
 
                if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
-                  params[:home_village_id] = village.id
+                  params[:home_village_id] = village.id rescue nil
                  
                end
             
@@ -245,13 +245,13 @@ class Person < CouchRest::Model::Base
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
-               params[:current_ta_id] = current_ta.id
+               params[:current_ta_id] = current_ta.id rescue nil
 
                if !params[:current_village].blank? && params[:current_village] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
-                  params[:current_village_id] = current_village.id
+                  params[:current_village_id] = current_village.id rescue nil
                  
                end
             
@@ -268,13 +268,13 @@ class Person < CouchRest::Model::Base
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
-               params[:informant_current_ta_id] = informant_ta.id
+               params[:informant_current_ta_id] = informant_ta.id rescue nil
 
                if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
-                  params[:informant_current_village_id] = informant_village.id
+                  params[:informant_current_village_id] = informant_village.id rescue nil
                end
             
           end
@@ -302,18 +302,18 @@ class Person < CouchRest::Model::Base
 
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
-                params[:hospital_of_death_id] = health_facility.id
+                params[:hospital_of_death_id] = health_facility.id rescue nil
             else
 
                 if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
-                     params[:place_of_death_ta_id] = place_ta.id
+                     params[:place_of_death_ta_id] = place_ta.id rescue nil
 
                      if !params[:place_of_death_village].blank? && params[:place_of_death_village] != "Other"
                         place_village = Village.by_ta_id_and_name.key([place_ta.id,params[:place_of_death_village]]).first
-                        params[:place_of_death_village_id] = place_village.id
+                        params[:place_of_death_village_id] = place_village.id rescue nil
                        
                      end
                   
@@ -339,11 +339,11 @@ class Person < CouchRest::Model::Base
 
                ta = TraditionalAuthority.by_district_id_and_name.key([home_district.id,params[:home_ta]]).first
 
-               params[:home_ta_id] = ta.id
+               params[:home_ta_id] = ta.id rescue nil
 
                if !params[:home_village].blank? && params[:home_village] != "Other"
                   village = Village.by_ta_id_and_name.key([ta.id,params[:home_village]]).first
-                  params[:home_village_id] = village.id
+                  params[:home_village_id] = village.id rescue nil
                  
                end
             
@@ -360,13 +360,13 @@ class Person < CouchRest::Model::Base
 
                current_ta = TraditionalAuthority.by_district_id_and_name.key([current_district.id,params[:current_ta]]).first
 
-               params[:current_ta_id] = current_ta.id
+               params[:current_ta_id] = current_ta.id rescue nil
 
                if !params[:current_village].blank? && params[:place_of_death_ta] != "Other"
 
                   current_village = Village.by_ta_id_and_name.key([current_ta.id,params[:current_village]]).first
 
-                  params[:current_village_id] = current_village.id
+                  params[:current_village_id] = current_village.id rescue nil
                  
                end
             
@@ -383,13 +383,13 @@ class Person < CouchRest::Model::Base
 
                informant_ta = TraditionalAuthority.by_district_id_and_name.key([informant_district.id,params[:informant_current_ta]]).first
 
-               params[:informant_current_ta_id] = informant_ta.id
+               params[:informant_current_ta_id] = informant_ta.id rescue nil
 
                if !params[:informant_current_village].blank? && params[:informant_current_village] != "Other"
 
                   informant_village = Village.by_ta_id_and_name.key([informant_ta.id,params[:informant_current_village]]).first
 
-                  params[:informant_village_id] = informant_village.id
+                  params[:informant_village_id] = informant_village.id rescue nil
                end
             
           end
@@ -449,6 +449,8 @@ class Person < CouchRest::Model::Base
   property :date_of_death, Date
   property :nationality_id, String
   property :nationality, String
+  property :other_nationality, String
+  property :place_of_registration, String
   property :place_of_death, String
   property :hospital_of_death_id, String
   property :hospital_of_death, String
@@ -462,6 +464,7 @@ class Person < CouchRest::Model::Base
   property :place_of_death_district_id, String
   property :place_of_death_district, String
   property :place_of_death_country, String
+  property :other_place_of_death_country, String
   property :place_of_death_foreign, String
   property :place_of_death_foreign_state, String #State
   property :place_of_death_foreign_district, String #District
@@ -504,6 +507,7 @@ class Person < CouchRest::Model::Base
   property :home_district, String
   property :home_country_id, String
   property :home_country, String
+  property :other_home_country, String
   property :home_foreign_state, String
   property :home_foreign_district, String
   property :home_foreign_village, String
@@ -518,6 +522,7 @@ class Person < CouchRest::Model::Base
   property :current_district, String
   property :current_country_id, String
   property :current_country, String
+  property :other_current_country, String
   property :current_foreign_state, String
   property :current_foreign_district, String
   property :current_foreign_village, String
@@ -534,11 +539,12 @@ class Person < CouchRest::Model::Base
   property :approved_at, Time
   property :delayed_registration, String,  :default =>"No"
   property :registration_type, String, :default => "Natural Death" # Unnatural Death | Unclaimed bodies | Missing Persons | Death abroad
-  property :court_order, String, :default => "No"
-  property :court_order_number, String 
-  property :police_report, String, :default => "No"
-  property :police_report_number, String
-  property :commissioner_documents, String, :default => "No"
+  property :court_order, String
+  property :court_order_details, String 
+  property :police_report, String
+  property :police_report_details, String
+  property :reason_police_report_not_available, String
+  property :proof_of_death_abroad, String
 
   #Person's mother properties
   #property :mother do
@@ -568,6 +574,7 @@ class Person < CouchRest::Model::Base
   property :mother_home_district, String
   property :mother_home_country, String
   property :mother_nationality, String
+  property :other_mother_nationality, String
   property :mother_occupation, String
 
   #Address details for foreigner
@@ -618,6 +625,7 @@ class Person < CouchRest::Model::Base
   property :father_home_district, String
   property :father_home_country, String
   property :father_nationality, String
+  property :other_father_nationality, String
   property :father_occupation, String
 
   #Address details for foreigner
@@ -669,6 +677,7 @@ class Person < CouchRest::Model::Base
   property :informant_current_other_ta, String
   property :informant_current_district, String
   property :informant_current_country, String
+  property :other_informant_current_country, String
   property :informant_addressline1, String
   property :informant_addressline2, String
   property :informant_city, String
@@ -680,13 +689,12 @@ class Person < CouchRest::Model::Base
   property :informant_signed, String
   property :informant_signature_date, Date
   property :informant_designation, String
+  property :informant_employment_number, String 
   property :informant_office_name,String
   property :informant_office_address, String
   #end
 
-  property :certifier_first_name, String
-  property :certifier_middle_name, String
-  property :certifier_last_name, String
+  property :certifier_name, String
   property :certifier_license_number, String
   property :certifier_signed, String
   property :date_certifier_signed, Date
@@ -724,6 +732,27 @@ class Person < CouchRest::Model::Base
                   }
                 }"
 
+    view :by_name_codes,
+         :map =>"function(doc){
+                    if(doc['type'] == 'Person'){
+                        if(doc['first_name_code'] != null){
+                             emit(doc['first_name_code'], 1);
+                             emit(doc['last_name_code'], 1);
+                        }
+                        if(doc['mother_first_name_code'] != null){
+                            emit(doc['mother_first_name_code'], 1);
+                            emit(doc['mother_last_name_code'], 1);
+                        }
+                        if(doc['father_first_name_code'] != null){
+                            emit(doc['father_first_name_code'], 1);
+                            emit(doc['father_last_name_code'], 1);                          
+                        }
+                        if(doc['father_first_name_code'] != null){
+                            emit(doc['informant_first_name_code'], 1);
+                            emit(doc['informant_last_name_code'], 1);                          
+                        }
+                    }
+                }"
     view :by_first_name_code
 
     view :by_last_name_code
@@ -737,6 +766,53 @@ class Person < CouchRest::Model::Base
     view :by_voided_date
 
     view :by_district_code_and_voided_date
+
+    view :by_informant_designation
+
+    view :by_other_ta,
+          :map => "function(doc){
+                  if(doc['type'] == 'Person'){
+                     if(doc['other_current_ta'] != null){
+                          emit(doc['other_current_ta'],1);
+                     }
+                     if(doc['other_home_ta'] != null){
+                          emit(doc['other_home_ta'],1);
+                     }
+                    if(doc['other_place_of_death_ta'] != null){
+                          emit(doc['other_place_of_death_ta'],1);
+                     }
+                  }
+              }"
+
+    view :by_other_villages,
+          :map => "function(doc){
+                    if(doc['type'] == 'Person'){
+                       if(doc['other_current_village'] != null){
+                            emit(doc['other_current_village'],1);
+                       }
+                       if(doc['other_home_village'] != null){
+                            emit(doc['other_home_village'],1);
+                       }
+                      if(doc['other_place_of_death_village'] != null){
+                            emit(doc['other_place_of_death_village'],1);
+                       }
+                    }
+              }"
+
+    view :by_other_home_country,
+          :map => "function(doc){
+                        if(doc['type'] == 'Person'){
+                              if(doc['other_home_country'] != null){
+                                  emit(doc['other_home_country'],1);
+                              }
+                              if(doc['other_current_country'] != null){
+                                  emit(doc['other_current_country'],1);
+                              }
+                              if(doc['other_place_of_death_country'] != null){
+                                  emit(doc['other_place_of_death_country'],1);
+                              }
+                        }
+                  }"
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"

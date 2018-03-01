@@ -1,3 +1,11 @@
+<script type="text/javascript">
+    if (window.top[0] ===undefined) {
+
+    }else{
+        
+        window.top.location = window.top[0].location.href
+    }
+</script>
 <html>
 	<head>
         <script type="text/javascript" language="javascript" src="/javascripts/jquery.js"></script>
@@ -99,7 +107,7 @@
 
                     td.onmousedown = function(){
                         var nodes = document.getElementsByClassName("sub-pane");
-                        for(var o=0; o<nodes.length; o++){
+                        for(var o = 0; o <nodes.length; o++){
 
                             if(jQuery(nodes[o]).attr("section") == this.getAttribute("name")){
                                 var tst_cur_page = jQuery(nodes[o]).attr("tstcurrentpage");
@@ -125,6 +133,8 @@
                             if(active_id && sub_nodes[s].id == active_id){
                                 td.className += " active";
                             }
+
+                            td.setAttribute("onmousedown","moveTo('"+sub_nodes[s].id+"')")
                             tr.appendChild(td);
 
                             //get all input field for the sub section
@@ -186,9 +196,21 @@
         }
 
         function loadInnerPage(pos){
+           console.log(pos);
+           console.log(document.getElementById("iframe").contentWindow.tstCurrentPage);
+           document.getElementById("iframe").contentWindow.tstCurrentPage = parseInt(pos);
+           console.log(document.getElementById("iframe").contentWindow.tstCurrentPage);
+           document.getElementById("iframe").contentWindow.gotoPage(parseInt(pos));
 
-           document.getElementById("iframe").contentWindow.gotoPage(pos);
+        }
 
+        function moveTo(id){
+            var sub_cur_page = jQuery("#"+id).attr("tstcurrentpage");
+            if (sub_cur_page === undefined){
+
+            }else{
+                loadInnerPage(sub_cur_page)
+            }
         }
 
         setTimeout("setup()", 500);

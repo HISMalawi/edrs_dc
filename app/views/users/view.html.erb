@@ -43,7 +43,7 @@
         
 </div>
 
-<i class="fa fa-user-plus" style="position: absolute; font-size : 3.5em ;right: 15% ;bottom: 8%;box-shadow: 2.5px 2.5px 1px #888888;border : 0.005em solid #b3b1b1; padding: 0.1%;" onclick="window.location = '<%= new_user_path %>'"></i>
+<i class="fa fa-user-plus" style="position: absolute; font-size : 3.5em ;right: 15% ;bottom: 8%;box-shadow: 2.5px 2.5px 1px #888888;border : 0.005em solid #b3b1b1; padding: 0.1%;" onclick="window.location = '/people/form_container?url=<%= new_user_path%>&next_url=/users/'"></i>
 <%= render :partial => "/dc/landing_resize" %>
 <script>
     function __$(id){

@@ -42,4 +42,8 @@ class SimpleSQL
     return insert
   end
 
+  def self.load_dump(file)
+    load = `mysql -u #{CONFIGS['username']} -p#{CONFIGS['password']} #{CONFIGS['database']} < #{file}`
+  end
+
 end

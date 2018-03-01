@@ -12,6 +12,11 @@
 			}
 	}
 
+	function removeUnknown(){
+
+			__$("Unknown").style.display ="none";
+	}
+
 	var patnum = ""
 	var setFocusTimeout = 5000;
 	var checkForBarcodeTimeout = 1500;
@@ -68,7 +73,7 @@
 
 	function groupInclude(){
 		var field_map ={
-						"Details of person" : ["last_name", "first_name", "gender"],
+						"Details of deceased" : ["last_name", "first_name", "gender","date_of_death"],
 						"Home address" 		: ["home_country","home_district","home_ta","home_village"],
 						"Name of mother" 	: ["mother_last_name","mother_first_name"],
 						"Name of father" 	: ["father_last_name","father_first_name"],
@@ -134,7 +139,7 @@
 
 	<%= form_tag("/people/search",:method=>:get) do %>
 		<% if SETTINGS['site_type'].to_s != "facility" %>
-			<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
+			<%= select_tag "search_criteria", options_for_select(["By Barcode","By Death Entry Number","By Death Registration Number","By National ID","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
 		<%else%>
 			<%= select_tag "search_criteria", options_for_select(["By Barcode","General Search"], " "), {:helpText => 'Select search criteria',:tt_requireNextClick => false,:tt_pageStyleClass =>"NoKeyboard" }%>
 		<%end%>
@@ -146,13 +151,15 @@
 
 		<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
 
-		<%= select_tag "field_group[]", options_for_select(["Details of person","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()" ,:condition => "__$('search_criteria').value =='General Search'"}%>
+		<%= select_tag "field_group[]", options_for_select(["Details of deceased","Physical address","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()" ,:condition => "__$('search_criteria').value =='General Search'"}%>
 
 		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false, :ajaxURL => "/get_last_names?search=", :allowFreeText=>true}  %>
 
 		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false, :ajaxURL => "/get_first_names?search=",  :allowFreeText=>true}  %>
 
 		<%= select_tag "gender", options_for_select(["","Female","Male"], " "), {:helpText => 'Gender',:tt_pageStyleClass =>"NoKeyboard",:condition =>false , :optional=>true}%>
+
+		<%= text_field_tag "date_of_death", nil, {:helpText => 'Date of death',:condition => false,:allowFreeText=>true,:field_type=>"date",:optional=>true,:tt_onLoad =>"removeUnknown()"}  %>
 
 		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition =>false }  %>
 		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition =>false }  %>

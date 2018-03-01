@@ -220,7 +220,7 @@
 		<%end%>
 	<%end%>
 	<% if @comments.count > 0 %>
-		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Comment</span></button>
+		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
@@ -252,10 +252,30 @@
 
 		<table id="summary" style="">
 			<tr>
+				<% if @person.court_order.present? && @person.registration_type == "Missing Persons"%>
+				<td ><b >Court order attached ? :</b> </td>
+				<td colspan="2" style="text-align:left"><%= @person.court_order%></td>
+				<%end%>
+				<% if @person.police_report.present? && (@person.registration_type == "Abnormal Deaths" || @person.registration_type == "Unclaimed bodies")%>
+				<td><b>Police report attached ? :</b></td>
+				<td colspan="2" style="text-align:left"><%= @person.police_report%></td>
+				<%end%>
+				<% if @person.proof_of_death_abroad.present? && @person.registration_type == "Deaths Abroad" %>
+				<td colspan="3"><b>Proof of death abroad attached? :</b></td>
+				<td colspan="2" style="text-align:left"><%=  @person.proof_of_death_abroad %> </td>
+				<%end%>
+			</tr>
+			<tr>
 				<td style="border-right:none"><b>Registration Category : </b></td>
 				<td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
-				<td colspan="2" style="border-right:none"><b>Record Status : </b></td>
-				<td colspan="7" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+				<td colspan="1" style="border-right:none"><b>Status : </b></td>
+				<td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+				<td colspan="3" style="border-right:none"><b>Registration place : </b></td>
+				<% if @person.facility_code.to_s.present? %>
+					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> , <%= @district.name %></td>
+				<%else%>
+					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> DRO</td>
+				<%end%>
 			</tr>
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased 
@@ -280,7 +300,7 @@
 			<tr>
 				<td>2</td>
 				<td class="clickable" onclick="editField('id_number')" >ID No.</td>
-				<td style="border-bottom :1.5px solid black"><%= @person.id_number rescue ""%></td>
+				<td style="border-bottom :1.5px solid black"><%= @person.national_id rescue ""%></td>
 				<td>3</td>
 				<td class="clickable" onclick="editField('nationality')">Nationality</td>
 				<td colspan="2" style="border-bottom :1.5px solid black"><%= @person.nationality rescue ""%></td>
@@ -303,37 +323,76 @@
 			<%if (@person.place_of_death.present? || @person.other_place_of_death.present?) %>
 				<td colspan="8"><%= @person.place_of_death %></td>
 			<%else%>
+
 				<td colspan="8"><%= @person.place_of_death_foreign %>
 			<%end%>
 			</tr>
+			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
 			</tr>
+			<%else%>
+			<tr>
+				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
+				<td colspan="8" style="border-bottom: 1.5px solid black"> 
+				<% if @person.place_of_death_foreign =="Health Facility" %>
+					<% if @person.place_of_death_foreign_hospital.present? %>
+						<%= @person.place_of_death_foreign_hospital.present? ? "#{@person.place_of_death_foreign_hospital}," :"" %>
+					<%end%>
+						<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>
+				<%end%>	
+				</td>
+			</tr>
+			<%end%>
 			<tr>
 				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
 			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 				<td class="clickable">Address</td>
 				<td class="clickable" onclick="editField('place_of_death_district')" >District</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
+				<% if @person.place_of_death != "Other" %>
+					<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_ta')">TA</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
 				<td class="clickable" onclick="editField('place_of_death_village')" >Village</td>
 				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
 			<%else%>
 				<td class="clickable" onclick="editField('place_of_death_country')" >Country</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country %></td>
+				<% if @person.place_of_death_foreign =="Home" %>
+					<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_state')">State</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_foreign_state %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_district')" >District</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_district  %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 				<td class="clickable" onclick="editField('place_of_death_foreign_village')" >Town</td>
+				<% if @person.place_of_death_foreign =="Home" %>
 				<td style="border-bottom:1.5px solid black" ><%= @person.place_of_death_foreign_village  %></td>
+				<%else%>
+					<td style="border-bottom:1.5px solid black"></td>
+				<%end%>
 			<% end %>
 			</tr>
 			<tr>
 				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="other" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
-				<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
+				<% if @person.place_of_death=="Other" && @person.place_of_death_district != "Not indicated" %>
+					<td colspan="8"><%= @person.other_place_of_death rescue '' %>, <%= @person.place_of_death_district rescue '' %></td>
+				<%else%>
+					<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
+				<%end%>
 			</tr>
 			<tr>
 				<td>8</td>
@@ -349,7 +408,7 @@
 			<%else%>
 				<td class="clickable" onclick="editField('current_district')">Physical address</td>
 				<td class="clickable" onclick="editField('current_country')" >Country</td>
-				<td style="border-bottom:1.5px solid black"><%= @person.current_country %></td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_country.to_s !='Other'? @person.current_country : (@person.other_current_country rescue '') %></td>
 				<td class="clickable" onclick="editField('current_foreign_state')">State</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.current_foreign_state %></td>
 				<td class="clickable" onclick="editField('current_foreign_district')" >District</td>
@@ -439,7 +498,7 @@
 				<td>3</td>
 				<td class="clickable" onclick="editField('informant_relationship_to_deceased')">Relation to the deceased</td>
 				<td colspan="8">
-					<%= @person.informant_relationship_to_deceased rescue @person.informant_relationship_to_deceased_other %>
+					<%= (@person.informant_relationship_to_deceased != "Other" ? @person.informant_relationship_to_deceased : @person.informant_relationship_to_deceased_other) %>
 				</td>
 			</tr>
 			<tr>
@@ -711,7 +770,7 @@
 					tr.appendChild(td);
 
 					var td = document.createElement("td");
-					td.innerHTML = "<%= @person.first_name %> <%= @person.last_name %>";
+					td.innerHTML = "<%= @person.first_name %> <%= @person.middle_name rescue '' %> <%= @person.last_name %>";
 					tr.appendChild(td);
 
 					var tr = document.createElement("tr");
@@ -771,12 +830,33 @@
 
 					var td = document.createElement("td");
 					<% if @person.place_of_death == 'Health Facility'%>
-					 	td.innerHTML = " <%= @person.hospital_of_death %>";
+					 	td.innerHTML = ("<%= @person.hospital_of_death.to_s %>".length > 0 ? "<%= @person.hospital_of_death.to_s %>"+"," : "") + "<%= @person.place_of_death_district rescue '' %>";
 					<%elsif @person.place_of_death == 'Home'%>
-						 td.innerHTML = "<%= @person.place_of_death_district %> <%= @person.place_of_death_ta%> "+
-						 				" <%= @person.place_of_death_village%>";
+						var place_of_death = "";
+						<%if @person.place_of_death_village == "Unknown" %>
+						<%elsif @person.place_of_death_village == "Other"%>
+							 place_of_death = place_of_death + "<%= @person.other_place_of_death_village %>,"
+						<%elsif @person.place_of_death_village.present?%>
+							 place_of_death = place_of_death + "<%= @person.place_of_death_village %>,"
+						<%end%>
+						<%if @person.place_of_death_ta == "Unknown" %>
+						<%elsif @person.place_of_death_ta == "Other"%>
+							 place_of_death = place_of_death + "<%= @person.other_place_of_death_ta %>,"
+						<%elsif @person.place_of_death_ta.present?%>
+							 place_of_death = place_of_death + "<%= @person.place_of_death_ta %>,"
+						<%end%>
+						td.innerHTML = place_of_death + "<%= @person.place_of_death_district rescue '' %>";
 					<%elsif @person.place_of_death == 'Other' %>
-						 td.innerHTML = "<%= @person.other_place_of_death rescue '' %>"
+						 td.innerHTML = ("<%= @person.other_place_of_death rescue '' %>".length > 0 ? "<%= @person.other_place_of_death rescue '' %>" + "," : "")+ "<%= @person.place_of_death_district rescue '' %>"
+					<% elsif @person.place_of_death_foreign =="Health Facility" %>
+						var place = ""
+						<% if @person.place_of_death_foreign_hospital.present? %>
+							place ="<%= @person.place_of_death_foreign_hospital.present? ? '#{@person.place_of_death_foreign_hospital},' :'' %>";
+						<%end%>
+								place ="<%= @person.place_of_death_country.to_s != 'Other'? @person.place_of_death_country : @person.other_place_of_death_country %>"
+						td.innerHTML = place;
+					<% elsif @person.place_of_death_foreign =="Home" %>
+					<% elsif @person.place_of_death_foreign =="Other" %>
 					<% end %>
 					tr.appendChild(td);
 
@@ -791,7 +871,7 @@
 					tr.appendChild(td);
 					var mother = "N/A"
 					<% if @person.mother_first_name.present? %>
-						mother = "<%= @person.mother_first_name%>  <%=  @person.mother_last_name %> ";
+						mother = "<%= @person.mother_first_name%> <%= @person.mother_middle_name rescue ''%>  <%=  @person.mother_last_name %> ";
 					<%end%>
 					td.innerHTML = mother;
 
@@ -808,7 +888,7 @@
 					tr.appendChild(td);
 					var father = "N/A"
 					<% if @person.mother_first_name.present? %>
-						father = "<%= @person.father_first_name%>  <%=  @person.father_last_name %> ";
+						father = "<%= @person.father_first_name%> <%= @person.father_middle_name rescue ''%> <%=  @person.father_last_name %> ";
 					<%end%>
 					td.innerHTML = father;
 
@@ -980,7 +1060,7 @@
 
 			function editField(field){
 
-					var editable_statuses =["DC ACTIVE", "HQ REJECTED"]
+					var editable_statuses =["DC ACTIVE","DC PENDING","DC REJECTED", "HQ REJECTED"]
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){
@@ -1004,7 +1084,7 @@
 
 			function viewPersonComment(){
 
-				showConfirmMessage("","Comments trail","");
+				showConfirmMessage("","Trail of the record","");
 
 				var popup_container = __$("msg.popup")
 
@@ -1135,7 +1215,7 @@
 				place_of_death ="<%= @person.place_of_death_foreign %>"
 			}
 
-		   	if(place_of_death.trim() == 'Home'){
+		   	if(place_of_death.trim().toLowerCase().match('home')){
 		   		__$('home').checked = true
 		   		__$('home').setAttribute('disabled','disabled');
 		   		__$('facility').setAttribute('disabled','disabled')
@@ -1147,7 +1227,7 @@
 		   		__$('facility').setAttribute('disabled','disabled')
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
-		   	if(place_of_death.trim().toLowerCase().match('Other')){
+		   	if(place_of_death.trim().toLowerCase().match('other')){
 		   		__$('other').checked = true
 		   		__$('home').setAttribute('disabled','disabled');
 		   		__$('facility').setAttribute('disabled','disabled')

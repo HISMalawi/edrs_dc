@@ -88,6 +88,8 @@ Rails.application.routes.draw do
 
   get '/search_by_status' => "people#search_by_status"
 
+  get "/search_by_status_with_prev_status" =>"people#search_by_status_with_prev_status"
+
   post 'update_field' => "people#update_field"
 
   get '/people/all' => "people#all"
@@ -104,6 +106,8 @@ Rails.application.routes.draw do
   
   get "/get_last_names" => "people#get_last_names"
 
+  get "/get_names" => "people#get_names"
+
   get '/facilities' => "people#facilities"
 
   get '/nationalities' => "people#nationalities"
@@ -116,13 +120,21 @@ Rails.application.routes.draw do
 
   get "/villages" => "people#villages"
 
+  get "/other_countries" => "people#other_countries"
+
   get "/people/find/:id" =>"people#find"
 
   get "/people/new_person_type" => "people#new_person_type"
 
+  get "/people/register_special_cases" =>"people#register_special_cases"
+
   post "/search_barcode" => "people#search_barcode"
 
   get "/search_barcode" => "people#search_barcode"
+
+  post "/find_identifier" =>"people#find_identifier"
+
+  get "/find_identifier" =>"people#find_identifier"
 
   get "/global_phone_validation" => "people#global_phone_validation"
 
@@ -235,6 +247,8 @@ Rails.application.routes.draw do
   get "/dc/sent_to_hq_for_reprint/:id" =>"dc#sent_to_hq_for_reprint"
 
   post "/proceed_amend" => "dc#proceed_amend"
+
+  get "/printed_amendmets" => "dc#printed_amendmets"
 
   get "/dc/sync" => "dc#sync"
 

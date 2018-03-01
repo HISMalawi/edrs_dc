@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 	var site_type = "<%= @site_type %>"
 </script>
@@ -18,12 +21,9 @@
 </style>
 <div id="table_container">
 
-		<table>
+		<table id="records_table">
 				<thead>
 					<tr>
-						<th>
-							#
-						</th>
 						<th>
 							Name
 						</th>
@@ -49,11 +49,6 @@
 				</tbody>
 		</table>
 	
-</div>
-<div id="pagination">
-	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
-	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
-		
 </div>
 <div style="position : absolute; min-width : 30%; bottom:58px;; right :1%; margin-right : 1%">
   <% if params[:next_url] %>
@@ -127,6 +122,8 @@
 
 	    var estimatesize = 0;
 
+	    var datatable;
+
 	    function navNextPage(){
 
 	    	if(estimatesize >= 7){
@@ -156,6 +153,35 @@
 
 		}
 
+		function addRows(page){
+			ajaxGETRequest(url+"?page="+page+"&size=40",function(data){
+				var data = JSON.parse(data);
+				for(var i  = 0 ; i <data.length ; i++){
+					var name = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
+
+					var link = "window.location = \"/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>\"";
+
+					var button = "<button class='blue' onclick='"+link+"' style='width:90%'><span>View</span></button>"
+
+					var sync_status = ""
+					if(site_type != 'facility'){
+							sync_status = (eval(data[i].hq_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+					}else{
+							sync_status = (eval(data[i].dc_sync_status) ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>");
+					}
+
+					datatable.api().row.add([name,data[i].gender,new Date(data[i].date_reported).format(),data[i].record_status,sync_status,button]).draw()
+				}
+				if(data.length == 0){
+					return;
+				}
+				setTimeout(function(){
+    				page = page + 1
+    				addRows(page);
+    			},2000);
+		});
+	}
+
 		function loadTable(page){
 
 					var content = __$("table_container")
@@ -164,7 +190,7 @@
 
 					table.innerHTML ="";
 
-					ajaxGETRequest(url+"?page="+page+"&size=8",function(data){
+					ajaxGETRequest(url+"?page="+page+"&size=40",function(data){
 
 							var data = JSON.parse(data);
 
@@ -175,14 +201,6 @@
 								var tr = document.createElement("tr");
 
 								table.appendChild(tr);
-
-
-								var td = document.createElement("td");
-								td.style.borderRight= "1px solid black";
-								td.style.borderBottom= "1px solid black";
-								td.innerHTML = (page - 1)* 8 + (i + 1);
-								tr.appendChild(td);
-
 
 								var td = document.createElement("td");
 								td.style.borderRight= "1px solid black";
@@ -236,50 +254,189 @@
 
 							}
 
-							if(estimatesize >= 7){
+														datatable = $("#records_table").dataTable({
+									"lengthChange": false,
+									"pageLength": 6,
+									"order": [[ 0, "asc" ]],
+									"bInfo": false,
+									"autoWidth": true
+							});
 
-								__$("next").className = __$("next").className.replace("gray","blue");
-
-								__$("next").setAttribute("onmousedown","navNextPage()");
-
-							}else{
-
-								__$("next").className = __$("next").className.replace("blue","gray");
-
-								__$("next").removeAttribute("onmousedown");
-
-							}
-
-							if(page == 1 ){
-
-								__$("prev").className = __$("prev").className.replace("blue","gray");
-
-								__$("prev").removeAttribute("onmousedown");
-
-							}else{
-
-								__$("prev").className = __$("prev").className.replace("gray","blue");
-
-								__$("prev").setAttribute("onmousedown","navPrevPage()");
-
-							}
+							var search =__$('records_table_filter').getElementsByTagName("input")[0];
+    						search.setAttribute("onfocus","changeFocusToMe(this)")
+    						search.setAttribute("onblur","__$('keyboardcontainer').style.visibility='hidden'")
+    						setTimeout(function(){
+    							page = page + 1
+    							addRows(page);
+    						},1000);
+    					
 
 					});
 
 		}
 
-		<% if params[:page] %>
+	var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+	var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
+	var capcase = false;
+	var type = "abc"
 
-				page = parseInt("<%= params[:page] %>")
+	function cap(a){
+			return a.toUpperCase();
+	}
+	function appendValue(value){
+			if(control === undefined){
+				focusFirstInput()
+			}
+			control.value = control.value + value
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
 
-		<%else %>
+			
+	}
 
-				page = 1;
+	function deleteFromValue(){
+			control.value = control.value.slice(0, control.value.length - 1)
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
+	}
 
-		<% end %>
+	function clear(){
+			control.value = ""
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
+	}
 
+	function changeKeboardType(keyboard){
+			type  = keyboard;
+			changeFocusToMe(control);
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},1);
+	}
 
-		loadTable(page);
+	function changeFocusToMe(element){
+			control = element
+			var container = __$("table_container")
+            var width = 700;
+            var height = 380;
+            if(__$("keyboardcontainer")){
+            	__$("keyboardcontainer").style.visibility ="visible"
+            	__$("keyboardcontainer").innerHTML = "";
+            }else{
+            	var div = document.createElement("div");
+            	div.id = "keyboardcontainer";
+            	div.style.textAlign ="center"
+            	div.style.position = "absolute";
+            	div.style.width = width + "px";
+            	div.style.height = height + "px";
+            	div.style.backgroundColor = "#eee";
+            	div.style.border = "1px solid #26262b";
+            	div.style.display ="block"
+            	div.style.padding ="0.5%";
+            	div.style.borderRadius = "1px";
+            	div.style.left = "calc(50% - " + (width / 2) + "px)";
+            	div.style.top = "calc(50% - " + (height * 0.3) + "px)";
+            	div.style.border = "1px outset #fff";
+            	div.style.boxShadow = "3px 1.5px 3px 0px rgba(0,0,0,0.75)";
+            	div.style.fontFamily = "arial, helvetica, sans-serif";
+            	div.style.MozUserSelect = "none";
+            	container.appendChild(div);
+            }
+
+			var groups = eval(type)
+			
+			for(var i = 0 ; i < groups.length;i++){
+					var row = document.createElement("div");
+					row.className = "row"
+					__$("keyboardcontainer").appendChild(row);
+					var keys = groups[i].split("");
+					for(var j = 0 ; j < keys.length ; j++){
+						var button = document.createElement("button");
+						var key = capcase ? cap(keys[j]) : keys[j]
+						button.innerHTML = key ;
+						button.className = "blue"
+						button.setAttribute("onmousedown", "appendValue('"+key+"')");
+						button.setAttribute("onmouseup", "control.focus()")
+						row.appendChild(button);
+					}
+
+			}
+
+			var row = document.createElement("div");
+			row.className = "row"
+			__$("keyboardcontainer").appendChild(row);
+
+			var button = document.createElement("button");
+			button.innerHTML = type == "abc" ? "qwerty" : "abc";
+			button.className = "orange";
+			button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = capcase ? "cap" : cap("CAP");
+			button.style.marginLeft = "1%";
+			button.onmousedown = function(){
+				if(capcase){
+					capcase = false
+					buildkeyBoard(type)
+				}else{
+					capcase = true
+					buildkeyBoard(type)
+				}
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			button.className = "blue"
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "space";
+			button.className = "blue";
+			button.style.marginLeft = "5%";
+			button.style.marginRight = "5%";
+			button.style.width = "200px"
+			button.setAttribute("onmousedown", "appendValue(' ')")
+			button.setAttribute("onmouseup", "control.focus()")
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "Clear";
+			button.className = "orange";
+			button.style.marginRight = "1%";
+
+			button.onmousedown = function(){
+				clear();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "delete";
+			button.className = "blue"
+			button.onmousedown = function(){
+				deleteFromValue();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+
+			row.appendChild(button);
+
+	}
+	loadTable(page);
 
 		var removeBack = setInterval(function(){
 			if(__$('signout')){

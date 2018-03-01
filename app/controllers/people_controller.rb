@@ -32,6 +32,10 @@ class PeopleController < ApplicationController
       render :layout => "landing" 
   end
 
+  def register_special_cases
+      render :layout => "touch"
+  end
+
   def new
 	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
@@ -99,10 +103,13 @@ class PeopleController < ApplicationController
           record["father_middle_name"] = (params[:person][:father_middle_name] rescue nil)
           record["father_first_name"] = (params[:person][:father_first_name] rescue nil)
           record["id"] = person.id
+          record["district_code"] = SETTINGS['district_code']
 
           SimpleElasticSearch.add(record)
           
       end
+
+      create_directory(params)
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil? 
 
@@ -283,8 +290,20 @@ class PeopleController < ApplicationController
   end
 
   def view_datatable
-    @section = "View"
-    render :layout => "landing"
+
+      @section = "View"
+
+      if SETTINGS['site_type'] =="facility"
+          @statuses = ["DC ACTIVE","FC POTENTIAL DUPLICATE"]
+      else
+          @statuses = ["DC ACTIVE"]
+      end
+      @next_url = "/people/view_datatable"
+
+      @search = true
+
+      render :layout => "landing"
+      
   end
 
   def all
@@ -345,6 +364,27 @@ class PeopleController < ApplicationController
     end
     
     render  :text => people.to_json
+  end
+
+
+  def search_by_status_with_prev_status
+      sql = "SELECT c.person_record_id FROM person_record_status c INNER JOIN person_record_status p ON p.person_record_id = c.person_record_id
+             WHERE c.status IN ('#{params[:statuses].join("','")}') AND p.status IN ('#{params[:prev_statuses].join("','")}') AND p.voided = 1 
+             LIMIT 40 OFFSET #{(params[:page].to_i - 1) * 40}"
+      connection = ActiveRecord::Base.connection
+      data = connection.select_all(sql).as_json
+
+      cases = []
+
+      data.each do |row|
+          person = Person.find(row["person_record_id"])
+          person["den"] = person.den rescue ""
+          person["drn"] = person.drn rescue ""
+          people << person
+          cases << people
+      end
+
+      render text: cases.to_json and return
   end
 
   def search
@@ -441,7 +481,8 @@ class PeopleController < ApplicationController
 
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
-
+      elsif @status.status.include?("DUPLICATE")
+        redirect_to "/dc/show_duplicate/#{params[:id]}?next_url=#{params[:next_url]}"
       else
 
           if SETTINGS["potential_duplicate"]
@@ -460,7 +501,7 @@ class PeopleController < ApplicationController
               record["father_middle_name"] = (@person.father_middle_name rescue nil)
               record["father_first_name"] = (@person.father_first_name rescue nil)
               record["id"] = @person.id
-
+              record["district_code"] = @person.district_code
               SimpleElasticSearch.add(record)
           end
 
@@ -504,9 +545,7 @@ class PeopleController < ApplicationController
   end
 
   def update_field
-
       person = Person.find(params[:id])
-
       if person.update_person(params[:id],params[:person])
           change_log = {}
           params[:person].keys.each do |key|
@@ -546,7 +585,7 @@ class PeopleController < ApplicationController
 
   def get_first_names
       entry = params["search"].soundex rescue nil
-        data = Person.by_first_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
+        data = Person.by_name_codes.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
 		  		render :text => data.collect{ |w| "<li>#{w.first_name}" }.uniq.join("</li>")+"</li>"
 		  	else
@@ -556,12 +595,28 @@ class PeopleController < ApplicationController
 
   def get_last_names
         entry = params["search"].soundex rescue nil
-        data = Person.by_last_name_code.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
+        data = Person.by_name_codes.startkey(entry).endkey("#{entry}\ufff0").limit(10) rescue nil
         if data.present?
           render :text => data.collect{ |w| "<li>#{w.last_name}" }.uniq.join("</li>")+"</li>"
         else
           render :text => "<li></li>"
         end
+  end
+
+  def get_names
+      entry = params["search"] rescue nil
+      special_character_regex = /[-!$%^&*()_+|~=`{}\[\]:";<>?\/\d+]/
+      if entry.blank?
+          data = []
+      else
+        query = "SELECT name FROM name_directory WHERE name LIKE '#{entry.gsub("'","''")}%' ORDER BY name ASC LIMIT 10"
+        data = NameDirectory.find_by_sql(query);
+      end
+      if data.present?
+          render :text => data.collect{ |w| "<li>#{w.name}" unless w.name =~ special_character_regex }.uniq.join("</li>")+"</li>"
+      else
+          render :text => "<li></li>"
+      end
   end
 
   def districts
@@ -572,18 +627,23 @@ class PeopleController < ApplicationController
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
 
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
 
         render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
-    
+
+    elsif params[:place].present? && params[:place] == "Other"
+
+         district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+
+         render :text => district.collect { |w| "<li >#{w.name}" }.push("<li>Not indicated").join("</li>")+"</li>"
     else
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(10).each
+        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
 
         render :text => district.collect { |w| "<li >#{w.name}" }.join("</li>")+"</li>"
     
     end
   end
-entry = params["search"].soundex rescue nil
+
   def facilities
 
     district_param = params[:district] || '';
@@ -606,17 +666,22 @@ entry = params["search"].soundex rescue nil
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
   end
 
   def nationalities
-    nationalities = Nationality.all
+    entry = params[:search_string] rescue nil
+    if entry.present? && false
+        nationalities = Nationality.by_nationality.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+      nationalities = Nationality.all
+    end
+    
     malawi = Nationality.by_nationality.key("Malawian").last
     list = []
     nationalities.each do |n|
-      if n.nationality =="Unknown"
-          next if params[:special].blank?
-      end
+      next if n.nationality.squish =="Unknown"
+      next if n.nationality.squish =="Other"
       if !params[:search_string].blank?
         list << n if n.nationality.match(/#{params[:search_string]}/i)
       else
@@ -628,18 +693,24 @@ entry = params["search"].soundex rescue nil
      if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
       nations = [malawi.nationality] + nations
     end
-    render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
+    render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
   end
 
   def countries
-    countries = Country.all
+    entry = params[:search_string] rescue nil
+    if entry.present? && false
+        countries = Country.by_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+      countries = Country.all
+    end
+    
+    
     malawi = Country.by_country.key("Malawi").last
     list = []
     countries.each do |n|
-      if n.name =="Unknown"
-          next if params[:special].blank?
-      end
+      next if n.name.squish =="Unknown"
+      next if n.name.squish =="Other"
       if n.name =="Malawi"
           next unless params[:exclude].blank?
       end
@@ -660,8 +731,21 @@ entry = params["search"].soundex rescue nil
       countries = [malawi.name] + countries
     end
 
-    render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
+    render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
+  end
+
+  def other_countries
+     entry = params["search"] rescue nil
+     data = Person.by_other_home_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+     other_countries = []
+     data.each do |d|
+        other_countries << d.other_home_country if d.other_home_country.present?
+        other_countries << d.other_current_country if d.other_current_country.present?
+        other_countries << d.other_place_of_death_country if d.other_place_of_death_country.present?
+     end
+
+     render :text => other_countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li>"
   end
 
   def tas
@@ -688,7 +772,7 @@ entry = params["search"].soundex rescue nil
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
   end
 
 
@@ -718,8 +802,26 @@ entry = params["search"].soundex rescue nil
       end
     end
 
-    render :text => list.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
+  end
+
+  def get_disignation
+       entry = params["search"] rescue nil
+       data = Person.by_informant_designation.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
+  end
+
+  def get_other_ta
+       entry = params["search"] rescue nil
+       data = Person.by_other_ta.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
+  end
+
+  def get_other_villages
+       entry = params["search"] rescue nil
+       data = Person.by_other_ta.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+       render :text => data.collect { |w| "<li>#{w.informant_designation}" }.join("</li>")
   end
 
   def print_id_label
@@ -863,7 +965,7 @@ end
       page = params[:page] rescue 1
       size = params[:size] rescue 7
       keys = []
-      special_cases = ["Unnatural Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+      special_cases = ["Abnormal Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
       special_cases.each do |special_case|
           keys << [special_case,"HQ CLOSED"]
           keys << [special_case,"HQ DISPATCHED"]
@@ -882,7 +984,7 @@ end
       if params[:url].present?
          @url = params[:url]
       else
-         @url = "/people/new?registration_type=Natural Deaths"
+         @url = "/people/new?registration_type=Normal Cases"
       end
       if params[:next_url].present?
         @next_url = params[:next_url]
@@ -890,6 +992,17 @@ end
         @next_url = "/"
       end
       render :layout =>"plain_with_header"
+  end
+
+  def find_identifier
+      if params[:identifier].present?
+        count = PersonIdentifier.by_identifier.key(params[:identifier]).count  
+        if count >= 1
+            render :text => {:response =>  PersonIdentifier.by_identifier.key(params[:identifier]).first.person_record_id}.to_json
+        else
+           render :text => {:response => false}.to_json
+        end            
+      end
   end
 
 
@@ -958,6 +1071,18 @@ end
                       status: (person.status),
                       nationality: person.nationality
                      }
+  end
+
+  def create_directory(params)
+      NameDirectory.create(name: params[:person][:first_name], soundex: params[:person][:first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:last_name], soundex: params[:person][:last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:middle_name], soundex: params[:person][:middle_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_first_name], soundex: params[:person][:mother_first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_last_name], soundex: params[:person][:mother_last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:mother_middle_name], soundex: params[:person][:mother_middle_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_first_name], soundex: params[:person][:father_first_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_last_name], soundex: params[:person][:father_last_name].soundex) rescue nil
+      NameDirectory.create(name: params[:person][:father_middle_name], soundex: params[:person][:father_middle_name].soundex) rescue nil
   end
 
 end

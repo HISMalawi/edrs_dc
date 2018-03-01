@@ -1,0 +1,63 @@
+            <sub id="physical_address" name="Physical address">
+               <% if params[:registration_type]=='Deaths Abroad'%>
+                  <%= text_field_tag "person[current_country]", @person[:current_country], {
+                            :helpText => "Physical residential address(<i>Country</i>) <i style='color: red'>*</i>",
+                            :ajaxURL => "/countries?special=true&exclude=Malawi&search_string=",
+                            :tt_requireNextClick => false} %>
+              <%else%>
+                  <% if false %>
+                    <%= text_field_tag "person[current_country]", @person[:current_country], {
+                            :helpText => "Country (<i>Physical residential address</i>) <i style='color: red'>*</i>",
+                            :ajaxURL => "/countries?search_string=",
+                            :tt_requireNextClick => false} %>
+                  <%else%>
+                        <input type="hidden" name="person[current_country]" id="person_current_country" value="Malawi">
+                  <%end%>
+
+              <%end%>
+
+              <%= text_field_tag "person[current_district]", @person[:current_district], {
+                  :helpText => "Physical residential address(<i>District </i>) <i style='color: red'>*</i>",
+                                :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
+                                :ajaxURL =>"/districts?search_string=",:tt_onUnLoad => "setAjaxUrl(6)",
+                                :tt_requireNextClick => false} %>
+
+                <%= text_field_tag "person[current_ta]",@person[:current_ta] , {
+                        :helpText => "Physical residential address  (<i>Traditional Authority</i>)  <i style='color: red'>*</i>",
+                        :condition => "__$('person_current_country').value.toLowerCase().match('malawi')",
+                        :tt_onUnLoad => "setAjaxUrl(7)",
+                        :tt_onLoad => "setSubTitle('person_current_district','Physical residential address (<i>Town/Area</i>) <i style=\"color: red\">*</i>')",
+                        :tt_requireNextClick => false} %>
+
+                <%= text_field_tag "person[other_current_ta]", @person[:other_current_ta], {
+                        :helpText => "Physical residential address(<i>Other Traditional Authority specify </i>) <i style='color: red'>*</i>",
+                        :tt_onLoad => "setSubTitle('person_current_district','Physical residential address (<i>Other Town/Area specify</i>) <i style=\"color: red\">*</i>')",
+                        :condition => "__$('person_current_ta').value =='Other'"} %>
+
+                <%= text_field_tag "person[current_village]",@person[:current_village], {
+                        :helpText => "Physical residential address(<i>Village </i>)  <i style='color: red'>*</i>",
+                        :condition => "__$('person_current_ta').value.length > 0 && (__$('person_current_ta').value != 'Other' && __$('person_current_ta').value != 'Unknown')",
+                        :tt_onLoad => "setSubTitle('person_current_district','Physical residential address (<i>Location</i>) <i style=\"color: red\">*</i>')",
+                        :tt_requireNextClick => false} %>
+
+                <%= text_field_tag "person[other_current_village]",@person[:other_current_village], 
+                      {:helpText => "Physical residential address(<i>Other Village specify</i>)  <i style='color: red'>*</i>",
+                      :condition => "__$('person_current_ta').value =='Other' || __$('person_current_village').value =='Other'", :tt_onLoad=>"setOtherTofield('person_current_village');setSubTitle('person_current_district','Physical residential address (<i>Other Location specify</i>) <i style=\"color: red\">*</i>')"} %>
+
+                
+                <%= text_field_tag "person[current_foreign_state]", @person[:current_foreign_state], {
+                  :helpText => "Foreign physical residential address(<i>State </i>)",
+                  :optional => true,
+                  :condition => "__$('person_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[current_foreign_district]", @person[:current_foreign_district], {
+                  :helpText => "Foreign physical residential address(<i>District</i>)",
+                  :optional => true,
+                  :condition => "__$('person_current_country').value.toLowerCase() !='malawi'"} %>
+
+                <%= text_field_tag "person[current_foreign_village]", @person[:current_foreign_village], {
+                        :helpText => " Foreign physical residential address (<i>Village/Town</i>)",
+                        :optional => true,
+                        :condition => "__$('person_current_country').value.toLowerCase() !='malawi'"} %>
+
+            </sub>

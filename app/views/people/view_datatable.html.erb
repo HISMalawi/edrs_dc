@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
-<script type="text/javascript" language="javascript" src="/datatable/js/jquery.js"></script>
-<script type="text/javascript" language="javascript" src="/datatable/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
 	<% if @statuses.present? %>
 		var statuses = "<%= @statuses.join(",") %>".split(",");
@@ -61,11 +61,7 @@
 		margin-left: 1%;
 	}
 </style>
-<div id="pagination" style="display:none">
-	<button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
-	<button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
-		
-</div>
+
 <div style="position : absolute; min-width : 30%; bottom:4%; right :1%; margin-right : 1%">
   <% if params[:next_url] %>
         <button class="green"  style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
@@ -85,8 +81,416 @@
 </div>
 <%= render :partial => "/dc/landing_resize" %>
 <script type="text/javascript">
-	$("#records_table").dataTable({
-		"lengthChange": false,
-		"bInfo": false
-	});
+	String.prototype.replaceAll = function(str1, str2, ignore) 
+	{
+		    return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
+	} 
+
+	var url =""
+
+	<% if params[:search_criteria].present? %>
+			
+			<%if params[:death_entry_number].present? %>
+				url = "/search_by_fields?death_entry_number=<%=params[:death_entry_number]%>"
+			<%end%>
+
+			<%if params[:barcode].present? %>
+
+				var param = "<%=params[:barcode]%>";
+				param = param.substr(0,param.length-1);
+				console.log(param);
+				url = "/search_by_fields?barcode="+param;
+			<%end%>
+			<% if params[:search_criteria] == "General Search" %>
+				url = "/general_search?<%= @params_string%>".replaceAll("amp;","");
+
+			<%end%>
+		<%elsif params[:registration_type].present?%>
+				url = "/query_registration_type/<%=params[:registration_type]%>?"
+		<%elsif @special_case_print.present?%>
+				url = "/query_registration_type_and_printed?"
+		<%else%>
+				url ="/search_by_status?";
+				for (var i = 0 ; i < statuses.length ; i++){
+					url = url+"&statuses[]="+statuses[i];
+				}
+		<%end%>
+
+		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
+
+		    Object.defineProperty(Date.prototype, "format", {
+		        value: function (format) {
+		            var date = this;
+
+		            var result = "";
+
+		            if (!format) {
+
+		                format = ""
+
+		            }
+
+		            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+		            var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+		                "October", "November", "December"];
+
+		            if (format.match(/YYYY\-mm\-dd\sHH\:\MM\:SS/)) {
+
+		                result = date.getFullYear() + "-" + stock;
+		                padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                stock.padZeros(date.getDate(), 2) + " " + stock.padZeros(date.getHours(), 2) + ":" +
+		                stock.padZeros(date.getMinutes(), 2) + ":" + stock.padZeros(date.getSeconds(), 2);
+
+		            } else if (format.match(/YYYY\-mm\-dd/)) {
+
+		                result = date.getFullYear() + "-" + stock.padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
+		                    stock.padZeros(date.getDate(), 2);
+
+		            } else if (format.match(/mmm\/d\/YYYY/)) {
+
+		                result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
+
+		            } else if (format.match(/d\smmmm,\sYYYY/)) {
+
+		                result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
+
+		            } else {
+
+		                result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
+
+		            }
+
+		            return result;
+		        }
+		    });
+
+	}
+
+	function changeFocusToMe(element){
+
+	}
+	var page = 1 ;
+
+	var estimatesize = 0;
+	var table = __$("table_body");
+
+	table.innerHTML ="";
+
+	var datatable;
+	function loadTable(page){
+
+		var content = __$("table_container")
+	
+		var table = __$("table_body");
+
+
+		ajaxGETRequest(url+"&page="+page+"&size=7",function(data){
+				var data = JSON.parse(data);
+						if (data.length == 0) {
+							return;
+						}
+						for(var i = 0 ; i < data.length ; i++){
+
+								estimatesize = i + 1;
+
+								var tr = document.createElement("tr");
+
+								table.appendChild(tr);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = (page - 1)* 7 + (i + 1);
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = data[i].gender
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+								td.innerHTML = new Date(data[i].date_of_death).format()
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+
+								if(data[i].place_of_death && data[i].place_of_death.trim().toLowerCase().match("facility")){
+									td.innerHTML = data[i].hospital_of_death + "," + data[i].place_of_death_district;
+
+								}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim().toLowerCase().match("facility")){
+									td.innerHTML = data[i].place_of_death_foreign_hospital
+
+								}else if(data[i].place_of_death_foreign && data[i].place_of_death_foreign.trim() !="facility"){
+									td.innerHTML = (data[i].place_of_death_country ? data[i].place_of_death_country : data[i].other_place_of_death_country) + (data[i].place_of_death_foreign_state ? data[i].place_of_death_foreign_state : "") +" " 
+									+ (data[i].place_of_death_foreign_district ? data[i].place_of_death_foreign_district : "" ) + " "+ 
+									 (data[i].place_of_death_foreign_village ? data[i].place_of_death_foreign_village : "");
+
+								}else if(data[i].place_of_death  && data[i].place_of_death =="Other"){
+
+									td.innerHTML = data[i].other_place_of_death;
+
+
+								}else if(data[i].place_of_death  && ["Home(Place of residence)","Home"].indexOf(data[i].place_of_death) >= 0){
+
+									td.innerHTML = data[i].place_of_death_district +" " + data[i].place_of_death_ta + " "+  data[i].place_of_death_village;
+
+								}
+
+								tr.appendChild(td);
+
+								var td = document.createElement("td");
+								td.style.borderRight= "1px solid black";
+								td.style.borderBottom= "1px solid black";
+
+								if(data[i].current_country){
+									if( data[i].current_country.trim().toLowerCase().match("malawi") && data[i].current_district && data[i].current_district.length > 0){
+										td.innerHTML =  data[i].current_district +" " + data[i].current_ta + " "+  data[i].current_village;
+									}
+									else{
+										var address = data[i].current_foreign_district ;
+
+										if( data[i].current_foreign_village){
+											address = address + " "+ data[i].current_foreign_village
+										}
+										td.innerHTML =  (data[i].current_country? data[i].current_country : "" ) +address
+									}
+								}else{
+
+								}
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderRight= "1px solid black";
+
+								td.style.borderBottom= "1px solid black";
+
+								td.innerHTML = td.innerHTML = data[i].informant_first_name +" " + data[i].informant_last_name
+
+								tr.appendChild(td);
+
+
+								var td = document.createElement("td");
+
+								td.style.borderBottom= "1px solid black";
+
+
+								td.style.borderRight= "1px solid black";
+
+								var button = document.createElement("button");
+
+								button.innerHTML = "<span>View</span>";
+
+								button.style.width = "90%";
+
+								button.setAttribute("onclick","window.location = '/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>?page="+page+"'");
+
+								td.appendChild(button);
+
+								tr.appendChild(td);
+
+
+
+							}
+
+							datatable = $("#records_table").dataTable({
+									"lengthChange": false,
+									"bInfo": false
+							});
+
+							var search =__$('records_table_filter').getElementsByTagName("input")[0];
+    						search.setAttribute("onfocus","changeFocusToMe(this)")
+    						search.setAttribute("onblur","__$('keyboardcontainer').style.visibility='hidden'")
+    						setTimeout(function(){
+    							page = page + 1
+    							loadTable(page);
+    						},1000);
+    					
+
+					});
+
+	}
+
+	var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+	var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
+	var capcase = false;
+	var type = "abc"
+
+	function cap(a){
+			return a.toUpperCase();
+	}
+	function appendValue(value){
+			if(control === undefined){
+				focusFirstInput()
+			}
+			control.value = control.value + value
+			datatable.fnFilter(control.value);
+			setTimeout(function(){
+				control.focus();
+			},5);
+
+			
+	}
+
+	function deleteFromValue(){
+			control.value = control.value.slice(0, control.value.length - 1)
+	}
+
+	function clear(){
+			control.value = ""
+	}
+
+	function changeKeboardType(keyboard){
+			type  = keyboard;
+			changeFocusToMe(control)
+	}
+
+	function changeFocusToMe(element){
+			control = element
+			var container = __$("table_container")
+            var width = 700;
+            var height = 380;
+            if(__$("keyboardcontainer")){
+            	__$("keyboardcontainer").style.visibility ="visible"
+            	__$("keyboardcontainer").innerHTML = "";
+            }else{
+            	var div = document.createElement("div");
+            	div.id = "keyboardcontainer";
+            	div.style.textAlign ="center"
+            	div.style.position = "absolute";
+            	div.style.width = width + "px";
+            	div.style.height = height + "px";
+            	div.style.backgroundColor = "#eee";
+            	div.style.border = "1px solid #26262b";
+            	div.style.display ="block"
+            	div.style.padding ="0.5%";
+            	div.style.borderRadius = "1px";
+            	div.style.left = "calc(50% - " + (width / 2) + "px)";
+            	div.style.top = "calc(50% - " + (height * 0.3) + "px)";
+            	div.style.border = "1px outset #fff";
+            	div.style.boxShadow = "3px 1.5px 3px 0px rgba(0,0,0,0.75)";
+            	div.style.fontFamily = "arial, helvetica, sans-serif";
+            	div.style.MozUserSelect = "none";
+            	container.appendChild(div);
+            }
+
+			var groups = eval(type)
+			
+			for(var i = 0 ; i < groups.length;i++){
+					var row = document.createElement("div");
+					row.className = "row"
+					__$("keyboardcontainer").appendChild(row);
+					var keys = groups[i].split("");
+					for(var j = 0 ; j < keys.length ; j++){
+						var button = document.createElement("button");
+						var key = capcase ? cap(keys[j]) : keys[j]
+						button.innerHTML = key ;
+						button.className = "blue"
+						button.setAttribute("onmousedown", "appendValue('"+key+"')");
+						button.setAttribute("onmouseup", "control.focus()")
+						row.appendChild(button);
+					}
+
+			}
+
+			var row = document.createElement("div");
+			row.className = "row"
+			__$("keyboardcontainer").appendChild(row);
+
+			var button = document.createElement("button");
+			button.innerHTML = type == "abc" ? "qwerty" : "abc";
+			button.className = "orange";
+			button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = capcase ? "cap" : cap("CAP");
+			button.style.marginLeft = "1%";
+			button.onmousedown = function(){
+				if(capcase){
+					capcase = false
+					buildkeyBoard(type)
+				}else{
+					capcase = true
+					buildkeyBoard(type)
+				}
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			button.className = "blue"
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "space";
+			button.className = "blue";
+			button.style.marginLeft = "5%";
+			button.style.marginRight = "5%";
+			button.style.width = "200px"
+			button.setAttribute("onmousedown", "appendValue(' ')")
+			button.setAttribute("onmouseup", "control.focus()")
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "Clear";
+			button.className = "orange";
+			button.style.marginRight = "1%";
+
+			button.onmousedown = function(){
+				clear();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+			row.appendChild(button);
+
+			var button = document.createElement("button");
+			button.innerHTML = "delete";
+			button.className = "blue"
+			button.onmousedown = function(){
+				deleteFromValue();
+			}
+			button.onmouseup = function(){
+				control.focus()
+			}
+
+			row.appendChild(button);
+
+	}
+	loadTable(page);
+
 </script>

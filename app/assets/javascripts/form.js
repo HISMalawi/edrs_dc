@@ -11,10 +11,10 @@
 			 tstControl.innerHTML = "";
 		
        var table = document.createElement("table");
-		        table.style.width = "100%";
+	   table.style.width = "100%";
 		        
 		         
-		        table.style.borderCollapse = "collapse";
+	   table.style.borderCollapse = "collapse";
 
 		       tstControl.appendChild(table);
 
@@ -29,7 +29,6 @@
 		        th.style.padding = "20px";
 		        th.style.borderBottom = "1px solid #ccc";
 		        th.innerHTML = "PARTICULARS OF THE DECEASED";
-
 		        tr.appendChild(th);
 
 		        var tr = document.createElement("tr");
@@ -59,37 +58,80 @@
 
 		        div.appendChild(tableContent);
 
+		        if (__$('person_police_report')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Police Reported attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_police_report').value
+				        tr.appendChild(td);
+				}
+
+
+				if (__$('person_court_order')) {
+						var tr = document.createElement("tr");
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+
+
+		                var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.style.fontWeight = "bold";
+				        td.innerHTML = "Court order attached?";
+				        tr.appendChild(td);
+				       
+				        var td = document.createElement("td");
+				        td.style.border = "none";
+				        td.innerHTML = __$('person_court_order').value
+				        tr.appendChild(td);
+				}
+
+
+		        if (__$('person_proof_of_death_abroad')) {
+		        		var tr = document.createElement("tr");
+				        tr.colSpan ="12";
+				        tr.style.backgroundColor = "#f2f2f2";
+				        tableContent.appendChild(tr);
+				       
+
+				        var td = document.createElement("td")
+				        td.innerHTML = "Documents proving death abroad attached ?";
+				        td.style.fontWeight = "bold";
+				        td.style.borderLeft = "1px solid #ccc";
+				        tr.appendChild(td);
+
+				        var td = document.createElement("td");
+				        td.colSpan ="12";
+				        td.innerHTML = __$('person_proof_of_death_abroad').value;
+				        tr.appendChild(td)
+		        }
+
+
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
 
 		        var td = document.createElement("td")
-		        td.innerHTML = "Surname";
+		        td.innerHTML = "Name of the deceased";
 		        td.style.fontWeight = "bold";
 		        td.style.borderLeft = "1px solid #ccc";
 		        tr.appendChild(td);
 
 		        var td = document.createElement("td");
 		        td.colSpan ="12";
-		        td.innerHTML = __$('person_last_name') && __$('person_last_name').value ? __$("person_last_name").value : "";
-		        tr.appendChild(td)
-
-		        var tr = document.createElement("tr");
-		        tr.colSpan ="12";
-		        tableContent.appendChild(tr);
-		       
-		        var td = document.createElement("td");
-		        td.style.border = "none";
-		        td.innerHTML = "First name";
-		        td.style.fontWeight = "bold";
-		        tr.appendChild(td);
-
-		        var td = document.createElement("td");
-		        td.colSpan ="12";
-		        td.style.border = "none";
-		        td.innerHTML =__$('person_first_name') && __$('person_first_name').value ? __$("person_first_name").value : "";
+		        td.innerHTML = ( __$("person_first_name") && __$("person_first_name").value ? __$('person_first_name').value : "") + " " 
+		        			 + ( __$("person_middle_name") && __$("person_middle_name").value ? " "+__$('person_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_last_name") && __$("person_last_name").value && __$("person_last_name").value.length > 0 ? __$('person_last_name').value : "N/A");
 		        tr.appendChild(td)
 
 
@@ -109,8 +151,25 @@
 		        td.innerHTML = (__$('person_id_number') && __$('person_id_number').value ? __$("person_id_number").value : "");
 		        tr.appendChild(td);
 
+
+		        var tr = document.createElement("tr");
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		        
+		        var td = document.createElement("td");
+		        td.style.borderLeft = "1px solid #ccc";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Nationality.";
+		        tr.appendChild(td);
+
+		        var td = document.createElement("td");
+		         td.colSpan ="12";
+		        td.innerHTML = (__$('person_nationality') && __$('person_nationality').value && __$('person_nationality').value !="Other" ? __$("person_nationality").value : __$('person_other_nationality').value);
+		        tr.appendChild(td);
+
                 
                 var tr = document.createElement("tr");
+                tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 		        
 		        var td = document.createElement("td");
@@ -124,10 +183,29 @@
 		        td.colSpan ="2";
 		        tr.appendChild(td);
 
+		        if(__$('person_gender') && __$('person_gender').value == "Female"){
+		        	if (__$('person_died_while_pregnant') && __$('person_died_while_pregnant').value.length > 0) {
+		        		 	
+		        		 	var tr = document.createElement("tr");
+		        			tableContent.appendChild(tr);
+
+		        		 	var td = document.createElement("td");
+					        td.style.fontWeight = "bold";
+					        td.innerHTML = "Died while pregnant?";
+					        tr.appendChild(td);
+
+					        var td = document.createElement("td");
+					        td.style.border = "none";
+					        td.innerHTML = __$('person_died_while_pregnant').value
+					        td.colSpan ="2";
+					        tr.appendChild(td);
+		        	}
+
+		        }
 
 
                 var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
+		        
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
@@ -150,6 +228,7 @@
 
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 		        
 
@@ -166,7 +245,37 @@
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
+		       
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+		       
+
+		        var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.style.fontWeight = "bold";
+		        td.innerHTML = "Place of Registration";
+		        tr.appendChild(td);
+
+				var td = document.createElement("td");
+		        td.style.border = "none";
+		        td.colSpan ="5";
+		        var place_of_registration = ""
+		        if (site_type == "facility"){
+		        	place_of_registration = __$("person_place_of_registration").value + ","+district
+		        }else{
+		        	place_of_registration = __$("person_place_of_registration").value + " DRO"
+		        }
+		        td.innerHTML = place_of_registration;
+		        tr.appendChild(td);
+
+		        var tr = document.createElement("tr");
+		       
+		        tr.colSpan ="12";
+		        tableContent.appendChild(tr);
+
+
+		        var tr = document.createElement("tr");
+		       
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		       
@@ -177,13 +286,67 @@
 		        td.innerHTML = "Place of Death";
 		        tr.appendChild(td);
 
-		        var td = document.createElement("td");
-		       	 td.colSpan ="12";
-		        td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
-		        tr.appendChild(td);
+		        if (registration_type && registration_type == "Deaths Abroad") {
+		        	 var td = document.createElement("td");
+				     td.colSpan ="12";
+				     var place_of_death =(__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value ? __$('person_place_of_death_foreign').value : "");
+				     var country = (__$("person_place_of_death_country") && __$("person_place_of_death_country").value.toLowerCase() !='other'? __$("person_place_of_death_country").value : __$("person_other_place_of_death_country").value )
+				     var place_of_death_details = ""
+				     if (place_of_death == 'Health Facility'){
+				     	 place_of_death_details = (__$("person_place_of_death_foreign_hospital") && __$("person_place_of_death_foreign_hospital").value ? __$("person_place_of_death_foreign_hospital").value + "," :"") + country;
+				     }else if(place_of_death == 'Home'){
+				     	 place_of_death_details = place_of_death_details + (__$('person_place_of_death_foreign_village') && __$('person_place_of_death_foreign_village').value? __$('person_place_of_death_foreign_village').value : "");
+				     	 place_of_death_details = (__$('person_place_of_death_foreign_district') && __$('person_place_of_death_foreign_district').value.length > 0 ? (place_of_death_details.length > 0 ? place_of_death_details +"," : place_of_death_details)+__$('person_place_of_death_foreign_district').value  : place_of_death_details)
+				     	 place_of_death_details = (__$('person_place_of_death_foreign_state') && __$('person_place_of_death_foreign_state').value.length > 0 ? (place_of_death_details.length > 0 ? place_of_death_details +"," : place_of_death_details)+__$('person_place_of_death_foreign_state').value  : place_of_death_details)
+				     	 place_of_death_details = place_of_death_details.length > 0 ? place_of_death_details + ","+ country : country
+				     }else{
+				     	place_of_death_details = (__$('person_other_place_of_death') && __$('person_other_place_of_death').value.length
+				     	> 0 ? __$('person_other_place_of_death').value + ","+ country : country)
+				     }
+				     td.innerHTML = place_of_death_details;
+				     tr.appendChild(td);	
+				}else{
+				        var td = document.createElement("td");
+				       	td.colSpan ="12";
+				       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+				       	
+				       	if (place_of_death == 'Health Facility'){
+				       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
 
+				        }else if(place_of_death == 'Home') {
+				        	var place_of_death_details = ""
+				        	if(__$("person_place_of_death_village").value.trim() == "Unknown"){
+
+				        	}else if (__$("person_place_of_death_village").value.trim()  == "Other"){
+				        		place_of_death_details = __$("person_other_place_of_death_village").value
+				        	}else{
+				        		place_of_death_details = __$("person_place_of_death_village").value
+				        	}
+
+				        	if(__$("person_place_of_death_ta").value == "Unknown"){
+
+				        	}else if(__$("person_place_of_death_ta").value =="Other"){
+				        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_other_place_of_death_ta").value) : __$("person_other_place_of_death_ta").value)
+				        	}else{
+				        		place_of_death_details = (place_of_death_details.length > 0 ? (place_of_death_details + ","+ __$("person_place_of_death_ta").value) : __$("person_place_of_death_ta").value)
+				        	}
+
+				       		td.innerHTML = (place_of_death_details.length > 0 ? place_of_death_details +","+__$("person_place_of_death_district").value :  __$("person_place_of_death_district").value)
+
+				        }else{
+				        	if (__$("person_place_of_death_district").value.trim() != "Not indicated" ) {
+				       		   td.innerHTML = __$("person_other_place_of_death").value + ", "+__$("person_place_of_death_district").value;
+				        	}else{
+				        		td.innerHTML = __$("person_other_place_of_death").value
+				        	}
+
+				       	}
+				        //td.innerHTML =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
+				        tr.appendChild(td);					
+				}
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 
 
@@ -195,11 +358,12 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_mother_last_name") && __$("person_mother_last_name").value ? __$('person_mother_last_name').value : "") + " " + (__$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "");
+		        td.innerHTML =( __$("person_mother_first_name") && __$("person_mother_first_name").value ? __$('person_mother_first_name').value : "") + " " 
+		        			 + ( __$("person_mother_middle_name") && __$("person_mother_middle_name").value ? " "+__$('person_mother_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_mother_last_name") && __$("person_mother_last_name").value && __$("person_mother_last_name").value.length > 0 ? __$('person_mother_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
-		        tr.style.backgroundColor = "#f2f2f2";
 		        tr.colSpan ="12";
 		        tableContent.appendChild(tr);
 		        
@@ -211,10 +375,13 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML = (__$("person_father_last_name") && __$("person_father_last_name").value ? __$('person_father_last_name').value : "") + " " + (__$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "");
+		        td.innerHTML = ( __$("person_father_first_name") && __$("person_father_first_name").value ? __$('person_father_first_name').value : "") + " " 
+		        			 + ( __$("person_father_middle_name") && __$("person_father_middle_name").value ? " "+__$('person_father_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_father_last_name") && __$("person_father_last_name").value && __$("person_father_last_name").value.length > 0 ? __$('person_father_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 		        var tr = document.createElement("tr");
+		        tr.style.backgroundColor = "#f2f2f2";
 		        tableContent.appendChild(tr);
 
                 var td = document.createElement("td");
@@ -225,7 +392,9 @@
 		       
 		        var td = document.createElement("td");
 		        td.style.border = "none";
-		        td.innerHTML =( __$("person_informant_last_name") && __$("person_informant_last_name").value ? __$('person_informant_last_name').value : "") + " " + (__$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "");
+		        td.innerHTML =( __$("person_informant_first_name") && __$("person_informant_first_name").value ? __$('person_informant_first_name').value : "") + " " 
+		        			 + ( __$("person_informant_middle_name") && __$("person_informant_middle_name").value ? " "+__$('person_informant_middle_name').value+" " : "") + " " 
+		        			 + (__$("person_informant_last_name") && __$("person_informant_last_name").value && __$("person_informant_last_name").value.length > 0 ? __$('person_informant_last_name').value : "N/A");
 		        tr.appendChild(td);
 
 
@@ -248,6 +417,7 @@
 		        
 		        tr.appendChild(td);
 
+		        /*
 		        
 		        var tr = document.createElement("tr");
 		        tableContent.appendChild(tr);
@@ -260,8 +430,10 @@
 		        var td = document.createElement("td");
 		        td.colSpan= "10"
 		        td.style.borderBottom = "1px solid #ccc";
-		        td.innerHTML =(__$("person_informant_signature_date") && __$("person_informant_signature_date").value ? (new Date( __$('person_informant_signature_date').value)).format() : "");
+		        td.innerHTML =(__$("person_acknowledgement_of_receipt_date") && __$("person_acknowledgement_of_receipt_date").value ? (new Date( __$('person_acknowledgement_of_receipt_date').value)).format() : "N/A");
 		        tr.appendChild(td);
+
+		        */
 		        
                 
 
@@ -1495,10 +1667,37 @@
 		   		__$('other').setAttribute('disabled','disabled')
 		   	}
 		}
+
+		function unLoadSetValue(target){
+				var  value = __$('touchscreenInput' + tstCurrentPage).value;
+				__$(target).value = value;
+		}
+
+		function setUnknownNames(){
+			if(__$('touchscreenInput' + tstCurrentPage).value.trim() == "No"){
+					addUnknown('person_last_name',true);
+					addUnknown('person_first_name',true);
+					addUnknown('person_nationality',true);
+			}
+		}
+
+		function setActualPlace(hospital){
+			var place_of_death = __$('touchscreenInput' + tstCurrentPage).value;
+			if(place_of_death == "Health Facility"){
+				__$('person_hospital_of_death').value = hospital
+			}else{
+				__$('person_hospital_of_death').value = ""
+			}
+		}
+
 		function setAjaxUrl(case_number){
 			switch(case_number) {
 				case -1:
 					var place = __$('touchscreenInput' + tstCurrentPage).value;
+
+					if (__$("person_place_of_death_district_holder")) {
+						__$("person_place_of_death_district_holder").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&not_stated=true&search_string=");
+					}
 					__$("person_place_of_death_district").setAttribute("ajaxURL","/districts?place="+encodeURIComponent(place)+"&search_string=");
 					break;
 
@@ -1638,7 +1837,7 @@
 		        "April": 3,
 		        "May": 4,
 		        "June": 5,
-		        "Juy": 6,
+		        "July": 6,
 		        "August": 7,
 		        "September": 8,
 		        "October": 9,
@@ -1755,7 +1954,7 @@
 		        "April": 3,
 		        "May": 4,
 		        "June": 5,
-		        "Juy": 6,
+		        "July": 6,
 		        "August": 7,
 		        "September": 8,
 		        "October": 9,
@@ -1826,7 +2025,7 @@
 
 		        birthdate.value = estimateBirthDate
 
-		        __$("estimate").value = 1;
+		        __$("person_birthdate_estimated").value = 1;
 
 		    } else {
 
@@ -1865,7 +2064,9 @@
 
 		}
 		function checkForDuplicate(){
-
+				if (registration_type == "Unclaimed bodies") {
+					return;
+				}
 				var place_of_death = (__$("person_place_of_death") && __$("person_place_of_death").value? __$("person_place_of_death").value : "" );
 				place_of_death = (__$("person_place_of_death_foreign") && __$("person_place_of_death_foreign").value? __$("person_place_of_death_foreign").value : place_of_death);	
 				var place_of_death_district = (__$("person_place_of_death_district") ? __$("person_place_of_death_district").value : "Abroad")
@@ -2046,7 +2247,24 @@
 				}
 		}
 
+		function validateMissingDate(){
+			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			date = (new Date(date)).format("YYYY-mm-dd");
+
+			if (registration_type == "Missing Persons") {
+				
+				if (parseInt(getAge(date)) < 7) {
+
+					showMessage("<b>Death date ("+(new Date(date)).format()+") is Invalid</b>  <i>(Atleast 7 years is required to confirm a person as missing)</i>",null,30000);
+					setTimeout(function(){
+						gotoPage(tstCurrentPage -1);
+					},100)
+				}
+			}
+		}
+
 		function validateDeathDate(){
+
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
 			date = (new Date(date)).format("YYYY-mm-dd");
 			var today = new Date();
@@ -2070,9 +2288,14 @@
 
 				return;
 			}
+
+
 			if(site_type == "facility"){
 					
 					if (date < min){
+						if (registration_type == "Missing Persons") {
+							return;
+						}
 						confirmYesNo("Registration of the record has been delayed by more than 6 weeks <br><b>please send the form to DRO</b>",function(){cancelForm()},null,30000);
 						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
@@ -2081,6 +2304,9 @@
 			}else{
 
 				if(date < min){
+					if (registration_type == "Missing Persons") {
+							return;
+					}
 					showMessage("Registration of the record has been delayed by more than 6 weeks",null,30000);
 					__$("person_delayed_registration").value ="Yes"
 				}
@@ -2110,6 +2336,9 @@
 
 		function validateWithDeathDate(){
 			var date  = __$('touchscreenInput' + tstCurrentPage).value;
+			if (date == null || date.length ==0) {
+				return;
+			}
 			date = new Date(date).format("YYYY-mm-dd");
 			var today = new Date();
 			today = today.format("YYYY-mm-dd");
@@ -2121,7 +2350,7 @@
 			}
 			min = new Date( __$("person_date_of_death").value).format("YYYY-mm-dd");
 			if(date < min){
-				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date signed ("+(new Date(date)).format() +")",null,30000);
+				showMessage("Death date ("+(new Date(__$("person_date_of_death").value)).format()+") is greater than <br/> Date entered ("+(new Date(date)).format() +")",null,30000);
 				setTimeout(function(){
 					gotoPage(tstCurrentPage -1);
 				},100)
@@ -2131,7 +2360,7 @@
 		var cont = {}
 		function validateName(person,level){
 			var input  = __$('touchscreenInput' + tstCurrentPage).value.trim();
-			var regex = /^[a-zA-Z']{2,24}$/;
+			var regex = /^[a-zA-Z'\s]{2,24}$/;
 			var name_length = (__$(person+'_last_name') ? __$(person+'_last_name').value.length : "") + 
 							(__$(person+'_first_name') ?  __$(person+'_first_name').value.length : "");
 			if(__$(person+'_middle_name') && __$(person+'_middle_name').value.length > 0){
@@ -2147,10 +2376,11 @@
 				}else {
 				 	var check_number_regex = /\d/;
 				 	var check_space_regex = /\s/;
-				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
+//				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?,.\/]/
+				 	var special_characters =  /[-!$%^&*()_+|~=`{}\[\]:";<>?\/]/
 				 	if(check_number_regex.test(input)){
 				 		showMessage("The name contains number(s)",null,30000);
-				 	}else if(check_space_regex.test(input)){
+				 	}else if(check_space_regex.test(input) && false){
 				 		showMessage("The name contains space(s) it should be one word",null,30000);
 				 	}else if(special_characters.test(input)){
 				 		showMessage("The name should not contains special character(s)",null,30000);
@@ -2241,10 +2471,13 @@
 		function policeReport(registration_type){
 			var order = __$('touchscreenInput'+tstCurrentPage).value;
 			if(order=="No"){
-					confirmYesNo("Registering "+(registration_type ? registration_type : "Unnatural death")+" requires a police report",function(){cancelForm()},null,30000);
-					setTimeout(function(){
+					showMessage("Registering "+(registration_type ? registration_type : "Abnormal death")+" requires a police report",null,30000);
+					if (registration_type.match("Missing")) {
+						setTimeout(function(){
 							gotoPage(tstCurrentPage -1);
-					},100);
+						},100);
+					}
+
 			}
 		}
 		
@@ -2331,21 +2564,231 @@ function showPhoneSummary(){
         }
  }
 
+function checkIdentifier(identifier_type){
+		var value = __$('touchscreenInput' + tstCurrentPage).value;
+		if (value.length == 0) {
+			return;
+		}
+		postAjax("/find_identifier", {identifier : value}, function(response){
+				var response = JSON.parse(response).response
+				if(response){
+					confirmYesNo("The "+identifier_type +" ("+value+") already exist for another record",
+						function(){
+							top.location.reload();
+						},
+						function(){
+							__$('touchscreenInput' + tstCurrentPage).value = ""
+							__$("confirmation").style.display = "none";
+							gotoNextPage();
+						},300000);
+					__$("yes").innerHTML ="Dismiss"
+					__$("yes").className = "red";
+					__$("no").innerHTML ="Continue"
+					setTimeout(function(){
+						gotoPage(tstCurrentPage -1);
+					},100);
+				}
+		})
+}
  var spaceInterval ;
- function checkSpace(){
+ function checkSpace(pos){
+ 	console.log(pos);
  	//__$('touchscreenInput'+tstCurrentPage).className = __$('touchscreenInput'+tstCurrentPage).className+ " capitalize";
- 	spaceInterval = setInterval(function(){
- 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
-	 	if(text_input.length > 0){
-	 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
-	 	}		
- 	},20);
- 	
+ 	if(pos){
+ 		spaceInterval = setInterval(function(){
+ 			if (!__$('touchscreenInput'+tstCurrentPage)) {
+ 				return
+ 			}
+ 			var text_input = __$('touchscreenInput'+tstCurrentPage).value;
+
+ 			__$('touchscreenInput'+tstCurrentPage).value = text_input.charAt(0).toUpperCase()+text_input.slice(1,this.lenght);
+ 		},20);
+ 	}else{
+	 	spaceInterval = setInterval(function(){
+	 		if (!__$('touchscreenInput'+tstCurrentPage)) {
+	 			return;
+	 		}
+	 		var text_input = __$('touchscreenInput'+tstCurrentPage).value
+		 	if(text_input.length > 0){
+		 		__$('touchscreenInput'+tstCurrentPage).value = text_input.capitalize();
+		 	}		
+	 	},20);
+ 	}
  }
 
+ function parentDetailAvailable(parent){
+ 		var response = __$('touchscreenInput'+tstCurrentPage).value
+ 		if (response == "No") {
+ 			 showMessage("Details of "+parent + " not available");
+ 		}
+ }
 
+ var year_positon;
 
+ function setYearPosition(){
+ 	year_positon = tstCurrentPage
+ }
+ function displayBirthDate(){
 
+ 		if (__$("keyboard")) {
+			__$("keyboard").style.display = "none";
+		}
+		//__$("clearButton").style.display ="none";
+		
+		var tstControl = __$("inputFrame"+tstCurrentPage);
+		if (tstControl) {
+			 tstControl.innerHTML = "";
+			 tstControl.style.textAlign = "center";
+			 var table = document.createElement("table");
+			 table.style.width ="70%"
+			 tstControl.appendChild(table);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Year";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Month";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.innerHTML = "Day";
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 if (__$("person_birth_year").value == "Unknown") {
+			 	td.innerHTML = __$("person_birthdate").value.split("-")[0]
+			 }else{
+			 	td.innerHTML = __$("person_birth_year").value
+			 }
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 td.innerHTML = __$("person_birth_month").value
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	td.innerHTML = "?"
+			 }else if(__$("person_birthdate_estimated").value == 1){
+			 	td.innerHTML = "?"
+			 }else{
+			 	td.innerHTML = __$("person_birth_month").value ;
+			 }
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.backgroundColor = "#a09898";
+			 td.style.padding = "0.8em";
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	td.innerHTML = "?"
+			 }else if(__$("person_birthdate_estimated").value == 1){
+			 	td.innerHTML = "?"
+			 }else{
+			 	td.innerHTML = __$("person_birth_day").value ;
+			 }
+			 td.style.fontSize = "2em"
+			 tr.appendChild(td);
+
+			 var tr = document.createElement("tr");
+			 table.appendChild(tr);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center"
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 button.className = "blue";
+			 button.innerHTML ="<span>Change</span>";
+			 button.onmousedown = function(){
+			 	 gotoPage(year_positon, false, true);
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center";
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 button.className = "blue";
+			 button.innerHTML ="<span>Change</span>";
+			 button.onmousedown = function(){
+			 	__$("person_birth_year").value = __$("person_birthdate").value.split("-")[0]
+			 	 gotoPage(tstCurrentPage - 2, false, true);
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+
+			 var td = document.createElement("td");
+			 td.textAlign = "center";
+			 td.style.padding = "0.4em";
+			 var button = document.createElement("button");
+			 if(__$("person_birth_month").value == "Unknown") {
+			 	 button.className = "gray";
+				 button.innerHTML ="<span>Change</span>"
+				 
+			 }else{
+				 button.className = "blue";
+				 button.innerHTML ="<span>Change</span>"
+				 button.onmousedown = function(){
+				 	 gotoPage(tstCurrentPage - 1, false, true);
+				 }
+			 }
+			 td.appendChild(button);
+			 tr.appendChild(td);
+		}
+ }
+
+function removeAutoComplete(){
+	setInterval(function(){
+		var control = __$('touchscreenInput' + tstCurrentPage)
+		if (!control){ return }
+		if(control.getAttribute("autocomplete") != null){
+			//console.log(control.getAttribute("autocomplete"));
+			return;
+		}else{
+			control.setAttribute("autocomplete","off")
+		}
+	}, 500)
+}
+
+function setSubTitle(source,title){
+	var source_value = __$(source).value
+	if (source_value.match("City")) {
+		setTimeout(function(){
+			__$("helpText"+ tstCurrentPage).innerHTML = title;
+		},50)
+		
+	}
+}
+
+function flagIfEmpty(message){
+	var text = __$("touchscreenInput"+tstCurrentPage).value;
+	if(text.length == 0){
+		flagMessage(message);
+	}
+}
+
+function flagMessage(message){
+		showMessage(message,null,30000);
+}
 
 
 

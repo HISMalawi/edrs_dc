@@ -113,7 +113,7 @@ class Report < ActiveRecord::Base
 	    connection = ActiveRecord::Base.connection
 
 	    reg_type = {}
-	    types = ["Natural Deaths","Unnatural Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
+	    types = ["Normal Cases","Abnormal Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad"]
 	    types.each do |type|
 	    	reg_type[type] = {}
 	    	gender.each do |g|
@@ -150,7 +150,7 @@ class Report < ActiveRecord::Base
 					 	 WHERE status = '#{status}' AND gender='#{g}'
 					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
 					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
-	    				 AND people.place_of_death = '#{place}' "
+	    				 AND people.place_of_death = '#{place}'"
 				places[place][g] = connection.select_all(query).as_json.last['total'] rescue 0
 
 				if g =="Male"
@@ -161,10 +161,26 @@ class Report < ActiveRecord::Base
 	    	end
 		end
 
+		age_estimate = {}
+		["Yes","No"].each do |response|
+			mapped = {"Yes" => 1, "No" => 0}
+			age_estimate[response]  = {} 
+
+			gender.each do |g|
+	    		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' AND gender='#{g}'
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+	    				 AND people.birthdate_estimated = '#{mapped[response]}'"
+				age_estimate[response][g] = connection.select_all(query).as_json.last['total'] rescue 0
+			end
+		end
 		total = {"Total" =>{"Male" => total_male, "Female" => total_female}}.as_json
 		data = {
 				"Registration Type" => reg_type,
 				"Delayed Registration"=> delayed,
+				"Age Estimated" => age_estimate,
 				"Place of Death" => places,
 				"#{status}" => total }
 

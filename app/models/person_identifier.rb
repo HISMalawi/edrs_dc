@@ -1,8 +1,8 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_distict_code,:set_check_digit
-  after_create :insert_update_into_mysql
-  after_save :insert_update_into_mysql
+  #after_create :insert_update_into_mysql
+  #after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
   cattr_accessor :can_assign_drn
 
@@ -153,7 +153,7 @@ class PersonIdentifier < CouchRest::Model::Base
                                     :person_record_id => person.id.to_s,
                                     :status => "HQ ACTIVE",
                                     :district_code => (district_code rescue SETTINGS['district_code']),
-                                    :comment=> "Record approved",
+                                    :comment=> "Record approved at DC",
                                     :creator => creator})
 
           person.approved = "Yes"

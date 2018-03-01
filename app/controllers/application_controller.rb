@@ -29,7 +29,8 @@ class ApplicationController < ActionController::Base
                 "samePassword",
                 "passwordLength",
                 "confirm_username",
-                "reaprove_record"]
+                "reaprove_record",
+               "find_identifier"]
   before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
@@ -222,6 +223,7 @@ class ApplicationController < ActionController::Base
       job_interval = 1.5 if job_interval.blank?
       job_interval = job_interval.to_f
       now = Time.now
+
       if (now - last_run_time).to_f > job_interval
         if SETTINGS['site_type'].to_s != "facility"
           if (defined? PersonIdentifier.can_assign_den).nil?
@@ -229,19 +231,27 @@ class ApplicationController < ActionController::Base
           end
           AssignDen.perform_in(2)
         end
-        if Rails.env == 'development'
-             SyncData.perform_in(60)
-        else
-             SyncData.perform_in(900)
-        end
+        CouchSQL.perform_in(15)
+      end
 
-        if Rails.env == 'development'
-            UpdateSyncStatus.perform_in(10)
-        else
+      cron_job_tracker = CronJobsTracker.first
+      return if cron_job_tracker.blank?
+      if Rails.env == 'development'
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 90
+            SyncData.perform_in(60)
+        end
+       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 120
+            UpdateSyncStatus.perform_in(90)
+        end
+      else
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 1000
+            SyncData.perform_in(900)
+        end
+        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 1060
             UpdateSyncStatus.perform_in(1000)
         end
-
       end
+
   end
 
   def check_user_level_and_site
