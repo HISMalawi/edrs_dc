@@ -96,14 +96,6 @@ def get_distict_id(name)
 
 end
 
-def test_func(val)
-
-    if decrypt(val) == ""
-         puts "nil val"
-    else
-      puts "has"
-    end
-end
 
 def transform_data(records)
 
@@ -415,5 +407,5 @@ def start
 end
 
 #start
-fetch_source_data
+#fetch_source_data
 
