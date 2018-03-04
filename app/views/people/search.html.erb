@@ -74,6 +74,7 @@
 	function groupInclude(){
 		var field_map ={
 						"Details of deceased" : ["last_name", "first_name", "gender","date_of_death"],
+						"Physical address" 	: ["current_country"],
 						"Home address" 		: ["home_country","home_district","home_ta","home_village"],
 						"Name of mother" 	: ["mother_last_name","mother_first_name"],
 						"Name of father" 	: ["father_last_name","father_first_name"],
@@ -130,6 +131,17 @@
 		alert(errorMsg);
               // window.top.location.reload();           
     }
+
+    function filterTAS(target){
+    	var district = __$('touchscreenInput' + tstCurrentPage).value;
+    	__$(target).setAttribute("ajaxURL","/tas?district="+district+"&search_string=");
+    }
+
+    function filterVillages(source_district,target){
+    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
+		var district = __$(source_district).value
+		__$(target).setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
+    }
 </script>
 <% if params[:search_criteria].present? %>
 
@@ -160,6 +172,29 @@
 		<%= select_tag "gender", options_for_select(["","Female","Male"], " "), {:helpText => 'Gender',:tt_pageStyleClass =>"NoKeyboard",:condition =>false , :optional=>true}%>
 
 		<%= text_field_tag "date_of_death", nil, {:helpText => 'Date of death',:condition => false,:allowFreeText=>true,:field_type=>"date",:optional=>true,:tt_onLoad =>"removeUnknown()"}  %>
+
+		<%= text_field_tag "current_country", nil, {:helpText => 'Physical address(Country)',:condition =>false, :ajaxURL => "/countries?search_string=",:optional => true}  %>
+
+		<%= text_field_tag "current_district", nil, {:helpText => 'Physical address(District)',:condition =>"__$('current_country').value == 'Malawi'",:ajaxURL => "/districts?search_string=", :tt_onUnLoad=>"filterTAS('current_ta')",:optional => true}  %>
+
+		<%= text_field_tag "current_ta", nil, {:helpText => 'Physical address(TA)',:condition =>"__$('current_country').value == 'Malawi' && __$('current_district').value.length > 0",:tt_onUnLoad=>"filterVillages('current_district','current_village')",:optional => true}  %>
+
+		<%= text_field_tag "current_village", nil, {:helpText => 'Physical address(Village)',:condition =>"__$('current_country').value == 'Malawi' && __$('current_ta').value.length > 0",:optional => true}  %>
+
+		<%= text_field_tag "current_foreign_state",nil, {
+                      :helpText => "Foreign physical residential address(<i>State </i>)",
+                      :optional => true,
+                      :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
+
+        <%= text_field_tag "current_foreign_district",nil, {
+                      :helpText => "Foreign physical residential address(<i>District</i>)",
+                      :optional => true,
+                      :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
+
+        <%= text_field_tag "current_foreign_village", nil, {
+                        :helpText => " Foreign physical residential address (<i>Village/Town</i>)",
+                        :optional => true,
+                        :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
 
 		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition =>false }  %>
 		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition =>false }  %>
