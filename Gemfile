@@ -26,7 +26,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 
-gem 'global_phone', :git => 'https://github.com/sstephenson/global_phone.git', :ref => 'dd0894061f58479884e6cfa2d00382542dc77d5a'
+gem 'global_phone'
 
 gem 'global_phone_dbgen'
 
