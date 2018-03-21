@@ -226,7 +226,7 @@ def transform_data(records)
         if identifiers["DEATH REGISTRATION NUMBER"].present?
           person_identifier = PersonIdentifier.new
           person_identifier.person_record_id = person.id
-          person_identifier.identifier_type = "DEATH REGISTRATION NUMBER"
+          person_identifier.identifier_type = "OLD DEATH REGISTRATION NUMBER"
           person_identifier.identifier = identifiers["DEATH REGISTRATION NUMBER"]
           district_code = (District.by_name.key(person.place_of_death_district).first.code rescue 'LL')
           person_identifier.district_code = district_code
