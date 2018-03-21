@@ -58,8 +58,6 @@ gem 'whenever',  :require => false
 
 gem 'thin'
 
-gem 'aescrypt'
-
 gem "faker", "~> 1.6.6"
 
 gem 'sucker_punch', '~> 2.0'

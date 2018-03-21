@@ -417,8 +417,9 @@ class PeopleController < ApplicationController
 
   def general_search
     map = {
-                "details_of_deceased" => ['first_name', 'last_name', 'gender'],
-                "home_address" => ['home_country', 'home_ta', 'home_village'],
+                "details_of_deceased" => ['first_name', 'last_name', 'gender','date_of_death'],
+                "physical_address"  => ["current_country","current_district","current_ta","current_village"],
+                "home_address" => ['home_country','home_district', 'home_ta', 'home_village'],
                 "mother" => ['mother_first_name', 'mother_last_name'],
                 "father" => ['father_first_name', 'father_last_name'],
                 "informant" => ['informant_first_name', 'informant_last_name'],

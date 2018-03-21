@@ -17,7 +17,7 @@ class SyncData
       if Rails.env == 'development'
         	SyncData.perform_in(60)
       else
-  			SyncData.perform_in(900)
+  			SyncData.perform_in(300)
   		end
   	end
 end

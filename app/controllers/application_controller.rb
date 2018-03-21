@@ -231,11 +231,16 @@ class ApplicationController < ActionController::Base
           end
           AssignDen.perform_in(2)
         end
-        CouchSQL.perform_in(15)
+        
       end
 
       cron_job_tracker = CronJobsTracker.first
       return if cron_job_tracker.blank?
+
+       if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 30
+            CouchSQL.perform_in(15)
+      end
+
       if Rails.env == 'development'
         if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 90
             SyncData.perform_in(60)
@@ -244,11 +249,11 @@ class ApplicationController < ActionController::Base
             UpdateSyncStatus.perform_in(90)
         end
       else
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 1000
-            SyncData.perform_in(900)
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 300
+            SyncData.perform_in(300)
         end
-        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 1060
-            UpdateSyncStatus.perform_in(1000)
+        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
+            UpdateSyncStatus.perform_in(600)
         end
       end
 
