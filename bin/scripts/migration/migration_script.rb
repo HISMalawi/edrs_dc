@@ -7,39 +7,12 @@ $olddata = "#{Rails.root}/bin/scripts/migration/persondata.csv"
 password = CONFIG["crtkey"] rescue nil
 password = "password" if password.blank?
 
-$docs_with_issues = ['086d76023d215701f7b430f563ba2386',
-                    '4045a248ef5fde881f6ef6520d75aace',
-                    '2381037872008bd526c50803e48a8541',
-                    '23bb787af2de33cf1c3b94fb4164473f',
-                    '3a2f7759f2b1581211fd6cc1fb853d4b',
-                    '3a2f7759f2b1581211fd6cc1fb854245',
-                    '4c9423434d80b44384e836d6af9236a',
-                    '4c9423434d80b44384e836d6af9236a9',
-                    '4d7466ce4980b01ac80d3d0dfdcd382c',
-                    '4f7c4ffb2f4bc5197521961c9f491ab5',
-                    '5643e09f0494a24918c34f6650c57ab3',
-                    '56d72abbf130cda0c708165391dc1769',
-                    '66a4a7ad9c231650ed73bdcfdb35d799',
-                    '683b474552a375211e6261dafae37bb1',
-                    '7d5a55d4deca257dd7d3d0e8994a8747',
-                    '82a89cb4e21f757eca091c460207faee',
-                    '9244f706eb4f2ca7ff9e2dde63894436',
-                    '9343307ee2783c47bfa17de00e8b19a9',
-                    '9343307ee2783c47bfa17de00e8b41ab',
-                    '9343307ee2783c47bfa17de00e8b4e36',
-                    '99c1e61c0f708f0fbbd095dadfc5b6a6',
-                    'a93c70f1d91e5743069eef75a97916d3',
-                    'ad8ca9a29dc8f7775462d4fc5bd6f1f1',
-                    'cfccdf4f0dea663f448049c52df18a32',
-                    '004ea7ae876299e6e945a45b01c86d89',
-                    '004ea7ae876299e6e945a45b01c87c4e',
-                    '004ea7ae876299e6e945a45b01c8804c',
-                    '007e82e69b059ef5850e9c1461d24045',
-                    '007e82e69b059ef5850e9c1461d249e8',
-                    'dc4c5dcf715efa5cb4a76c23d72f41d2',
-                    'e1a6ac6087c2e9b964d011cf2977baf2',
-                    'e1a6ac6087c2e9b964d011cf2977c285',
-                    'e48596041b3e7cc65c0ef8def85554ee','e78aeed89e0d5e1e3265a958d5544170']
+$docs_with_issues = ['00c64b77b7e7245d0adf000e17266f34',
+                     '00e55740bae97670ed0d4e9ab3f4916a',
+                     '00e55740bae97670ed0d4e9ab3f49ca0',
+                     '00e55740bae97670ed0d4e9ab3f4a2d1',
+                     '028eebab4b88d35209fa3d6b531f9298',
+                     '028eebab4b88d35209fa3d6b531f9c16']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
@@ -406,6 +379,6 @@ def start
 
 end
 
-#start
-#fetch_source_data
+start
+fetch_source_data
 
