@@ -262,6 +262,10 @@ def transform_data(records)
             if identifiers_present.include? identifiers["DEATH REGISTRATION NUMBER"]
 
                  puts " Duplicate DRN found! >>>>>>>>>>>>>>> Migration will abort ... Doc id: #{$person_rec['_doc']}"
+                 puts " >>>>>>>>>>>>>>> Resolving ..."
+                 identifiers["DEATH REGISTRATION NUMBER"] = new_den(identifiers_present,identifiers["DEATH REGISTRATION NUMBER"])
+                 puts ".........................."
+                 puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>> DRN Resolved!"
             end
 
           person_identifier = PersonIdentifier.new
