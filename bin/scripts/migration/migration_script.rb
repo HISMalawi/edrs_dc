@@ -259,6 +259,8 @@ def transform_data(records)
         #Death registration Number
         if identifiers["DEATH REGISTRATION NUMBER"].present?
 
+          identifiers_present = PersonIdentifier.by_identifier.keys().each
+
             if identifiers_present.include? identifiers["DEATH REGISTRATION NUMBER"]
 
                  puts " Duplicate DRN found! >>>>>>>>>>>>>>> Migration will abort ... Doc id: #{$person_rec['_doc']}"
