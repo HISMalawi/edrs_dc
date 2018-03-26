@@ -41,7 +41,8 @@ $docs_with_issues = ['2381037872008bd526c50803e48a8541',
                      '9343307ee2783c47bfa17de00e8b41ab',
                      '9343307ee2783c47bfa17de00e8b4e36',
                      '99c1e61c0f708f0fbbd095dadfc5b6a6',
-                     'a09f55fb3a312f859a82e2cbe6476caf']
+                     'a09f55fb3a312f859a82e2cbe6476caf'
+                     'a93c70f1d91e5743069eef75a97916d3']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
