@@ -34,7 +34,14 @@ $docs_with_issues = ['2381037872008bd526c50803e48a8541',
                      '683b474552a375211e6261dafae37bb1',
                      '6959d4a1571d4e7348fba6832d399f6f',
                      '7d5a55d4deca257dd7d3d0e8994a8747',
-                     '82a89cb4e21f757eca091c460207faee']
+                     '82a89cb4e21f757eca091c460207faee',
+                     '8a41f24cc64259df0fe39af41edf3f8a',
+                     '9244f706eb4f2ca7ff9e2dde63894436',
+                     '9343307ee2783c47bfa17de00e8b19a9',
+                     '9343307ee2783c47bfa17de00e8b41ab',
+                     '9343307ee2783c47bfa17de00e8b4e36',
+                     '99c1e61c0f708f0fbbd095dadfc5b6a6',
+                     'a09f55fb3a312f859a82e2cbe6476caf']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
@@ -168,6 +175,8 @@ def transform_data(records)
 
        puts "Migrating doc: #{r['_id']}"
 
+       $debug_variable = r['_id']
+
        source_fields.each do |field|
         
         next if ["_rev"].include?(field.squish)
@@ -191,7 +200,7 @@ def transform_data(records)
 
            end
         else
-
+              
         end
        end
 
@@ -246,8 +255,6 @@ def transform_data(records)
               sort_value = (identifiers["DEATH ENTRY NUMBER"].split("/")[2] + identifiers["DEATH ENTRY NUMBER"].split("/")[1]).to_i
               person_identifier.den_sort_value = sort_value
 
-              $debug_variable = person_identifier
-
               person_identifier.save
 
               puts "=========================== DEN for   #{person.id}   successfully saved ==========="
@@ -263,7 +270,7 @@ def transform_data(records)
 
             if identifiers_present.include? identifiers["DEATH REGISTRATION NUMBER"]
 
-                 puts " Duplicate DRN found! >>>>>>>>>>>>>>> Migration will abort ... Doc id: #{$person_rec['_doc']}"
+                 puts " Duplicate DRN found! >>>>>>>>>>>>>>> Migration will abort ... Doc id: #{$person_rec['_id']}"
                  puts " >>>>>>>>>>>>>>> Resolving ..."
                  identifiers["DEATH REGISTRATION NUMBER"] = new_den(identifiers_present,identifiers["DEATH REGISTRATION NUMBER"])
                  puts ".........................."
@@ -324,7 +331,7 @@ def transform_data(records)
   puts "Records migrated so far: #{Person.count}"
   rescue Exception => e
 
-      puts "#{e.message} >>>>>>>>>>>>>>>>>>>>#{$id}" 
+      puts "#{e.message} >>>>>>>>>>>>>>>>>>>>#{$id} >>>>>>>>>>>>>>>>>>> Doc id: #{$debug_variable}" 
        
   end
 end
