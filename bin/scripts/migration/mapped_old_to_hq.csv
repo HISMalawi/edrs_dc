@@ -2,7 +2,6 @@ EDRS-OLD,EDRS-DC,NEW MODEL,Model Type,
 _id,source_id,,,
 approved,approved,,,
 approved_by,approved_by,,,
-birth_certificate_number,birth_certificate_number,,,
 birthdate,birthdate,,,
 birthdate_estimated,birthdate_estimated,,,
 cause_of_death1,cause_of_death1,,,
@@ -109,7 +108,7 @@ place_of_death_district,place_of_death_district,,,
 place_of_death_ta,place_of_death_ta,,,
 place_of_death_village,place_of_death_village,,,
 status,,PersonRecordStatus,,status
-status_changed_by,status_changed_by,PersonRecordStatus,,status
+status_changed_by,changed_by,PersonRecordStatus,,status
 type,,,,
 updated_at,updated_at,,,
 updated_by,updated_by,,,
