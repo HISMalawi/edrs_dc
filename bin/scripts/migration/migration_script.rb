@@ -14,39 +14,7 @@ password = "password" if password.blank?
 
 $district_name = {"Nkhata Bay" => "Nkhata-bay"}
 
-$docs_with_issues = ['2381037872008bd526c50803e48a8541',
-                     '23bb787af2de33cf1c3b94fb4164473f',
-                     'a1f8cfc17eaed9ef9a565319f353d84b',
-                     '0499759122205161dd74e70c239dcb19',
-                     '086d76023d215701f7b430f563ba2386',
-                     '25e2b4e59786a90bf54b6418ffff0c4f',
-                     '3a2f7759f2b1581211fd6cc1fb853d4b',
-                     '3a2f7759f2b1581211fd6cc1fb854245',
-                     '3b8950b942854c84b27fa8711edfc791',
-                     '3f69ebd631c6a88fcfceb451f8d0f378',
-                     '4045a248ef5fde881f6ef6520d75aace',
-                     '4c9423434d80b44384e836d6af9236a9',
-                     '4d7466ce4980b01ac80d3d0dfdcd382c',
-                     '4f7c4ffb2f4bc5197521961c9f491ab5',
-                     '5643e09f0494a24918c34f6650c57ab3',
-                     '56d72abbf130cda0c708165391dc176',
-                     '56d72abbf130cda0c708165391dc1769',
-                     '571df3b3e2fe1f0a711efee6c5a46e9c',
-                     '66a4a7ad9c231650ed73bdcfdb35d799',
-                     '683b474552a375211e6261dafae37bb1',
-                     '6959d4a1571d4e7348fba6832d399f6f',
-                     '7d5a55d4deca257dd7d3d0e8994a8747',
-                     '82a89cb4e21f757eca091c460207faee',
-                     '8a41f24cc64259df0fe39af41edf3f8a',
-                     '9244f706eb4f2ca7ff9e2dde63894436',
-                     '9343307ee2783c47bfa17de00e8b19a9',
-                     '9343307ee2783c47bfa17de00e8b41ab',
-                     '9343307ee2783c47bfa17de00e8b4e36',
-                     '99c1e61c0f708f0fbbd095dadfc5b6a6',
-                     'a09f55fb3a312f859a82e2cbe6476caf',
-                     'a93c70f1d91e5743069eef75a97916d3',
-                     'ad8ca9a29dc8f7775462d4fc5bd6f1f1',
-                     'b56be2d6a7324f838ee23bb3883362f5']
+$docs_with_issues = ['2381037872008bd526c50803e48a8541000sxd']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
