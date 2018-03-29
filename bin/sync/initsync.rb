@@ -99,6 +99,8 @@ couch_port = couch_db_settings["port"]
 
 puts "Databases cleared"
 
+
+
 `curl -X PUT http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}`
 
 

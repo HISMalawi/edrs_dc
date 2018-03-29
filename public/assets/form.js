@@ -1717,12 +1717,12 @@
 					__$("person_place_of_death_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 					break;
 
-					    case 2:
+				case 2:
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
 					      	__$("person_home_ta").setAttribute("ajaxURL","/tas?district="+district + "&search_string=")
 					    	break;
 
-					    case 3:
+				case 3:
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -1731,7 +1731,7 @@
 					    	__$("person_home_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
-					    case 4:
+				case 4:
 
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -1739,7 +1739,7 @@
 
 					    	break;
 
-					    case 5:
+				case 5:
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -1749,7 +1749,7 @@
 
 					        break;
 
-					     case 6:
+				case 6:
 
 					    	var district = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -1757,7 +1757,7 @@
 
 					    	break;
 
-					    case 7:
+				case 7:
 
 					    	var ta = __$('touchscreenInput' + tstCurrentPage).value;
 
@@ -1766,7 +1766,7 @@
 					    	__$("person_current_village").setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
 
 					        break;
-				} 
+			} 
 
 		}
 		var confirmation = null;
