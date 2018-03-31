@@ -14,7 +14,7 @@ password = "password" if password.blank?
 
 $district_name = {"Nkhata Bay" => "Nkhata-bay"}
 
-$docs_with_issues = ['2381037872008bd526c50803e48a8541000sxd']
+$docs_with_issues = ['4045a248ef5fde881f6ef6520d75aace']
 
 $private_key = OpenSSL::PKey::RSA.new(File.read("#{Rails.root}/config/private.pem"), password)
 
