@@ -82,7 +82,7 @@ end
 
 def transform_data(records)
 
-  begin
+  #begin
     map = CSV.foreach($mapping, :headers => true)
     map.collect do |row|
       old_edrs_field = row[0]
@@ -198,13 +198,15 @@ def transform_data(records)
           
           person['district_code'] = District.by_name.key(r['place_of_death_district']).first.id
 
-        elsif $district_name[r['place_of_death_district']].present?
+        else $district_name[r['place_of_death_district']].present?
 
              person['district_code'] = District.by_name.key($district_name[r['place_of_death_district']]).first.id
-        else
-           puts r['place_of_death_district']
-           raise r['place_of_death_district'].inspect
+        #else
+           #puts r['place_of_death_district']
+           #raise r['place_of_death_district'].inspect
         end
+     else
+        person['district_code'] = "LL"
      end
      
 
@@ -311,11 +313,11 @@ def transform_data(records)
 
    end
   puts "Records migrated so far: #{Person.count}"
-  rescue Exception => e
-      raise e.inspect
-      puts "#{e.message} >>>>>>>>>>>>>>>>>>>>#{$id} >>>>>>>>>>>>>>>>>>> Doc id: #{$debug_variable}" 
+  #rescue Exception => e
+      #raise e.inspect
+      #puts "#{e.message} >>>>>>>>>>>>>>>>>>>>#{$id} >>>>>>>>>>>>>>>>>>> Doc id: #{$debug_variable}" 
        
-  end
+  #end
 end
 
 def fetch_source_data
@@ -442,6 +444,7 @@ file = File.open($olddata).each_line do |line|
     record_status.save
   else
     record_status = PersonRecordStatus.new
+    person.id.present?
     record_status.person_record_id = person.id
     record_status.status = "HQ INCOMPLETE MIGRATION"
     record_status.district_code =  (District.by_name.key(person.place_of_death_district).first.code  rescue 'HQ')
