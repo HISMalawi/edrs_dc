@@ -342,7 +342,7 @@ class PeopleController < ApplicationController
     else
         statuses = params[:statuses]
           
-        if params[:statuses].include?("DC PENDING")
+        if params[:statuses].include?("DC INCOMPLETE")
          statuses << "DC REJECTED"
         end
         
