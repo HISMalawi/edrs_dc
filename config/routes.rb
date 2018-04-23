@@ -335,6 +335,14 @@ Rails.application.routes.draw do
 
   get "/amendment_report_data" => "reports#amendment_report_data"
 
+  get "/reports/registration_type_and_gender"
+
+  get "/reports/place_of_birth_and_gender"
+
+  get "/reports/by_registartion_type"
+
+  get "/reports/by_place_of_death"
+
   get "/people/view_datatable"
 
 ##############################################################################################################################
