@@ -18,11 +18,13 @@ class ReportsController < ApplicationController
 	end
 
 	def by_registartion_type
-		render :text => {:count=> 0 , :gender => params[:gender], :type => params[:type]}.to_json
+		data = Report.by_registartion_type(params)
+		render :text => data.to_json
 	end
 
 	def by_place_of_death
-		render :text => {:count=> 0 , :gender => params[:gender], :place => params[:place]}.to_json
+		data = Report.by_place_of_death(params)
+		render :text => data.to_json
 	end
 
 	def death_reports

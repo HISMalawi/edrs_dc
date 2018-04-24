@@ -187,4 +187,61 @@ class Report < ActiveRecord::Base
 
 		return data
 	end
+
+	def self.by_registartion_type(params)
+		if params[:time_line].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:time_line]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Date range"
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
+		connection = ActiveRecord::Base.connection
+		return {:count=> 0 , :gender => params[:gender], :type => params[:type]}
+	end
+
+	def self.by_place_of_death
+		if params[:time_line].blank?
+			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+		else
+			case params[:time_line]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			when "Date range"
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			end
+		end
+		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
+		connection = ActiveRecord::Base.connection
+		return {:count=> 0 , :gender => params[:gender], :place => params[:place]}
+		
+	end
 end
