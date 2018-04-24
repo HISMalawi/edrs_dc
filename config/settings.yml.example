@@ -7,3 +7,4 @@
  site_type: dc #facility | dc | remote
  den_assignment_interval: 3
  app_gate_url:  #'http://localhost:3004'
+ exclude: Chitipa,Lilongwe,Ntcheu,Blantyre

@@ -84,7 +84,7 @@
 
         <% if SETTINGS['site_type'] == "remote" %>
                <%= text_field_tag "user[district]",nil,
-                          {:helpText => "District of user <i style='color: red'>*</i>" ,:ajaxURL => "/districts?place=Health Facility&search_string=" }%>
+                          {:helpText => "District of user <i style='color: red'>*</i>" ,:ajaxURL => "/users/districts?place=Health Facility&search_string=" }%>
         <%else%>
               <input type="hidden" name="user[district]" value="<%= SETTINGS['district_code']%>">
         <%end%>
