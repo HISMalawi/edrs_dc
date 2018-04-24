@@ -6,6 +6,27 @@ class ReportsController < ApplicationController
 		render :layout => "landing"
 	end
 
+	def registration_type_and_gender
+		@section ="By Registration type and gender"
+		@registration = ["Normal Cases","Abnormal Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad","All"]
+		render :layout => "landing"
+	end
+	def place_of_birth_and_gender
+		@section ="By place of birth and gender"
+		@place_of_death =["Home","Health Facility", "Other", "All"]
+		render :layout => "landing"
+	end
+
+	def by_registartion_type
+		data = Report.by_registartion_type(params)
+		render :text => data.to_json
+	end
+
+	def by_place_of_death
+		data = Report.by_place_of_death(params)
+		render :text => data.to_json
+	end
+
 	def death_reports
 		@section = "Death report"
 		@data = Report.general(params)
