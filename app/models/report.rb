@@ -189,11 +189,11 @@ class Report < ActiveRecord::Base
 	end
 
 	def self.by_registartion_type(params)
-		if params[:time_line].blank?
+		if params[:timeline].blank?
 			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
 			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 		else
-			case params[:time_line]
+			case params[:timeline]
 			when "Today"
 				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
 				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
@@ -213,15 +213,32 @@ class Report < ActiveRecord::Base
 		end
 		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
 		connection = ActiveRecord::Base.connection
-		return {:count=> 0 , :gender => params[:gender], :type => params[:type]}
+
+		gender_query = ""
+		if params[:gender].present? && params[:gender] != "Total"
+			gender_query = "AND gender='#{params[:gender]}'"
+		end
+
+		type_query = ""
+		if params[:type].present? && params[:type] != "All"
+			type_query = " AND people.registration_type = '#{params[:type]}'"
+		end
+		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' #{gender_query}
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+					 	#{type_query}"
+
+		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0), :gender => params[:gender], :type => params[:type]}
 	end
 
-	def self.by_place_of_death
-		if params[:time_line].blank?
+	def self.by_place_of_death(params)
+		if params[:timeline].blank?
 			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
 			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 		else
-			case params[:time_line]
+			case params[:timeline]
 			when "Today"
 				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
 				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
@@ -241,7 +258,24 @@ class Report < ActiveRecord::Base
 		end
 		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
 		connection = ActiveRecord::Base.connection
-		return {:count=> 0 , :gender => params[:gender], :place => params[:place]}
+
+		gender_query = ""
+		if params[:gender].present? && params[:gender] != "Total"
+			gender_query = "AND gender='#{params[:gender]}'"
+		end
+
+		if params[:place].present? && params[:place] != "All"
+			place_query = " AND people.place_of_death = '#{params[:place]}'"
+		end
+
+		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
+	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+					 	 WHERE status = '#{status}' #{gender_query}
+					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 	 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}' 
+	    				#{place_query}"
+	    #raise query.to_s
+		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender], :place => params[:place]}
 		
 	end
 end

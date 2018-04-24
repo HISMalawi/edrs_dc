@@ -103,7 +103,7 @@
 		<td style="text-align:right;width:10%">
 			<button onclick="loadStates()">Select status</button>
 		</td>
-		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=/death_reports&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.fullpath %>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
 		<td colspan="3">
@@ -193,7 +193,9 @@
     					"DC VOIDED"			: "DC VOIDED",
     					"DC AMEND"			: "DC AMEND",
     					"DC LOST" 			: "DC LOST",
-    					"DC DAMAGED"  		: "DC DAMAGED"
+    					"DC DAMAGED"  		: "DC DAMAGED",
+                        "HQ PRINTED"        : "HQ PRINTED" ,
+                        "HQ DISPATCHED"     : "HQ DISPATCHED" 
     }
 
     function loadStates(){
@@ -259,7 +261,7 @@
         document.body.appendChild(shield);
 
         var width = 500;
-        var height = 500;
+        var height = 550;
 
         var div = document.createElement("div");
         div.id = "msg.popup";
