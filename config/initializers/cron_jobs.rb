@@ -1,3 +1,6 @@
+if CronJobsTracker.first.blank?
+	CronJobsTracker.new.save
+end
 if SETTINGS['site_type'].to_s != "facility"
     if (defined? PersonIdentifier.can_assign_den).nil?
        PersonIdentifier.can_assign_den = true

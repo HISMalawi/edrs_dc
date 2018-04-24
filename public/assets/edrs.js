@@ -361,8 +361,9 @@ function ajaxGETRequest(url, callback, optionalControl) {
                                             callback(result, optionalControl);
 
                                             setTimeout(function(){
-
-                                              document.body.removeChild(shield);
+                                              if (shield) {
+                                                   document.body.removeChild(shield);
+                                              }
 
                                             },100)
 

@@ -96,7 +96,7 @@
 	<div id="keyboardcontainer">
 		
 	</div>
-	<div>Malawi National Registration Bureau</div>
+	<div>Malawi National Registration Bureau eDRS <%= SETTINGS['site_type'].upcase %></div>
 </div>
 
 <% unless flash[:notice].nil? %>
@@ -105,7 +105,7 @@
 <% unless flash[:error].nil? %>
           <p id="flash_error" class="flash_notice" ><%= flash[:error] %></p>
 <% end %>
-<% unless flash[:error].nil? %>
+<% unless flash[:alert].nil? %>
           <p id="flash_alert" class="flash_notice" ><%= flash[:alert] %></p>
 <% end %>
 <script type="text/javascript">

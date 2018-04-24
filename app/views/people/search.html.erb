@@ -165,9 +165,9 @@
 
 		<%= select_tag "field_group[]", options_for_select(["Details of deceased","Physical address","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()" ,:condition => "__$('search_criteria').value =='General Search'"}%>
 
-		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false, :ajaxURL => "/get_last_names?search=", :allowFreeText=>true}  %>
+		<%= text_field_tag "last_name", nil, {:helpText => 'Surname',:condition => false, :ajaxURL => "/get_names?search=", :allowFreeText=>true}  %>
 
-		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false, :ajaxURL => "/get_first_names?search=",  :allowFreeText=>true}  %>
+		<%= text_field_tag "first_name", nil, {:helpText => 'First name',:condition => false, :ajaxURL => "/get_names?search=",  :allowFreeText=>true}  %>
 
 		<%= select_tag "gender", options_for_select(["","Female","Male"], " "), {:helpText => 'Gender',:tt_pageStyleClass =>"NoKeyboard",:condition =>false , :optional=>true}%>
 
@@ -184,17 +184,17 @@
 		<%= text_field_tag "current_foreign_state",nil, {
                       :helpText => "Foreign physical residential address(<i>State </i>)",
                       :optional => true,
-                      :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
+                      :condition => "__$('current_country').value.length > 0 && __$('current_country').value.toLowerCase() !='malawi'"} %>
 
         <%= text_field_tag "current_foreign_district",nil, {
                       :helpText => "Foreign physical residential address(<i>District</i>)",
                       :optional => true,
-                      :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
+                      :condition => "__$('current_country').value.length > 0 && __$('current_country').value.toLowerCase() !='malawi'"} %>
 
         <%= text_field_tag "current_foreign_village", nil, {
                         :helpText => " Foreign physical residential address (<i>Village/Town</i>)",
                         :optional => true,
-                        :condition => "__$('current_country').value.toLowerCase() !='malawi'"} %>
+                        :condition => "__$('current_country').value.length > 0 && __$('current_country').value.toLowerCase() !='malawi'"} %>
 
 		<%= text_field_tag "home_country", nil, {:helpText => 'Home Country',:condition =>false }  %>
 		<%= text_field_tag "home_district", nil, {:helpText => 'Home district',:condition =>false }  %>

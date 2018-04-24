@@ -1,5 +1,5 @@
 <form method="GET" action="<%= @url%>">
-	<select id="time_line" name="time_line" helpText ="Select Timeline" tt_requireNextClick = "false">
+	<select id="timeline" name="timeline" helpText ="Select Timeline" tt_requireNextClick = "false">
 		<option>Today</option>
 		<option>Current week</option>
 		<option>Current month</option>
@@ -9,10 +9,11 @@
 	<input type="" name="start_date" 
 			helpText ="Select Start date" 
 			field_type="date" tt_onLoad ="__$('Unknown').style.display='none'" 
-			condition ="__$('time_line').value =='Date range'">
+			condition ="__$('timeline').value =='Date range'">
 	<input type="" name="end_date" 
 			helpText ="Select End date" 
 			field_type ="date" tt_onLoad ="__$('Unknown').style.display='none'" 
-			condition ="__$('time_line').value =='Date range'">
+			condition ="__$('timeline').value =='Date range'">
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+	<input type="hidden" name="status" value="<%=params[:status]%>">
 </form>

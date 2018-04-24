@@ -162,7 +162,7 @@
    <%end %>
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
-		<% if @status.status == "DC ACTIVE" || @status.status == "DC PENDING"  || @status.status =="DC REJECTED" %>
+		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
 
 			<button style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
 
@@ -1060,7 +1060,7 @@
 
 			function editField(field){
 
-					var editable_statuses =["DC ACTIVE","DC PENDING","DC REJECTED", "HQ REJECTED"]
+					var editable_statuses =["DC ACTIVE","DC INCOMPLETE","DC REJECTED", "HQ REJECTED"]
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){

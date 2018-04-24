@@ -303,12 +303,18 @@ Rails.application.routes.draw do
   post "/update_password" => "users#update_password"
 
   get "/update_password" => "users#update_password"
+
+  get "/users/change_user_password"
+
+  get "/users/update_user_password"
   
   get 'database_load_progress/:table_name' => 'users#database_load_progress'
 
   get '/load_dumps' =>"users#load_dumps"
 
   get "keyboard_preference" => "users#keyboard_preference"
+
+  get "/users/districts"
 
 #################################Routes for duplicates#########################################################################
   get "/duplicate" =>"duplicate#index"
@@ -334,6 +340,14 @@ Rails.application.routes.draw do
   get "/lost_damaged_report_data" => "reports#lost_damaged_report_data"
 
   get "/amendment_report_data" => "reports#amendment_report_data"
+
+  get "/reports/registration_type_and_gender"
+
+  get "/reports/place_of_death_and_gender"
+
+  get "/reports/by_registartion_type"
+
+  get "/reports/by_place_of_death"
 
   get "/people/view_datatable"
 

@@ -58,6 +58,29 @@ class UsersController < ApplicationController
     render :layout => "touch"
   end
 
+  def districts
+    
+    cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
+    
+    if params["search_string"].present?
+        entry = params["search_string"] rescue nil
+        districts = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+        districts = District.all.each
+    end
+    
+    names = []
+    districts.each do |district|
+        names << district.name unless cities.include? district.name
+    end
+    if SETTINGS['site_type']=="remote"
+       render :text => names.collect { |w| "<li>#{w}" unless SETTINGS['exclude'].split(",").include? w }.join("</li>")+"</li>"
+    else
+       render :text => names.collect { |w| "<li>#{w}"}.join("</li>")+"</li>"
+    end
+   
+  end
+
   # GET /users/1/edit
   def edit
 
@@ -512,6 +535,36 @@ class UsersController < ApplicationController
     Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
     
     redirect_to '/my_account'
+
+  end
+
+  def change_user_password
+
+    @section = "Change user Password"
+
+    @targeturl = "/change_password"
+
+    @user = User.find(params[:id])
+
+    render :layout => "touch"
+  end
+
+  def update_user_password
+
+    if params[:user][:new_password] != params[:user][:confirm_password]
+      flash["error"] = "Passwords don't match" 
+      redirect_to "/users/change_user_password?id=#{params[:user][:id]}" and return
+    end
+    user = User.find(params[:user][:id])
+    user.plain_password = params[:user][:new_password]
+    user.password_attempt = 0
+    user.last_password_date = Time.now
+    user.save
+    
+    flash["notice"] = "User's password has been changed succesfully" 
+    Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
+    
+    redirect_to "/users/#{user.id}?next_url=/view_users?page=1"
 
   end
 
