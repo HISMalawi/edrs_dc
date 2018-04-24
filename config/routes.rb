@@ -343,7 +343,7 @@ Rails.application.routes.draw do
 
   get "/reports/registration_type_and_gender"
 
-  get "/reports/place_of_birth_and_gender"
+  get "/reports/place_of_death_and_gender"
 
   get "/reports/by_registartion_type"
 

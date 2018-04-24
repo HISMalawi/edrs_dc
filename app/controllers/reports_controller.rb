@@ -8,11 +8,55 @@ class ReportsController < ApplicationController
 
 	def registration_type_and_gender
 		@section ="By Registration type and gender"
+		case params[:timeline]
+		when "Today"
+				start_date = Time.now.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Today (#{start_date})"
+		when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%d/%b/%Y")
+				end_date =	Date.today.strftime("%d/%b/%Y")
+				@period = "Current week (From #{start_date} to #{end_date})"
+		when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current month (From #{start_date} to #{end_date})"
+		when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current year (From #{start_date} to #{end_date})"
+		when "Date range"
+				start_date = DateTime.parse(params[:start_date]).strftime("%d/%b/%Y")
+				end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%d/%b/%Y")
+				@period = "From #{start_date} to #{end_date}"
+		end
 		@registration = ["Normal Cases","Abnormal Deaths","Dead on Arrival","Unclaimed bodies","Missing Persons","Deaths Abroad","All"]
 		render :layout => "landing"
 	end
-	def place_of_birth_and_gender
-		@section ="By place of birth and gender"
+	def place_of_death_and_gender
+		@section ="By place of death and gender"
+		case params[:timeline]
+		when "Today"
+				start_date = Time.now.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Today (#{start_date})"
+		when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%d/%b/%Y")
+				end_date =	Date.today.strftime("%d/%b/%Y")
+				@period = "Current week (From #{start_date} to #{end_date})"
+		when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current month (From #{start_date} to #{end_date})"
+		when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%d/%b/%Y")
+				end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current year (From #{start_date} to #{end_date})"
+		when "Date range"
+				start_date = DateTime.parse(params[:start_date]).strftime("%d/%b/%Y")
+				end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%d/%b/%Y")
+				@period = "From #{start_date} to #{end_date}"
+		end
 		@place_of_death =["Home","Health Facility", "Other", "All"]
 		render :layout => "landing"
 	end

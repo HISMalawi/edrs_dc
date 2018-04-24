@@ -1,7 +1,7 @@
 <script type="text/javascript">
 	var start_date = "<%= params[:start_date] rescue ''%>";
 	var end_date = "<%= params[:end_date] rescue ''%>";
-	var time_line = "<%= params[:time_line] %>";
+	var timeline = "<%= params[:timeline] %>";
 </script>
 <style type="text/css">
 	#report{
@@ -98,12 +98,15 @@
 	}
 </style>
 <table style="width:100%; margin-top: 1.5%;">
+    <tr><td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="3"><%= @section %> (<%= params[:status] rescue 'DC ACTIVE' %>)</td></tr>
 	<tr>
-		<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:4%"><%= @section %></td>
+		<td style="width:30% ; font-size :1.3em;font-weight:bold;padding-left:2%">
+            <%= @period %>      
+        </td>
 		<td style="text-align:right;width:10%">
 			<button onclick="loadStates()">Select status</button>
 		</td>
-		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.fullpath %>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.path %>&status=<%=params[:status]%>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
 	</tr>
 	<tr>
 		<td colspan="3">
@@ -136,8 +139,10 @@
 </table>
 
 <form method="get" action="<%= request.path %>" id="form">
-	<input type="hidden" name="time_line" value="<%=params[:time_line]%>">
+	<input type="hidden" name="timeline" value="<%=params[:timeline]%>">
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+    <input type="hidden" name="start_date" value="<%= params[:start_date] rescue ''%>">
+    <input type="hidden" name="end_date" value="<%= params[:end_date] rescue ''%>">
 	<input type="hidden" name="status" id="status">
 </form>
 <script>
@@ -290,7 +295,7 @@
                     if(start_date.length > 2){
                         url = url + "&start_date="+start_date+"&end_date="+end_date;
                     }else{
-                        url = url +"&timeline="+time_line;
+                        url = url +"&timeline="+timeline;
                     }
                     ajaxGETRequest(url,function(data){
                                 var data = JSON.parse(data);
