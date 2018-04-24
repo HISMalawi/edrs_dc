@@ -303,6 +303,10 @@ Rails.application.routes.draw do
   post "/update_password" => "users#update_password"
 
   get "/update_password" => "users#update_password"
+
+  get "/users/change_user_password"
+
+  get "/users/update_user_password"
   
   get 'database_load_progress/:table_name' => 'users#database_load_progress'
 

@@ -538,6 +538,36 @@ class UsersController < ApplicationController
 
   end
 
+  def change_user_password
+
+    @section = "Change user Password"
+
+    @targeturl = "/change_password"
+
+    @user = User.find(params[:id])
+
+    render :layout => "touch"
+  end
+
+  def update_user_password
+
+    if params[:user][:new_password] != params[:user][:confirm_password]
+      flash["error"] = "Passwords don't match" 
+      redirect_to "/users/change_user_password?id=#{params[:user][:id]}" and return
+    end
+    user = User.find(params[:user][:id])
+    user.plain_password = params[:user][:new_password]
+    user.password_attempt = 0
+    user.last_password_date = Time.now
+    user.save
+    
+    flash["notice"] = "User's password has been changed succesfully" 
+    Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
+    
+    redirect_to "/users/#{user.id}?next_url=/view_users?page=1"
+
+  end
+
   def build_mysql
     render :layout => "landing"
   end
