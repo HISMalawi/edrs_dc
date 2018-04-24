@@ -58,6 +58,29 @@ class UsersController < ApplicationController
     render :layout => "touch"
   end
 
+  def districts
+    
+    cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
+    
+    if params["search_string"].present?
+        entry = params["search_string"] rescue nil
+        districts = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+    else
+        districts = District.all.each
+    end
+    
+    names = []
+    districts.each do |district|
+        names << district.name unless cities.include? district.name
+    end
+    if SETTINGS['site_type']=="remote"
+       render :text => names.collect { |w| "<li>#{w}" unless SETTINGS['exclude'].split(",").include? w }.join("</li>")+"</li>"
+    else
+       render :text => names.collect { |w| "<li>#{w}"}.join("</li>")+"</li>"
+    end
+   
+  end
+
   # GET /users/1/edit
   def edit
 

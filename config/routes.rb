@@ -310,6 +310,8 @@ Rails.application.routes.draw do
 
   get "keyboard_preference" => "users#keyboard_preference"
 
+  get "/users/districts"
+
 #################################Routes for duplicates#########################################################################
   get "/duplicate" =>"duplicate#index"
 ###############################################################################################################################
