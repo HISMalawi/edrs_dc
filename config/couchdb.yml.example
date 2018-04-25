@@ -14,4 +14,4 @@ test:
 production:
   <<: *development
   protocol: 'http'
-  suffix:
+  suffix: dc #facility
