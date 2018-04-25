@@ -10,7 +10,7 @@ end
 if Rails.env == 'development'
      SyncData.perform_in(240)
 else
-  	 SyncData.perform_in(900)
+  	 SyncData.perform_in(1200)
 end
 
 if Rails.env == 'development'

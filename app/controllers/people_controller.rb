@@ -773,7 +773,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect{|w| w.name}.uniq.collect { |w| "<li>#{w}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
   end
 
 
@@ -803,7 +803,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect{|w| w.name}.uniq.collect { |w| "<li>#{w}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
   end
 
