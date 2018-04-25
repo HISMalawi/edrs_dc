@@ -22,6 +22,16 @@ class LoginsController < ApplicationController
           end 
       else
         #do something if remote
+        if (user.role !="System Administrator") && (user.site_code != "HQ")
+          user_district = District.find(user.district_code).name
+
+          if SETTINGS['exclude'].split(",").include? user_district
+
+                logout!
+                flash[:error] = 'You user district has a pilot version'
+                redirect_to "/", referrer_param => referrer_path and return
+          end
+        end
       end
 
       ###############################################################################################

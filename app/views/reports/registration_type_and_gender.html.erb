@@ -1,0 +1,308 @@
+<script type="text/javascript">
+	var start_date = "<%= params[:start_date] rescue ''%>";
+	var end_date = "<%= params[:end_date] rescue ''%>";
+	var timeline = "<%= params[:timeline] %>";
+</script>
+<style type="text/css">
+	#report{
+		width :100%;
+		font-size: 1.4em;
+		border-collapse: collapse;
+        overflow: auto;
+
+	}
+
+	#report tr:nth-child(odd){
+		background: #dcdbdb;
+
+	}
+
+	#report td, #report th {
+		border : 1px solid lightgray;
+		padding: 1em;
+	}
+
+	#report th {
+		background: #4c79a3;
+		color:#ffffff;
+	}
+
+	#statuses{
+		list-style: none
+	}
+	#statuses li {
+		font-size: 1.5em;
+		display:  block;
+		padding: 0.6em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	#statuses li:hover {
+		background: #9ec6e2;
+	}
+	#containt{
+		height: calc(100-10px) !important;
+	}
+
+	#time_line{
+		font-size: 1.2em;
+		min-width: 100px;
+		background: #dcdbdb;
+		padding: 1%;
+		border-radius: 10px;
+		border: 1px solid lightgray;
+	}
+
+    #table{
+        font-size: 1em;
+        color: darkslategray;
+    }
+    #table th{
+        border: 1px solid #6281a7;
+        background-color: rgb(98, 129, 167);
+        width: 2%;
+        color: rgb(238, 238, 238);
+        padding: 0.5em;
+    }
+    #table td{
+       border: 1px solid #d3d3d3;
+       padding: 0.6em;
+    }
+
+    .cat{
+      font-weight: bold;
+    }
+    .mintable{
+      width: 100%; 
+      border:none;
+      border-collapse: collapse;
+    }
+    .mintable td, .mintable th{
+        width: 33.33333% !important;
+        text-align: right;
+        padding-right: 10%;
+    }
+    .clickable{
+		list-style: none;
+		margin-right:2em;
+	}
+	.clickable li {
+		font-size: 1.3em;
+		display:  block;
+		padding: 0.4em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	.clickable li:hover {
+		background: #9ec6e2;
+	}
+</style>
+<table style="width:100%; margin-top: 1.5%;">
+    <tr><td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="3"><%= @section %> (<%= params[:status] rescue 'DC ACTIVE' %>)</td></tr>
+	<tr>
+		<td style="width:30% ; font-size :1.3em;font-weight:bold;padding-left:2%">
+            <%= @period %>      
+        </td>
+		<td style="text-align:right;width:10%">
+			<button onclick="loadStates()">Select status</button>
+		</td>
+		<td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.path %>&status=<%=params[:status]%>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+	</tr>
+	<tr>
+		<td colspan="3">
+				<div style="width: 100%;height: 500px; overflow-y:scroll;border:1px solid gray;" >
+					
+					<table id='table' style="width: 100%;" cellpadding="5" cellspacing="0">
+
+						  <thead>
+						        <tr>
+						          <th>Registration type</th>
+						          <th>Female</th>
+						          <th>Male</th>
+						          <th>Total</th>
+						        </tr>
+						  </thead>
+                          <tbody>
+                              <% @registration.each do |type| %>
+                                <tr>
+                                    <td><%= type %></td>
+                                    <td id="<%=type %>_Female" style="text-align:right; margin-right:5%">loading...</td>
+                                    <td id="<%=type %>_Male" style="text-align:right; margin-right:5%">loading...</td>
+                                    <td id="<%=type %>_Total" style="text-align:right; margin-right:5%">loading...</td>
+                                </tr>
+                              <%end%>
+                          </tbody>
+						</table>
+				</div>
+		</td>
+	</tr>
+</table>
+
+<form method="get" action="<%= request.path %>" id="form">
+	<input type="hidden" name="timeline" value="<%=params[:timeline]%>">
+	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+    <input type="hidden" name="start_date" value="<%= params[:start_date] rescue ''%>">
+    <input type="hidden" name="end_date" value="<%= params[:end_date] rescue ''%>">
+	<input type="hidden" name="status" id="status">
+</form>
+<script>
+	function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+
+      __$("containt").style.height = (wH * 0.81)+"px";
+    }
+
+    resizeDiv();
+
+    function loadReport(element){
+    	var list = __$("statuses").getElementsByTagName('li');
+    	for(var i = 0 ; i < list.length ; i++){
+    		list[i].style.background ="#ffffff";
+    	}
+    	element.style.background ="#9ec6e2";
+    	var url ="/report_data/"+element.id;
+    	if(start_date.length > 2){
+    		__$("time_line").innerHTML = (new Date(start_date).format())+" to "+(new Date(end_date).format());
+    		url = url + "?start_date="+start_date+"&end_date="+end_date;
+    	}else{
+    		url = url +"?timeline="+time_line;
+    		__$("time_line").innerHTML = time_line;
+    	}
+    	status_map ={
+				"Reported" :"DC ACTIVE",
+				"Registered" : "HQ ACTIVE",
+				"Duplicates" :"DC DUPLICATE",
+				"Printed" :"HQ CLOSED",
+				"Dispatched" :"HQ DISPATCHED"
+		}
+
+    	ajaxGETRequest(url,function(data){
+    		var data = JSON.parse(data);
+    		__$('female').innerHTML = data.female;
+    		__$('male').innerHTML = data.male;
+    		__$('total').innerHTML = parseInt(data.male) + parseInt(data.female);
+    	});
+    }
+
+    var reported = __$("Reported");
+
+    //loadReport(reported);
+    var statuses = {
+                        "DC ACTIVE"         : "DC ACTIVE",
+                        "DC COMPLETE"       : "DC COMPLETE",
+                        "HQ ACTIVE"         : "HQ ACTIVE",
+                        "DC VOIDED"         : "DC VOIDED",
+                        "DC AMEND"          : "DC AMEND",
+                        "DC LOST"           : "DC LOST",
+                        "DC DAMAGED"        : "DC DAMAGED",
+                        "HQ PRINTED"        : "HQ PRINTED" ,
+                        "HQ DISPATCHED"     : "HQ DISPATCHED" 
+    }
+
+    function loadStates(){
+    	loadTab();
+    	var popup = __$("msg.popup");
+    	popup.style.textAlign = "center";
+    	var title = document.createElement("h2");
+    	title.innerHTML = "Select Status";
+    	popup.appendChild(title);
+    	
+    	var ul = document.createElement("ul");
+    	ul.className = "clickable"
+    	popup.appendChild(ul);
+
+    	var states = Object.keys(statuses);
+    	for(var i = 0 ; i < states.length ; i++){
+    		var li = document.createElement("li");
+    		li.id = states[i];
+    		li.setAttribute("onclick","activate(statuses,this)")
+    		li.innerHTML = states[i];
+    		ul.appendChild(li);
+    	}
+
+    	var buttonCancel = document.createElement("button");
+    	buttonCancel.innerHTML = "Cancel";
+    	buttonCancel.className ="red";
+    	buttonCancel.style.marginRight = "15%";
+    	buttonCancel.onmousedown = function(){
+    		document.body.removeChild(__$("msg.shield"));
+    	}
+    	popup.appendChild(buttonCancel);
+
+    	var button = document.createElement("button");
+    	button.innerHTML = "Fetch data";
+    	button.onmousedown = function(){
+    		__$("form").submit();
+    	}
+    	popup.appendChild(button);
+    }
+
+    function activate(elements,element){
+    	var ids = Object.keys(elements);
+    	for(var i = 0 ; i < ids.length ; i++){
+    		__$(ids[i]).style.background = "#ffffff";
+    	}
+
+    	__$("status").value = statuses[element.id]
+    	__$(element.id).style.background = "#9ec6e2";
+    	
+    }
+
+    function loadTab(){
+    	var shield = document.createElement("div");
+        shield.style.position = "absolute";
+        shield.style.top = "0px";
+        shield.style.left = "0px";
+        shield.style.width = "100%";
+        shield.style.height = "100%";
+        shield.id = "msg.shield";
+        shield.style.backgroundColor = "rgba(128,128,128,0.5)";
+        shield.style.zIndex = 1050;
+
+        document.body.appendChild(shield);
+
+        var width = 500;
+         var height = 550;
+
+        var div = document.createElement("div");
+        div.id = "msg.popup";
+        div.style.position = "absolute";
+        div.style.width = width + "px";
+        div.style.height = height + "px";
+        div.style.backgroundColor = "#ffffff";
+        div.style.border = "1px solid #26262b"
+        div.style.borderRadius = "1px";
+        div.style.left = "calc(50% - " + (width / 2) + "px)";
+        div.style.top = "calc(50% - " + (height * 0.6) + "px)";
+        div.style.border = "1px outset #fff";
+        div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+        div.style.fontFamily = "arial, helvetica, sans-serif";
+        div.style.MozUserSelect = "none";
+
+        shield.appendChild(div);
+    }
+
+    function fetchData(status){
+             <% @registration.each do |type| %>
+                var gender = ["Female","Male","Total"]
+                for(var i = 0 ; i < gender.length ; i++){
+                    var url = "/reports/by_registartion_type"
+                    url = url + "?status="+status+"&gender="+gender[i]+"&type=<%=type%>"
+                    if(start_date.length > 2){
+                        url = url + "&start_date="+start_date+"&end_date="+end_date;
+                    }else{
+                        url = url +"&timeline="+timeline;
+                    }
+                    ajaxGETRequest(url,function(data){
+                                var data = JSON.parse(data);
+                                __$(data.type+"_"+data.gender).innerHTML = data.count
+                    });
+                }
+             <%end%>        
+    }
+    fetchData("<%=params[:status] rescue 'DC ACTIVE'%>")
+</script>

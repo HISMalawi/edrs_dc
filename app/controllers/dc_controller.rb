@@ -200,10 +200,10 @@ class DcController < ApplicationController
 	
 	def mark_as_pending
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC PENDING","Marked as pending : #{params[:reason]}")
+		PersonRecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
 		Audit.create({
 							:record_id => params[:id].to_s    , 
-							:audit_type=>"DC PENDING",
+							:audit_type=>"DC INCOMPLETE",
 							:level => "Person",
 							:reason => "Marked as pending : #{params[:reason]}"})
 
@@ -283,7 +283,7 @@ class DcController < ApplicationController
 		
 		@section = "Pending Record"
 
-		@statuses = ["DC PENDING","DC INCOMPLETE"]
+		@statuses = ["DC INCOMPLETE"]
 
 		@next_url = "/dc/pending_cases"
 
@@ -478,7 +478,7 @@ class DcController < ApplicationController
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
       	@person_place_details = place_details(@person)
       	@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
-      	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC PENDING"],
+      	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC INCOMPLETE"],
                                                           [params[:id],"DC REJECTED"],
                                                           [params[:id],"HQ REJECTED"],
                                                           [params[:id],"DC REAPPROVED"],
