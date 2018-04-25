@@ -8,11 +8,6 @@ roles = {
             "View a record",
             "Change own password"
         ],
-        "Nurse/Midwife" => [
-            "Register a record",
-            "View a record",
-            "Change own password"
-        ],
         "System Administrator" => [
             "Activate User",
             "Deactivate User",
