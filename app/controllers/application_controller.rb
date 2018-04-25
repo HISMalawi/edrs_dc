@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   def facility    
-      return HealthFacility.by_facility_code.key(SETTINGS['facility_code'].to_s).first rescue nil
+      return HealthFacility.by_facility_code.key(SETTINGS['facility_code'].to_s).last rescue nil
   end
 
   def current_user_keyboard_preference
