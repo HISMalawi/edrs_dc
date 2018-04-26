@@ -46,7 +46,7 @@ class LoginsController < ApplicationController
       if roles.include? user.role
         login! user
         if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
-           if user.password_attempt >= 5 && username.downcase != 'admin'
+           if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
              logout!
              flash[:error] = 'Your password has expired.Please contact your System Administrator.'
              redirect_to "/", referrer_param => referrer_path and return

@@ -140,7 +140,7 @@ user = User.by_username.key("admin#{surfix}".downcase).first
 if user.blank?
 
          username = "admin#{surfix}".downcase
-         user = User.create(username: username, plain_password: "password", last_password_date: Time.now,
+         user = User.create(username: username, plain_password: "p@ssw0rd#{surfix}", last_password_date: Time.now,
                          password_attempt: 0, login_attempt: 0, first_name: "EDRS #{surfix}",
                          last_name: "Administrator", role: "System Administrator",
                          email: "admin@baobabhealth.org")
@@ -149,7 +149,7 @@ else
       puts "System admin User already exists"
 end
 
-finalize_setup(username,"password")
+finalize_setup(username,"p@ssw0rd#{surfix}")
 
 
 
