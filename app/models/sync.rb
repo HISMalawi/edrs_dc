@@ -39,7 +39,7 @@ class Sync < CouchRest::Model::Base
 	def person
 	    person = Person.find(self.person_record_id)
 	    return person
-	 end
+	end
 
 	def set_district_code
 		unless self.district_code.present?
