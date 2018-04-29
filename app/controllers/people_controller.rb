@@ -123,6 +123,8 @@ class PeopleController < ApplicationController
         
       end
 
+=begin
+
       if !person_params[:id_number].blank? && !person_params[:id_number].nil?
 
             PersonIdentifier.create({
@@ -146,7 +148,7 @@ class PeopleController < ApplicationController
                                       :creator => User.current_user.id} )
         
       end
-
+=end
       #create status
        if Person.duplicate.nil?
           PersonRecordStatus.create({

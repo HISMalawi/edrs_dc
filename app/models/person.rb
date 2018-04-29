@@ -443,6 +443,7 @@ class Person < CouchRest::Model::Base
   property :first_name_code, String
   property :last_name_code, String
   property :middle_name_code, String
+  property :id_number, String
   property :gender, String
   property :birthdate, Date
   property :birthdate_estimated, Integer, :default => 0
