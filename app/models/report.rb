@@ -249,10 +249,10 @@ class Report < ActiveRecord::Base
 				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
 				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Current year"
-				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 00:00:00:000Z")
 				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			when "Date range"
-				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 00:00:00:000Z")
 				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
 			end
 		end
@@ -277,5 +277,41 @@ class Report < ActiveRecord::Base
 	    #raise query.to_s
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender], :place => params[:place]}
 		
+	end
+
+	def self.by_date_of_death_and_gender(params)
+		if params[:timeline].blank?
+			start_date = Time.now.strftime("%Y-%m-%d")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d")
+		else
+			case params[:timeline]
+			when "Today"
+				start_date = Time.now.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
+			when "Current week"
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
+			when "Current month"
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
+			when "Current year"
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
+			when "Date range"
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d")
+			end
+		end
+		connection = ActiveRecord::Base.connection
+		gender_query = ""
+		if params[:gender].present? && params[:gender] != "Total"
+			gender_query = "AND gender='#{params[:gender]}'"
+		end
+
+		query = "SELECT count(*) as total FROM people WHERE people.district_code = '#{User.current_user.district_code}' #{gender_query}
+				 AND DATE(people.date_of_death) >= '#{start_date}' AND DATE(people.date_of_death)  <= '#{end_date}'"
+	    
+	    #raise query.to_s
+		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender]}
 	end
 end

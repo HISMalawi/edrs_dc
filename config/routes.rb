@@ -345,6 +345,10 @@ Rails.application.routes.draw do
 
   get "/reports/place_of_death_and_gender"
 
+  get "/reports/by_date_of_death"
+
+  get "/reports/by_date_of_death_and_gender"
+
   get "/reports/by_registartion_type"
 
   get "/reports/by_place_of_death"

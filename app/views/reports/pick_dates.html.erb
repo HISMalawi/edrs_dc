@@ -7,11 +7,15 @@
 		<option>Date range</option>
 	</select>
 	<input type="" name="start_date" 
-			helpText ="Select Start date" 
+			helpText ="Select Start date"
+			maxDate = "<%= Date.today.strftime('%Y-%m-%d') %>"
+			value = "<%= Date.today.strftime('%Y-%m-%d') %>"
 			field_type="date" tt_onLoad ="__$('Unknown').style.display='none'" 
 			condition ="__$('timeline').value =='Date range'">
 	<input type="" name="end_date" 
 			helpText ="Select End date" 
+			maxDate = "<%= Date.today.strftime('%Y-%m-%d') %>"
+			value = "<%= Date.today.strftime('%Y-%m-%d') %>"
 			field_type ="date" tt_onLoad ="__$('Unknown').style.display='none'" 
 			condition ="__$('timeline').value =='Date range'">
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">

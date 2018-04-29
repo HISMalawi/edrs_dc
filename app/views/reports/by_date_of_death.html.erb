@@ -1,0 +1,164 @@
+<script type="text/javascript">
+	var start_date = "<%= params[:start_date] rescue ''%>";
+	var end_date = "<%= params[:end_date] rescue ''%>";
+	var timeline = "<%= params[:timeline] %>";
+</script>
+<style type="text/css">
+	#report{
+		width :100%;
+		font-size: 1.4em;
+		border-collapse: collapse;
+        overflow: auto;
+
+	}
+
+	#report tr:nth-child(odd){
+		background: #dcdbdb;
+
+	}
+
+	#report td, #report th {
+		border : 1px solid lightgray;
+		padding: 1em;
+	}
+
+	#report th {
+		background: #4c79a3;
+		color:#ffffff;
+	}
+
+	#statuses{
+		list-style: none
+	}
+	#statuses li {
+		font-size: 1.5em;
+		display:  block;
+		padding: 0.6em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	#statuses li:hover {
+		background: #9ec6e2;
+	}
+	#containt{
+		height: calc(100-10px) !important;
+	}
+
+	#time_line{
+		font-size: 1.2em;
+		min-width: 100px;
+		background: #dcdbdb;
+		padding: 1%;
+		border-radius: 10px;
+		border: 1px solid lightgray;
+	}
+
+    #table{
+        font-size: 1em;
+        color: darkslategray;
+    }
+    #table th{
+        border: 1px solid #6281a7;
+        background-color: rgb(98, 129, 167);
+        width: 2%;
+        color: rgb(238, 238, 238);
+        padding: 0.5em;
+    }
+    #table td{
+       border: 1px solid #d3d3d3;
+       padding: 0.6em;
+    }
+
+    .cat{
+      font-weight: bold;
+    }
+    .mintable{
+      width: 100%; 
+      border:none;
+      border-collapse: collapse;
+    }
+    .mintable td, .mintable th{
+        width: 33.33333% !important;
+        text-align: right;
+        padding-right: 10%;
+    }
+    .clickable{
+		list-style: none;
+		margin-right:2em;
+	}
+	.clickable li {
+		font-size: 1.3em;
+		display:  block;
+		padding: 0.4em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	.clickable li:hover {
+		background: #9ec6e2;
+	}
+</style>
+<table style="width:100%; margin-top: 1.5%;">
+    <tr><td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="3"><%= @section %> </td></tr>
+    <tr>
+        <td style="width:30% ; font-size :1.3em;font-weight:bold;padding-left:2%">
+            <%= @period %>      
+        </td>
+        <td style="text-align:right;width:10%">
+            
+        </td>
+        <td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.path %>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+    </tr>
+	<tr>
+		<td colspan="3">
+				<div style="width: 100%;height: 500px; overflow-y:scroll;border:1px solid gray;" >
+					
+					<table id='table' style="width: 100%;" cellpadding="5" cellspacing="0">
+
+						  <thead>
+						        <tr>
+						       
+						          <th>Gender</th>
+						          <th>Number of Cases</th>
+						        </tr>
+						  </thead>
+                          <tbody>
+                            	<tr><td>Female</td><td id="Female">Loading</td></tr>
+                            	<tr><td>Male</td><td id="Male">Loading</td></tr>
+                            	<tr><td>Total</td><td id="Total">Loading</td></tr>
+                          </tbody>
+						</table>
+				</div>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript">
+	function __$(id){
+        return document.getElementById(id);
+    }
+
+    function resizeDiv(){
+      var wH = window.innerHeight;
+
+      __$("containt").style.height = (wH * 0.81)+"px";
+    }
+
+    resizeDiv();
+	function fetchData(){
+                var gender = ["Female","Male","Total"]
+                for(var i = 0 ; i < gender.length ; i++){
+                    var url = "/reports/by_date_of_death_and_gender"
+                    url = url + "?gender="+gender[i]
+                    if(start_date.length > 2){
+                        url = url + "&start_date="+start_date+"&end_date="+end_date;
+                    }else{
+                        url = url +"&timeline="+timeline;
+                    }
+                    ajaxGETRequest(url,function(data){
+                                var data = JSON.parse(data);
+                                console.log(data);
+                                __$(data.gender).innerHTML = data.count
+                    });
+                }      
+    }
+    fetchData()
+</script>
