@@ -1,6 +1,6 @@
 class PersonIdentifier < CouchRest::Model::Base
 
-  before_save :set_site_code,:set_distict_code,:set_check_digit
+  before_save :set_site_code,:set_district_code,:set_check_digit
   #after_create :insert_update_into_mysql
   #after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
@@ -76,7 +76,7 @@ class PersonIdentifier < CouchRest::Model::Base
     end
   end
 
-  def set_distict_code
+  def set_district_code
     self.district_code = self.person.district_code
   end
 

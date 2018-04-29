@@ -4,6 +4,7 @@ class SyncData
   	def perform
 
   		Kernel.system "bundle exec rake edrs:sync"
+      Kernel.system "bundle exec rake edrs:barcode_sync"
 
       sync_tracker = CronJobsTracker.first
       sync_tracker = CronJobsTracker.new if sync_tracker.blank?

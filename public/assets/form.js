@@ -2159,18 +2159,26 @@
 				
 			}
 			postAjax("/search_barcode",{barcode : value},function(response){
-				var response = JSON.parse(response).response
-				if(response){
+				var data = JSON.parse(response)
+
+				if(data.response){
 					confirmYesNo("Scanned Barcode ("+value+") already exist for another record",
 						function(){
 							top.location.reload();
 						},
 						function(){
-							top.location ="/people/view/"+response+"?next_url=/people/new_person_type";
+							top.location ="/people/view/"+id+"?next_url=/people/new_person_type";
 						},300000);
 					__$("yes").innerHTML ="Dismiss"
 					__$("yes").className = "red";
-					__$("no").innerHTML ="View Record"
+
+					
+					if (data.id != null) {
+						__$("no").innerHTML ="View Record"
+					}else{
+						__$("no").style.display ="none"
+					}
+					
 					setTimeout(function(){
 						gotoPage(tstCurrentPage -1);
 					},100);

@@ -120,6 +120,12 @@ class PeopleController < ApplicationController
                                       :site_code => SETTINGS['site_code'],
                                       :district_code => SETTINGS['district_code'],
                                       :creator => User.current_user.id})
+            Barcode.create({
+                              :person_record_id => person.id.to_s,
+                              :barcode => person_params[:barcode].to_s,
+                              :district_code => SETTINGS['district_code'],
+                              :creator => User.current_user.id
+                              })
         
       end
 
@@ -150,6 +156,7 @@ class PeopleController < ApplicationController
       end
 =end
       #create status
+
        if Person.duplicate.nil?
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
@@ -884,9 +891,14 @@ class PeopleController < ApplicationController
 
   def search_barcode
       if params[:barcode].present?
-        count = PersonIdentifier.by_identifier.key(params[:barcode]).count  
-        if count >= 1
-            render :text => {:response =>  PersonIdentifier.by_identifier.key(params[:barcode]).first.person_record_id}.to_json
+        barcode = Barcode.find(params[:barcode]) 
+
+        if barcode.present?
+            id = nil
+            if PersonIdentifier.by_identifier.key(params[:barcode]).first.present?
+              id = PersonIdentifier.by_identifier.key(params[:barcode]).first.person_record_id
+            end
+            render :text => {:response =>  true, :id => id}.to_json
         else
            render :text => {:response => false}.to_json
         end            

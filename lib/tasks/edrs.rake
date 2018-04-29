@@ -15,6 +15,10 @@ namespace :edrs do
    	end
   end
 
+  task barcode_sync: :environment do
+    require Rails.root.join('bin','./sync/barcode_sync.rb')
+  end  
+
   task update_sync_status: :environment do
     require Rails.root.join('bin','./scripts/update_sync_status.rb')
   end
