@@ -251,32 +251,37 @@
 <div id="table_container">
 
 		<table id="summary" style="">
-			<tr>
-				<% if @person.court_order.present? && @person.registration_type == "Missing Persons"%>
-				<td ><b >Court order attached ? :</b> </td>
-				<td colspan="2" style="text-align:left"><%= @person.court_order%></td>
-				<%end%>
-				<% if @person.police_report.present? && (@person.registration_type == "Abnormal Deaths" || @person.registration_type == "Unclaimed bodies")%>
-				<td><b>Police report attached ? :</b></td>
-				<td colspan="2" style="text-align:left"><%= @person.police_report%></td>
-				<%end%>
-				<% if @person.proof_of_death_abroad.present? && @person.registration_type == "Deaths Abroad" %>
-				<td colspan="3"><b>Proof of death abroad attached? :</b></td>
-				<td colspan="2" style="text-align:left"><%=  @person.proof_of_death_abroad %> </td>
-				<%end%>
-			</tr>
-			<tr>
-				<td style="border-right:none"><b>Registration Category : </b></td>
-				<td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
-				<td colspan="1" style="border-right:none"><b>Status : </b></td>
-				<td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
-				<td colspan="3" style="border-right:none"><b>Registration place : </b></td>
-				<% if @person.facility_code.to_s.present? %>
-					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> , <%= @district.name %></td>
-				<%else%>
-					<td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration%> DRO</td>
-				<%end%>
-			</tr>
+          <tr>
+              <% if @person.court_order.present? && @person.registration_type == "Missing Persons"%>
+              <td ><b >Court order attached ? :</b> </td>
+              <td colspan="2" style="text-align:left"><%= @person.court_order%></td>
+              <%end%>
+              <% if @person.police_report.present? && (@person.registration_type == "Abnormal Deaths" || @person.registration_type == "Unclaimed bodies")%>
+              <td><b>Police report attached ? :</b></td>
+              <td colspan="2" style="text-align:left"><%= @person.police_report%></td>
+              <%end%>
+              <% if @person.proof_of_death_abroad.present? && @person.registration_type == "Deaths Abroad" %>
+              <td colspan="3"><b>Proof of death abroad attached? :</b></td>
+              <td colspan="2" style="text-align:left"><%=  @person.proof_of_death_abroad %> </td>
+              <%end%>
+
+              <td colspan="3" style="border-right:none"><b>Place of Registration : </b></td>
+              <% if @person.facility_code.to_s.present? %>
+                <td colspan="3" style="color:#4775a1;border-left:none"><%= HealthFacility.by_facility_code.key(@person.facility_code).first.name %> , <%= District.find(@person.district_code).name %></td>
+              <%else%>
+                <td colspan="3" style="color:#4775a1;border-left:none"><%= District.find(@person.district_code).name %> DRO</td>
+              <%end%>
+          </tr>
+          <tr>
+            <td style="border-right:none"><b>Registration Category : </b></td>
+            <td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
+            <td colspan="2" style="border-right:none"><b>Record Status : </b></td>
+            <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+            <td style="border-right:none"><b>DEN: </b></td>
+            <td style="color:#4775a1;border-left:none"><%= @person.den rescue ''%></td>
+            <td style="border-right:none"><b>DRN: </b></td>
+            <td style="color:#4775a1;border-left:none"><%= @person.drn rescue ''%></td>
+          </tr>
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased 
 					<% if ["DC ACTIVE", "HQ REJECTED"].include?(@person.status) %>

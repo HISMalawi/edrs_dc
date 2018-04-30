@@ -768,6 +768,7 @@ class Person < CouchRest::Model::Base
 
     view :by_district_code_and_voided_date
 
+    view :by_id_number
     view :by_informant_designation
 
     view :by_other_ta,

@@ -481,6 +481,14 @@ class PeopleController < ApplicationController
        end
     end
 
+    if params[:national_id].present?
+      Person.by_id_number.key(params[:national_id]).page(page).per(size).each do |person|
+        
+          people << person_selective_fields(person)
+      end               
+      
+    end
+
     render  :text => people.to_json
   end
 

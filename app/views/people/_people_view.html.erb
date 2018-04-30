@@ -90,6 +90,10 @@
 				url = "/search_by_fields?death_entry_number=<%=params[:death_entry_number]%>"
 			<%end%>
 
+			<%if params[:national_id].present? %>
+				url = "/search_by_fields?national_id=<%=params[:national_id]%>"
+			<%end%>
+
 			<%if params[:barcode].present? %>
 
 				var param = "<%=params[:barcode]%>";

@@ -142,6 +142,18 @@
 		var district = __$(source_district).value
 		__$(target).setAttribute("ajaxURL","/villages?district="+district+"&ta="+ta + "&search_string=")
     }
+
+    var input_to_capital;
+
+    function toCapitalCases(){
+    	input_to_capital = setInterval(function(){
+    		__$('touchscreenInput' + tstCurrentPage).value = __$('touchscreenInput' + tstCurrentPage).value.toUpperCase()
+    	},50); 	
+    }
+
+    function clearCapitalInterval(){
+    	clearInterval(input_to_capital)
+    }
 </script>
 <% if params[:search_criteria].present? %>
 
@@ -159,9 +171,11 @@
 		<%= text_field_tag "person[barcode]",nil , {:name => "barcode",:helpText=> "Scan Barcode",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar()",:condition => "__$('search_criteria').value =='By Barcode'"} %>
 
 		
-		<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'"}  %>
+		<%= text_field_tag "death_entry_number", nil, {:helpText => 'Enter Death Entry Number',:condition => "__$('search_criteria').value =='By Death Entry Number'",:tt_onLoad=>"toCapitalCases()"}  %>
 
 		<%= text_field_tag "death_registration_number", nil, {:helpText => 'Enter Death Registration Number',:condition => "__$('search_criteria').value =='By Death Registration Number'"}  %>
+
+		<%= text_field_tag "national_id", nil, {:helpText => 'National ID',:condition => "__$('search_criteria').value =='By National ID'", :tt_onLoad=>"toCapitalCases()", :validationRule=>"^[a-zA-Z0-9]{8}$", :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
 
 		<%= select_tag "field_group[]", options_for_select(["Details of deceased","Physical address","Home address","Name of mother","Name of father","Name of informant", "Informant address","Place of death"], " "), {:helpText => 'Select search field group',:tt_pageStyleClass =>"NoKeyboard", :multiple => "multiple", :multiple => true,:id=>"field_group" ,:tt_onUnLoad => "groupInclude()" ,:condition => "__$('search_criteria').value =='General Search'"}%>
 
