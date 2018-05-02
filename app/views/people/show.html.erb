@@ -278,9 +278,9 @@
             <td colspan="2" style="border-right:none"><b>Record Status : </b></td>
             <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
             <td style="border-right:none"><b>DEN: </b></td>
-            <td style="color:#4775a1;border-left:none"><%= @person.den rescue ''%></td>
+            <td style="color:#4775a1;border-left:none"><%= @person.den rescue 'XXXXXXXXX'%></td>
             <td style="border-right:none"><b>DRN: </b></td>
-            <td style="color:#4775a1;border-left:none"><%= @person.drn rescue ''%></td>
+            <td style="color:#4775a1;border-left:none"><%= @person.drn rescue 'XXXXXXXXX'%></td>
           </tr>
 			<tr>
 				<th colspan="11">Section 1 : Particulars of the deceased 
