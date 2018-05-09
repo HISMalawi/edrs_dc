@@ -151,15 +151,16 @@
 
 <div style="position : absolute; width : 80%; bottom:4%;right :1%; margin-right : 1%">
   	<% if params[:next_url] %>
-        <button class="green" style="float: right; margin-right:1%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+        <button class="green" style="float: right; margin-right:1%" onmousedown="unLock()"><span>Back</span></button>
 
   <% elsif @targeturl.present? %>
 
-        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="window.location= '<%=@targeturl%>'"><span>Back</span></button>
+        <button class="green"  style="float: right; margin-right:1% ; width:100px" onmousedown="unLock()"><span>Back</span></button>
 
   <%else %>
-         <button  style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
+         <button  style="float: right; margin-right:1%;width:100px" onmousedown="unLock()"><span>Back</span></button>
    <%end %>
+ <% if !@locked %>
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
@@ -219,9 +220,7 @@
 			<button style="float: right; margin-right:1%" onmousedown="window.location='/dc/sent_to_hq_for_reprint/<%= @person.id%>'"><span>Send Record to HQ</span></button>
 		<%end%>
 	<%end%>
-	<% if @comments.count > 0 %>
-		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
-	<%end%>
+
 	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
 			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Mark for Reprint</span></button>
@@ -233,6 +232,10 @@
 	<%if (@status.present? && @status.status == "DC REPRINT") && false%>
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
+	<%end%>
+<%end%>
+	<% if @comments.count > 0 %>
+		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
 	<% if SETTINGS['site_type'] == "dc"%>
 
@@ -251,6 +254,11 @@
 <div id="table_container">
 
 		<table id="summary" style="">
+		<% if @locked %>
+		  <tr>
+		  		<td colspan="6" style="color:red;text-align:center"> <center><b>Record is locked since it is been reviewed by another user please check later</b></center></td>
+		  </tr>
+		<%end%>
           <tr>
               <% if @person.court_order.present? && @person.registration_type == "Missing Persons"%>
               <td ><b >Court order attached ? :</b> </td>
@@ -583,6 +591,19 @@
      <i class=" fa fa-arrow-down"></i>
  </div>
 <script type="text/javascript">
+			var next_url = "<%=params[:next_url]%>"
+			if (next_url.length == 0) {
+				next_url = "<%=@targeturl%>"
+			}
+
+			if (next_url.trim().length == 0) {
+				next_url = "/"
+			}
+
+			function unLock(){
+				window.location.href ="/people/unlock_record?lock_id=<%=@lock.id%>&next_url="+next_url
+			}
+
 			function __$(id){
 	        	return document.getElementById(id);
 		    }
@@ -1073,7 +1094,9 @@
 
 					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){
+								<% if !@locked %>
 								window.location = "/people/form_container?url=/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"
+								<%end%>
 							}
 
 					<%end%>

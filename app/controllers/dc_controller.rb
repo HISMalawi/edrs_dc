@@ -22,9 +22,11 @@ class DcController < ApplicationController
 
 		if record_complete?(person)
 				PersonRecordStatus.change_status(person, "DC COMPLETE","Marked as complete")
+				unlock_users_record(person)
 				redirect_to "#{params[:next_url].to_s}"
 		else
 				PersonRecordStatus.change_status(person, "DC INCOMPLETE", "System marked as incomplete")
+				unlock_users_record(person)
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
 		
@@ -93,8 +95,10 @@ class DcController < ApplicationController
 
 					if status.status =="HQ REJECTED"
 						PersonRecordStatus.change_status(person, "DC REAPPROVED")
+						unlock_users_record(person)
 					else
 						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+						unlock_users_record(person)
 					end
 					
 					last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
@@ -129,10 +133,11 @@ class DcController < ApplicationController
 	                      :change_log => change_log
 					     })
 					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE","Record is a potential")
-
+					     unlock_users_record(person)
 					     render :text => {:duplicates=> true, :people => existing}.to_json
 					else
 						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+						unlock_users_record(person)
 						render :text => {marked: true}.to_json
 					end
 				end
@@ -145,6 +150,7 @@ class DcController < ApplicationController
 				:audit_type=>"DC INCOMPLETE",
 				:level => "Person",
 				:reason => "Approve record not successful"})
+			unlock_users_record(person)
 			render :text => {incomplete: true}.to_json
 				#redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
 		end
@@ -174,12 +180,14 @@ class DcController < ApplicationController
 	def reaprove_record
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
+		unlock_users_record(person)
 		redirect_to params[:next_url]
 	end
 
 	def reject_record
 			person = Person.find(params[:id])
-			PersonRecordStatus.change_status(person, "DC REJECTED",params[:reason])			
+			PersonRecordStatus.change_status(person, "DC REJECTED",params[:reason])	
+			unlock_users_record(person)		
 			Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECTED",
@@ -201,6 +209,7 @@ class DcController < ApplicationController
 	def mark_as_pending
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
+		unlock_users_record(person)
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC INCOMPLETE",
@@ -361,6 +370,7 @@ class DcController < ApplicationController
 	def confirm_not_duplicate
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+		unlock_users_record(person)
 		Audit.user = params[:user_id].to_s
 		Audit.create({
 
@@ -403,6 +413,7 @@ class DcController < ApplicationController
 		if eval(params[:select].to_s)
 			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL",params[:comment])
 		end
+		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 
 	end
@@ -438,7 +449,7 @@ class DcController < ApplicationController
 							:audit_type=>"DC APPROVE REPRINT",
 							:level => "Person",
 							:reason => params[:reason]})
-
+		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end
 
@@ -458,18 +469,20 @@ class DcController < ApplicationController
 							:audit_type=>"DC REPRINT  #{params[:reason].upcase}",
 							:level => "Person",
 							:reason => params[:reason]})
-
+		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"		
 	end
 	def sent_to_hq_for_reprint
 		person = Person.find(params[:id])
 		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 		PersonRecordStatus.change_status(person, status.status.gsub("DC","HQ"))
+		unlock_users_record(person)
 		redirect_to "/dc/reprint_requests?next_url=/dc/manage_requests?next_url=/"
 	end
 	def do_amend
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC AMEND")
+		unlock_users_record(person)
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
 
@@ -571,7 +584,7 @@ class DcController < ApplicationController
                                       :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
                                       :district_code => (person.district_code rescue SETTINGS['district_code']),
                                       :creator => params[:user_id]})
-
+		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end
 

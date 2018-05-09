@@ -4,7 +4,7 @@ class UsersController < ApplicationController
 
   before_filter :check_if_user_admin
 
-  @@file_path = "#{Rails.root.to_s}/app/assets/data/MySQL_data/"
+  @@file_path = "#{Rails.root.to_s}/db/MySQL_data/"
   # GET /users
   # GET /users.json
   def index

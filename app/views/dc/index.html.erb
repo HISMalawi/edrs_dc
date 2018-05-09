@@ -128,6 +128,15 @@
                                       
                                     </div>
                                   <%end%>
+                                    <div class="touch_btn" onmousedown="window.location = '/people/clear_all_locks'" >
+                                        <div class="icon">
+                                               <i class="fa fa-unlock-alt"></i>
+                                        </div>
+                                        <div class="button_label">Clear all locks</div>
+                                        <div class="button_description">  Clear locks for all records.</div>
+
+                                      
+                                    </div>
                               <%end%>
 
                                 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>

@@ -77,6 +77,10 @@ class LoginsController < ApplicationController
     # session[:touchcontext] = nil
     flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
 
+    MyLock.by_user_id.key(User.current_user.id).each do |lock|
+      lock.destroy
+    end
+
     logout!
    
     if SETTINGS['app_gate_url'].present?

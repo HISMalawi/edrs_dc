@@ -492,8 +492,38 @@ class PeopleController < ApplicationController
     render  :text => people.to_json
   end
 
+  def clear_all_locks
+      MyLock.all.each do |lock|
+        lock.destroy
+      end
+      flash[:notice] = "Successfully unlock all records"
+      redirect_to "/"
+  end
+
+  def unlock_record
+      lock = MyLock.find(params[:lock_id]) rescue nil
+ 
+      if lock.present?
+        if lock.user_id == User.current_user.id
+          lock.destroy
+        end
+      end
+      redirect_to params[:next_url]
+  end
+
   def show
       @person = Person.find(params[:id])
+
+      @lock = MyLock.by_person_id.key(params[:id]).last
+      if @lock.blank?
+        @lock = MyLock.create(:person_id => params[:id],:user_id => User.current_user.id)
+      end
+
+      if User.current_user.id != @lock.user_id
+        @locked = true
+      else
+        @locked = false
+      end
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 

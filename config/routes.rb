@@ -76,6 +76,10 @@ Rails.application.routes.draw do
 
   get '/people/view/:id' => "people#show"
 
+  get "/people/unlock_record"
+
+  get "/people/clear_all_locks"
+
   get '/people/edit/:id/:field' => "people#edit_field"
 
   get '/cause_of_death/:id' => "people#render_cause_of_death_page"
