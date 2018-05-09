@@ -190,25 +190,25 @@ class Report < ActiveRecord::Base
 
 	def self.by_registartion_type(params)
 		if params[:timeline].blank?
-			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
-			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			start_date = Time.now.strftime("%Y-%m-%d")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 		else
 			case params[:timeline]
 			when "Today"
-				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current week"
-				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current month"
-				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current year"
-				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 0:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Date range"
-				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 0:00:00:000Z")
-				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d")
 			end
 		end
 		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
@@ -235,25 +235,25 @@ class Report < ActiveRecord::Base
 
 	def self.by_place_of_death(params)
 		if params[:timeline].blank?
-			start_date = Time.now.strftime("%Y-%m-%d 00:00:00:000Z")
-			end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+			start_date = Time.now.strftime("%Y-%m-%d")
+			end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 		else
 			case params[:timeline]
 			when "Today"
-				start_date = Time.now.strftime("%Y-%m-%dT00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current week"
-				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_week.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current month"
-				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_month.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Current year"
-				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	Date.today.to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = Time.now.beginning_of_year.strftime("%Y-%m-%d")
+				end_date =	Date.today.to_time.strftime("%Y-%m-%d")
 			when "Date range"
-				start_date = params[:start_date].to_time.strftime("%Y-%m-%d 00:00:00:000Z")
-				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d 23:59:59.999Z")
+				start_date = params[:start_date].to_time.strftime("%Y-%m-%d")
+				end_date =	params[:end_date].to_time.strftime("%Y-%m-%d")
 			end
 		end
 		status = params[:status].present? ? params[:status] : 'DC ACTIVE'
@@ -274,6 +274,7 @@ class Report < ActiveRecord::Base
 					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' AND person_record_status.voided = 0
 					 	 AND DATE_FORMAT(person_record_status.created_at,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}' 
 	    				#{place_query}"
+
 	    #raise query.to_s
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender], :place => params[:place]}
 		
