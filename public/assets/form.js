@@ -263,7 +263,12 @@
 		        if (site_type == "facility"){
 		        	place_of_registration = __$("person_place_of_registration").value + ","+district
 		        }else{
-		        	place_of_registration = __$("person_place_of_registration").value + " DRO"
+		        	if (registration_type =="Dead on Arrival") {
+		        		place_of_registration = __$("person_place_of_registration").value;
+		        	}else{
+		        		place_of_registration = __$("person_place_of_registration").value + " DRO";
+		        	}
+		        	
 		        }
 		        td.innerHTML = place_of_registration;
 		        tr.appendChild(td);

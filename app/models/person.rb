@@ -143,7 +143,12 @@ class Person < CouchRest::Model::Base
 
   def set_facility_code
     unless self.facility_code.present?
-      self.facility_code = (SETTINGS['facility_code'] rescue nil)
+      if SETTINGS['site_type'] == "dc"
+        self.facility_code = nil
+      else
+         self.facility_code = (SETTINGS['facility_code'] rescue nil)
+      end
+     
     end 
   end
 

@@ -58,9 +58,13 @@
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
     <% if SETTINGS['show_keyboard_for_barcode'].present? && SETTINGS['show_keyboard_for_barcode'] %>
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()",
+        :validationRule=>"^[0-9]{8}$",
+        :validationMessage=> "Form barcode should have exactly 8 digit"} %>
     <%else%>
-        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
+        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()",
+        :validationRule=>"^[0-9]{8}$",
+        :validationMessage=> "Form barcode should have exactly 8 digit"} %>
     <%end%>
 			</sub>
 		</section>
@@ -130,7 +134,12 @@
                       <% if @site_type == "facility" %>
                           <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
                       <%else%>
-                          <%= (f.hidden_field :place_of_registration, :value => @district.name ) %>
+
+                          <% @url = "/facilities?district=#{@district.name}&search_string=" %>
+                          <%= text_field_tag "person[place_of_registration]", nil, {
+                              :helpText => "Place of Registration (<i>Health Facility</i>) <i style='color: red'>*</i>",
+                              :ajaxURL =>@url , 
+                              :allowFreeText => true} %>
                       <%end%>
                         <%= select_tag("person[place_of_death]", options_for_select(["","Home","Other"], @person[:place_of_death]),
                               :id=> "person_place_of_death",
