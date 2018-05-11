@@ -181,7 +181,7 @@
 	<% end %>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-		<%if SETTINGS['site_type'] == 'remote'%>
+		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role'] %>
 			<%if  (@status.present? && @status.status == "DC ACTIVE") %>
 
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
@@ -203,7 +203,7 @@
 	<%end%>
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-		<%if SETTINGS['site_type'] == 'remote'%>
+		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role']%>
 			<%if  (@status.present? && @status.status == "DC ACTIVE")%>
 
 					<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>

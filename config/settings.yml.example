@@ -9,3 +9,4 @@
  app_gate_url:  #'http://localhost:3004'
  exclude: Chitipa,Lilongwe,Ntcheu,Blantyre
  show_keyboard_for_barcode: false
+ include_lo_role: true
