@@ -2163,6 +2163,19 @@
 				value = value.substring(0,value.length-1);
 				
 			}
+/*
+			if (value.length != 8) {
+					__$('touchscreenInput' + tstCurrentPage).value = value;
+					__$("person_barcode").value = value;
+					setTimeout(function(){
+						showMessage("<center><b>Barcode Invalid</b></center><br/><center>The barcode does not contain 8 digitd </center>");
+						gotoPage(tstCurrentPage -1);
+
+					},100);
+					return;
+			}
+			*/
+
 			postAjax("/search_barcode",{barcode : value},function(response){
 				var data = JSON.parse(response)
 
