@@ -37,7 +37,7 @@
                             <%end%>
 
                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
-                                  <% if  @facility_type == 'Remote'%>
+                                  <% if  @facility_type == 'Remote' && !SETTINGS['include_lo_role']%>
                                     <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                       <div class="icon">
                                              <i class="fa fa-users"></i>

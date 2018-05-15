@@ -9,9 +9,12 @@ namespace :edrs do
   	if SETTINGS['site_type'] =="facility"
   		puts "Facility Sync"
     	require Rails.root.join('bin','./sync/facility_sync.rb')
-    else
+    elsif SETTINGS['site_type'] =="dc"
     	puts "DC Sync"
     	require Rails.root.join('bin','./sync/dc_sync.rb')
+    else
+      puts "DC Remote Sync"
+      require Rails.root.join('bin','./sync/sync_all.rb')
    	end
   end
 
