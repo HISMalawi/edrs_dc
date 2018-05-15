@@ -61,12 +61,12 @@
 				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",
         :tt_onUnLoad=>"removeDollar();checkBarcode()",
         :tt_onLoad=>"overRideCancel();removeAutoComplete()",
-        :validationRule=>"^[0-9]{8}[$]{0,1}",
+        :validationRule=>"^[0-9]{8}\\$?",
         :validationMessage=> "<center><b>Barcode Invalid</b></center><br/><center> The barcode should contain exaclty 8 digit</center>"} %>
     <%else%>
         <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",
-        :validationRule=>"^[0-9]{8}[$]{1}",
-        :validationMessage=> "<center><b>Barcode Invalide</b></center><br/><center> The barcode should contain exaclty 8 digit</center>",
+         :validationRule=>"^[0-9]{8}\\$?",
+        :validationMessage=> "<center><b>Barcode Invalid</b></center><br/><center> The barcode should contain exaclty 8 digit</center>",
         :tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
     <%end%>
 			</sub>
