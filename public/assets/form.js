@@ -2185,7 +2185,7 @@
 							top.location.reload();
 						},
 						function(){
-							top.location ="/people/view/"+id+"?next_url=/people/new_person_type";
+							top.location ="/people/view/"+data.id+"?next_url=/people/new_person_type";
 						},300000);
 					__$("yes").innerHTML ="Dismiss"
 					__$("yes").className = "red";
