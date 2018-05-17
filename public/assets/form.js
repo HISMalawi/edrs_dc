@@ -2816,6 +2816,22 @@ function flagMessage(message){
 		showMessage(message,null,30000);
 }
 
+function copyAddress(){
+	__$("person_home_district").value = __$("person_current_district").value
 
+	__$("person_home_ta").value = __$("person_current_ta").value
+
+	if(__$("person_current_ta").value == "Other"){
+		__$("person_other_home_ta").setAttribute("condition", true)
+		__$("person_other_home_ta").value = __$("person_other_current_ta").value;
+		__$("person_home_village").setAttribute("condition", false);
+		__$("person_other_home_village").setAttribute("condition", true);
+		__$("person_other_home_village").value = __$("person_other_current_village").value;
+	}else{
+		__$("person_home_village").value = __$("person_current_village").value		
+	}
+
+	//Hande other districts
+}
 
         

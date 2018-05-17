@@ -264,7 +264,7 @@ class DcController < ApplicationController
 
 		@section = "Printed Records"
 
-		@statuses = ["HQ CLOSED"]
+		@statuses = ["HQ PRINTED"]
 
 		@next_url = "/dc/closed"
 
@@ -292,7 +292,7 @@ class DcController < ApplicationController
 		
 		@section = "Pending Record"
 
-		@statuses = ["DC INCOMPLETE"]
+		@statuses = ["DC INCOMPLETE", "DC REJECTED"]
 
 		@next_url = "/dc/pending_cases"
 

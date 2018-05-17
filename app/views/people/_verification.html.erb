@@ -1,31 +1,35 @@
-  <% if @site_type == "dc" %>
-    <section name="Verification">
-            <sub id="village_headman_verification" name="Village head verification">
-                <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
-                          :helpText =>"Village headman/Block leader signed? <i style='color: red'>*</i>",:tt_requireNextClick => false,
-                            :condition=>"__$('person_place_of_death').value != 'Health Facility'") %>
+  <% if @site_type == "dc"  || @site_type == "remote" %>
+    <% if params[:registration_type] == 'Normal Cases' %>
+      <section name="Verification">
+              <sub id="village_headman_verification" name="Village head verification">
+                  <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
+                            :helpText =>"Village headman/Block leader signed? <i style='color: red'>*</i>",:tt_requireNextClick => false,
+                              :condition=>"__$('person_place_of_death').value != 'Health Facility'") %>
 
-                <%= text_field_tag "person[headman_verification_date]",nil,
-                          {:helpText => "Date Village headman/Block leader signed <i style='color: red'>*</i>",
+                  <%= text_field_tag "person[headman_verification_date]",nil,
+                            {:helpText => "Date Village headman/Block leader signed <i style='color: red'>*</i>",
+                              :field_type => "date",
+                              :condition => "__$('person_place_of_death').value != 'Health Facility' && __$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                              :tt_onLoad =>"removeUnknown()",
+                              :value => Date.today.strftime("%Y-%m-%d"),
+                              :tt_onUnLoad=> "validateWithDeathDate()"}%>
+              </sub>
+              <sub id="church_verification" name="Church verification">
+                  <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
+                          :helpText =>"Senior Member of Village/Religious institution signed? <i style='color: red'>*</i>",
+                          :tt_requireNextClick => false,
+                          :condition=>"__$('person_place_of_death').value != 'Health Facility'") %>
+
+                  <%= text_field_tag "person[church_verification_date]",nil,
+                          {:helpText => "Date Senior member of village/Religious institution signed <i style='color: red'>*</i>",
                             :field_type => "date",
-                            :condition => "__$('person_place_of_death').value != 'Health Facility' && __$('person_headman_verified').value.trim().toLowerCase() =='yes'",
+                            :value => Date.today.strftime("%Y-%m-%d"),
+                            :condition => "__$('person_place_of_death').value != 'Health Facility' && __$('person_church_verified').value.trim().toLowerCase() =='yes'",
                             :tt_onLoad =>"removeUnknown()",
-                            :tt_onUnLoad=> "validateWithDeathDate()"}%>
-            </sub>
-            <sub id="church_verification" name="Church verification">
-                <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
-                        :helpText =>"Senior Member of Village/Religious institution signed? <i style='color: red'>*</i>",
-                        :tt_requireNextClick => false,
-                        :condition=>"__$('person_place_of_death').value != 'Health Facility'") %>
-
-                <%= text_field_tag "person[church_verification_date]",nil,
-                        {:helpText => "Date Senior member of village/Religious institution signed <i style='color: red'>*</i>",
-                          :field_type => "date",
-                          :condition => "__$('person_place_of_death').value != 'Health Facility' && __$('person_church_verified').value.trim().toLowerCase() =='yes'",
-                          :tt_onLoad =>"removeUnknown()",
-                          :tt_onUnLoad=>"validateWithDeathDate()"}%>
-            </sub>
-    </section>
+                            :tt_onUnLoad=>"validateWithDeathDate()"}%>
+              </sub>
+      </section>
+      <%end%>
     <% end %>
 <%if false%>
     <section name="Acknowledgement">

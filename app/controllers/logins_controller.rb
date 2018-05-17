@@ -76,9 +76,10 @@ class LoginsController < ApplicationController
   def logout
     # session[:touchcontext] = nil
     flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
-
-    MyLock.by_user_id.key(User.current_user.id).each do |lock|
-      lock.destroy
+    if MyLock.by_user_id.key(User.current_user.id).each.present?
+      MyLock.by_user_id.key(User.current_user.id).each do |lock|
+        lock.destroy
+      end      
     end
 
     logout!

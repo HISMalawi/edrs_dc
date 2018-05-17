@@ -79,6 +79,7 @@
                 <%= text_field_tag "person[date_of_death]",nil,
                 				  {:helpText => "Date of Death <i style='color: red'>*</i>",
                                     :field_type => "date" ,
+                                    :value => Date.today.strftime("%Y-%m-%d"),
                                     :tt_onLoad =>"removeUnknown()",
                                     :tt_onUnLoad => "validateDeathDate();validateMissingDate()"}%>
                                     
