@@ -33,6 +33,7 @@
                 				  :helpText => "Date of Death <i style='color: red'>*</i>",
                 				  :field_type => "date" ,
                 				  :tt_onLoad =>"removeUnknown()",
+                                  :value => Date.today.strftime("%Y-%m-%d"),
                 				  :tt_onUnLoad => "validateDeathDate()") rescue "" %>
 
                 <%= text_field_tag "person[place_of_death_country]", nil, {

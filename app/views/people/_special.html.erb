@@ -155,7 +155,11 @@
             </sub>
 
             <sub id="death_details" name="Details of death">
-                <%= (f.text_field :date_of_death,:helpText => "Date of Death <i style='color: red'>*</i>",:field_type => "date" ,:tt_onLoad =>"removeUnknown()",:tt_onUnLoad => "validateDeathDate()") rescue "" %>
+                <%= (f.text_field :date_of_death,:helpText => "Date of Death <i style='color: red'>*</i>",
+                    :field_type => "date" ,
+                    :tt_onLoad =>"removeUnknown()",
+                    :tt_onUnLoad => "validateDeathDate()",
+                    :value => Date.today.strftime("%Y-%m-%d")) rescue "" %>
                 <input type="hidden" id="person_place_of_death_country" name="person[place_of_death_country]" value="Malawi">
                 <% if @site_type == "facility" %>
                      <%= (f.hidden_field :place_of_registration, :value => @facility.name) %>
