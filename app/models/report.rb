@@ -309,7 +309,13 @@ class Report < ActiveRecord::Base
 			gender_query = "AND gender='#{params[:gender]}'"
 		end
 
-		query = "SELECT count(*) as total FROM people WHERE people.district_code = '#{User.current_user.district_code}' #{gender_query}
+		if User.current_user.username == "admin"
+			districts_query = District.all.collect{|d| d.name}.join(",")
+		else	
+			districts_query = User.current_user.district_code
+		end
+
+		query = "SELECT count(*) as total FROM people WHERE people.district_code IN ('#{User.current_user.district_code}') #{gender_query}
 				 AND DATE_FORMAT(people.date_of_death,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}'"
 	    
 	    #raise query.to_s

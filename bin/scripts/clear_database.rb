@@ -21,6 +21,10 @@ if Rails.env == "development"
         d.destroy
      end
 
+     Barcode.all.each do |d|
+        d.destroy
+     end
+
      SETTING = YAML.load_file("#{Rails.root}/config/elasticsearchsetting.yml")['elasticsearch']
      puts `curl -XDELETE #{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}`
 

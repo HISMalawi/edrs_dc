@@ -9,7 +9,7 @@
                           :tt_onUnLoad=>"flagIfEmpty('Home address details not available')"} %>
               <%= select_tag("person[physical_address_same_as_home_address]",options_for_select([" ", "Yes", "No"], ""),
                           :helpText =>"Physical address same as home address? <i style='color: red'>*</i>",
-                          :condition => "__$('person_home_country').value.toLowerCase().match('malawi')",
+                          :condition => "__$('person_current_district') && __$('person_home_country').value.toLowerCase().match('malawi')",
                           :tt_requireNextClick => false,:tt_onUnLoad => "copyAddress()") %>
           <%end%>
 

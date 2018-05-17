@@ -103,7 +103,7 @@ class PeopleController < ApplicationController
           record["father_middle_name"] = (params[:person][:father_middle_name] rescue nil)
           record["father_first_name"] = (params[:person][:father_first_name] rescue nil)
           record["id"] = person.id
-          record["district_code"] = SETTINGS['district_code']
+          record["district_code"] = (person.district_code rescue SETTINGS['district_code'])
 
           SimpleElasticSearch.add(record)
           
@@ -118,46 +118,20 @@ class PeopleController < ApplicationController
                                       :identifier_type => "Form Barcode", 
                                       :identifier => person_params[:barcode].to_s,
                                       :site_code => SETTINGS['site_code'],
-                                      :district_code => SETTINGS['district_code'],
+                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
                                       :creator => User.current_user.id})
             Barcode.create({
                               :person_record_id => person.id.to_s,
                               :barcode => person_params[:barcode].to_s,
-                              :district_code => SETTINGS['district_code'],
+                              :district_code => (person.district_code  rescue SETTINGS['district_code']),
                               :creator => User.current_user.id
                               })
         
       end
 
-=begin
-
-      if !person_params[:id_number].blank? && !person_params[:id_number].nil?
-
-            PersonIdentifier.create({
-                                      :person_record_id => person.id.to_s,
-                                      :identifier_type => "National ID", 
-                                      :identifier => person_params[:id_number],
-                                      :site_code => SETTINGS['site_code'],
-                                      :district_code => SETTINGS['district_code'],
-                                      :creator => User.current_user.id} )
-        
-      end
-
-      if  !person_params[:birth_certificate_number].blank? && person_params[:birth_certificate_number].nil?
-
-            PersonIdentifier.create({
-                                      :person_record_id => person.id.to_s,
-                                      :identifier_type => "Birth Certificate Number", 
-                                      :identifier => person_params[:birth_certificate_number],
-                                      :site_code => SETTINGS['site_code'],
-                                      :district_code => SETTINGS['district_code'],
-                                      :creator => User.current_user.id} )
-        
-      end
-=end
       #create status
 
-       if Person.duplicate.nil?
+      if Person.duplicate.nil?
           PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
                                       :status => "DC ACTIVE",

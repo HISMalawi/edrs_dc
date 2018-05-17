@@ -84,7 +84,7 @@ class DcController < ApplicationController
 	           record["father_middle_name"] = (person.father_middle_name rescue nil)
 	           record["father_first_name"] = (person.father_first_name rescue nil)
 	           record["id"] = person.id
-	           record["district_code"] = SETTINGS["district_code"]
+	           record["district_code"] =  (person.district_code rescue SETTINGS["district_code"])
 
 	           if SETTINGS["potential_duplicate"]
 	           		duplicate =   SimpleElasticSearch.query_duplicate_coded(record,SETTINGS['duplicate_precision'])
