@@ -2838,4 +2838,14 @@ function copyAddress(){
 	}
 }
 
-        
+var input_to_capital;
+
+function toCapitalCases(){
+    	input_to_capital = setInterval(function(){
+    		__$('touchscreenInput' + tstCurrentPage).value = __$('touchscreenInput' + tstCurrentPage).value.toUpperCase()
+    	},50); 	
+}
+
+function clearCapitalInterval(){
+    	clearInterval(input_to_capital)
+}

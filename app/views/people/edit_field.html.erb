@@ -13,6 +13,9 @@
 			__$("Unknown").style.display ="none";
 	}
 
+  function validateBirthDate() {
+    
+  }
 </script>
 <style type="text/css">
 	.capitalize{
@@ -31,11 +34,15 @@
 
 		  			<%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %> 
 
-		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues()"%>
+		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues();"%>
 
-				    <%= (f.hidden_field :birthdate) rescue "" %>
 
-				    <%= f.hidden_field :birthdate_estimated rescue "" %>
+            <input type="hidden" id="person_birthdate" name="person[birthdate]">
+            <input type="hidden" id="person_date_of_death" name="person[date_of_death]" value="<%= @person.date_of_death.to_time.strftime('%Y-%m-%d')%>">
+            <input type="hidden" id="person_birthdate_estimated" name="person[birthdate_estimated]">
+            <%= text_field_tag "person[birth_date]",  nil,
+                          :helpText => "Captured Birth Date",
+                          :tt_onLoad=>"displayBirthDate();validateBirthDate()" %>
 
 		<% elsif @field  == "person[gender]" %>
 

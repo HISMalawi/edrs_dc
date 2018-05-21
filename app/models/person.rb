@@ -413,7 +413,7 @@ class Person < CouchRest::Model::Base
     return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier rescue "XXXXXXXX"
   end
   def national_id
-    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"National ID"]).first.identifier rescue "XXXXXXXX"
+    return self.id_number rescue "XXXXXXXX"
   end
   def barcode
       PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier rescue "XXXXXXXX"

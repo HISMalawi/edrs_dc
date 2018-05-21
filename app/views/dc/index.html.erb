@@ -156,14 +156,15 @@
                     <td valign="top">      
                         <table id="stats">
                               <tr><th colspan="3">Statistics</th></tr>
+                              <tr onmousedown="window.location.href='/people/view'"><td><a href="/people/view">Registered</a></td><td> :</td> <td id="reported">0</td></tr>
                           <% if User.current_user.role == "ADR"%>
-                            <tr onmousedown="window.location.href='/dc/approve_cases'"><td><a href="" >Complete </a></td><td> :</td> <td id ="complete" >0</td></tr>
+                            <tr onmousedown="window.location.href='/dc/approve_cases'"><td><a href="/dc/approve_cases" >Complete </a></td><td> :</td> <td id ="complete" >0</td></tr>
                               
                           <% end %>
-                            <tr onmousedown="window.location.href='/people/view'"><td><a href="">Registered</a></td><td> :</td> <td id="reported">0</td></tr>
-                             <tr onmousedown="window.location.href='/dc/approved_cases'"><td><a href="">Approved</a></td><td> :</td> <td id="approved">0 </td></tr>
-                              <tr onmousedown="window.location.href='/dc/pending_cases'"><td><a href="">Rejected</a></td><td> :</td> <td id="rejected">0</td></tr>
-                              <tr  onmousedown="window.location.href='/dc/pending_cases'"><td><a href="">Incomplete</a></td><td> :</td> <td id="incomplete">0</td></tr>
+
+                             <tr onmousedown="window.location.href='/dc/approved_cases'"><td><a href="/dc/approved_cases">Approved</a></td><td> :</td> <td id="approved">0 </td></tr>
+                              <tr onmousedown="window.location.href='/dc/pending_cases'"><td><a href="/dc/pending_cases">Rejected</a></td><td> :</td> <td id="rejected">0</td></tr>
+                              <tr  onmousedown="window.location.href='/dc/pending_cases'"><td><a href="/dc/pending_cases">Incomplete</a></td><td> :</td> <td id="incomplete">0</td></tr>
                           
 
                         </table>
@@ -174,8 +175,9 @@
 </div>
 <%= render :partial => "landing_resize" %>
 <script type="text/javascript">
-  
-    var stats = {
+
+    function loadStats(){
+          var stats = {
                         Reported     : "DC ACTIVE",
                         Approved     : "HQ ACTIVE",
                         Rejected     : "DC REJECTED",
@@ -225,11 +227,13 @@
                    }  
 
             }); 
-            resizeDiv();
+    }
+    resizeDiv();
+    loadStats();
 
-            setTimeout(function(){
-                window.location.reload();
-            }, 10000)
+    setInterval(function(){           
+      loadStats();
+    }, 10000)
 
 </script>
 

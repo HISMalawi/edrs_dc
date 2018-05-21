@@ -53,9 +53,9 @@
                 <%= text_field_tag "person[id_number]",nil , {
                           :helpText => "ID No", 
                           :optional => true, 
-                          :tt_onLoad=> "removeUnknown()",
+                          :tt_onLoad=> "removeUnknown();toCapitalCases()",
                           :validationRule=>"^[a-zA-Z0-9]{8}$",
-                          :tt_onUnLoad => "checkIdentifier('National ID')",
+                          :tt_onUnLoad => "checkIdentifier('National ID');clearCapitalInterval()",
                           :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"} %>
 
                 <% if params[:registration_type]=='Deaths Abroad'%>
