@@ -596,6 +596,7 @@ class PeopleController < ApplicationController
               record["father_middle_name"] = (person.father_middle_name rescue nil)
               record["father_first_name"] = (person.father_first_name rescue nil)
               record["id"] = person.id
+              record["district_code"] = (User.current_user.district_code rescue SETTINGS['district_code'])
 
               SimpleElasticSearch.add(record)
           end

@@ -297,7 +297,7 @@ class Person < CouchRest::Model::Base
 
        person = Person.find(id)
 
-       if !params[:place_of_death_district].blank?
+       if params[:place_of_death_district].present?
 
             district = District.by_name.key(params[:place_of_death_district]).first
 

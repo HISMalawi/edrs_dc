@@ -156,17 +156,34 @@
                     <td valign="top">      
                         <table id="stats">
                               <tr><th colspan="3">Statistics</th></tr>
-                              <tr onmousedown="window.location.href='/people/view'"><td><a href="/people/view">Registered</a></td><td> :</td> <td id="reported">0</td></tr>
+                              <tr onmousedown="window.location.href='/people/view'">
+                                <td><a href="/people/view">Active Records</a></td>
+                                <td> :</td> 
+                                <td id="reported"  style="text-align:right; width: 30%">0</td>
+                              </tr>
                           <% if User.current_user.role == "ADR"%>
-                            <tr onmousedown="window.location.href='/dc/approve_cases'"><td><a href="/dc/approve_cases" >Complete </a></td><td> :</td> <td id ="complete" >0</td></tr>
+                            <tr onmousedown="window.location.href='/dc/approve_cases'">
+                                <td><a href="/dc/approve_cases" >Complete </a></td>
+                                <td> :</td>
+                                <td id ="complete"  style="text-align:right; width: 30%">0</td>
+                            </tr>
                               
                           <% end %>
-
-                             <tr onmousedown="window.location.href='/dc/approved_cases'"><td><a href="/dc/approved_cases">Approved</a></td><td> :</td> <td id="approved">0 </td></tr>
-                              <tr onmousedown="window.location.href='/dc/pending_cases'"><td><a href="/dc/pending_cases">Rejected</a></td><td> :</td> <td id="rejected">0</td></tr>
-                              <tr  onmousedown="window.location.href='/dc/pending_cases'"><td><a href="/dc/pending_cases">Incomplete</a></td><td> :</td> <td id="incomplete">0</td></tr>
-                          
-
+                              <tr  onmousedown="window.location.href='/dc/pending_cases'">
+                                  <td><a href="/dc/pending_cases">Incomplete Records</a></td>
+                                  <td> :</td> 
+                                  <td id="incomplete"  style="text-align:right; width: 30%">0</td>
+                              </tr>
+                              <tr onmousedown="window.location.href='/dc/pending_cases'">
+                                <td><a href="/dc/pending_cases">Rejected by ADR</a></td>
+                                <td> :</td>
+                                <td id="rejected"  style="text-align:right; width: 30%">0</td>
+                              </tr>                          
+                             <tr onmousedown="window.location.href='/dc/approved_cases'">
+                                <td><a href="/dc/approved_cases">Approved by ADR</a></td>
+                                <td> :</td>
+                                <td id="approved"  style="text-align:right; width: 30%">0 </td>
+                             </tr>
                         </table>
                     </td>
               </tr>
