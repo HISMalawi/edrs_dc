@@ -22,6 +22,7 @@
           gotoPage(tstCurrentPage - 1, false, true);
       }
   }
+
   function validateDeathDate() {
     var date_of_death = new Date(__$("person_date_of_death").value).format("YYYY-mm-dd");
     var date_of_birth = new Date(__$("person_birthdate").value).format("YYYY-mm-dd");
@@ -30,7 +31,8 @@
           gotoPage(tstCurrentPage - 1, false, true);
       }
   }
- function displayEditedBirthDate(){
+
+  function displayEditedBirthDate(){
 
     if (__$("keyboard")) {
       __$("keyboard").style.display = "none";
@@ -512,7 +514,6 @@
                 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
 		<% else %>
  				<%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
-
  		<%end%>
  		<%= text_field_tag "summary" ,nil, {:helpText => "Summary", :tt_onLoad=>"showModified('Details Summary')"} %>
 <%end %>
