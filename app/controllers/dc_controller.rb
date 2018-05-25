@@ -12,6 +12,8 @@ class DcController < ApplicationController
 
       @section = "Home"
 
+      @portal_link = (UserAccess.by_user_id.key(User.current_user.id).last.portal_link rescue nil)
+      
       render :layout => "landing"
 		
 	end

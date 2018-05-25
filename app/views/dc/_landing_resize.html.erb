@@ -17,11 +17,11 @@
 
     resizeDiv();
 
-<% if @section == "Home" && SETTINGS['site_type'] == "remote" && session[:remote_portal].present?%>
+<% if @section == "Home" && SETTINGS['site_type'] == "remote" && @portal_link.present?%>
       setTimeout(function(){
             __$("signout").onmousedown = function(){
                   simpleAjaxRequest("/remote_logout", function({}){    
-                      window.location.href = "http://<%= session[:remote_portal] %>"
+                      window.location.href = "http://<%= @portal_link %>"
                 });  
                  
             }

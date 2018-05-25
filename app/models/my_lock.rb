@@ -1,6 +1,7 @@
 require 'couchrest_model'
 
 class MyLock < CouchRest::Model::Base
+	 use_database "local"
 	 before_save :set_district_code
 
 	 property :person_id, String
@@ -16,6 +17,6 @@ class MyLock < CouchRest::Model::Base
 	 end
 
 	 def set_district_code
-	    self.district_code = "HQ"
+	    self.district_code = (User.current_user.district_code rescue "HQ")
 	 end
 end

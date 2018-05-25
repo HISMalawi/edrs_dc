@@ -37,10 +37,10 @@ class LoginsController < ApplicationController
                 logout!
                 flash[:error] = 'You user district has a pilot version'
                 redirect_to "/", referrer_param => referrer_path and return
-          else
-                session[:remote_portal] = params[:remote_portal]
+            
           end
         end
+
       end
 
       ###############################################################################################
@@ -53,7 +53,12 @@ class LoginsController < ApplicationController
       end
       roles = Role.by_level.key(site_type).collect{|r| r.role}
       if roles.include? user.role
-        login! user
+        user_access = UserAccess.by_user_id.key(user.id).last
+        if SETTINGS['restrict_same_creatials_for_multiple_users'] && user_access.present?
+            flash[:error] = 'Another user has already login with the details you have entered'
+            redirect_to "/login" and return
+        end
+        login!(user,params[:remote_portal])
         if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
            if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
              logout!
@@ -88,6 +93,11 @@ class LoginsController < ApplicationController
       MyLock.by_user_id.key(User.current_user.id).each do |lock|
         lock.destroy
       end      
+    end
+
+    user_access = UserAccess.by_user_id.key(User.current_user.id).each
+    user_access.each do |access|
+      access.destroy
     end
 
     logout!

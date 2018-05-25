@@ -173,7 +173,7 @@ class ApplicationController < ActionController::Base
 
   def login!(user,portal_link = nil)
     session[:current_user_id] = user.username
-    UserAccess.create(user_id: user.id,portal_link: portal_link)
+    user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
     @current_user = user
     Audit.ip_address_accessor = request.remote_ip
     Audit.mac_address_accessor = ` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2]
@@ -186,6 +186,7 @@ class ApplicationController < ActionController::Base
   end
 
   def logout!
+
     Audit.create({
                           :record_id  => session[:current_user_id],
                           :audit_type => "User Access",
@@ -307,7 +308,7 @@ class ApplicationController < ActionController::Base
                             created_at datetime DEFAULT NULL,
                           PRIMARY KEY (person_record_status_id)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SimpleSQL.query_exec(create_staFtus_table);   
+    SimpleSQL.query_exec(create_status_table);   
 
     create_identifier_table = "CREATE TABLE IF NOT EXISTS person_identifier (
                                 person_identifier_id varchar(225) NOT NULL,

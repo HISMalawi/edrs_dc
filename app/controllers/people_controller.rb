@@ -20,6 +20,8 @@ class PeopleController < ApplicationController
 
       @section = "Home"
 
+      @portal_link = (UserAccess.by_user_id.key(User.current_user.id).last.portal_link rescue nil)
+
       render :layout => "landing"
 
   end
@@ -30,6 +32,11 @@ class PeopleController < ApplicationController
       MyLock.by_user_id.key(User.current_user.id).each do |lock|
         lock.destroy
       end      
+    end
+
+    user_access = UserAccess.by_user_id.key(User.current_user.id).each
+    user_access.each do |access|
+      access.destroy
     end
 
     logout!
@@ -483,6 +490,11 @@ class PeopleController < ApplicationController
       MyLock.all.each do |lock|
         lock.destroy
       end
+      
+      UserAccess.all.each do |access|
+        access.destroy
+      end
+
       flash[:notice] = "Successfully unlock all records"
       redirect_to "/"
   end

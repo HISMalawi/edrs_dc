@@ -8,3 +8,12 @@ def start
 	`#{query}`
 end
 start
+#Clearing all lock
+
+MyLock.all.each do |lock|
+    lock.destroy
+end
+
+UserAccess.all.each do |access|
+    access.destroy
+end
