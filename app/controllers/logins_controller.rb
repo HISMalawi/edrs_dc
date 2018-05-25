@@ -37,10 +37,10 @@ class LoginsController < ApplicationController
                 logout!
                 flash[:error] = 'You user district has a pilot version'
                 redirect_to "/", referrer_param => referrer_path and return
-          else
-                session[:remote_portal] = params[:remote_portal]
+            
           end
         end
+
       end
 
       ###############################################################################################
@@ -54,6 +54,9 @@ class LoginsController < ApplicationController
       roles = Role.by_level.key(site_type).collect{|r| r.role}
       if roles.include? user.role
         login! user
+        if params[:remote_portal].present?
+          session[:remote_portal] = params[:remote_portal]
+        end
         if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
            if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
              logout!
