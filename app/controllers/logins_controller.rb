@@ -58,7 +58,9 @@ class LoginsController < ApplicationController
             flash[:error] = 'Another user has already login with the details you have entered'
             redirect_to "/login" and return
         end
+        
         login!(user,params[:remote_portal])
+
         if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
            if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
              logout!
