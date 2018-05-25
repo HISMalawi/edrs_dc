@@ -10,3 +10,4 @@
  exclude: Chitipa,Lilongwe,Ntcheu,Blantyre
  show_keyboard_for_barcode: false
  include_lo_role: true
+ restrict_same_creatials_for_multiple_users: true
