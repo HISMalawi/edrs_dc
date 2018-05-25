@@ -2,6 +2,11 @@ class LoginsController < ApplicationController
   skip_before_filter :perform_basic_auth, :only => :logout
 
   def login
+    @portal = nil
+    if SETTINGS['site_type'] == "remote" && params["referrer"].present?
+      uri = URI::parse(params["referrer"])
+      @portal = uri.query.split("=")[1] rescue nil
+    end
     render :layout => false
   end
 
@@ -13,12 +18,14 @@ class LoginsController < ApplicationController
 
       ############## Checking if the user is from the district ####################################
       if SETTINGS['site_type'] != "remote"
+
           if (user.district_code != SETTINGS['district_code']) 
             if (user.role !="System Administrator") && (user.site_code != "HQ")
                 logout!
                 flash[:error] = 'Your user credentilas is not from this district'
                 redirect_to "/", referrer_param => referrer_path and return
             end
+            
           end 
       else
         #do something if remote
@@ -30,6 +37,8 @@ class LoginsController < ApplicationController
                 logout!
                 flash[:error] = 'You user district has a pilot version'
                 redirect_to "/", referrer_param => referrer_path and return
+          else
+                session[:remote_portal] = params[:remote_portal]
           end
         end
       end
@@ -90,6 +99,8 @@ class LoginsController < ApplicationController
       redirect_to "/", referrer_param => referrer_path and return
     end
   end
+
+
 
   def login_wrapper
     

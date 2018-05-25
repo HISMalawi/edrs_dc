@@ -64,6 +64,8 @@ Rails.application.routes.draw do
 
   get 'people/new' => "people#new"
 
+  get "/remote_logout" =>"people#portal_logout"
+  
   get 'people/new_split' => "people#new_split"
 
   post 'people/create' => "people#create"
@@ -266,6 +268,8 @@ Rails.application.routes.draw do
   get "/change_password" => "users#change_password"
 
   get "/login" => "logins#login"
+
+
 
   get "/login_wrapper" => "logins#login_wrapper"
 

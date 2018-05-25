@@ -91,6 +91,9 @@
 				<td><label for="password">Password</label></td>
 				<td><input id="password" name="user[password]"  onfocus="setFocusToThis(this)" autocomplete="off" ></td></tr>
 		</table>
+		<% if SETTINGS['site_type'] == "remote" && @portal.present? %>
+			<input type="hidden" name="remote_portal" value="<%= @portal %>">
+		<%end%>
 	 <%end%>
 	</div>
 	<div id="keyboardcontainer">

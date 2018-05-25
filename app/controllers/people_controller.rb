@@ -24,6 +24,19 @@ class PeopleController < ApplicationController
 
   end
 
+  def portal_logout
+
+    if User.current_user.present?
+      MyLock.by_user_id.key(User.current_user.id).each do |lock|
+        lock.destroy
+      end      
+    end
+
+    logout!
+
+    render :text => "Logout"
+  end
+
   def new_person_type
       @section = "Registration Categories"
       @facility = facility
