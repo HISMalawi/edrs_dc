@@ -490,10 +490,6 @@ class PeopleController < ApplicationController
       MyLock.all.each do |lock|
         lock.destroy
       end
-      
-      UserAccess.all.each do |access|
-        access.destroy
-      end
 
       flash[:notice] = "Successfully unlock all records"
       redirect_to "/"
