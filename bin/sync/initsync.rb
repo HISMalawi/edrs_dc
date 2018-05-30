@@ -129,27 +129,9 @@ JSON.parse(target_to_source).each do |key, value|
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
 end
 
-if SETTINGS['site_type'] == "facility"
-      surfix = SETTINGS['facility_code']
-else
-      surfix = SETTINGS['district_code']
-end
-    
-user = User.by_username.key("admin#{surfix}".downcase).first
 
-if user.blank?
 
-         username = "admin#{surfix}".downcase
-         user = User.create(username: username, plain_password: "p@ssw0rd#{surfix}", last_password_date: Time.now,
-                         password_attempt: 0, login_attempt: 0, first_name: "EDRS #{surfix}",
-                         last_name: "Administrator", role: "System Administrator",
-                         email: "admin@baobabhealth.org")
-
-else
-      puts "System admin User already exists"
-end
-
-finalize_setup(username,"p@ssw0rd#{surfix}")
+finalize_setup("admin","p@ssw0rd")
 
 
 

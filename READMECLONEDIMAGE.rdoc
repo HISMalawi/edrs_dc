@@ -1,9 +1,9 @@
 == README
 
 This README would normally document whatever steps are necessary to get the
-application up and running.
+application up and running this read ME assumes you cloned the image of a system  already runing and you want to customize it for another site.
 
-Things you may want to cover:
+Things you may want to cover and verify if they are present:
 
 * Ruby version
 	2.1.2
@@ -12,7 +12,7 @@ Things you may want to cover:
 	* The application needs the following installed on the server
 		* couchDB >= 1.6.1 
 		* MYSQL	  >= 5.5.0
-		* elasticsearch any version
+		* elasticsearch >= 5.4.2
 
 * Configuration
 	 * MYSQL
@@ -32,22 +32,8 @@ Things you may want to cover:
 * Setting up application 
 	* bundle install --local
 
-* Database creation and initialization
-	* run bundle exec rake edrs:setup
+* Finally user creation and initialization
 	* run bundle exec rake edrs:create_users
-
-* How to run the test suite
-	* passenger start or rails s
-	* use username and password shown on terminal to login
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.

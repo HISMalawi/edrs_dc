@@ -32,6 +32,15 @@ namespace :edrs do
   
   desc "Couch MYSQL"
   task couch_mysql: :environment do
-    require Rails.root.join('bin','./scripts/couch-mysql.rb')
+    begin
+       require Rails.root.join('bin','./scripts/couch-mysql.rb')
+    rescue Exception => e
+        puts "Could not tranfer from couch to mysql"
+    end
+   
+  end
+  desc "Creating users"
+  task create_users: :environment do
+    require Rails.root.join('bin','./scripts/create_users.rb')
   end
 end
