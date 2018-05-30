@@ -129,8 +129,6 @@ JSON.parse(target_to_source).each do |key, value|
       puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
 end
 
-
-
 finalize_setup("admin","p@ssw0rd")
 
 

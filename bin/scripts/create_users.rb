@@ -45,6 +45,7 @@ elsif SETTINGS['site_type'] == "dc"
 		end
 elsif  SETTINGS['site_type'] == "remote"
 	District.all.each do |district|
+	 next if district.name.to_s.include?("City")
 	  surfix = district.id
 	  puts "\nLogin credentials for #{district.name}"
 	  users.keys.each do |username|
