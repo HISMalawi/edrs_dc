@@ -20,7 +20,7 @@ users  = {
 
 if SETTINGS['site_type'] == "facility"
       surfix = SETTINGS['facility_code']
-      user = User.create(username: "#{users["clerk"]}#{surfix}", plain_password: "p@ssw0rd", last_password_date: Time.now,
+      user = User.create(username: "clerk#{surfix}", plain_password: "p@ssw0rd", last_password_date: Time.now,
 								password_attempt: 0, login_attempt: 0, first_name: users["clerk"]["first_name"],
 								last_name: users["clerk"]["last_name"], role: users["clerk"]["role"],
 								email: "admin@baobabhealth.org")
