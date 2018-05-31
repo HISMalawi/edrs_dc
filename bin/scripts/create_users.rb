@@ -38,7 +38,7 @@ if SETTINGS['site_type'] == "facility"
 
 		
 
-		  user.district_code = district_code: SETTINGS['district_code']
+		  user.district_code = SETTINGS['district_code']
 			        
 		  user.save
 
@@ -71,7 +71,7 @@ elsif SETTINGS['site_type'] == "dc"
 
 	
 
-		    user.district_code = district_code: SETTINGS['district_code']
+		    user.district_code =  SETTINGS['district_code']
 		        
 		    
 
