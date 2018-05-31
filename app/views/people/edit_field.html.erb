@@ -196,7 +196,7 @@
 					<%= text_field_tag "person[first_name]",@person.first_name,
                           {:helpText => "First name",
                                                     :allowFreeText =>true,  
-                                                    :ajaxURL => "/get_first_names?search=",
+                                                    :ajaxURL => "/get_names?search=",
                                                     :tt_onUnLoad=>"validateName('person',2)",
                                                     :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 
@@ -204,18 +204,16 @@
                 <%= text_field_tag "person[last_name]",@person.last_name, 
                          {:helpText => "Surname",
                           :allowFreeText =>true, 
-                          :ajaxURL => "/get_last_names?search=",
+                          :ajaxURL => "/get_names?search=",
                           :tt_onUnLoad=>"validateName('person',1)",
                           :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
 		<% elsif @field  == "person[middle_name]" %>
-
 					<%= text_field_tag "person[middle_name]",@person.middle_name,
                           {:helpText => "Other names",
                                                      :allowFreeText =>true, 
                                                      :optional => :true, 
-                                                     :ajaxURL => "/get_first_names?search=",
-                                                     :tt_onUnLoad=>"validateOtherName('person',3)",
+                                                     :ajaxURL => "/get_names?search=",
                                                      :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
 		<% elsif @field  == "person[father_first_name]" %>
@@ -224,7 +222,7 @@
                           {:helpText => "Father's First Name",
                             :allowFreeText =>true,
                             :optional => true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateName('person_father',8)"} %>
 
@@ -233,7 +231,7 @@
                           {:helpText => "Father's Surname",
                             :allowFreeText =>true,
                             :optional => true, 
-                            :ajaxURL => "/get_last_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onUnLoad =>"validateName('person_father',7)",
                             :tt_onLoad=> "removeUnknown();checkSpace()" }%>
 
@@ -243,7 +241,7 @@
                           {:helpText => "Father's Other Names",
                             :allowFreeText =>true, 
                             :optional => true, 
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateOtherName('person_father',9)"}%>
 
@@ -251,7 +249,7 @@
 					<%= text_field_tag "person[mother_first_name]",nil,
                           {:helpText => "Mother's First Name",
                             :allowFreeText =>true,:optional => true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()",
                             :tt_onUnLoad=>"validateName('person_mother',5)"} %>
 
@@ -260,7 +258,7 @@
                           {:helpText => "Mother's Surname",
                             :optional => true,
                             :allowFreeText =>true, 
-                            :ajaxURL => "/get_last_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad=>"validateName('person_mother',4)"} %>
 
@@ -269,7 +267,7 @@
                           {:helpText => "Mother's Other Names",
                           :allowFreeText =>true, 
                           :optional => true, 
-                          :ajaxURL => "/get_first_names?search=",
+                          :ajaxURL => "/get_names?search=",
                           :tt_onLoad=> "removeUnknown();checkSpace()",
                           :tt_onUnLoad =>"validateOtherName('person_mother',6)"}%>
 
@@ -278,7 +276,7 @@
 					<%= text_field_tag "person[informant_first_name]",nil,
                           {:helpText => "Informant's First Name",
                             :allowFreeText =>true,
-                            :ajaxURL => "/get_first_names?search=",
+                            :ajaxURL => "/get_names?search=",
                             :tt_onUnLoad =>"validateName('person_informant',11)",
                             :tt_onLoad=> "removeUnknown()"} %>
 
@@ -287,7 +285,7 @@
 					<%= text_field_tag "person[informant_last_name]", nil,
                           {:helpText => "Informant's  Surname",
                                                      :allowFreeText =>true,
-                                                     :ajaxURL => "/get_last_names?search=",
+                                                     :ajaxURL => "/get_names?search=",
                                                      :tt_onUnLoad =>"validateName('person_informant',10)",
                                                      :tt_onLoad=> "removeUnknown()"} %>
 
@@ -296,7 +294,7 @@
 					<%= text_field_tag "person[informant_middle_name]",nil, 
                           {:helpText => "Informant's Other Names",
                           :allowFreeText =>true,
-                          :ajaxURL => "/get_first_names?search=",
+                          :ajaxURL => "/get_names?search=",
                           :tt_onUnLoad =>"validateOtherName('person_informant',12)",
                           :optional => :true,
                           :tt_onLoad=> "removeUnknown();checkSpace()"}%>
@@ -381,6 +379,11 @@
 
        <% elsif @field =="person[nationality]" %>
        			<%= text_field_tag "person[nationality]",@person[:nationality] , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
+
+      <% elsif @field =="person[mother_nationality]" %>
+            <%= text_field_tag "person[mother_nationality]",@person[:mother_nationality] , {:helpText => "Mother's Nationality",:ajaxURL => "/nationalities?search_string="} %>
+      <% elsif @field =="person[father_nationality]" %>
+            <%= text_field_tag "person[father_nationality]",@person[:father_nationality] , {:helpText => "Father's Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
        <% elsif @field == "person[home_country]" || @field == "person[home_district]" || @field == "person[home_ta]" || @field == "person[home_village]"%>
        			<%= render :partial => 'home_address' %>
@@ -509,6 +512,24 @@
     <% elsif @field == "person[id_number]" %>
             <%= text_field_tag "person[id_number]", nil, {
                 :helpText => 'National ID',
+                :tt_onLoad=>"toCapitalCases()", 
+                :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
+    <% elsif @field == "person[mother_id_number]" %>
+            <%= text_field_tag "person[mother_id_number]", nil, {
+                :helpText => "Mother's National ID",
+                :tt_onLoad=>"toCapitalCases()", 
+                :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
+    <% elsif @field == "person[father_id_number]" %>
+            <%= text_field_tag "person[mother_id_number]", nil, {
+                :helpText => "Fathers's National ID",
+                :tt_onLoad=>"toCapitalCases()", 
+                :validationRule=>"^[a-zA-Z0-9]{8}$", 
+                :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
+    <% elsif @field == "person[informant_id_number]" %>
+            <%= text_field_tag "person[mother_id_number]", nil, {
+                :helpText => "Informants's National ID",
                 :tt_onLoad=>"toCapitalCases()", 
                 :validationRule=>"^[a-zA-Z0-9]{8}$", 
                 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
