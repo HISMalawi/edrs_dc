@@ -22,9 +22,7 @@
 	<% if true %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()",
-                :validationRule=>"^[0-9]{8}\\$?",
-                :validationMessage=> "<center><b>Barcode Invalid</b></center><br/><center> The barcode should contain exaclty 8 digit</center>"} %>
+				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
 			</sub>
 		</section>
 	<%end%>

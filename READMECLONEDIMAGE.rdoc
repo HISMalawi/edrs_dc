@@ -15,17 +15,9 @@ Things you may want to cover and verify if they are present:
 		* elasticsearch >= 5.4.2
 
 * Configuration
-	 * MYSQL
-	 	* copy database.yml.example to database.yml
-	 	* edit database.yml to match your mysql credentials
-	 *CouchDB
-	 	* copy couchdb.yml.example to couchdb.yml
-	 	* edit to march your couch database settings for both DC and HQ and Facility
-	 *Elasticsearch
-	 	* copy elasticsearchsetting.yml.example to elasticsearchsetting.yml
-	 	* edit the index in the file
 	 *Setting
 	 	* copy setting.yml.example to setting.yml
+	 	* edit the facility code, district code and portal Ip address
 	 *Sync setting
 	 	* Edit accordingly for Health Facility Sync to DC and DC to HQ
 

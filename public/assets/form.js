@@ -2163,6 +2163,21 @@
 				value = value.substring(0,value.length-1);
 				
 			}
+			var regex = /^\d+$/;
+
+			if (value.length != 8 && regex.test(value)) {
+					__$('touchscreenInput' + tstCurrentPage).value = value
+					
+
+					showMessage("<center><b>Barcode Invalid</b></center><br/><center>The barcode does not contain 8 digitd </center>");
+					setTimeout(function(){		
+						gotoPage(tstCurrentPage -1);
+						setTimeout(function(){
+							window.location.reload();
+						},1500);
+					},100);
+					return;
+			}
 /*
 			if (value.length != 8) {
 					__$('touchscreenInput' + tstCurrentPage).value = value;

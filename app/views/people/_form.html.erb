@@ -60,13 +60,10 @@
     <% if SETTINGS['show_keyboard_for_barcode'].present? && SETTINGS['show_keyboard_for_barcode'] %>
 				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",
         :tt_onUnLoad=>"removeDollar();checkBarcode()",
-        :tt_onLoad=>"overRideCancel();removeAutoComplete()",
-        :validationRule=>"^[0-9]{8}\\$?",
-        :validationMessage=> "<center><b>Barcode Invalid</b></center><br/><center> The barcode should contain exaclty 8 digit</center>"} %>
+        :tt_onLoad=>"overRideCancel();removeAutoComplete()"
+        } %>
     <%else%>
         <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",
-         :validationRule=>"^[0-9]{8}\\$?",
-        :validationMessage=> "<center><b>Barcode Invalid</b></center><br/><center> The barcode should contain exaclty 8 digit</center>",
         :tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
     <%end%>
 			</sub>
