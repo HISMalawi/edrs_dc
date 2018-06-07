@@ -226,42 +226,44 @@ class ApplicationController < ActionController::Base
   end
 
   def check_cron_jobs
-      last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-      job_interval = SETTINGS['ben_assignment_interval']
-      job_interval = 1.5 if job_interval.blank?
-      job_interval = job_interval.to_f
-      now = Time.now
+      if SETTINGS['site_type'].to_s != "facility"
+        last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+        job_interval = SETTINGS['ben_assignment_interval']
+        job_interval = 1.5 if job_interval.blank?
+        job_interval = job_interval.to_f
+        now = Time.now
 
-      if (now - last_run_time).to_f > job_interval
-        if SETTINGS['site_type'].to_s != "facility"
-          if (defined? PersonIdentifier.can_assign_den).nil?
-            PersonIdentifier.can_assign_den = true
+        if (now - last_run_time).to_f > job_interval
+          if SETTINGS['site_type'].to_s != "facility"
+            if (defined? PersonIdentifier.can_assign_den).nil?
+              PersonIdentifier.can_assign_den = true
+            end
+            AssignDen.perform_in(10)
           end
-          AssignDen.perform_in(2)
+          
         end
-        
       end
 
       cron_job_tracker = CronJobsTracker.first
       return if cron_job_tracker.blank?
 
-       if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 30
-            CouchSQL.perform_in(15)
+      if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 1200
+            CouchSQL.perform_in(1200)
       end
 
       if Rails.env == 'development'
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 90
-            SyncData.perform_in(60)
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
+            SyncData.perform_in(3600)
         end
-       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 120
-            UpdateSyncStatus.perform_in(90)
+       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
+            UpdateSyncStatus.perform_in(600)
         end
       else
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 300
-            SyncData.perform_in(300)
+        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
+            SyncData.perform_in(3600)
         end
-        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
-            UpdateSyncStatus.perform_in(600)
+        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 9000
+            UpdateSyncStatus.perform_in(9000)
         end
       end
 

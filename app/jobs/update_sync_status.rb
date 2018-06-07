@@ -14,9 +14,9 @@ class UpdateSyncStatus
         end
 
         if Rails.env == 'development'
-        	UpdateSyncStatus.perform_in(60)
+        	UpdateSyncStatus.perform_in(1200)
         else
-    			UpdateSyncStatus.perform_in(600)
+    			UpdateSyncStatus.perform_in(9000)
     		end
   	end
 end
