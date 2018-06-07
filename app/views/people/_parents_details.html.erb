@@ -2,7 +2,7 @@
             <sub id="details_mother" name="Details of mother">
               <% if true %>
                 <%= select_tag("mother_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
-                     :helpText =>"Mother's details available? <i style='color: red'>*</i>",
+                     :helpText =>"Mother's details available on the form? <i style='color: red'>*</i>",
                      :tt_requireNextClick => false,
                      :tt_onLoad=>"if(!flag){hideConfirmation()};flag=true", 
                      :tt_onUnLoad=>"parentDetailAvailable('Mother')") %>
@@ -62,7 +62,7 @@
             <sub id="details_father" name="Details of father">
               <%if true %>
               <%= select_tag("father_details_available",options_for_select([" ", "Yes", "No"], "Yes"),
-                      :helpText =>"Father's details available?",
+                      :helpText =>"Father's details available on the form?<i style='color: red'>*</i>",
                       :tt_requireNextClick => false,
                       :tt_onUnLoad=>"parentDetailAvailable('Father')")
                       %>

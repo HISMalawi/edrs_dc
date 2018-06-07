@@ -20,11 +20,33 @@ users  = {
 
 if SETTINGS['site_type'] == "facility"
       surfix = SETTINGS['facility_code']
-      user = User.create(username: "clerk#{surfix}", plain_password: "p@ssw0rd", last_password_date: Time.now,
-								password_attempt: 0, login_attempt: 0, first_name: users["clerk"]["first_name"],
-								last_name: users["clerk"]["last_name"], role: users["clerk"]["role"],
-								email: "admin@baobabhealth.org")
-		puts "#{user.username} : p@ssw0rd"
+      user = User.by_username.key("clerk#{surfix}").first
+
+      if user.blank?
+      	  user = User.new
+		  user.username = "clerk#{surfix}"
+
+		  user.plain_password = "p@ssw0rd"
+
+	      user.first_name =  users["clerk"]["first_name"]
+
+		  user.last_name = users["clerk"]["last_name"]
+
+		  user.role =  users["clerk"]["role"]
+
+		  user.email = "admin@baobabhealth.org"
+
+		
+
+		  user.district_code = SETTINGS['district_code']
+			        
+		  user.save
+
+		  puts "#{user.username} : p@ssw0rd"
+      else
+      	  puts "User already exist"
+      end
+      
 elsif SETTINGS['site_type'] == "dc"
       surfix = SETTINGS['district_code'].downcase
       puts "Login credentials"
@@ -34,10 +56,27 @@ elsif SETTINGS['site_type'] == "dc"
 
 		 if user.blank?
 
-			user = User.create(username: "#{username}#{surfix}", plain_password: "p@ssw0rd", last_password_date: Time.now,
-									password_attempt: 0, login_attempt: 0, first_name: users[username]["first_name"],
-									last_name: users[username]["last_name"], role: users[username]["role"],
-									email: "admin@baobabhealth.org",district_code: SETTINGS['district_code'])
+		 	user = User.new
+		 	user.username = "#{username}#{surfix}".downcase
+
+		    user.plain_password = "p@ssw0rd"
+
+		    user.first_name = users[username]["first_name"]
+
+		    user.last_name = users[username]["last_name"]
+
+		    user.role =  users[username]["role"]
+
+		    user.email = "admin@baobabhealth.org"
+
+	
+
+		    user.district_code =  SETTINGS['district_code']
+		        
+		    
+
+		    user.save
+			
 			puts "#{user.username} : p@ssw0rd"
 		 else
 		 	puts "User already exist"
@@ -52,10 +91,23 @@ elsif  SETTINGS['site_type'] == "remote"
 	  	user = User.by_username.key("#{username}#{surfix}".downcase).first
 
 		if user.blank?
-			user = User.create(username: "#{username}#{surfix}".downcase , plain_password: "p@ssw0rd", last_password_date: Time.now,
-									password_attempt: 0, login_attempt: 0, first_name: users[username]["first_name"],
-									last_name: users[username]["last_name"], role: users[username]["role"],
-									email: "admin@baobabhealth.org", district_code: district.id)
+			user = User.new
+		 	user.username = "#{username}#{surfix}".downcase
+
+		    user.plain_password = "p@ssw0rd"
+
+		    user.first_name = users[username]["first_name"]
+
+		    user.last_name = users[username]["last_name"]
+
+		    user.role =  users[username]["role"]
+
+		    user.email = "admin@baobabhealth.org"
+
+		    user.district_code = district.id
+
+		    user.save
+
 			puts "#{user.username} : p@ssw0rd"
 		else
 			puts "User already exist"
