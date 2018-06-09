@@ -107,7 +107,8 @@ mysql_adapter = mysql_db_settings["adapter"]
 #reading db_mapping
 db_map_path ="#{Rails.root}/config/db_mapping.yml"
 db_maps = YAML.load_file(db_map_path)
-
+last_seq = CouchdbSequence.last
+seq = last_seq.seq rescue 0
 begin
 	seq = CouchdbSequence.last.seq rescue 0 
 
@@ -115,7 +116,7 @@ begin
 
 	data = JSON.parse(RestClient.get(changes_link))
 	records  = data["results"]
-
+	seq = data["last_seq"] 
 	records.each do |record|
 			db_maps.keys.each do |key|
 				parts = key.split("|")
@@ -125,12 +126,16 @@ begin
 					next
 				end
 			end
-
-			last_seq = CouchdbSequence.last
-			last_seq = CouchdbSequence.new if last_seq.blank?
-			last_seq.seq = data["last_seq"] 
-			last_seq.save
 	end
+	last_seq = CouchdbSequence.last
+	last_seq = CouchdbSequence.new if last_seq.blank?
+	last_seq.seq = data["last_seq"] 
+	last_seq.save
+
 rescue Exception => e
 	puts e.to_s
+	last_seq = CouchdbSequence.last
+	last_seq = CouchdbSequence.new if last_seq.blank?
+	last_seq.seq = seq
+	last_seq.save
 end
