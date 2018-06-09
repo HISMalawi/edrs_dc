@@ -28,4 +28,24 @@
       },500)
 <%end%>
 
+setTimeout(function(){
+
+      simpleAjaxRequest("<%= SETTINGS['app_jobs_url']%>/application/start_den_assigment", function(data){    
+              console.log(data)
+       });
+      
+      simpleAjaxRequest("<%= SETTINGS['app_jobs_url']%>/application/start_sync", function(data){    
+              console.log(data)
+       });
+
+      simpleAjaxRequest("<%= SETTINGS['app_jobs_url']%>/application/start_couch_to_mysql", function(data){    
+              console.log(data)
+       }); 
+
+      simpleAjaxRequest("<%= SETTINGS['app_jobs_url']%>/application/start_update_sync", function(data){    
+              console.log(data)
+       });
+
+},500);
+
 </script>

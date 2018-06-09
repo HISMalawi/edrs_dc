@@ -226,47 +226,13 @@ class ApplicationController < ActionController::Base
   end
 
   def check_cron_jobs
-      if SETTINGS['site_type'].to_s != "facility"
-        last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-        job_interval = SETTINGS['ben_assignment_interval']
-        job_interval = 1.5 if job_interval.blank?
-        job_interval = job_interval.to_f
-        now = Time.now
-
-        if (now - last_run_time).to_f > job_interval
-          if SETTINGS['site_type'].to_s != "facility"
-            if (defined? PersonIdentifier.can_assign_den).nil?
-              PersonIdentifier.can_assign_den = true
-            end
-            AssignDen.perform_in(10)
-          end
-          
-        end
-      end
-
-      cron_job_tracker = CronJobsTracker.first
-      return if cron_job_tracker.blank?
-
-      if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 1200
-            CouchSQL.perform_in(1200)
-      end
-
-      if Rails.env == 'development'
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
-            SyncData.perform_in(3600)
-        end
-       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
-            UpdateSyncStatus.perform_in(600)
-        end
-      else
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
-            SyncData.perform_in(3600)
-        end
-        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 9000
-            UpdateSyncStatus.perform_in(9000)
-        end
-      end
-
+    process = fork{
+      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_den_assigment"
+      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_sync"
+      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_couch_to_mysql"
+      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_update_sync"
+    }
+    Process.detach(process)
   end
 
   def check_user_level_and_site

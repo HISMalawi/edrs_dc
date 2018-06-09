@@ -6,6 +6,7 @@
  duplicate_precision: 90 #percentage precision
  site_type: dc #facility | dc | remote
  den_assignment_interval: 3
+ app_jobs_url: 'http://localhost:3321'
  app_gate_url:  #'http://localhost:3004'
  exclude: Chitipa,Lilongwe,Ntcheu,Blantyre
  show_keyboard_for_barcode: false
