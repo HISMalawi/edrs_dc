@@ -226,6 +226,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_cron_jobs
+
     process = fork{
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_den_assigment"
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_sync"

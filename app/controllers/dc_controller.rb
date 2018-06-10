@@ -103,14 +103,6 @@ class DcController < ApplicationController
 						unlock_users_record(person)
 					end
 					
-					last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-			        job_interval = SETTINGS['ben_assignment_interval']
-			        job_interval = 1.5 if job_interval.blank?
-			        job_interval = job_interval.to_f
-			        now = Time.now
-			        if (now - last_run_time).to_f > job_interval
-			          AssignDen.perform_in(SETTINGS['ben_assignment_interval'])
-			        end
 					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
 					render :text => {marked: true}.to_json
 				else
