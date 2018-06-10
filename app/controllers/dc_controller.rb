@@ -109,9 +109,9 @@ class DcController < ApplicationController
 			        job_interval = job_interval.to_f
 			        now = Time.now
 			        if (now - last_run_time).to_f > job_interval
-			          AssignDen.perform_in(1)
+			          AssignDen.perform_in(job_interval)
 			        end
-					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
+					
 					render :text => {marked: true}.to_json
 				else
 					can_mark_as_potential_duplicate = false
