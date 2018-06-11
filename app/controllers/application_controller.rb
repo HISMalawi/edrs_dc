@@ -247,23 +247,25 @@ class ApplicationController < ActionController::Base
       cron_job_tracker = CronJobsTracker.first
       return if cron_job_tracker.blank?
 
-      if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 1200
-            CouchSQL.perform_in(1200)
-      end
+      if SETTINGS['remote_using_hq_database'] == false
+        if (now - (cron_job_tracker.time_last_sync_to_couch.to_time rescue  Date.today.to_time)).to_i > 1200
+              CouchSQL.perform_in(1200)
+        end
 
-      if Rails.env == 'development'
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
-            SyncData.perform_in(3600)
-        end
-       if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
-            UpdateSyncStatus.perform_in(600)
-        end
-      else
-        if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
-            SyncData.perform_in(3600)
-        end
-        if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 9000
-            UpdateSyncStatus.perform_in(9000)
+        if Rails.env == 'development'
+          if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
+              SyncData.perform_in(3600)
+          end
+         if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 600
+              UpdateSyncStatus.perform_in(600)
+          end
+        else
+          if (now - (cron_job_tracker.time_last_synced.to_time rescue  Date.today.to_time)).to_i > 3600
+              SyncData.perform_in(3600)
+          end
+          if (now - (cron_job_tracker.time_last_updated_sync.to_time rescue  Date.today.to_time)).to_i > 9000
+              UpdateSyncStatus.perform_in(9000)
+          end
         end
       end
 
