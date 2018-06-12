@@ -23,7 +23,5 @@ class AssignDen
           SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
         end
     end rescue (AssignDen.perform_in(job_interval))
-
-    AssignDen.perform_in(job_interval)
   end
 end

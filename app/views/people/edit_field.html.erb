@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	var site_type = "<%= site_type %>";
+  var site_type = "<%= site_type %>";
     String.prototype.capitalize = function(lower) {
         return (lower ? this.toLowerCase() : this).replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
     };
@@ -7,12 +7,12 @@
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 <script type="text/javascript">
-	tt_cancel_destination = "/people/view/<%= params[:id]%>?next_url=<%=params[:next_url]%>";
+  tt_cancel_destination = "/people/view/<%= params[:id]%>?next_url=<%=params[:next_url]%>";
   var registration_type = "<%=@person.registration_type%>";
-	function removeUnknown(){
+  function removeUnknown(){
 
-			__$("Unknown").style.display ="none";
-	}
+      __$("Unknown").style.display ="none";
+  }
 
   function validateBirthDate() {
     var date_of_death = new Date(__$("person_date_of_death").value).format("YYYY-mm-dd");
@@ -161,23 +161,23 @@
  }
 </script>
 <style type="text/css">
-	.capitalize{
-		 text-transform: capitalize;
-	}
+  .capitalize{
+     text-transform: capitalize;
+  }
 </style>
 <%= form_for @person, :url => '/update_field', :method => :post do |f| %>
 
-		<input type="hidden" name="id" value="<%= params[:id] %>">
+    <input type="hidden" name="id" value="<%= params[:id] %>">
     <input type="hidden" name="next_url" value="<%= params[:next_url]%>">
-		<% if @field  == "person[birthdate]" %>
+    <% if @field  == "person[birthdate]" %>
 
-					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
+           <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
 
-		  			<%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'"}%>
+            <%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'"}%>
 
-		  			<%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %> 
+            <%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %> 
 
-		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues();"%>
+            <%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues();"%>
 
 
             <input type="hidden" id="person_birthdate" name="person[birthdate]">
@@ -188,19 +188,19 @@
                           :tt_onLoad=>"displayEditedBirthDate()",
                           :tt_onUnLoad => "validateBirthDate()" %>
 
-		<% elsif @field  == "person[gender]" %>
+    <% elsif @field  == "person[gender]" %>
 
-					<%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender") %>
+          <%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender") %>
 
-		<% elsif @field  == "person[first_name]" %>
-					<%= text_field_tag "person[first_name]",@person.first_name,
+    <% elsif @field  == "person[first_name]" %>
+          <%= text_field_tag "person[first_name]",@person.first_name,
                           {:helpText => "First name",
                                                     :allowFreeText =>true,  
                                                     :ajaxURL => "/get_names?search=",
                                                     :tt_onUnLoad=>"validateName('person',2)",
                                                     :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 
-		<% elsif @field  == "person[last_name]" %>			
+    <% elsif @field  == "person[last_name]" %>      
                 <%= text_field_tag "person[last_name]",@person.last_name, 
                          {:helpText => "Surname",
                           :allowFreeText =>true, 
@@ -208,17 +208,17 @@
                           :tt_onUnLoad=>"validateName('person',1)",
                           :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
-		<% elsif @field  == "person[middle_name]" %>
-					<%= text_field_tag "person[middle_name]",@person.middle_name,
+    <% elsif @field  == "person[middle_name]" %>
+          <%= text_field_tag "person[middle_name]",@person.middle_name,
                           {:helpText => "Other names",
                                                      :allowFreeText =>true, 
                                                      :optional => :true, 
                                                      :ajaxURL => "/get_names?search=",
                                                      :tt_onLoad=> "removeUnknown();checkSpace()"} %>
 
-		<% elsif @field  == "person[father_first_name]" %>
+    <% elsif @field  == "person[father_first_name]" %>
 
-					 <%= text_field_tag "person[father_first_name]",nil,
+           <%= text_field_tag "person[father_first_name]",nil,
                           {:helpText => "Father's First Name",
                             :allowFreeText =>true,
                             :optional => true,
@@ -226,8 +226,8 @@
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateName('person_father',8)"} %>
 
-		<% elsif @field  == "person[father_last_name]" %>
-					 <%= text_field_tag "person[father_last_name]",nil,
+    <% elsif @field  == "person[father_last_name]" %>
+           <%= text_field_tag "person[father_last_name]",nil,
                           {:helpText => "Father's Surname",
                             :allowFreeText =>true,
                             :optional => true, 
@@ -235,9 +235,19 @@
                             :tt_onUnLoad =>"validateName('person_father',7)",
                             :tt_onLoad=> "removeUnknown();checkSpace()" }%>
 
-		<% elsif @field  == "person[father_middle_name]" %>
+    <% elsif @field  == "person[father_middle_name]" %>
 
-					<%= text_field_tag "person[father_middle_name]",nil, 
+          <input type="hidden" 
+                name="person[father_first_name]" 
+                id="person_father_first_name" 
+                value="<%= @person.father_first_name %>">
+
+           <input type="hidden" 
+                name="person[father_last_name]" 
+                id="person_father_last_name" 
+                value="<%= @person.father_last_name %>">
+
+          <%= text_field_tag "person[father_middle_name]",nil, 
                           {:helpText => "Father's Other Names",
                             :allowFreeText =>true, 
                             :optional => true, 
@@ -245,16 +255,16 @@
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad =>"validateOtherName('person_father',9)"}%>
 
-		<% elsif @field  == "person[mother_first_name]" %>
-					<%= text_field_tag "person[mother_first_name]",nil,
+    <% elsif @field  == "person[mother_first_name]" %>
+          <%= text_field_tag "person[mother_first_name]",nil,
                           {:helpText => "Mother's First Name",
                             :allowFreeText =>true,:optional => true,
                             :ajaxURL => "/get_names?search=",
                             :tt_onLoad=> "removeUnknown();checkSpace()",
                             :tt_onUnLoad=>"validateName('person_mother',5)"} %>
 
-		<% elsif @field  == "person[mother_last_name]" %>
-					<%= text_field_tag "person[mother_last_name]",nil, 
+    <% elsif @field  == "person[mother_last_name]" %>
+          <%= text_field_tag "person[mother_last_name]",nil, 
                           {:helpText => "Mother's Surname",
                             :optional => true,
                             :allowFreeText =>true, 
@@ -262,8 +272,19 @@
                             :tt_onLoad=> "removeUnknown();checkSpace()", 
                             :tt_onUnLoad=>"validateName('person_mother',4)"} %>
 
-		<% elsif @field  == "person[mother_middle_name]" %>
-                <%= text_field_tag "person[mother_middle_name]",nil, 
+    <% elsif @field  == "person[mother_middle_name]" %>
+    
+            <input type="hidden" 
+                name="person[mother_first_name]" 
+                id="person_mother_first_name" 
+                value="<%= @person.mother_first_name %>">
+
+           <input type="hidden" 
+                name="person[mother_last_name]" 
+                id="person_mother_last_name" 
+                value="<%= @person.mother_last_name %>">
+
+            <%= text_field_tag "person[mother_middle_name]",nil, 
                           {:helpText => "Mother's Other Names",
                           :allowFreeText =>true, 
                           :optional => true, 
@@ -271,27 +292,27 @@
                           :tt_onLoad=> "removeUnknown();checkSpace()",
                           :tt_onUnLoad =>"validateOtherName('person_mother',6)"}%>
 
-		<% elsif @field  == "person[informant_first_name]" %>
+    <% elsif @field  == "person[informant_first_name]" %>
 
-					<%= text_field_tag "person[informant_first_name]",nil,
+          <%= text_field_tag "person[informant_first_name]",nil,
                           {:helpText => "Informant's First Name",
                             :allowFreeText =>true,
                             :ajaxURL => "/get_names?search=",
                             :tt_onUnLoad =>"validateName('person_informant',11)",
                             :tt_onLoad=> "removeUnknown()"} %>
 
-		<% elsif @field  == "person[informant_last_name]" %>
+    <% elsif @field  == "person[informant_last_name]" %>
 
-					<%= text_field_tag "person[informant_last_name]", nil,
+          <%= text_field_tag "person[informant_last_name]", nil,
                           {:helpText => "Informant's  Surname",
                                                      :allowFreeText =>true,
                                                      :ajaxURL => "/get_names?search=",
                                                      :tt_onUnLoad =>"validateName('person_informant',10)",
                                                      :tt_onLoad=> "removeUnknown()"} %>
 
-		<% elsif @field  == "person[informant_middle_name]" %>
+    <% elsif @field  == "person[informant_middle_name]" %>
 
-					<%= text_field_tag "person[informant_middle_name]",nil, 
+          <%= text_field_tag "person[informant_middle_name]",nil, 
                           {:helpText => "Informant's Other Names",
                           :allowFreeText =>true,
                           :ajaxURL => "/get_names?search=",
@@ -299,86 +320,86 @@
                           :optional => :true,
                           :tt_onLoad=> "removeUnknown();checkSpace()"}%>
 
-		<% elsif @field == "person[date_of_death]" %>
-				<input type="hidden" id="person_birthdate" name="person[birthdate]" value="<%= @person.birthdate.to_s%>">
-				<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration" value="No">
-				<%= text_field_tag "person[date_of_death]",@person.date_of_death.to_s,
-                				  {:helpText => "Date of Death ",
+    <% elsif @field == "person[date_of_death]" %>
+        <input type="hidden" id="person_birthdate" name="person[birthdate]" value="<%= @person.birthdate.to_s%>">
+        <input type="hidden" name="person[delayed_registration]" id="person_delayed_registration" value="No">
+        <%= text_field_tag "person[date_of_death]",@person.date_of_death.to_s,
+                          {:helpText => "Date of Death ",
                                     :field_type => "date" ,
                                     :tt_onLoad =>"removeUnknown()",
                                     :tt_onUnLoad => "validateDeathDate()"}%>
 
-		<% elsif @field  == "person[birth_certificate_number]" %>
+    <% elsif @field  == "person[birth_certificate_number]" %>
 
-				 <%= text_field_tag "person[birth_certificate_number]",@person.birth_certificate_number, {:helpText => "Birth Certificate ID Number", :optional => true} %>
+         <%= text_field_tag "person[birth_certificate_number]",@person.birth_certificate_number, {:helpText => "Birth Certificate ID Number", :optional => true} %>
 
-		<% elsif (@field.include? "place_of_death" || @field == "person[hospital_of_death]")  %>
-				 <% if site_type == "facility" %>
+    <% elsif (@field.include? "place_of_death" || @field == "person[hospital_of_death]")  %>
+         <% if site_type == "facility" %>
                     <%= (f.hidden_field :place_of_death, :value => "Health Facility")  %>
                     <%= (f.hidden_field :place_of_death_district, :value => @district.name) %>
                     <%= (f.hidden_field :hospital_of_death, :value => @facility.name) %>
                 <% elsif site_type =="dc" %>
                     <%= select_tag("person[place_of_death]", options_for_select(["","Health Facility", "Home","Other"], @person[:place_of_death]),
-                    					:id=> "person_place_of_death",
-                    					:helpText =>"Place of Death", 
-                    					:tt_onUnLoad =>"setAjaxUrl(-1)",
-                    					:tt_requireNextClick => false,
-                    					:tt_pageStyleClass =>"NoKeyboard") %>
+                              :id=> "person_place_of_death",
+                              :helpText =>"Place of Death", 
+                              :tt_onUnLoad =>"setAjaxUrl(-1)",
+                              :tt_requireNextClick => false,
+                              :tt_pageStyleClass =>"NoKeyboard") %>
 
                     <%= text_field_tag "person[place_of_death_district]", @person[:place_of_death_district], {
-                    					:helpText => "Place of Death District (<i>Place of death</i>)" , 
-                    					:tt_onUnLoad => "setAjaxUrl(0)"} %>
+                              :helpText => "Place of Death District (<i>Place of death</i>)" , 
+                              :tt_onUnLoad => "setAjaxUrl(0)"} %>
 
                     <%= text_field_tag "person[hospital_of_death]", @person[:hospital_of_death],{
-                    					:helpText => "Health Facility (<i>Place of death</i>)",
-                    					:condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
+                              :helpText => "Health Facility (<i>Place of death</i>)",
+                              :condition => "__$('person_place_of_death').value.trim()=='Health Facility'"} %>
 
                     <%= text_field_tag "person[place_of_death_ta]", @person[:place_of_death_ta], {
-                    					:helpText => "Traditional authority (<i>Place of death</i>)",
-                    					:condition => "__$('person_place_of_death').value.match('Home')", 
-                    					:tt_onUnLoad => "setAjaxUrl(1)"} %>
+                              :helpText => "Traditional authority (<i>Place of death</i>)",
+                              :condition => "__$('person_place_of_death').value.match('Home')", 
+                              :tt_onUnLoad => "setAjaxUrl(1)"} %>
 
                      <%= text_field_tag "person[other_place_of_death_ta]", @person[:other_place_of_death_ta], {
-                     					:helpText => "Other Traditional Authority specify (<i>Place of death</i>)",
-                     					:condition => "__$('person_place_of_death_ta').value =='Other'"} %>
+                              :helpText => "Other Traditional Authority specify (<i>Place of death</i>)",
+                              :condition => "__$('person_place_of_death_ta').value =='Other'"} %>
 
-               		<%= text_field_tag "person[place_of_death_village]", @person[:other_place_of_death_village], {
-               							:helpText => "Village (<i>Place of death</i>)",
-               							:condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
+                  <%= text_field_tag "person[place_of_death_village]", @person[:other_place_of_death_village], {
+                            :helpText => "Village (<i>Place of death</i>)",
+                            :condition => "__$('person_place_of_death_ta').value.length > 0 && __$('person_place_of_death_ta').value != 'Other'"} %>
 
-               		<%= text_field_tag "person[other_place_of_death_village]", @person[:other_place_of_death_village], {
-               							:helpText => "Other Village specify (<i>Place of death</i>)",
-               							:condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
+                  <%= text_field_tag "person[other_place_of_death_village]", @person[:other_place_of_death_village], {
+                            :helpText => "Other Village specify (<i>Place of death</i>)",
+                            :condition => "__$('person_place_of_death_ta').value =='Other' || __$('person_place_of_death_village').value =='Other'"} %>
 
-                	<%= text_field_tag "person[other_place_of_death]",@person[:other_place_of_death],
-                						{:helpText => "Other specify (<i>Place of death</i>)",
-                						 :condition => "__$('person_place_of_death').value.match('Other')"} 
-                						 %>
+                  <%= text_field_tag "person[other_place_of_death]",@person[:other_place_of_death],
+                            {:helpText => "Other specify (<i>Place of death</i>)",
+                             :condition => "__$('person_place_of_death').value.match('Other')"} 
+                             %>
                 <% end %>
 
-		<% elsif @field == "person[manner_of_death]" %>
+    <% elsif @field == "person[manner_of_death]" %>
 
-				<%= select_tag("person[manner_of_death]", options_for_select(['Natural', 'Accident',
+        <%= select_tag("person[manner_of_death]", options_for_select(['Natural', 'Accident',
                              'Sucide', 'Pending Investigation',
                              'Could not be determined',
                              'Other'], @person[:manner_of_death]),:helpText =>"Manner of death") %>
 
-            	<%= (f.text_field :other_manner_of_death,:helpText => "Other manners of death", :optional=>true, :condition => "__$('person_manner_of_death').value.match('Other')") rescue "" %>
+              <%= (f.text_field :other_manner_of_death,:helpText => "Other manners of death", :optional=>true, :condition => "__$('person_manner_of_death').value.match('Other')") rescue "" %>
 
         <% elsif @field == "person[death_by_accident]" %>
 
-        		<%= select_tag("person[death_by_accident]", options_for_select(['Motor vehicle(driver)', ' Motor vehicle(passenger)',
+            <%= select_tag("person[death_by_accident]", options_for_select(['Motor vehicle(driver)', ' Motor vehicle(passenger)',
                              ' Motor', 'Drowning',
                              'Other'], @person[:death_by_accident]),:helpText =>"How did injury/accident occur?") %>
 
-            	<%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other')") rescue "" %>
+              <%= (f.text_field :other_death_by_accident,:helpText => "Other accident specify", :optional=>true, :condition => "__$('person_death_by_accident').value.match('Other')") rescue "" %>
 
        <% elsif @field == "person[date_of_death]" %>
-       			<%= text_field_tag @field ,@person[params[:field]] , {:helpText => "Date of death", :field_type => "date",:tt_onLoad=>"removeUnknown()"} %>
+            <%= text_field_tag @field ,@person[params[:field]] , {:helpText => "Date of death", :field_type => "date",:tt_onLoad=>"removeUnknown()"} %>
 
 
        <% elsif @field =="person[nationality]" %>
-       			<%= text_field_tag "person[nationality]",@person[:nationality] , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
+            <%= text_field_tag "person[nationality]",@person[:nationality] , {:helpText => "Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
       <% elsif @field =="person[mother_nationality]" %>
             <%= text_field_tag "person[mother_nationality]",@person[:mother_nationality] , {:helpText => "Mother's Nationality",:ajaxURL => "/nationalities?search_string="} %>
@@ -386,19 +407,19 @@
             <%= text_field_tag "person[father_nationality]",@person[:father_nationality] , {:helpText => "Father's Nationality",:ajaxURL => "/nationalities?search_string="} %>
 
        <% elsif @field == "person[home_country]" || @field == "person[home_district]" || @field == "person[home_ta]" || @field == "person[home_village]"%>
-       			<%= render :partial => 'home_address' %>
-       			
-		 <% elsif @field == "person[current_country]" || @field == "person[current_district]" || @field == "person[current_ta]" || @field == "person[current_village]"%>
+            <%= render :partial => 'home_address' %>
+            
+     <% elsif @field == "person[current_country]" || @field == "person[current_district]" || @field == "person[current_ta]" || @field == "person[current_village]"%>
 
-       			<%= render :partial => 'physical_address' %>
+            <%= render :partial => 'physical_address' %>
 
-		<% elsif @field.include? "date" %>
+    <% elsif @field.include? "date" %>
 
 
 
-				<%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date",tt_onLoad=>"removeUnknown()"} %>
-		<% elsif @field == "person[informant_relationship_to_deceased]" %>
-				<%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
+        <%= text_field_tag @field ,@person[params[:field]] , {:helpText => params[:field].humanize, :optional => true, :field_type => "date",tt_onLoad=>"removeUnknown()"} %>
+    <% elsif @field == "person[informant_relationship_to_deceased]" %>
+        <%= select_tag("person[informant_relationship_to_deceased]", options_for_select(['', 'Husband', 'Wife',
                              'Father', 'Mother',
                              'Grandfather', 'Grandmother',
                              'Brother', 'Sister',
@@ -413,7 +434,7 @@
                         {:condition=> "__$('person_informant_relationship_to_deceased').value.match('Other')",
                           :helpText => "Informant's relationship to deceased specify"} %>
         <% elsif @field.include? "informant_current"%>
-        		<%= text_field_tag "person[informant_current_country]",@person[:informant_current_country], {
+            <%= text_field_tag "person[informant_current_country]",@person[:informant_current_country], {
                         :helpText => "Country (<i>Informant's address</i>)<i style='color: red'>*</i>",
                         :ajaxURL => "/countries?search_string="} %>
 
@@ -456,10 +477,10 @@
                         :optional => true,
                         :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'"} %>
         <%elsif @field =="person[informant_address]"%>
-     			<input type="hidden" name="person[informat_current_country]" 
-     					id="person_informant_current_country" 
-     					value="<%= @person.informant_current_country%>" >
-        		<%= text_field_tag "person[informant_addressline1]",@person.informant_addressline1,
+          <input type="hidden" name="person[informat_current_country]" 
+              id="person_informant_current_country" 
+              value="<%= @person.informant_current_country%>" >
+            <%= text_field_tag "person[informant_addressline1]",@person.informant_addressline1,
                         {:helpText => "Informant's Postal address",
                           :placeholder => "e.g P.O. Box 200 Lilongwe",
                           :optional => :true,
@@ -470,15 +491,15 @@
                         :condition => "__$('person_informant_current_country').value.toLowerCase() !='malawi'",
                         :placeholder => "e.g P.O. Box 200 Lilongwe 3 , Malawi"} %>
         <% elsif @field == "person[informant_phone_number]" %>
-        		<%= text_field_tag "person[informant_phone_number]",nil,
+            <%= text_field_tag "person[informant_phone_number]",nil,
                                 {:helpText => "Informant Telephone Number",
                                   :field_type =>"number",
                                   :tt_pageStyleClass => "Numeric NumbersWithUnknown",
                                   :tt_onLoad => "showPhoneSummary()",
                                   :optional => :true }%>
         <%elsif @field =="person[informant_signed]" || @field =="person[informant_signature_date]" %>
-        	<input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
-        	<%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
+          <input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
+          <%= select_tag("person[informant_signed]", options_for_select(['Yes','No'], @person[:informant_signed]),
                         :helpText =>"Informant Signed?",:tt_requireNextClick => false) %>
 
                 <%= text_field_tag "person[informant_signature_date]",nil,
@@ -488,8 +509,8 @@
                           :tt_onLoad =>"removeUnknown()",
                           :tt_onUnLoad => "validateDateInformant()"}%>
         <%elsif @field == "person[headman_verified]"%>
-        	<input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
-        	<%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
+          <input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
+          <%= select_tag("person[headman_verified]", options_for_select(['Yes','No'], @person[:headman_verified]),
                           :helpText =>"Village headman/Block leader signed?",:tt_requireNextClick => false) %>
 
             <%= text_field_tag "person[headman_verification_date]",@person[:headman_verification_date],
@@ -499,8 +520,8 @@
                             :tt_onLoad =>"removeUnknown()",
                             :tt_onUnLoad=> "validateWithDeathDate()"}%>
         <%elsif @field == "person[headman_verified]"%>
-        	<input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
-        	<%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
+          <input type="hidden" id="person_date_of_death" value="<%= @person.date_of_death%>">
+          <%= select_tag("person[church_verified]", options_for_select(['Yes','No'], @person[:church_verified]),
                     :helpText =>"Senior Member of Village/Religious institution signed?",:tt_requireNextClick => false) %>
 
                 <%= text_field_tag "person[church_verification_date]",@person[:church_verification_date],
@@ -533,8 +554,8 @@
                 :tt_onLoad=>"toCapitalCases()", 
                 :validationRule=>"^[a-zA-Z0-9]{8}$", 
                 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
-		<% else %>
- 				<%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
- 		<%end%>
- 		<%= text_field_tag "summary" ,nil, {:helpText => "Summary", :tt_onLoad=>"showModified('Details Summary')"} %>
+    <% else %>
+        <%= text_field_tag @field ,@person[params[:field]], {:helpText => params[:field].humanize, :optional => true} %>
+    <%end%>
+    <%= text_field_tag "summary" ,nil, {:helpText => "Summary", :tt_onLoad=>"showModified('Details Summary')"} %>
 <%end %>
