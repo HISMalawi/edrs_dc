@@ -237,6 +237,16 @@
 
 		<% elsif @field  == "person[father_middle_name]" %>
 
+          <input type="hidden" 
+                name="person[father_first_name]" 
+                id="person_father_first_name" 
+                value="<%= @person.father_first_name %>">
+
+           <input type="hidden" 
+                name="person[father_last_name]" 
+                id="person_father_last_name" 
+                value="<%= @person.father_last_name %>">
+
 					<%= text_field_tag "person[father_middle_name]",nil, 
                           {:helpText => "Father's Other Names",
                             :allowFreeText =>true, 
@@ -263,7 +273,18 @@
                             :tt_onUnLoad=>"validateName('person_mother',4)"} %>
 
 		<% elsif @field  == "person[mother_middle_name]" %>
-                <%= text_field_tag "person[mother_middle_name]",nil, 
+    
+            <input type="hidden" 
+                name="person[mother_first_name]" 
+                id="person_mother_first_name" 
+                value="<%= @person.mother_first_name %>">
+
+           <input type="hidden" 
+                name="person[mother_last_name]" 
+                id="person_mother_last_name" 
+                value="<%= @person.mother_last_name %>">
+
+            <%= text_field_tag "person[mother_middle_name]",nil, 
                           {:helpText => "Mother's Other Names",
                           :allowFreeText =>true, 
                           :optional => true, 
