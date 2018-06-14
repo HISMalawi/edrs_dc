@@ -308,9 +308,20 @@ class Person < CouchRest::Model::Base
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
                 params[:hospital_of_death_id] = health_facility.id rescue nil
-            else
+
+                params[:place_of_death_ta] = ""
+
+                params[:place_of_death_village] = ""
+
+                params[:other_place_of_death] = ""
+
+            elsif params[:place_of_death].downcase.match("home")
 
                 if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
+
+                     params[:hospital_of_death] = ""
+
+                     params[:other_place_of_death] = ""
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
@@ -323,7 +334,10 @@ class Person < CouchRest::Model::Base
                      end
                   
                 end
-
+            else
+                params[:hospital_of_death] = ""
+                params[:place_of_death_ta] = ""
+                params[:place_of_death_village] = ""
             end
 
       end
