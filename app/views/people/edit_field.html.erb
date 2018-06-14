@@ -184,6 +184,10 @@
 	.capitalize{
 		 text-transform: capitalize;
 	}
+  #SHIFT{
+     float: right;
+     display: block;
+  }
 </style>
 <%= form_for @person, :url => '/update_field', :method => :post do |f| %>
   
@@ -331,7 +335,15 @@
                                                      :tt_onLoad=> "removeUnknown()"} %>
 
 		<% elsif @field  == "person[informant_middle_name]" %>
+          <input type="hidden" 
+                name="person[informant_first_name]" 
+                id="person_informant_first_name" 
+                value="<%= @person.informant_first_name %>">
 
+           <input type="hidden" 
+                name="person[informant_last_name]" 
+                id="person_informant_last_name" 
+                value="<%= @person.informant_last_name %>">
 					<%= text_field_tag "person[informant_middle_name]",nil, 
                           {:helpText => "Informant's Other Names",
                           :allowFreeText =>true,
