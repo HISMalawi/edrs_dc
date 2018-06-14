@@ -575,13 +575,13 @@
                 :validationRule=>"^[a-zA-Z0-9]{8}$", 
                 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
     <% elsif @field == "person[father_id_number]" %>
-            <%= text_field_tag "person[mother_id_number]", nil, {
+            <%= text_field_tag "person[father_id_number]", nil, {
                 :helpText => "Fathers's National ID",
                 :tt_onLoad=>"toCapitalCases()", 
                 :validationRule=>"^[a-zA-Z0-9]{8}$", 
                 :validationMessage=> "Nation ID No. is alpha numeric with exaclty 8 characters"}  %>
     <% elsif @field == "person[informant_id_number]" %>
-            <%= text_field_tag "person[mother_id_number]", nil, {
+            <%= text_field_tag "person[informant_id_number]", nil, {
                 :helpText => "Informants's National ID",
                 :tt_onLoad=>"toCapitalCases()", 
                 :validationRule=>"^[a-zA-Z0-9]{8}$", 
