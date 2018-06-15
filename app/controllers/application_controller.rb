@@ -169,6 +169,163 @@ class ApplicationController < ActionController::Base
                     " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +
                     " at #{person.place_of_death_district}"]
   end
+
+  def place_of_death(person)
+    place_of_death = ""
+    case person.place_of_death
+      when "Home"
+          if person.place_of_death_village.present? && person.place_of_death_village.to_s.length > 0
+              place_of_death = person.place_of_death_village
+          end
+          if person.place_of_death_ta.present? && person.place_of_death_ta.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_ta}"
+          end
+          if person.place_of_death_district.present? && person.place_of_death_district.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+          end
+      when "Health Facility"
+          place_of_death = "#{person.hospital_of_death}, #{person.place_of_death_district}"
+      else  
+          place_of_death = "#{person.other_place_of_death}, #{person.place_of_death_district}"
+      end
+
+      if person.place_of_death && person.place_of_death.strip.downcase.include?("facility")
+                 place_of_death = "#{person.hospital_of_death}, #{person.place_of_death_district}"
+      elsif person.place_of_death_foreign && person.place_of_death_foreign.strip.downcase.include?("facility")
+             if person.place_of_death_foreign_hospital.present? && person.place_of_death_foreign_hospital.to_s.length > 0
+                place_of_death  = person.place_of_death_foreign_hospital
+             end
+              
+             if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+             end
+      elsif person.place_of_death_foreign && person.place_of_death_foreign.strip =="Home"
+
+              if person.place_of_death_foreign_village.present? && person.place_of_death_foreign_village.length > 0
+                 place_of_death = person.place_of_death_foreign_village
+              end
+
+              if person.place_of_death_foreign_district.present? && person.place_of_death_foreign_district.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_district}"
+              end
+
+              if person.place_of_death_foreign_state.present? && person.place_of_death_foreign_state.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_state}"
+              end
+
+              if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+              end
+        elsif person.place_of_death_foreign && person.place_of_death_foreign.strip =="Other"
+               if person.other_place_of_death.present? && person.other_place_of_death.to_s.length > 0
+                 place_of_death = person.other_place_of_death
+              end
+
+              if person.place_of_death_foreign_village.present? && person.place_of_death_foreign_village.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_village}"
+              end
+
+              if person.place_of_death_foreign_district.present? && person.place_of_death_foreign_district.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_district}"
+              end
+
+              if person.place_of_death_foreign_state.present? && person.place_of_death_foreign_state.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_state}"
+              end
+
+              if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+              end
+
+      elsif person.place_of_death  && person.place_of_death =="Other"
+                if person.other_place_of_death.present?
+                    place_of_death  = person.other_place_of_death;
+                end
+                if person.place_of_death_district.present?
+                    place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+                end
+      elsif person.place_of_death  && person.place_of_death =="Home"
+          if person.place_of_death_village.present? && person.place_of_death_village.to_s.length > 0
+            if person.place_of_death_village == "Other"
+               place_of_death = person.other_place_of_death_village
+            else
+               place_of_death = person.place_of_death_village
+            end
+             
+          end
+          if person.place_of_death_ta.present? && person.place_of_death_ta.to_s.length > 0
+            if person.place_of_death_ta == "Other"
+                place_of_death = "#{place_of_death}, #{person.other_place_of_death_ta}"
+            else
+                place_of_death = "#{place_of_death}, #{person.place_of_death_ta}"
+            end
+              
+          end
+          if person.place_of_death_district.present? && person.place_of_death_district.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+          end
+
+    end
+    return place_of_death 
+  end
+
+  def person_selective_fields(person)
+
+      den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
+
+      return {
+                      id: person.id,
+                      first_name: person.first_name, 
+                      last_name: person.last_name ,
+                      middle_name:  (person.middle_name rescue ""),
+                      gender: person.gender,
+                      birthdate: person.birthdate,
+                      date_of_death: person.date_of_death,
+                      place_of_death: person.place_of_death,
+                      hospital_of_death:(person.hospital_of_death rescue ""),
+                      other_place_of_death: person.other_place_of_death,
+                      place_of_death_village: (person.place_of_death_village rescue ""),
+                      place_of_death_ta: (person.place_of_death_ta rescue ""),
+                      place_of_death_district: (person.place_of_death_district rescue ""),
+                      mother_first_name: person.mother_first_name,
+                      mother_last_name: person.mother_last_name,
+                      mother_middle_name: person.mother_middle_name,
+                      father_first_name: person.father_first_name,
+                      father_last_name: person.father_last_name,
+                      father_middle_name: person.father_middle_name,
+                      informant_first_name: person.informant_first_name,
+                      informant_last_name: person.informant_last_name,
+                      informant_middle_name: person.informant_middle_name,
+                      home_village: (person.home_village  rescue ""),
+                      home_ta:  (person.home_ta rescue ""),
+                      home_district: (person.home_district rescue ""),
+                      home_country:  ( person.home_country rescue ""),
+                      current_village: (person.current_village  rescue ""),
+                      current_ta:  (person.current_ta rescue ""),
+                      current_district: (person.current_district rescue ""),
+                      current_country:  ( person.current_country rescue ""),
+                      den: (den.identifier rescue ""),
+                      status: (person.status),
+                      nationality: person.nationality,
+                      death_place: place_of_death(person)
+
+                     }
+  end
   protected
 
   def login!(user,portal_link = nil)
@@ -318,7 +475,6 @@ class ApplicationController < ActionController::Base
           #SimpleSQL.query_exec(create_query_den_table)
     end
   end
-
 
   def access_denied
     respond_to do |format|

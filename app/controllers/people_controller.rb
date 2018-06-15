@@ -1081,47 +1081,6 @@ end
 
   end
 
-  def person_selective_fields(person)
-
-      den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
-
-      return {
-                      id: person.id,
-                      first_name: person.first_name, 
-                      last_name: person.last_name ,
-                      middle_name:  (person.middle_name rescue ""),
-                      gender: person.gender,
-                      birthdate: person.birthdate,
-                      date_of_death: person.date_of_death,
-                      place_of_death: person.place_of_death,
-                      hospital_of_death:(person.hospital_of_death rescue ""),
-                      other_place_of_death: person.other_place_of_death,
-                      place_of_death_village: (person.place_of_death_village rescue ""),
-                      place_of_death_ta: (person.place_of_death_ta rescue ""),
-                      place_of_death_district: (person.place_of_death_district rescue ""),
-                      mother_first_name: person.mother_first_name,
-                      mother_last_name: person.mother_last_name,
-                      mother_middle_name: person.mother_middle_name,
-                      father_first_name: person.father_first_name,
-                      father_last_name: person.father_last_name,
-                      father_middle_name: person.father_middle_name,
-                      informant_first_name: person.informant_first_name,
-                      informant_last_name: person.informant_last_name,
-                      informant_middle_name: person.informant_middle_name,
-                      home_village: (person.home_village  rescue ""),
-                      home_ta:  (person.home_ta rescue ""),
-                      home_district: (person.home_district rescue ""),
-                      home_country:  ( person.home_country rescue ""),
-                      current_village: (person.current_village  rescue ""),
-                      current_ta:  (person.current_ta rescue ""),
-                      current_district: (person.current_district rescue ""),
-                      current_country:  ( person.current_country rescue ""),
-                      den: (den.identifier rescue ""),
-                      status: (person.status),
-                      nationality: person.nationality
-                     }
-  end
-
   def create_directory(params)
       NameDirectory.create(name: params[:person][:first_name], soundex: params[:person][:first_name].soundex) rescue nil
       NameDirectory.create(name: params[:person][:last_name], soundex: params[:person][:last_name].soundex) rescue nil

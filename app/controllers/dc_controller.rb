@@ -390,9 +390,30 @@ class DcController < ApplicationController
 	end
 
 	def confirm_duplicate
+		
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC DUPLICATE",params[:comment])
-		Person.void_person(person,params[:user_id])
+
+		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
+			PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+		end
+		
+		audit_record = Audit.find(params[:audit_id])
+		if audit_record.record_id != params[:id]
+			PersonRecordStatus.change_status(Person.find(audit_record.record_id), "DC DUPLICATE",params[:comment])
+			Person.void_person(Person.find(audit_record.record_id),params[:user_id])
+		end
+
+		audit_log = audit_record.change_log rescue []
+
+		audit_log.each do |d|
+			ids = d["duplicates"].split("|")
+			ids.each do |id|
+				next if params[:id] == id
+				PersonRecordStatus.change_status(Person.find(id), "DC DUPLICATE",params[:comment])
+				Person.void_person(Person.find(id),params[:user_id])
+			end
+		end
+		
 		Audit.user = params[:user_id].to_s
 
 		Audit.create({
@@ -403,10 +424,7 @@ class DcController < ApplicationController
 						:reason => params[:comment],
 						:change_log =>[{:audit_id => params[:audit_id]}]
 		})
-
-		if eval(params[:select].to_s)
-			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL",params[:comment])
-		end
+			
 		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 
