@@ -383,9 +383,24 @@ class ApplicationController < ActionController::Base
   end
 
   def check_cron_jobs
+    last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+    job_interval = SETTINGS['ben_assignment_interval']
+    job_interval = 1.5 if job_interval.blank?
+    job_interval = job_interval.to_f
+    now = Time.now
+
+    if (now - last_run_time).to_f > job_interval
+        if SETTINGS['site_type'].to_s != "facility"
+          if (defined? PersonIdentifier.can_assign_den).nil?
+            PersonIdentifier.can_assign_den = true
+          end
+          AssignDen.perform_in(job_interval)
+        end
+        
+    end
 
     process = fork{
-      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_den_assigment"
+      #Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_den_assigment"
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_sync"
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_couch_to_mysql"
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_update_sync"

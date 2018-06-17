@@ -100,6 +100,7 @@ class DcController < ApplicationController
 						unlock_users_record(person)
 					else
 						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+						check_den_assignment
 						unlock_users_record(person)
 					end
 					
@@ -131,6 +132,7 @@ class DcController < ApplicationController
 					     render :text => {:duplicates=> true, :people => existing}.to_json
 					else
 						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+						check_den_assignment
 						unlock_users_record(person)
 						render :text => {marked: true}.to_json
 					end
@@ -364,6 +366,8 @@ class DcController < ApplicationController
 	def confirm_not_duplicate
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+		check_den_assignment
+
 		unlock_users_record(person)
 		Audit.user = params[:user_id].to_s
 		Audit.create({
@@ -395,6 +399,7 @@ class DcController < ApplicationController
 
 		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
 			PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+			check_den_assignment
 		end
 		
 		audit_record = Audit.find(params[:audit_id])
@@ -668,6 +673,22 @@ class DcController < ApplicationController
 		end
 		render :text => people.to_json
 	end
+	def check_den_assignment
+		last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+		job_interval = SETTINGS['ben_assignment_interval']
+		job_interval = 1.5 if job_interval.blank?
+		job_interval = job_interval.to_f
+		now = Time.now
 
+		if (now - last_run_time).to_f > job_interval
+			if SETTINGS['site_type'].to_s != "facility"
+				if (defined? PersonIdentifier.can_assign_den).nil?
+					PersonIdentifier.can_assign_den = true
+				end
+				AssignDen.perform_in(job_interval)
+			end
+					        
+		end
+	end
 	protected
 end
