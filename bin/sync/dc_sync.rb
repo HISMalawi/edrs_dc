@@ -11,14 +11,66 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
-              continuous: true
-                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"]                 
+              continuous: true,
+              filter: 'Person/district_sync',
+                  query_params: {
+                      district_code: "#{district_code}"
+                            }
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"] 
+
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
+              source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              connection_timeout: 60000,
+              retries_per_request: 20,
+              http_connections: 30,
+              continuous: true,
+              filter: 'PersonIdentifier/district_sync',
+                  query_params: {
+                      district_code: "#{district_code}"
+                            }
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"]
+
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
+              source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              connection_timeout: 60000,
+              retries_per_request: 20,
+              http_connections: 30,
+              continuous: true,
+              filter: 'Audit/facility_sync',
+                  query_params: {
+                      site_id: "#{district_code}"
+                            }
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"]  
+
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
+              source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              connection_timeout: 60000,
+              retries_per_request: 20,
+              http_connections: 30,
+              continuous: true,
+              filter: 'Sync/district_sync',
+                  query_params: {
+                      district_code: "#{district_code}"
+                            }
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"] 
+                  
+source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
+              source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              connection_timeout: 60000,
+              retries_per_request: 20,
+              http_connections: 30,
+              continuous: true,
+              filter: 'PersonRecordStatus/district_sync',
+                  query_params: {
+                      district_code: "#{district_code}"
+                            }
+                }.to_json}' "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/_replicate"]             
 
 puts "There are #{person_count } people"
-
-JSON.parse(source_to_target).each do |key, value|
-    puts "#{key.to_s.capitalize} : #{value.to_s.capitalize}"
-end
 
 if hq[:bidirectional] == true
 
