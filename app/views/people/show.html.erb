@@ -160,7 +160,7 @@
   <%else %>
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="unLock()"><span>Back</span></button>
    <%end %>
- <% if !@locked %>
+
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
@@ -233,7 +233,7 @@
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
 	<%end%>
-<%end%>
+
 	<% if @comments.count > 0 %>
 		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
@@ -254,7 +254,7 @@
 <div id="table_container">
 
 		<table id="summary" style="">
-		<% if @locked %>
+		<% if @locked && false %>
 		  <tr>
 		  		<td colspan="6" style="color:red;text-align:center"> <center><b>Record is locked since it is been reviewed by another user please check later</b></center></td>
 		  </tr>

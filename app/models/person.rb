@@ -93,10 +93,7 @@ class Person < CouchRest::Model::Base
   end
 
   def create_stat
-    stat = Statistic.by_person_record_id.key(self.id).first
-    if stat.blank?
-        Statistic.create({:person_record_id => self.id, :date_doc_created => self.created_at.to_time})
-    end
+
   end
 
   #Person methods
@@ -741,99 +738,14 @@ class Person < CouchRest::Model::Base
 
     view :by_source_id
 
-    view :by_created_at
-
-    view :by_updated_at
-
-    view :by_name,
-         :map => "function(doc) {
-                  if (doc['type'] == 'Person') {
-                    emit([doc['first_name_code'], doc['last_name_code']], 1);
-                  }
-                }"
-
-    view :by_name_codes,
-         :map =>"function(doc){
-                    if(doc['type'] == 'Person'){
-                        if(doc['first_name_code'] != null){
-                             emit(doc['first_name_code'], 1);
-                             emit(doc['last_name_code'], 1);
-                        }
-                        if(doc['mother_first_name_code'] != null){
-                            emit(doc['mother_first_name_code'], 1);
-                            emit(doc['mother_last_name_code'], 1);
-                        }
-                        if(doc['father_first_name_code'] != null){
-                            emit(doc['father_first_name_code'], 1);
-                            emit(doc['father_last_name_code'], 1);                          
-                        }
-                        if(doc['father_first_name_code'] != null){
-                            emit(doc['informant_first_name_code'], 1);
-                            emit(doc['informant_last_name_code'], 1);                          
-                        }
-                    }
-                }"
-    view :by_first_name_code
-
-    view :by_last_name_code
-    
-    view :by_approved
-
     view :by_registration_type
 
     view :by_district_code_and_registration_type
 
-    view :by_voided_date
-
-    view :by_district_code_and_voided_date
-
     view :by_id_number
+
     view :by_informant_designation
 
-    view :by_other_ta,
-          :map => "function(doc){
-                  if(doc['type'] == 'Person'){
-                     if(doc['other_current_ta'] != null){
-                          emit(doc['other_current_ta'],1);
-                     }
-                     if(doc['other_home_ta'] != null){
-                          emit(doc['other_home_ta'],1);
-                     }
-                    if(doc['other_place_of_death_ta'] != null){
-                          emit(doc['other_place_of_death_ta'],1);
-                     }
-                  }
-              }"
-
-    view :by_other_villages,
-          :map => "function(doc){
-                    if(doc['type'] == 'Person'){
-                       if(doc['other_current_village'] != null){
-                            emit(doc['other_current_village'],1);
-                       }
-                       if(doc['other_home_village'] != null){
-                            emit(doc['other_home_village'],1);
-                       }
-                      if(doc['other_place_of_death_village'] != null){
-                            emit(doc['other_place_of_death_village'],1);
-                       }
-                    }
-              }"
-
-    view :by_other_home_country,
-          :map => "function(doc){
-                        if(doc['type'] == 'Person'){
-                              if(doc['other_home_country'] != null){
-                                  emit(doc['other_home_country'],1);
-                              }
-                              if(doc['other_current_country'] != null){
-                                  emit(doc['other_current_country'],1);
-                              }
-                              if(doc['other_place_of_death_country'] != null){
-                                  emit(doc['other_place_of_death_country'],1);
-                              }
-                        }
-                  }"
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"

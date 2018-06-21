@@ -25,7 +25,6 @@ class PersonIdentifier < CouchRest::Model::Base
   design do
     view :by__id
     view :by_person_record_id
-    view :by_identifier_type
     view :by_identifier
     view :by_identifier_and_identifier_type
     view :by_site_code
@@ -48,7 +47,6 @@ class PersonIdentifier < CouchRest::Model::Base
                   }
                 }"
     view :by_district_code
-    view :by_creator
     view :by_created_at
     view :by_person_record_id_and_identifier_type
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
@@ -165,18 +163,6 @@ class PersonIdentifier < CouchRest::Model::Base
                          user_id: creator,
                          level: "Person",
                          reason: "Approved record")
-
-          stat = Statistic.by_person_record_id.key(person.id).first
-
-          if stat.present?
-             stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
-          else
-            stat = Statistic.new
-            stat.person_record_id = person.id
-            stat.date_doc_created = person.created_at.to_time
-            stat.date_doc_approved = person.approved_at.to_time
-            stat.save
-          end
 
         end
         self.can_assign_den = true

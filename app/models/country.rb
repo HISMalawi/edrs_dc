@@ -13,7 +13,6 @@ class Country < CouchRest::Model::Base
                     emit(doc['name'], 1);
                   }
                 }"
-	    view :by_phonecode
-      view :by_iso
+      	view :by_iso
 	end
 end

@@ -47,7 +47,6 @@ class User < CouchRest::Model::Base
   design do
     view :by_active
     view :by_username
-    view :by_username_and_active
     view :by_role
     view :by_created_at
     view :by_updated_at

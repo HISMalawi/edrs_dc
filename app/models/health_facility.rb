@@ -17,8 +17,6 @@ class HealthFacility < CouchRest::Model::Base
       view :by__id
       view :by_name
       view :by_facility_code
-      view :by_facility_type
-      view :by_f_type
       view :by_district_id,
            :map=>"function(doc){
                     if(doc.type == 'HealthFacility' && doc.name.length > 0){
@@ -26,7 +24,6 @@ class HealthFacility < CouchRest::Model::Base
                     }
            }"
       view :by_district_id_and_name
-      view :by_zone
       view :by_latitude_and_longitude
   end
   

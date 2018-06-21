@@ -133,13 +133,6 @@ class PeopleController < ApplicationController
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil? 
 
-            PersonIdentifier.create({
-                                      :person_record_id => person.id.to_s,
-                                      :identifier_type => "Form Barcode", 
-                                      :identifier => person_params[:barcode].to_s,
-                                      :site_code => SETTINGS['site_code'],
-                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
-                                      :creator => User.current_user.id})
             Barcode.create({
                               :person_record_id => person.id.to_s,
                               :barcode => person_params[:barcode].to_s,
@@ -456,7 +449,7 @@ class PeopleController < ApplicationController
     end
     if params[:barcode].present?
    
-      PersonIdentifier.by_identifier.key(params[:barcode]).page(page).per(size).each do |pid|
+      Barcode.by_barcode.key(params[:barcode]).page(page).per(size).each do |pid|
         
           person = pid.person
 
@@ -925,13 +918,9 @@ class PeopleController < ApplicationController
 
   def search_barcode
       if params[:barcode].present?
-        barcode = Barcode.find(params[:barcode]) 
-
+        barcode = Barcode.by_barcode.key(params[:barcode]).last
         if barcode.present?
-            id = nil
-            if PersonIdentifier.by_identifier.key(params[:barcode]).first.present?
-              id = PersonIdentifier.by_identifier.key(params[:barcode]).first.person_record_id
-            end
+            id = barcode.person_record_id
             render :text => {:response =>  true, :id => id}.to_json
         else
            render :text => {:response => false}.to_json
