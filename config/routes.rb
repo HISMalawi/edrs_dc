@@ -363,6 +363,8 @@ Rails.application.routes.draw do
 
   get "/people/view_datatable"
 
+  get "/dc/cause_of_death_dispatch"
+
 ##############################################################################################################################
 
   resources :users

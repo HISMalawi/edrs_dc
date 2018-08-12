@@ -104,7 +104,17 @@
                                     <%end%>
 
                                 <%end%>
+                                <%= if @facility_type.upcase == "DC" %>
+                                    <div class="touch_btn" onmousedown="window.location = '/dc/cause_of_death_dispatch';" >
+                                        <div class="icon">
+                                               <i class="fa fa-folder"></i>
+                                        </div>
+                                        <div class="button_label">CCU Dispatch</div>
+                                        <div class="button_description">  Manage own account.</div>
 
+                                      
+                                    </div>
+                                <%end %>
                                 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/my_account';" >

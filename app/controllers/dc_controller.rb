@@ -34,6 +34,10 @@ class DcController < ApplicationController
 		
 	end
 
+	def cause_of_death_dispatch
+		@section = "CCU Dispatch"		
+	end
+
 
 	def manage_cases
 
