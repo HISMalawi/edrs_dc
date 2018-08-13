@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
+<div id="table_container">
+
+    <table id="records_table">
+        <thead>
+          <tr>
+            <th>
+              #
+            </th>
+            <th>
+              No. of Record
+            </th>
+            <th>
+              Date dispatched created
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table_body">
+          
+        </tbody>
+    </table>
+</div>
+<button class="blue" style="position:absolute;right:2%;bottom:5%" onclick="window.location='/dc/manage_ccu_dispatch'">Back</button>
+<%= render :partial => "landing_resize" %>
+<script>
+  var datatable;
+  datatable = $("#records_table").dataTable({
+                  "lengthChange": false,
+                  "pageLength": 6,
+                  "order": [[ 0, "asc" ]],
+                  "bInfo": false,
+                  "autoWidth": true
+   });
+
+  var page = 1;
+
+  var database_empty = false;
+
+  var increment = 1 ;
+  function addRow() {
+    if (!database_empty) {
+        $.getJSON("/dc/ccu_dispatches?page="+page,function(data){
+          if (data.length == 0) {
+              database_empty = true
+          }else{
+              for (var i =0; i < data.length; i++) {
+                datatable.api().row.add([increment,data[i].dispatch.length,data[i].created_at]).draw();
+                increment++
+              }
+              page = page + 1
+              addRow();
+          }
+
+      });
+    }else{
+      return;      
+    }
+  }
+
+  addRow();
+</script>
+

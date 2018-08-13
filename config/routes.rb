@@ -130,6 +130,8 @@ Rails.application.routes.draw do
 
   get "/people/find/:id" =>"people#find"
 
+  get "/find_by_barcode/:barcode" => "people#find_by_barcode"
+
   get "/people/new_person_type" => "people#new_person_type"
 
   get "/people/register_special_cases" =>"people#register_special_cases"
@@ -137,6 +139,14 @@ Rails.application.routes.draw do
   post "/search_barcode" => "people#search_barcode"
 
   get "/search_barcode" => "people#search_barcode"
+
+  post "/dispatch_barcodes" =>"dc#dispatch_barcodes"
+
+  get "/dc/manage_ccu_dispatch"
+
+  get "/dc/view_ccu_dispatch"
+
+  get "/dc/ccu_dispatches"
 
   post "/find_identifier" =>"people#find_identifier"
 

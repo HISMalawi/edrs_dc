@@ -558,9 +558,15 @@ class PeopleController < ApplicationController
       end
   end
   def find
-      person = Person.find(params[:id])
-      person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
-      render :text => person_selective_fields(person).to_json
+    person = Person.find(params[:id])
+    person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
+    render :text => person_selective_fields(person).to_json
+  end
+
+  def find_by_barcode
+    barcode = Barcode.by_barcode.key(params[:barcode]).first
+    person = barcode.person
+    render :text => person_selective_fields(person).to_json    
   end
 
   def edit

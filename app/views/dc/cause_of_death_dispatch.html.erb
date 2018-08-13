@@ -1,3 +1,4 @@
+<script src="/javascripts/jquery.js" type="text/javascript"></script>
 <style type="text/css">
   .dispatch{
       width: 100%;
@@ -39,7 +40,7 @@
             <thead>
                   <tr>
                       <th style="width:50%">Barcode</th>
-                      <th  style="width:50%">Death Entry Number</th>
+                      <th  style="width:50%">Name</th>
                   </tr>
             </thead>
         </table>
@@ -49,8 +50,8 @@
         </table>          
         </div>
     </div>
-
-    <button class="green" style="position:absolute;right:3%;bottom:10%">Done</button>                       
+    <button id="finish" class="gray" style="position:absolute;right:10%;bottom:10%">Finish</button> 
+    <button class="blue" style="position:absolute;right:3%;bottom:10%" onclick="window.location='/dc/manage_ccu_dispatch'">Back</button>                       
 </div>
 <%= render :partial => "landing_resize" %>
 <script type="text/javascript">
@@ -74,16 +75,42 @@
         }
       }
 
+      var barcodes = [];
+
       function addRow(value){
-          var table = __$("dispatches");
-          var tr = document.createElement("tr");
-          var td = document.createElement("td");
-          td.innerHTML = "XXXXXXXXXX";
-          tr.appendChild(td);
-          var td = document.createElement("td");
-          td.innerHTML = value;
-          tr.appendChild(td);
-          table.appendChild(tr);
+          var button = __$("finish");
+          button.className = "green";
+          button.setAttribute("onclick","postBarcords()");
+          console.log(button.className);
+          $.getJSON("/find_by_barcode/"+value, function(data){
+            if (barcodes.indexOf(value) >= 0 ) {
+
+            }else{
+              barcodes.push(value);
+              var table = __$("dispatches");
+              var tr = document.createElement("tr");
+
+              var td = document.createElement("td");
+              td.innerHTML = value;
+              tr.appendChild(td);
+
+              var td = document.createElement("td");
+              td.innerHTML = data.first_name + " "+ data.last_name;
+              tr.appendChild(td);            
+              table.appendChild(tr);
+            }
+
+          });
+
+      }
+
+
+      function postBarcords(){
+        $.post("/dispatch_barcodes",{"barcodes[]": barcodes },function(data){
+              if (data == "ok") {
+                window.location = "/"
+              }
+        });
       }
 
       function clearBarcode(){
