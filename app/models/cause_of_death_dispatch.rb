@@ -10,7 +10,7 @@ class CauseOfDeathDispatch < CouchRest::Model::Base
     	view :by_creator
     	view :by_district_code
     	view :by_created_at
-    	filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
+		filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
     end
 
    	def set_district_code
