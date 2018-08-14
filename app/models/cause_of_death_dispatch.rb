@@ -1,5 +1,5 @@
 class CauseOfDeathDispatch < CouchRest::Model::Base
-	before_save :set_district_code
+	before_save :set_district_code,:set_creator
 	property :dispatch,[]
 	property :received,[]
 	property :district_code, String
