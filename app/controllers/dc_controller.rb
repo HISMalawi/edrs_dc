@@ -34,9 +34,30 @@ class DcController < ApplicationController
 		
 	end
 
+	def cause_of_death_dispatch
+		@section = "CCU Dispatch"		
+	end
+
+	def dispatch_barcodes
+		cause_of_death_dispatch = CauseOfDeathDispatch.create({dispatch: params[:barcodes]})
+		flash[:notice] = "CCU Dispatch Saved"
+		render :text => "ok"
+	end
+
+	def manage_ccu_dispatch
+		@section = "Manage CCU Dispatch"
+		@next_url = "/"
+	end
+
+	def view_ccu_dispatch
+		@section = "CCU Dispatch"
+	end
+
+	def ccu_dispatches
+		render :text => CauseOfDeathDispatch.by_created_at.page(params[:page]).per(20).each.to_json
+	end
 
 	def manage_cases
-
 		@section = "Manage Cases"
 
 		render :layout => "landing"

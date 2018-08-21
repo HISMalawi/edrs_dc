@@ -515,6 +515,21 @@ class PeopleController < ApplicationController
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
+      if @status.status.blank?
+        last_status = PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|d| d.created_at}.last
+        
+        states = {
+                    "DC ACTIVE" =>"DC COMPLETE",
+                    "DC COMPLETE" => "MARKED APPROVAL"
+                 }
+        if states[last_status.status].blank?
+          PersonRecordStatus.change_status(@person, "DC COMPLETE")
+        else  
+          PersonRecordStatus.change_status(@person, states[last_status.status])
+        end   
+        redirect_to request.fullpath and return
+      end
+
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
       elsif @status.status.include?("DUPLICATE")
@@ -558,9 +573,15 @@ class PeopleController < ApplicationController
       end
   end
   def find
-      person = Person.find(params[:id])
-      person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
-      render :text => person_selective_fields(person).to_json
+    person = Person.find(params[:id])
+    person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
+    render :text => person_selective_fields(person).to_json
+  end
+
+  def find_by_barcode
+    barcode = Barcode.by_barcode.key(params[:barcode]).first
+    person = barcode.person
+    render :text => person_selective_fields(person).to_json    
   end
 
   def edit
