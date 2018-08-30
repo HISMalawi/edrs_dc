@@ -289,6 +289,24 @@ class ApplicationController < ActionController::Base
 
       den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
 
+      if PersonRecordStatus.by_person_recent_status.key(person.id).last.present?
+        status = PersonRecordStatus.by_person_recent_status.key(person.id).last.status
+      else
+        last_status = PersonRecordStatus.by_person_record_id.key(person.id).each.sort_by{|d| d.created_at}.last
+        
+        states = {
+                    "DC ACTIVE" =>"DC COMPLETE",
+                    "DC COMPLETE" => "MARKED APPROVAL",
+                    "MARKED APPROVAL" => "MARKED APPROVAL"
+                 }
+        if states[last_status.status].blank?
+          PersonRecordStatus.change_status(person, "DC COMPLETE")
+        else  
+          PersonRecordStatus.change_status(person, states[last_status.status])
+        end  
+          status = PersonRecordStatus.by_person_recent_status.key(person.id).last.status
+      end
+
       return {
                       id: person.id,
                       first_name: person.first_name, 
@@ -321,7 +339,7 @@ class ApplicationController < ActionController::Base
                       current_district: (person.current_district rescue ""),
                       current_country:  ( person.current_country rescue ""),
                       den: (den.identifier rescue ""),
-                      status: (person.status),
+                      status: status,
                       nationality: person.nationality,
                       death_place: place_of_death(person)
 
