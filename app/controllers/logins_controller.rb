@@ -62,21 +62,29 @@ class LoginsController < ApplicationController
         login!(user,params[:remote_portal])
 
         if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
-           if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
+          
+           if user.role =="System Administrator"
+            redirect_to "/" and return 
+           end
+
+           if user.password_attempt >= 5
              logout!
              flash[:error] = 'Your password has expired.Please contact your System Administrator.'
              redirect_to "/", referrer_param => referrer_path and return
            else
+             @password_attempt = user.password_attempt
              user.update_attributes(:password_attempt => user.password_attempt + 1)
-             flash[:error] = 'Your password has expired.Please change it!!!'
+
+             flash[:error] = 'Your password has expired.Please change it!!! or you will be logged out'
              redirect_to "/change_password" and return
            end
         else
-        
-           if (Time.now.to_date - user.last_password_date.to_date).to_i >= 85 && (Time.now.to_date - user.last_password_date.to_date).to_i < 90
-           		flash[:info] = 'Your password will expire soon. Please change it.'
+          
+           if user.role !="System Administrator"
+             if (Time.now.to_date - user.last_password_date.to_date).to_i >= 85 && (Time.now.to_date - user.last_password_date.to_date).to_i < 90
+             		flash[:info] = 'Your password will expire soon. Please change it.'
+             end
            end
-
            redirect_to default_path and return
         end   
       else
