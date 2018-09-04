@@ -509,6 +509,8 @@ class UsersController < ApplicationController
 
     @user = User.current_user
 
+     @password_attempt = @user.password_attempt
+
     render :layout => "touch"#false#render :layout => "facility"
 
   end
