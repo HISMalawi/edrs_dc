@@ -73,6 +73,7 @@
 				    <%= (f.hidden_field :birthdate) rescue "" %>
 
 				    <%= f.hidden_field :birthdate_estimated rescue "" %>
+            <input type="hidden" name="person[date_of_death]" id="person_date_of_death" value="<%= @person.date_of_death.to_s %>">
 	<% elsif @field  == "person[gender]" %>
 					<input type="hidden" name="prev[gender]" value="<%= @person.gender %>">
 					<%= select_tag("person[gender]",options_for_select([" ", "Female", "Male"], @person[:gender]),:helpText =>"Gender") %>
