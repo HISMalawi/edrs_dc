@@ -23,8 +23,8 @@ class Person < CouchRest::Model::Base
   #before_save :encrypt_data
 
   before_save :set_facility_code,:set_district_code
-  #after_save :insert_update_into_mysql
-  after_create :create_stat #, :insert_update_into_mysql
+  after_save :insert_update_into_mysql
+  after_create :create_stat, :insert_update_into_mysql
 
   cattr_accessor :duplicate
   
@@ -437,10 +437,14 @@ class Person < CouchRest::Model::Base
     fields  = self.keys.sort
     sql_record = Record.where(person_id: self.id).first
     sql_record = Record.new if sql_record.blank?
+    
     fields.each do |field|
       next if field == "type"
       next if field == "_rev"
       next if field == "source_id"
+      if field =="voided"
+          sql_record["voided"] =  (self.voided == true ? 1 : 0)
+      end
       if field =="_id"
           sql_record["person_id"] = self[field]
       else
@@ -735,17 +739,6 @@ class Person < CouchRest::Model::Base
 
   design do
     view :by__id
-
-    view :by_source_id
-
-    view :by_registration_type
-
-    view :by_district_code_and_registration_type
-
-    view :by_id_number
-
-    view :by_informant_designation
-
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"

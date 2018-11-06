@@ -2,7 +2,8 @@ require 'couchrest_model'
 
 class User < CouchRest::Model::Base
   
-  after_create :create_audit
+  after_create :create_audit, :insert_update_into_mysql
+  after_save :insert_update_into_mysql
 
   before_save :set_site
 
@@ -196,4 +197,20 @@ class User < CouchRest::Model::Base
     Audit.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
   end
   
+  def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = UserModel.where(user_id: self.id).first
+      sql_record = UserModel.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        if field =="_id"
+            sql_record["user_id"] = self[field]
+        else
+            sql_record[field] = self[field]
+        end
+
+      end
+      sql_record.save
+  end
 end

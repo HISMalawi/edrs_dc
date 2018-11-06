@@ -192,7 +192,7 @@
 	function changeFocusToMe(element){
 
 	}
-	var page = 1 ;
+	var page = 0 ;
 
 	var estimatesize = 0;
 	var table = __$("table_body");
@@ -424,7 +424,7 @@
 
 								button.style.width = "90%";
 
-								button.setAttribute("onclick","window.location = '/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>?page="+page+"'");
+								button.setAttribute("onclick","window.location = '/people/view/" +(data[i]["person_id"]? data[i]["person_id"] : data[i]["_id"])+"?next_url=<%= @next_url%>?page="+page+"'");
 
 								td.appendChild(button);
 
@@ -588,7 +588,9 @@
 
 					var informant = data[i].informant_first_name +" " + data[i].informant_last_name
 
-					var link = "window.location = \"/people/view/" +(data[i]["_id"]? data[i]["_id"] : data[i]["id"])+"?next_url=<%= @next_url%>\"";
+
+
+					var link = "window.location = \"/people/view/" +(data[i]["person_id"]? data[i]["person_id"] : data[i]["_id"])+"?next_url=<%= @next_url%>\"";
 
 					var button = "<button class='blue' onclick='"+link+"'><span>View</span></button>"
 
