@@ -86,92 +86,11 @@ class DcController < ApplicationController
 
 
 	def approve_record
-
 		person = Person.find(params[:id])
-
-
-		if record_complete?(person)
-			   duplicate = nil
-			   record = {}
-	           record["first_name"] = person.first_name
-	           record["last_name"] = person.last_name
-	           record["middle_name"] = (person.middle_name rescue nil)
-	           record["gender"] = person.gender
-	           record["place_of_death_district"] = person.place_of_death_district
-	           record["birthdate"] = person.birthdate
-	           record["date_of_death"] = person.date_of_death
-	           record["mother_last_name"] = (person.mother_last_name rescue nil)
-	           record["mother_middle_name"] = (person.mother_middle_name rescue nil)
-	           record["mother_first_name"] = (person.mother_first_name rescue nil)
-	           record["father_last_name"] = (person.father_last_name rescue nil)
-	           record["father_middle_name"] = (person.father_middle_name rescue nil)
-	           record["father_first_name"] = (person.father_first_name rescue nil)
-	           record["id"] = person.id
-	           record["district_code"] =  (person.district_code rescue SETTINGS["district_code"])
-
-	           if SETTINGS["potential_duplicate"]
-	           		duplicate =   SimpleElasticSearch.query_duplicate_coded(record,SETTINGS['duplicate_precision'])
-	           end
-				
-			   if duplicate.blank?  ||  true
-					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-					if status.status =="HQ REJECTED"
-						PersonRecordStatus.change_status(person, "DC REAPPROVED")
-						unlock_users_record(person)
-					else
-						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-						check_den_assignment
-						unlock_users_record(person)
-					end
-					
-					#Audit.create({:record_id => params[:id].to_s,:audit_type=>"DC APPROVED",:level => "Person",:reason => "Approve record"})
-					render :text => {marked: true}.to_json
-				else
-					can_mark_as_potential_duplicate = false
-
-					existing = []
-					ids = []
-					duplicate.each do |dup| 
-					 	if dup[0] != params[:id]
-					 		existing << dup
-					 		ids << dup[0]
-					 		dup_status = Person.find(dup[0]).status rescue ""
-					 		can_mark_as_potential_duplicate = true if dup_status !="DC POTENTIAL DUPLICATE"
-					 	end
-					end
-					if can_mark_as_potential_duplicate 
-						change_log = [{:duplicates => ids.to_s}]
-						Audit.create({
-	                      :record_id  => person.id.to_s,
-	                      :audit_type => "POTENTIAL DUPLICATE",
-	                      :reason     => "Record is a potential",
-	                      :change_log => change_log
-					     })
-					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE","Record is a potential")
-					     unlock_users_record(person)
-					     render :text => {:duplicates=> true, :people => existing}.to_json
-					else
-						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-						check_den_assignment
-						unlock_users_record(person)
-						render :text => {marked: true}.to_json
-					end
-				end
-			    #redirect_to "#{params[:next_url].to_s}"
-
-		else
-			PersonRecordStatus.change_status(person, "DC INCOMPLETE","Approve record not successful")
-			Audit.create({
-				:record_id => params[:id].to_s    , 
-				:audit_type=>"DC INCOMPLETE",
-				:level => "Person",
-				:reason => "Approve record not successful"})
-			unlock_users_record(person)
-			render :text => {incomplete: true}.to_json
-				#redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
-		end
-		
+		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+	    check_den_assignment
+		unlock_users_record(person)
+		render :text => {marked: true}.to_json	
 	end
 
 	def check_approval_status
@@ -711,5 +630,15 @@ class DcController < ApplicationController
 					        
 		end
 	end
+
+	#Decentralize printing
+	def print_certificates
+		@section = "Print Certificates"
+		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED"]
+		@next_url = "/dc/print_certificates"
+		@den = true 
+		render :template =>"/people/view"		
+	end
+
 	protected
 end

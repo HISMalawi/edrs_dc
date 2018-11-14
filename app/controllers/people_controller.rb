@@ -318,7 +318,7 @@ class PeopleController < ApplicationController
     people = []
     record_status = []
 
-
+    
     RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
       
       person = Record.find(status.person_record_id) rescue nil
