@@ -211,7 +211,7 @@ EOF
           if statement[:data].to_s.match(/"/)
             sql_statement += "'" + "#{statement[:data].gsub(/([\\])/, '')}" + "',"
           else
-            sql_statement += '"' + "#{statement[:data].gsub(/([\\])/, ''}" + '",'
+            sql_statement += '"' + "#{statement[:data].gsub(/([\\])/, '')}" + '",'
           end
         end
       end

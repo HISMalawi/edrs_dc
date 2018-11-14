@@ -314,7 +314,7 @@ class PeopleController < ApplicationController
      
     status = params[:statuses]
     page = params[:page] rescue 0
-    size = params[:size] rescue 7
+    size = params[:size] rescue 40
     people = []
     record_status = []
 
@@ -446,7 +446,7 @@ class PeopleController < ApplicationController
 
     status = params[:status]
     page = params[:page] rescue 1
-    size = params[:size] rescue 7
+    size = params[:size] rescue 40
     people = []
 
     if params[:death_entry_number].present?
@@ -529,7 +529,7 @@ class PeopleController < ApplicationController
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
-      if @status.status.blank?
+      if @status.blank? || @status.status.blank?
         last_status = PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|d| d.created_at}.last
         if last_status.blank?
           PersonRecordStatus.change_status(@person, "DC ACTIVE")
@@ -537,7 +537,8 @@ class PeopleController < ApplicationController
         end
         states = {
                     "DC ACTIVE" =>"DC COMPLETE",
-                    "DC COMPLETE" => "MARKED APPROVAL"
+                    "DC COMPLETE" => "MARKED APPROVAL",
+                    "MARKED APPROVAL" => "HQ ACTIVE"
                  }
 
         if states[last_status.status].blank?
@@ -989,7 +990,7 @@ class PeopleController < ApplicationController
   
   def query_dc_sync
     page = params[:page] rescue 1
-      size = params[:size] rescue 7
+      size = params[:size] rescue 40
       people = []
     Sync.by_facility_code.key(SETTINGS['facility_code'].to_s).page(page).per(size).each do |sync|
       person = sync.person
@@ -1023,7 +1024,7 @@ class PeopleController < ApplicationController
 
   def query_registration_type
       page = params[:page] rescue 1
-      size = params[:size] rescue 7
+      size = params[:size] rescue 40
       render :text => Person.by_district_code_and_registration_type.key([User.current_user.district_code,params[:registration_type]]).page(page).per(size).each.to_json
   end
 
@@ -1040,7 +1041,7 @@ end
 ################## Query Specail case and their status###################################################################
   def query_registration_type_and_printed
       page = params[:page] rescue 1
-      size = params[:size] rescue 7
+      size = params[:size] rescue 40
       keys = []
       special_cases = ["Abnormal Deaths","Unclaimed bodies","Missing Persons","Deaths Abroad"]
       special_cases.each do |special_case|

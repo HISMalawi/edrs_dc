@@ -308,6 +308,7 @@ class ApplicationController < ActionController::Base
       end
 
       return {
+                      _id: person.id,
                       id: person.id,
                       first_name: person.first_name, 
                       last_name: person.last_name ,
@@ -331,11 +332,15 @@ class ApplicationController < ActionController::Base
                       informant_last_name: person.informant_last_name,
                       informant_middle_name: person.informant_middle_name,
                       home_village: (person.home_village  rescue ""),
+                      other_home_village: (person.other_home_village  rescue ""),
                       home_ta:  (person.home_ta rescue ""),
+                      other_home_ta:  (person.other_home_ta rescue ""),
                       home_district: (person.home_district rescue ""),
                       home_country:  ( person.home_country rescue ""),
                       current_village: (person.current_village  rescue ""),
+                      other_current_village: (person.other_current_village  rescue ""),
                       current_ta:  (person.current_ta rescue ""),
+                      other_current_ta:  (person.other_current_ta rescue ""),
                       current_district: (person.current_district rescue ""),
                       current_country:  ( person.current_country rescue ""),
                       den: (den.identifier rescue ""),
