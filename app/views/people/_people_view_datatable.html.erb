@@ -359,7 +359,9 @@
 										if (data[i].current_village == "Unknown"){
 											 
 										}else if (data[i].current_village == "Other"){
+
 											physical_village_ta = data[i].other_current_village
+
 
 										}else if (data[i].current_village != null && data[i].current_village.length > 0){
 											physical_village_ta = data[i].current_village
@@ -368,11 +370,14 @@
 										if (data[i].current_ta == "Unknown"){
 											 
 										}else if (data[i].current_ta == "Other"){
-											physical_village_ta = (physical_village_ta.length > 0 ?physical_village_ta +"," : "")+ data[i].other_current_ta
+											physical_village_ta = ( physical_village_ta != null && physical_village_ta.length > 0 ?physical_village_ta +"," : "")+ data[i].other_current_ta
+
 
 										}else if (data[i].current_ta != null && data[i].current_ta.length > 0){
-											physical_village_ta = (physical_village_ta.length > 0 ? physical_village_ta +"," : "")+ data[i].current_ta
+											physical_village_ta = (physical_village_ta != null && physical_village_ta.length > 0 ? physical_village_ta +"," : "")+ data[i].current_ta
 										}
+
+
 
 											td.innerHTML =  (physical_village_ta.length > 0 ? physical_village_ta +"," : "") +data[i].current_district;
 										}
@@ -447,7 +452,10 @@
     						search.setAttribute("onblur","__$('keyboardcontainer').style.visibility='hidden'")
     						setTimeout(function(){
     							page = page + 1
-    							addRows(page);
+    							if(data.length == 40){
+    								addRows(page);
+    							}
+    							
     						},1000);
     					
 
@@ -559,12 +567,19 @@
 										if (data[i].current_ta == "Unknown"){
 											 
 										}else if (data[i].current_ta == "Other"){
-											physical_village_ta = (physical_village_ta.length > 0 ?physical_village_ta +"," : "")+ data[i].other_current_ta
+
+											physical_village_ta = ( physical_village_ta != null && physical_village_ta.length > 0 ?physical_village_ta +"," : "")+ data[i].other_current_ta
 
 										}else if (data[i].current_ta != null && data[i].current_ta.length > 0){
-											physical_village_ta = (physical_village_ta.length > 0 ? physical_village_ta +"," : "")+ data[i].current_ta
+											physical_village_ta = ( physical_village_ta != null && physical_village_ta.length > 0 ? physical_village_ta +"," : "")+ data[i].current_ta
 										}
-										physical_address =  (physical_village_ta.length > 0 ? physical_village_ta + "," : "") + data[i].current_district;
+										if (physical_village_ta ===undefined || physical_village_ta == null ) {
+											 physical_address = (data[i].current_district? data[i].current_district : "")
+
+										}else{
+											physical_address =  (physical_village_ta.length > 0 ? physical_village_ta + "," : "") + (data[i].current_district? data[i].current_district : "");
+										}											
+										
 									}
 									else{
 										var address = "";
@@ -582,6 +597,7 @@
 										}									
 										physical_address =  (data[i].current_country && data[i].current_country != 'Other'? data[i].current_country :  data[i].other_current_country) +address
 									}
+									console.log(data[i]["person_id"])
 					}else{
 
 					}

@@ -86,10 +86,15 @@ class DcController < ApplicationController
 
 
 	def approve_record
-		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-	    check_den_assignment
-		unlock_users_record(person)
+		p1 = fork { 
+			person = Person.find(params[:id])
+			PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+		    check_den_assignment
+			unlock_users_record(person)
+		}
+
+		Process.detach(p1)
+		
 		render :text => {marked: true}.to_json	
 	end
 
