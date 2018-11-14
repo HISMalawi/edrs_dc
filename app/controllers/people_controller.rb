@@ -313,11 +313,25 @@ class PeopleController < ApplicationController
   def search_by_status
      
     status = params[:statuses]
-    page = params[:page] rescue 1
+    page = params[:page] rescue 0
     size = params[:size] rescue 7
     people = []
     record_status = []
 
+    
+    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
+      
+      person = Record.find(status.person_record_id) rescue nil
+      next if person.nil?
+      den = person.get_den rescue ""
+      drn = person.get_drn rescue ""
+      person = person.as_json
+      person["den"] = den
+      person["drn"] = drn
+      people << person 
+    end
+
+=begin
     if SETTINGS['site_type'] == "remote"
      
       statuses = params[:statuses]
@@ -358,7 +372,7 @@ class PeopleController < ApplicationController
         end
        
     end
-    
+=end    
     render  :text => people.to_json
   end
 

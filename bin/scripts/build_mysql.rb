@@ -209,9 +209,9 @@ EOF
           sql_statement += '"' + "#{statement[:data].to_time.strftime('%Y-%m-%d %H:%M:%S')}" + '",'
         else
           if statement[:data].to_s.match(/"/)
-            sql_statement += "'" + "#{statement[:data]}" + "',"
+            sql_statement += "'" + "#{statement[:data].gsub(/([\\])/, '')}" + "',"
           else
-            sql_statement += '"' + "#{statement[:data]}" + '",'
+            sql_statement += '"' + "#{statement[:data].gsub(/([\\])/, ''}" + '",'
           end
         end
       end

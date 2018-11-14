@@ -1,8 +1,8 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_district_code,:set_check_digit
-  #after_create :insert_update_into_mysql
-  #after_save :insert_update_into_mysql
+  after_create :insert_update_into_mysql
+  after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
   cattr_accessor :can_assign_drn
 
@@ -127,7 +127,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
     den_assigned_to_person = PersonIdentifier.by_identifier.key(new_den).first
 
-    person_assigened_den =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
+    person_assigened_den =  RecordIdentifier.where("person_record_id = '#{person.id.to_s}' AND identifier_type='DEATH ENTRY NUMBER'").first.identifier rescue nil
 
     if self.can_assign_den && person_assigened_den.blank? && den_assigned_to_person.blank?
         self.can_assign_den = false

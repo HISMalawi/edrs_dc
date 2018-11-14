@@ -3,7 +3,7 @@ class AssignDen
   workers 1
 
   def perform()
-    queue = PersonRecordStatus.by_marked_for_approval.each
+    queue = RecordStatus.where("status = 'MARKED APPROVAL' AND voided = 0 ").each
     job_interval = SETTINGS['den_assignment_interval']
     job_interval = 1.5 if job_interval.blank?
     job_interval = job_interval.to_f

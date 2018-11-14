@@ -99,7 +99,7 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.1)
     multi_json (1.12.2)
-    mysql2 (0.3.16)
+    mysql2 (0.3.21)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     passenger (4.0.53)
@@ -195,7 +195,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   mac-address
-  mysql2 (= 0.3.16)
+  mysql2 (~> 0.3.21)
   passenger (= 4.0.53)
   rails (= 4.1.15)
   rake (= 10.3.2)
@@ -216,4 +216,4 @@ DEPENDENCIES
   whitesimilarity
 
 BUNDLED WITH
-   1.16.1
+   1.16.6
