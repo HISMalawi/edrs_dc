@@ -640,9 +640,26 @@ class DcController < ApplicationController
 	def print_certificates
 		@section = "Print Certificates"
 		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED"]
+		@available_printers = SETTINGS["printer_name"].split(',')
 		@next_url = "/dc/print_certificates"
 		@den = true 
-		render :template =>"/people/view"		
+		render :template =>"/dc/default_batch"		
+	end
+
+	def search_records_to_print
+		status = params[:statuses]
+	    page = params[:page] rescue 0
+	    size = params[:size] rescue 40
+	    people = []
+	    record_status = []
+
+	    
+	    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(size.to_i).offset(page.to_i  * size.to_i).each do |status|
+	      
+	      person = Record.find(status.person_record_id) rescue nil
+ 		  people << fields_for_data_table(person)
+	    end
+	    render :text => people.to_json
 	end
 
 	protected

@@ -285,6 +285,20 @@ class ApplicationController < ActionController::Base
     return place_of_death 
   end
 
+  def fields_for_data_table(person)
+
+      return {
+          drn: (person.drn rescue nil),
+          den: (person.den rescue nil),
+          name: "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name}",
+          gender:     person.gender,
+          dob:        person.birthdate.strftime("%d/%b/%Y"),
+          dod:        person.date_of_death.strftime("%d/%b/%Y"),
+          place_of_death: place_of_death(person),
+          person_id:  person.id
+        }
+  end
+
   def person_selective_fields(person)
 
       den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
@@ -297,9 +311,11 @@ class ApplicationController < ActionController::Base
         states = {
                     "DC ACTIVE" =>"DC COMPLETE",
                     "DC COMPLETE" => "MARKED APPROVAL",
-                    "MARKED APPROVAL" => "MARKED APPROVAL"
+                    "MARKED APPROVAL" => "HQ ACTIVE"
                  }
-        if states[last_status.status].blank?
+        if last_status.blank?
+           PersonRecordStatus.change_status(person, "DC ACTIVE")
+        elsif states[last_status.status].blank?
           PersonRecordStatus.change_status(person, "DC COMPLETE")
         else  
           PersonRecordStatus.change_status(person, states[last_status.status])

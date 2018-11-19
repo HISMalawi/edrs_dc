@@ -1,19 +1,16 @@
 class Record < ActiveRecord::Base
-	attr_accessor :den
-	attr_accessor :_id
-	attr_accessor :drn
-	attr_accessor :barcode
+
 	self.table_name = "people"
 
-	def get_den
+	def den
 		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH ENTRY NUMBER'").first.identifier rescue ''
 	end
 
-	def get_drn
+	def drn
 		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH REGISTRATION NUMBER'").first.identifier rescue ''
 	end
 
-	def get_barcode
+	def barcode
 		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH REGISTRATION NUMBER'").first.identifier rescue ''
 	end
 end
