@@ -540,12 +540,13 @@ class PeopleController < ApplicationController
                     "DC COMPLETE" => "MARKED APPROVAL",
                     "MARKED APPROVAL" => "HQ ACTIVE"
                  }
-
-        if states[last_status.status].blank?
-          PersonRecordStatus.change_status(@person, "DC COMPLETE")
+        if last_status.blank?
+           PersonRecordStatus.change_status(person, "DC ACTIVE")
+        elsif states[last_status.status].blank?
+          PersonRecordStatus.change_status(person, "DC COMPLETE")
         else  
-          PersonRecordStatus.change_status(@person, states[last_status.status])
-        end   
+          PersonRecordStatus.change_status(person, states[last_status.status])
+        end  
         redirect_to request.fullpath and return
       end
 
