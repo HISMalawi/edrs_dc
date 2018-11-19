@@ -73,4 +73,6 @@ last_seq = CouchdbSequence.new if last_seq.blank?
 last_seq.seq = a["last_seq"].to_i
 last_seq.save
 
+
+
 #Include Couch sequence code
