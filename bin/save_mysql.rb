@@ -49,7 +49,6 @@ while page <= pages
 	puts page
 	page = page + 1
 end
-
 count = User.count
 pagesize = 200
 pages = (count / pagesize) + 1
@@ -59,7 +58,7 @@ page = 1
 id = []
 
 while page <= pages
-	User.per(pagesize).each do |status|
+	User.all.page(page).per(pagesize).each do |status|
 		status.insert_update_into_mysql
 	end
 
