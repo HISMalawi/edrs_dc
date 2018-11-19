@@ -440,10 +440,7 @@ class ApplicationController < ActionController::Base
     end
 
     process = fork{
-      #Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_den_assigment"
-      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_sync"
       Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_couch_to_mysql"
-      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_update_sync"
     }
     Process.detach(process)
   end
