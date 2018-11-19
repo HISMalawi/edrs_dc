@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" language="javascript" src="/bootstrap/js/bootstrap.min.js" ></script>
 <link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
 <script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
 <script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
@@ -220,18 +222,18 @@ function getCases(page) {
       z-index: 1050;
       display: none;
     }
-    .modal-dialog{
-      margin-top:10%; 
-    }
-
     #messagebox, #printers{
       position : absolute;
-      left: 20%;
-      width: 60%;
+      left: 25%;
+      width: 50%;
       background: #ffffff;
       top: 13.5%;
       display: none;
-      z-index: 4000
+      z-index: 4000;
+      text-align: center;
+  }
+  .modal-body{
+    width: 96%;
   }
 
 
@@ -269,11 +271,11 @@ function getCases(page) {
 <%end%>
 
 <div id="shield">
-  <div class="messagebox" id="printers">
+  <div  id="printers">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header btn-primary" >
-          <button type="button" class="close"  onclick="__$('printers').style.display = 'none'">
+          <button type="button" class="close"  onclick="__$('printers').style.display = 'none'; hideModal()">
             <span aria-hidden="true">&times;</span>
             <span class="sr-only">Close</span>
           </button>
@@ -296,11 +298,11 @@ function getCases(page) {
             </div>
             <div class="modal-footer">
             <% if @dispatch.present? && @dispatch %>
-              <button type="button" class="btn btn-primary" onclick="dispatchSelected()" >Dispatch</button>
+              <button type="button" class="btn btn-primary btn-small" onclick="dispatchSelected()" >Dispatch</button>
             <%else%>
-              <button type="button" class="btn btn-primary" onclick="printSelected()" > Print </button>
+              <button type="button" class="btn btn-info btn-small" onclick="printSelected()" > Print </button>
             <%end%>
-              <button type="button" class="btn btn-default" onclick="__$('printers').style.display = 'none';hideModal()" > Close</button>
+              <button type="button" class="btn btn-default btn-small" onclick="__$('printers').style.display = 'none';hideModal()" > Close</button>
             </div>
           </div>
         </div>
@@ -351,6 +353,7 @@ function initDataTable(){
   }catch(e){
     alert(e);
   }
+
 
   getCases(current_page);
 }

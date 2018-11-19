@@ -13,6 +13,7 @@ class AssignDen
     if Rails.env == 'development' || queue.count > 0
       #SuckerPunch.logger.info "Approving for #{queue.count} record(s)"
     end
+    
     queue.each do |record|
         person = record.person
 
