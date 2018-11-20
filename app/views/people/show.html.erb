@@ -698,6 +698,10 @@
 				  	if (__$("msg.shield")) {
                               document.body.removeChild(__$("msg.shield"));
                      }
+
+                     window.location = url;
+
+                     /*
                      ajaxGETRequest(url,function(data){
                      	var data = JSON.parse(data);
 
@@ -716,7 +720,7 @@
                      			window.location.href = "<%params[:next_url] rescue '/'%>"
                      		}
                      	}
-                     })
+                     })*/
 
 			}
 			function checkApprovalStatus(url){
