@@ -89,7 +89,11 @@ class DcController < ApplicationController
 	
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-		unlock_users_record(person)
+		begin
+			unlock_users_record(person)
+		rescue
+		end
+
 		redirect_to "#{params[:next_url].to_s}"
 	end
 

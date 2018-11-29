@@ -144,7 +144,10 @@ class PersonIdentifier < CouchRest::Model::Base
 
           status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-          status.update_attributes({:voided => true})
+          begin
+            status.update_attributes({:voided => true}) 
+          rescue
+          end
 
           PersonRecordStatus.create({
                                     :person_record_id => person.id.to_s,
@@ -176,7 +179,10 @@ class PersonIdentifier < CouchRest::Model::Base
 
           status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-          status.update_attributes({:voided => true})
+          begin
+            status.update_attributes({:voided => true}) 
+          rescue
+          end
           
           PersonRecordStatus.create({
                                     :person_record_id => person.id.to_s,

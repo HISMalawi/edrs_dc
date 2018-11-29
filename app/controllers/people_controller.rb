@@ -538,7 +538,7 @@ class PeopleController < ApplicationController
         states = {
                     "DC ACTIVE" =>"DC COMPLETE",
                     "DC COMPLETE" => "MARKED APPROVAL",
-                    "MARKED APPROVAL" => "HQ ACTIVE"
+                    "MARKED APPROVAL" => "MARKED APPROVAL"
                  }
         if last_status.blank?
            PersonRecordStatus.change_status(person, "DC ACTIVE")
