@@ -698,25 +698,8 @@
 				  	if (__$("msg.shield")) {
                               document.body.removeChild(__$("msg.shield"));
                      }
-                     ajaxGETRequest(url,function(data){
-                     	var data = JSON.parse(data);
 
-                     	if(data.marked && eval(data.marked)){
-                     		setTimeout(function(){
-                     			checkApprovalStatus('/dc/check_approval_status/<%= @person.id%>')
-                     		},100);
-                     	}
-                     	if(data.incomplete && eval(data.incomplete)){
-                     		showPopupMessage("Record incomplete","Completeness check");
-                     	}
-                     	if(data.duplicates && eval(data.duplicates)){
-                     		duplicatesPopup(data.people);
-                     		__$("popup.ok").removeAttribute("onclick");
-                     		__$("popup.ok").onclick = function(){
-                     			window.location.href = "<%params[:next_url] rescue '/'%>"
-                     		}
-                     	}
-                     })
+                     window.location = url;
 
 			}
 			function checkApprovalStatus(url){
