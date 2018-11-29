@@ -565,7 +565,7 @@ class DcController < ApplicationController
 		key = [district_code,status]
 
 		#count = PersonRecordStatus.by_district_code_and_record_status.key(key).each.count
-		count = RecordStatus.where("status ='#{status}' AND district_code='#{district_code}' AND voided=0")
+		count = RecordStatus.where("status ='#{status}' AND district_code='#{district_code}' AND voided=0").count
 
 		render :text => {:count => count}.to_json	
 	end
