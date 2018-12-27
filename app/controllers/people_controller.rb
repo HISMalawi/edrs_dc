@@ -700,23 +700,22 @@ class PeopleController < ApplicationController
   def districts
   
      entry = params["search_string"] rescue nil
+     if entry.present?
+        district = DistrictRecord.where("name LIKE '#{entry.gsub("'","''")}%'").order(:name)
+      else
+        district = DistrictRecord.all.order(:name)
+     end
 
     if params[:place].present? && params[:place] == "Health Facility"
 
         cities = ["Lilongwe City", "Blantyre City", "Zomba City", "Mzuzu City"]
 
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
-
         render :text => district.collect { |w| "<li>#{w.name}" unless cities.include? w.name }.join("</li>")+"</li>"
 
     elsif params[:place].present? && params[:place] == "Other"
 
-         district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
-
          render :text => district.collect { |w| "<li >#{w.name}" }.push("<li>Not indicated").join("</li>")+"</li>"
     else
-        district = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
-
         render :text => district.collect { |w| "<li >#{w.name}" }.join("</li>")+"</li>"
     
     end
@@ -728,11 +727,11 @@ class PeopleController < ApplicationController
 
     if !district_param.blank?
 
-      district = District.by_name.key(district_param.to_s).first
+      district = DistrictRecord.where(name: district_param.to_s).first
 
-      facilities = HealthFacility.by_district_id.keys([district.id]).each
+      facilities = Facility.where(district_id:district.id).order(:name)
     else
-      facilities = HealthFacility.by_name.each
+      facilities = Facility.all.order(:name)
     end
 
     list = []
@@ -750,12 +749,11 @@ class PeopleController < ApplicationController
   def nationalities
     entry = params[:search_string] rescue nil
     if entry.present? && false
-        nationalities = Nationality.by_nationality.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+        nationalities = NationalityRecord.where("nationality LIKE '#{entry.gsub("'","''")}%'").order(:nationality)
     else
-      nationalities = Nationality.all
+      nationalities = NationalityRecord.all.order(:nationality)
     end
     
-    malawi = Nationality.by_nationality.key("Malawian").last
     list = []
     nationalities.each do |n|
       next if n.nationality.squish =="Unknown"
@@ -769,7 +767,7 @@ class PeopleController < ApplicationController
 
     nations = list.collect {|c| c.nationality}.sort
      if "Malawian".match(/#{params[:search_string]}/i) || params[:search_string].blank?
-      nations = [malawi.nationality] + nations
+      nations = ["Malawian"] + nations
     end
     render :text => nations.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
 
@@ -778,13 +776,11 @@ class PeopleController < ApplicationController
   def countries
     entry = params[:search_string] rescue nil
     if entry.present? && false
-        countries = Country.by_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+        countries = CountryRecord.where("name LIKE '#{entry.gsub("'","''")}%'").order(:name)
     else
-      countries = Country.all
+      countries = CountryRecord.all.order(:name)
     end
     
-    
-    malawi = Country.by_country.key("Malawi").last
     list = []
     countries.each do |n|
       next if n.name.squish =="Unknown"
@@ -799,14 +795,10 @@ class PeopleController < ApplicationController
       end
     end
 
-    if ("Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?) && params[:exclude] != "Malawi"
-      list = [malawi] + list
-    end
-
-    countries = list.collect {|c| c.name}.sort
+    countries =  list.collect {|c| c.name}.sort
 
     if ("Malawi".match(/#{params[:search_string]}/i) || params[:search_string].blank?) && params[:exclude] != "Malawi"
-      countries = [malawi.name] + countries
+      countries = ["Malawi"] +  countries
     end
 
     render :text => countries.uniq.collect { |c| "<li>#{c}" }.join("</li>")+"</li><li>Other</li><li>Unknown</li>"
@@ -832,12 +824,12 @@ class PeopleController < ApplicationController
 
     if !params[:district].blank?
 
-      district = District.by_name.key(params[:district].strip).first
+      district = DistrictRecord.where(name: params[:district].strip).first
 
-      result = TraditionalAuthority.by_district_id.key(district.id)
+      result = TA.where(district_id: district.id).order(:name)
     else
 
-       result = TraditionalAuthority.by_district_id
+       result = TA.all.order(:name)
 
     end
 
@@ -860,14 +852,14 @@ class PeopleController < ApplicationController
 
     if !params[:district].blank? and !params[:ta].blank?
 
-      district = District.by_name.key(params[:district].strip).first
+      district = DistrictRecord.where(name: params[:district].strip).first
 
-      ta =TraditionalAuthority.by_district_id_and_name.key([district.id, params[:ta]]).first
+      ta =TA.where(district_id:district.id, name: params[:ta]).first
 
-      result = Village.by_ta_id.key(ta.id.strip)
+      result = VillageRecord.where(ta_id: ta.id.strip).order(:name)
 
     else
-       result = Village.by_ta_id
+       result = Village.all.order(:name)
 
     end
 
