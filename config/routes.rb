@@ -381,6 +381,11 @@ Rails.application.routes.draw do
 ##############################################################################################################################
   get "/dc/print_certificates"
   get "dc/search_records_to_print"
+  get "/dc/do_print_these"
+  get "/death_certificate/:id" => "dc#death_certificate"
+  get "/dc/printed"
+  get "/dc/dc_printed"
+  get "/dc/hq_printed"
 
   resources :users
 

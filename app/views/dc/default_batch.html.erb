@@ -29,6 +29,7 @@ function updateValue(obj){
 var selected = {}
 var printer = ""
 function checkRecord(element){
+
       if(eval(element.checked)){
         <%if @dispatch.present? && @dispatch %>
             if(district.length > 0){
@@ -50,6 +51,7 @@ function checkRecord(element){
             $("#print_btn").addClass("hidden")
           }
       }
+
 }
 
 function setPrinter(printer_name){
@@ -68,7 +70,7 @@ function printSelected(){
         }
       }
 
-      window.location.href = "hq/do_print_these?printer_name="+printer+"&selected="+param_selected;
+      window.location.href = "/dc/do_print_these?printer_name="+printer+"&selected="+param_selected;
     }else{
 
         loadPopup('printers');

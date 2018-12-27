@@ -234,6 +234,11 @@
 
 	<%end%>
 
+	<%if  @status.present? && @status.status == "HQ CAN PRINT" %>
+			<button class="orange" style="float: right; margin-right:3%" onmousedown=""><span>Print</span></button>
+
+	<%end%>
+
 	<% if @comments.count > 0 %>
 		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
@@ -288,7 +293,7 @@
             <td style="border-right:none"><b>Registration Category : </b></td>
             <td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
             <td colspan="2" style="border-right:none"><b>Record Status : </b></td>
-            <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+            <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status == "HQ CAN PRINT" ? "CAN PRINT" : @person.status%></td>
             <td style="border-right:none"><b>DEN: </b></td>
             <td style="color:#4775a1;border-left:none"><%= @person.den rescue 'XXXXXXXXX'%></td>
             <td style="border-right:none"><b>DRN: </b></td>

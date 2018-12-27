@@ -30,8 +30,10 @@ class ApplicationController < ActionController::Base
                 "passwordLength",
                 "confirm_username",
                 "reaprove_record",
-               "find_identifier",
-               "dispatch_barcodes"]
+                "find_identifier",
+                "dispatch_barcodes",
+                "do_print_these",
+                "death_certificate"]
   before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
@@ -366,6 +368,17 @@ class ApplicationController < ActionController::Base
 
                      }
   end
+
+  def create_barcode(person)
+    if person.npid.blank?
+       npid = Npid.by_assigned.keys([false]).first
+       person.npid = npid.national_id
+       person.save
+    end
+    process = Process.fork{`bin/generate_barcode #{person.npid.present?? person.npid : '123456'} #{person.id} #{SETTINGS['barcodes_path']}`}
+    Process.detach(process)
+  end
+
   protected
 
   def login!(user,portal_link = nil)
@@ -447,6 +460,7 @@ class ApplicationController < ActionController::Base
 
   def check_user_level_and_site
     user = User.current_user
+    return if user.blank?
     if SETTINGS['site_type'] == "facility" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code.to_s != SETTINGS['facility_code'].to_s
     end
