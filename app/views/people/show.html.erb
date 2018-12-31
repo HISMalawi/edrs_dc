@@ -161,6 +161,8 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="unLock()"><span>Back</span></button>
    <%end %>
 
+  <% if User.current_user.district_code == @person.district_code %>
+
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
@@ -238,7 +240,7 @@
 			<button class="orange" style="float: right; margin-right:3%" onmousedown=""><span>Print</span></button>
 
 	<%end%>
-
+ <%end%>
 	<% if @comments.count > 0 %>
 		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>

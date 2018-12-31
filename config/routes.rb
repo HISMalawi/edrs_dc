@@ -303,6 +303,8 @@ Rails.application.routes.draw do
 
   get "/my_account" => "users#my_account"
 
+  get "/users/show"
+
   get "/build_mysql" => "users#build_mysql"
 
   get '/build_mysql_database' => 'users#build_mysql_database'
