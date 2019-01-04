@@ -1,3 +1,4 @@
+require 'open3'
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -377,6 +378,13 @@ class ApplicationController < ActionController::Base
     end
     process = Process.fork{`bin/generate_barcode #{person.npid.present?? person.npid : '123456'} #{person.id} #{SETTINGS['barcodes_path']}`}
     Process.detach(process)
+  end
+
+
+  def is_up?(host)
+    host, port = host.split(':')
+    a, b, c = Open3.capture3("nc -vw 5 #{host} #{port}")
+    b.scan(/succeeded/).length > 0
   end
 
   protected

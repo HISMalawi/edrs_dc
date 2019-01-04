@@ -1,5 +1,7 @@
 class Barcode < CouchRest::Model::Base
 	before_save :set_district_code
+	after_save :insert_update_into_mysql
+	after_create :insert_update_into_mysql
 	property :person_record_id, String
 	property :barcode, String
 	property :assigned, String, :default => 'true'
@@ -22,4 +24,23 @@ class Barcode < CouchRest::Model::Base
 	    person = Person.find(self.person_record_id)
 	    return person
    	end
+
+   	def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = BarcodeRecord.where(person_record_id: self.person_record_id, barcode: self.barcode).first
+      sql_record = BarcodeRecord.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        next if field == "created_at"
+        next if field == "updated_at"
+        if field =="_id"
+            sql_record["barcode_id"] = self[field]
+        else
+            sql_record[field] = self[field]
+        end
+
+      end
+      sql_record.save
+  end
 end

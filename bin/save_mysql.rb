@@ -49,6 +49,24 @@ while page <= pages
 	puts page
 	page = page + 1
 end
+
+count = Barcode.count
+pagesize = 200
+pages = (count / pagesize) + 1
+
+page = 1
+
+id = []
+
+while page <= pages
+	Barcode.all.page(page).per(pagesize).each do |barcode|
+		barcode.insert_update_into_mysql
+	end
+
+	puts page
+	page = page + 1
+end
+
 count = User.count
 pagesize = 200
 pages = (count / pagesize) + 1

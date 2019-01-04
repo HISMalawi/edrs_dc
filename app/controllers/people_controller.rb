@@ -529,6 +529,15 @@ class PeopleController < ApplicationController
 
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
+
+      #Recorrecting statuses thatt have not changed
+
+      PersonRecordStatus.by_person_recent_status.key(params[:id]).each.sort_by{|d| d.created_at}.each do |s|
+        next if s === @status
+        s.voided = true
+        s.save
+      end
+
       if @status.blank? || @status.status.blank?
         last_status = PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|d| d.created_at}.last
         if last_status.blank?

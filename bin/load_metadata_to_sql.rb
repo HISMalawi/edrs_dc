@@ -15,6 +15,20 @@ create_facility_table = "CREATE TABLE IF NOT EXISTS health_facility (
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
 SimpleSQL.query_exec(create_facility_table); 
 
+create_barcode_table = "CREATE TABLE IF NOT EXISTS barcodes (
+							barcode_id varchar(225) NOT NULL,
+							person_record_id varchar(225) NOT NULL,
+							barcode varchar(100) NOT NULL,
+							assigned INT(1),
+							district_code varchar(5) NOT NULL,
+							creator varchar(225) NOT NULL,
+                          PRIMARY KEY (barcode_id)
+                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+SimpleSQL.query_exec(create_barcode_table);
+
+
+SimpleSQL.load_dump("#{Rails.root}/db/dump.sql");
+
 SimpleSQL.load_dump("#{Rails.root}/db/directory.sql");
 
 #Loading metadata
