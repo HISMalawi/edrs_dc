@@ -17,4 +17,6 @@
  certificates_path: /home/usr/certificates/
  dispatch_path: /home/usr/dispatch/
  wkhtmltopdf: /usr/bin/wkhtmltopdf
- print_qrcode: true
+ decentralized_printing: false
+ print_qrcode: false
+ qr_codes_path: /home/usr/qrcodes/

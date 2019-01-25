@@ -1,10 +1,12 @@
 <script type="text/javascript">
-			if (window.top[0] ===undefined) {
+	if (window.top[0] ===undefined) {
 
-			}else{
+	}else{
 				
-				window.top.location = window.top[0].location.href
-			}
+		window.top.location = window.top[0].location.href
+	}
+			//Sync status 
+	var sync_online = false;
 </script>
 <style type="text/css">
 		input[type=radio].css-checkbox {
@@ -237,7 +239,7 @@
 	<%end%>
 
 	<%if  @status.present? && @status.status == "HQ CAN PRINT" %>
-			<button class="orange" style="float: right; margin-right:3%" onmousedown=""><span>Print</span></button>
+			<button  id="print_btn" class="gray" style="float: right; margin-right:3%" ><span>Print Preview</span></button>
 
 	<%end%>
  <%end%>
@@ -1258,4 +1260,30 @@
 
 
 		   	//duplicatesPopup();
+function checkIfHQIsOnline(){
+            simpleAjaxRequest("/application/hq_is_online", function(data){ 
+
+                data = JSON.parse(data)  
+                if (data.status) {
+                    __$("hq_sync").innerHTML = "HQ is Online";
+                    __$("hq_sync").style.backgroundColor="#b8d6bd";
+
+					if(!__$('print_btn').getAttribute('onclick')){
+				              __$('print_btn').setAttribute('onclick',"window.location.href='/dc/print_preview?id=<%=@person.id%>&next_url=<%=params[:next_url].to_s%>'");
+				      } 
+				    __$('print_btn').setAttribute('class',"blue")
+                }else{
+                    __$("hq_sync").innerHTML = "HQ is Offline";
+                    __$("hq_sync").style.backgroundColor="#d6bab8";
+                    __$('print_btn').removeAttribute('onclick');
+          			__$('print_btn').setAttribute('class',"gray");
+
+                }
+                
+          });
+}
+checkIfHQIsOnline();
+setInterval(function(){
+  checkIfHQIsOnline();
+},10000);
 </script>

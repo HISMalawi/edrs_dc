@@ -49,7 +49,7 @@
                                   </div>
                           <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("Manage duplicates") %>
+                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("Manage duplicates") && SETTINGS['decentralized_printing']%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/print_certificates?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">

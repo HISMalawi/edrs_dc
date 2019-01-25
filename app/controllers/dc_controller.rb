@@ -713,8 +713,16 @@ class DcController < ApplicationController
 
 	      person = Person.find(key.strip)
 
-	      if !File.exist?("#{SETTINGS['barcodes_path']}#{person.id}.png")
-	               create_barcode(person)
+	      if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{person.id}.png")
+	      		create_qr_barcode(person)
+	      		sleep(1)
+	      	  end
+	      else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{person.id}.png")
+		        create_barcode(@person)
+		        sleep(1)
+		      end	      	
 	      end
 
 
@@ -751,10 +759,21 @@ class DcController < ApplicationController
 	    @place_of_death = place_of_death(@person)
 	    @drn = @person.drn
 	    @den = @person.den
-	    @barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
-	    if @barcode.blank?
-	    	create_barcode(@person)
+
+	    if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+	      		create_qr_barcode(@person)
+	      		sleep(5)
+	      		redirect_to request.fullpath and return
+	      	  end
+	     else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+		        create_barcode(@person)
+		        sleep(5)
+		        redirect_to request.fullpath and return
+		      end	      	
 	    end
+	    @barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
 
 	    @date_registered = @person.created_at
 	    PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|s| s.created_at}.each do |state|
@@ -767,6 +786,13 @@ class DcController < ApplicationController
 	  
 	    render :layout => false, :template => 'dc/death_certificate_print_a5'
 	end
+
+	def print_preview
+	    @section = "Print Preview"
+	    @targeturl = "/print" 
+	    @person = Person.find(params[:id])
+	    @available_printers = SETTINGS["printer_name"].split(',')
+  	end
 
 	protected
 end

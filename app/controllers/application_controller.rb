@@ -34,7 +34,8 @@ class ApplicationController < ActionController::Base
                 "find_identifier",
                 "dispatch_barcodes",
                 "do_print_these",
-                "death_certificate"]
+                "death_certificate",
+                "hq_is_online"]
   before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
@@ -380,11 +381,29 @@ class ApplicationController < ActionController::Base
     Process.detach(process)
   end
 
-
+  def create_qr_barcode(person)
+    if person.npid.blank?
+       npid = Npid.by_assigned.keys([false]).first
+       person.npid = npid.national_id
+       person.save
+    end
+    process = Process.fork{`bin/generate_qr_code #{person.id} #{SETTINGS['qrcodes_path']}`}
+    Process.detach(process)    
+  end
   def is_up?(host)
     host, port = host.split(':')
     a, b, c = Open3.capture3("nc -vw 5 #{host} #{port}")
     b.scan(/succeeded/).length > 0
+  end
+
+  def hq_is_online
+      hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+      online = is_up?(hq_link) rescue false
+      if online
+         render :text => {status: true}.to_json
+      else
+         render :text => {status: false}.to_json  
+      end
   end
 
   protected

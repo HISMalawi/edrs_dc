@@ -41,11 +41,18 @@
    
   </style>
 </head>
+
 <body style="color: #000;">
     <% @long_cert = false %>
-    <% raw = File.read("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+    <% 
 
-       @data = Base64.encode64(raw)
+      if SETTINGS['print_qrcode']
+              raw = File.read("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+              @data = Base64.encode64(raw)
+      else
+              raw = File.read("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+              @data = Base64.encode64(raw)
+      end
 
     %>
     
@@ -57,7 +64,12 @@
 <div id="mainc">             
   <div id="barcode">
     <p style="text-align: center !important;font-size: 12px;"> <img src ="data:image/png;base64,<%= @data%>" />
-    <br/><%= @person.npid %></p>
+
+    <% if SETTINGS['print_qrcode'] %>
+        <br/></p>
+    <% else%>
+        <br/><%=  @person.npid %></p>    
+    <%end%>
   </div>
 
   <div id="childdata">

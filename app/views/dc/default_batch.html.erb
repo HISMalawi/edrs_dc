@@ -189,7 +189,8 @@ function getCases(page) {
   xmlhttp.send();                                                             
 }
 
-
+//Sync status 
+var sync_online = false;
 </script>
 
 <style type="text/css">
@@ -240,7 +241,7 @@ function getCases(page) {
 
 
 </style>
-<div id="containt_table" style="width: 98%;height:650px; margin: auto">
+<div id="containt_table" style="width: 98%;height:670px; margin: auto;overflow-y: scroll">
     <h3><%= @title.humanize rescue ''%></h3>
     <table style="border-top: 1px solid grey;margin-top:1em" class="table table-striped table-advance table-hover" id="cases">
     <thead>
@@ -267,9 +268,9 @@ function getCases(page) {
 </div>
 <button class="green" style="float: right; margin-right:1%;width:100px" onmousedown="window.location= '/'"><span>Back</span></button>
 <% if @dispatch.present? && @dispatch %>
-    <button id="print_btn" class="btn btn-success pull-right hidden " onclick="loadPopup('printers')">Dispatch Selected</button>
+    <button id="print_btn" style="position: absolute; left:45%;top: 40%;" class="hidden" onclick="loadPopup('printers')">Dispatch Selected</button>
 <%else%>
-  <button id="print_btn" class="btn btn-success pull-right hidden " onclick="loadPopup('printers')">Print Selected</button>
+  <button id="print_btn" style="position: absolute; left:45%;top: 40%;" class="hidden" onclick="loadPopup('printers')">Print Selected</button>
 <%end%>
 
 <div id="shield">
@@ -383,4 +384,21 @@ function changeDistrict(element){
     }
     
 }
+
+setInterval(function(){
+      if (sync_online) {
+        if (Object.keys(selected).length == 0) {
+          __$('print_btn').removeAttribute('onclick');
+          __$('print_btn').setAttribute('class',"gray");
+        }else{
+            if(__$('print_btn').getAttribute('onclick') != "loadPopup('printers')"){
+              __$('print_btn').setAttribute('onclick',"loadPopup('printers')");
+            } 
+            __$('print_btn').setAttribute('class',"blue");        
+        }
+      }else{
+          __$('print_btn').removeAttribute('onclick');
+          __$('print_btn').setAttribute('class',"gray");
+      }
+},500);
 </script>

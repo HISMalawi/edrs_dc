@@ -388,6 +388,8 @@ Rails.application.routes.draw do
   get "/dc/printed"
   get "/dc/dc_printed"
   get "/dc/hq_printed"
+  get "/application/hq_is_online"
+  get "/dc/print_preview"
 
   resources :users
 
