@@ -377,8 +377,7 @@ class ApplicationController < ActionController::Base
        person.npid = npid.national_id
        person.save
     end
-    process = Process.fork{`bin/generate_barcode #{person.npid.present?? person.npid : '123456'} #{person.id} #{SETTINGS['barcodes_path']}`}
-    Process.detach(process)
+    `bundle exec rails r bin/generate_barcode #{person.npid.present?? person.npid : '123456'} #{person.id} #{SETTINGS['barcodes_path']}`
   end
 
   def create_qr_barcode(person)
@@ -387,8 +386,7 @@ class ApplicationController < ActionController::Base
        person.npid = npid.national_id
        person.save
     end
-    process = Process.fork{`bin/generate_qr_code #{person.id} #{SETTINGS['qrcodes_path']}`}
-    Process.detach(process)    
+    `bundle exec rails r bin/generate_qr_code #{person.id} #{SETTINGS['qrcodes_path']}`    
   end
   def is_up?(host)
     host, port = host.split(':')

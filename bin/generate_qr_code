@@ -19,7 +19,7 @@ if ARGV.length > 1
   require 'barby/barcode/qr_code'
   require 'barby/outputter/png_outputter'
 
-   data = ARGV[0]
+   data = PersonService.qr_code_data(ARGV[0])
 
    barcode = Barby::QrCode.new(data, level: :q, size: 15) # Barby::Code128B.new(ARGV[0])
 
