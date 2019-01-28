@@ -239,7 +239,6 @@ var sync_online = false;
     width: 96%;
   }
 
-
 </style>
 <div id="containt_table" style="width: 98%;height:670px; margin: auto;overflow-y: scroll">
     <h3><%= @title.humanize rescue ''%></h3>
@@ -292,8 +291,7 @@ var sync_online = false;
                 <tbody>
                   <% @available_printers.each do |printer| %>
                       <tr onmousedown="updateValue(this);setPrinter('<%= printer %>')" value="<%= printer %>" class="table-row" style="cursor: pointer">
-                        <td class="table-cell"><input type="radio" class="printer_radio_button" value="<%= printer %>" name="printer_name"/></td>
-                        <td class="table-cell" style="text-align: left; padding-left:50px;"><%= printer %></td>
+                        <td style="width: 50%;padding-left: 30%"><input id="<%= printer %>" type="radio" class="printer_radio_button" value="<%= printer %>" name="printer_name"/></td><td style="width: 50%"> <label for="<%= printer %>"><%= printer %></label></td>
                       </tr>
                   <% end %>
                 </tbody>
