@@ -243,29 +243,6 @@ class PeopleController < ApplicationController
       end 
   end
 
-  def finalize_create
-
-      person = Person.find(params[:id])
-
-      facility_number = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id],"FACILITY NUMBER"]).first
-
-      if false && SETTINGS['facility_code'] && !SETTINGS['facility_code'].blank?  && !facility_number.present?
-
-          NationalIdNumberCounter.assign_serial_number(person,facility.facility_code)
-          
-          sleep 1
-
-          person.reload
-
-          print_registration(person) and return
-
-          redirect_to "/people/view"
-
-      end
-
-      redirect_to "/people/view"
-    
-  end
 
   def view
 
@@ -451,7 +428,9 @@ class PeopleController < ApplicationController
 
     if params[:death_entry_number].present?
    
-      PersonIdentifier.by_identifier.key(params[:death_entry_number]).page(page).per(size).each do |pid|
+      offset = page.to_i * size.to_i
+
+      RecordIdentifier.where(identifier: params[:death_entry_number]).offset(offset).limit(size).each do |pid|
         
           person = pid.person
           if SETTINGS['site_type'] == "remote"
@@ -462,8 +441,10 @@ class PeopleController < ApplicationController
       
     end
     if params[:barcode].present?
+
+      offset = page.to_i * size.to_i
    
-      Barcode.by_barcode.key(params[:barcode]).page(page).per(size).each do |pid|
+      BarcodeRecord.where(barcode: params[:barcode]).offset(offset).limit(size).each do |pid|
         
           person = pid.person
 
@@ -473,7 +454,9 @@ class PeopleController < ApplicationController
     end
     if params[:death_registration_number].present?
 
-       PersonIdentifier.by_identifier.key(params[:death_registration_number]).page(page).per(size).each do |pid|
+      offset = page.to_i * size.to_i
+      
+      RecordIdentifier.where(identifier: params[:death_registration_number]).offset(offset).limit(size) do |pid|
 
           person = pid.person
 

@@ -26,27 +26,7 @@ class PersonIdentifier < CouchRest::Model::Base
     view :by__id
     view :by_person_record_id
     view :by_identifier
-    view :by_identifier_and_identifier_type
     view :by_site_code
-    view :by_district_code_and_den_sort_value,
-         :map => "function(doc) {
-                  if (doc['type'] == 'PersonIdentifier' && doc['den_sort_value'] != null ) {
-                    emit(doc['district_code']+doc['den_sort_value']);
-                  }
-                }"
-    view :by_den_sort_value,
-         :map => "function(doc) {
-                  if (doc['type'] == 'PersonIdentifier' && doc['district_code'] == '#{SETTINGS['district_code']}') {
-                    emit(doc['den_sort_value']);
-                  }
-                }"
-    view :by_drn_sort_value,
-         :map => "function(doc) {
-                  if ((doc['type'] == 'PersonIdentifier')) {
-                    emit(doc['drn_sort_value']);
-                  }
-                }"
-    view :by_district_code
     view :by_created_at
     view :by_person_record_id_and_identifier_type
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
