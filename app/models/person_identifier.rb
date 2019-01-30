@@ -97,76 +97,80 @@ class PersonIdentifier < CouchRest::Model::Base
     return check_digit
   end
 
+  def self.check_for_skipped_dens(dens)
+      den = dens.last.value rescue 0
+      actual_dens =  dens.collect{|d| d.value}
+      difference = [*1..den] - actual_dens
+      if difference.blank?
+          return false, den
+      else
+          return true, difference[0]
+      end
+  end
+
   def self.assign_den(person, creator)
-    if SETTINGS['site_type'] =="remote"
-      year = Date.today.year
-      district_code = User.find(creator).district_code
+    year = Date.today.year
+    district_code = person.district_code
 
-      start_key = "#{district_code}#{year}0000001"
-      end_key = "#{district_code}#{year}99999999"
-
-      den = PersonIdentifier.by_district_code_and_den_sort_value.startkey(start_key).endkey(end_key).last.identifier rescue nil
-    else
-      den = PersonIdentifier.by_den_sort_value.last.identifier rescue nil
-      year = Date.today.year
-    end
+    dens = DeathEntryNumber.where(district_code: district_code, year: year).order(:value) rescue nil
     
+    den_value = self.check_for_skipped_dens(dens)
 
-    if den.blank? || !den.match(/#{year}$/)
-      n = 1
+    if den_value[0]
+      num = den_value[1]
     else
-      n = den.scan(/\/\d+\//).last.scan(/\d+/).last.to_i + 1
+      num = den_value[1].to_i + 1
     end
-
-    code = person.district_code
-
-    num = n.to_s.rjust(7,"0")
-    new_den = "#{code}/#{num}/#{year}"
 
     #check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
-    den_assigned_to_person = PersonIdentifier.by_identifier.key(new_den).first
+    den_assigned_to_person = DeathEntryNumber.where(district_code: district_code, year: year, value: num).first
 
-    person_assigened_den =  RecordIdentifier.where("person_record_id = '#{person.id.to_s}' AND identifier_type='DEATH ENTRY NUMBER'").first.identifier rescue nil
+    person_assigened_den =  DeathEntryNumber.where(person_record_id:person.id.to_s).first.value rescue nil
+
+    
 
     if self.can_assign_den && person_assigened_den.blank? && den_assigned_to_person.blank?
+
         self.can_assign_den = false
-        sort_value = (year.to_s + num).to_i
 
-        identifier_record = PersonIdentifier.new
-        identifier_record.person_record_id = person.id.to_s
-        identifier_record.identifier_type = "DEATH ENTRY NUMBER"
-        identifier_record.identifier =  new_den
-        identifier_record.creator = creator
-        identifier_record.den_sort_value = sort_value
-        identifier_record.district_code = person.district_code
-        if identifier_record.save
+        begin
+          identifier_record = DeathEntryNumber.create(person_record_id: person.id.to_s,
+                                                      value: num,
+                                                      district_code: district_code,
+                                                      year: year,
+                                                      created_at: Time.now,
+                                                      updated_at: Time.now)
+          if identifier_record.present?
 
-          status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
+            status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-          begin
-            status.update_attributes({:voided => true}) 
-          rescue
-          end
+            begin
+              status.update_attributes({:voided => true}) 
+            rescue
+            end
 
-          PersonRecordStatus.create({
-                                    :person_record_id => person.id.to_s,
-                                    :status => "HQ ACTIVE",
-                                    :district_code => (district_code rescue SETTINGS['district_code']),
-                                    :comment=> "Record approved at DC",
-                                    :creator => creator})
+            PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => "HQ ACTIVE",
+                                      :district_code => (district_code rescue SETTINGS['district_code']),
+                                      :comment=> "Record approved at DC",
+                                      :creator => creator})
 
-          person.approved = "Yes"
-          person.approved_at = Time.now
+            person.approved = "Yes"
+            person.approved_at = Time.now
 
-          person.save
+            person.save
 
-          Audit.create(record_id: person.id,
-                         audit_type: "Audit",
-                         user_id: creator,
-                         level: "Person",
-                         reason: "Approved record")
+            Audit.create(record_id: person.id,
+                           audit_type: "Audit",
+                           user_id: creator,
+                           level: "Person",
+                           reason: "Approved record")
 
+          end          
+        rescue Exception => e
+            puts "ReQueue"
         end
         self.can_assign_den = true
 

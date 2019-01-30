@@ -1,3 +1,22 @@
+file = "#{Rails.root}/log/save_mysql.log"
+
+if !File.exist?(file)
+	File.open(file, "w+") do |f|
+		  f.write("Log for #{Time.now}")
+	end
+else
+	File.open(file, "a+") do |f|
+	  f.write("\nLog for #{Time.now}")
+	end	
+end
+
+def add_to_file(content)
+    file = "#{Rails.root}/log/save_mysql.log"
+
+	File.open(file, "a+") do |f|
+	  f.write("\n#{content}")
+	end
+end
 
 count = PersonRecordStatus.count
 pagesize = 200
@@ -33,6 +52,7 @@ while page <= pages
 	page = page + 1
 end
 
+
 count = PersonIdentifier.count
 pagesize = 200
 pages = (count / pagesize) + 1
@@ -42,8 +62,27 @@ page = 1
 id = []
 
 while page <= pages
-	PersonIdentifier.all.page(page).per(pagesize).each do |status|
-		status.insert_update_into_mysql
+	PersonIdentifier.all.page(page).per(pagesize).each do |identifier|
+		if identifier.identifier_type == "DEATH ENTRY NUMBER"
+			den = DeathEntryNumber.where(person_record_id: identifier.person_record_id).first
+			if den.blank?
+				componets = identifier.identifier.split("/")
+				if Person.find(identifier.person_record_id).district_code = identifier.district_code
+					begin
+						DeathEntryNumber.create(
+								person_record_id: identifier.person_record_id, 
+								district_code: identifier.district_code, 
+								value: componets[1].to_i, year: componets[2].to_i, 
+								created_at: identifier.created_at,
+								updated_at: identifier.updated_at)							
+					rescue Exception => e
+						error = "#{identifier.id} : #{e.to_s}"
+						add_to_file(error)
+					end				
+				end
+			end		
+		end
+		identifier.insert_update_into_mysql
 	end
 
 	puts page

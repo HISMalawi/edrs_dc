@@ -14,18 +14,18 @@ class Barcode < CouchRest::Model::Base
     	view :by_barcode
     	view :by_assigned
     	filter :assigned_sync, "function(doc,req) {return req.query.assigned == 'true' }"
-    end
+  end
 
-   	def set_district_code
+  def set_district_code
     	self.district_code = self.person.district_code
-   	end
+  end
 
-   	def person
+  def person
 	    person = Person.find(self.person_record_id)
 	    return person
-   	end
+  end
 
-   	def insert_update_into_mysql
+  def insert_update_into_mysql
       fields  = self.keys.sort
       sql_record = BarcodeRecord.where(person_record_id: self.person_record_id, barcode: self.barcode).first
       sql_record = BarcodeRecord.new if sql_record.blank?

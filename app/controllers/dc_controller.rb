@@ -720,7 +720,7 @@ class DcController < ApplicationController
 	      	  end
 	      else
 		      if !File.exist?("#{SETTINGS['barcodes_path']}#{person.id}.png")
-		        create_barcode(@person)
+		        create_barcode(person)
 		        sleep(1)
 		      end	      	
 	      end
