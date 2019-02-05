@@ -1,5 +1,6 @@
 #!/bin/bash
 ENV=$1
+echo $ENV
 DC_PROTOCOL=`ruby -ryaml -e "puts YAML::load_file('../config/couchdb.yml')['${ENV}']"`
 echo $DC_DB_PROTOCOL
 DC_HOST=`ruby -ryaml -e "puts YAML::load_file('../config/couchdb.yml')['${ENV}'][:host]"`
