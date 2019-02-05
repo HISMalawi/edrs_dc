@@ -8,7 +8,8 @@ def save_to_mysql(record,map_key,db_maps)
 				"people" => "Record",
 				"person_record_status" => "RecordStatus",
 				"person_identifier" => "RecordIdentifier",
-				"user" => "UserModel"
+				"user" => "UserModel",
+				"barcodes" => "BarcodeRecord"
 	}
 
 	table = map_key.split("|")[1]

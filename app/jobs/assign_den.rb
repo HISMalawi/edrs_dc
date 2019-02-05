@@ -17,7 +17,9 @@ class AssignDen
     queue.each do |record|
         person = record.person
 
-        
+        if SETTINGS['site_type'] == "remote"
+              next if SETTINGS['exclude'].split(",").include?(District.find(person.district_code).name)
+        end
 
         PersonIdentifier.assign_den(person, record.creator)
 
