@@ -13,4 +13,8 @@ class Record < ActiveRecord::Base
 	def barcode
 		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH REGISTRATION NUMBER'").first.identifier rescue ''
 	end
+
+  	def status
+       return RecordStatus.where(person_record_id: self.person_id).last.status
+  	end
 end

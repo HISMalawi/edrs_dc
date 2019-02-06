@@ -106,10 +106,15 @@ class LoginsController < ApplicationController
       end      
     end
 
-    user_access = UserAccess.by_user_id.key(User.current_user.id).each
-    user_access.each do |access|
-      access.destroy
+    begin
+      user_access = UserAccess.by_user_id.key(User.current_user.id).each rescue []
+      user_access.each do |access|
+        access.destroy
+      end      
+    rescue Exception => e
+      
     end
+
 
     logout!
    

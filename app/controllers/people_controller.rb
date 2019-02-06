@@ -295,13 +295,21 @@ class PeopleController < ApplicationController
     people = []
     record_status = []
 
+
     
     RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
-      
+      #raise status.person_record_id.inspect
       person = Record.find(status.person_record_id) rescue nil
       next if person.nil?
-      den = person.get_den rescue ""
-      drn = person.get_drn rescue ""
+      den = person.den rescue ""
+      drn = person.drn rescue ""
+
+      if den.blank? && !params[:statuses].include?("DC ACTIVE")
+        next
+      end
+
+      #next unless params[:statuses].include?(person.status)
+      #raise den.inspect
       person = person.as_json
       person["den"] = den
       person["drn"] = drn

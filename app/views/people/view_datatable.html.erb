@@ -178,6 +178,8 @@
 	table.innerHTML ="";
 
 	var datatable;
+
+	var ids = []
 	function loadTable(page){
 
 		var content = __$("table_container")
@@ -186,6 +188,12 @@
 
 
 		ajaxGETRequest(url+"&page="+page+"&size=7",function(data){
+				var id = (data[i]["_id"]? data[i]["_id"] : data[i]["id"])
+				if (ids.indexOf(id) >= 0) {
+					continue;
+				}else{
+					ids.push(id)
+				}
 				var data = JSON.parse(data);
 						if (data.length == 0) {
 							return;

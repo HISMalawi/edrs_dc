@@ -200,6 +200,7 @@
 	table.innerHTML ="";
 
 	var datatable;
+	var ids = []
 	function loadTable(page){
 
 		var content = __$("table_container")
@@ -210,6 +211,12 @@
 		ajaxGETRequest(url+"&page="+page+"&size=40",function(data){
 				var data = JSON.parse(data);
 						for(var i = 0 ; i < data.length ; i++){
+
+								var id = (data[i]["person_id"]? data[i]["person_id"] : data[i]["_id"])
+								if (ids.indexOf(id) >= 0) {
+									continue;
+								}
+								ids.push(id);
 
 								estimatesize = i + 1;
 
@@ -467,6 +474,13 @@
 		ajaxGETRequest(url+"&page="+page+"&size=40",function(data){
 				var data = JSON.parse(data);
 				for(var i  = 0 ; i <data.length ; i++){
+					
+					var id = (data[i]["person_id"]? data[i]["person_id"] : data[i]["_id"])
+
+					if (ids.indexOf(id) >= 0) {
+						continue;
+					}
+								ids.push(id);
 					var name = data[i]["first_name"] +" "+ (data[i]["middle_name"] ? data[i]["middle_name"] : "") + " "+ data[i]["last_name"]
 
 					var place_of_death = ""
