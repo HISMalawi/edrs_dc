@@ -1112,9 +1112,10 @@
 
 				var popup_container = __$("msg.popup")
 
-				popup_container.style.width = "40%";
+				popup_container.style.width = "60%";
 
-				popup_container.style.left =  "calc(43% - 210px)";
+				popup_container.style.left =  "20%"
+				//"calc(43% - 210px)";
 
 				popup_container.style.top =  "10%";
 
@@ -1158,7 +1159,7 @@
 
 				td.style.background = "#868687";
 
-				td.style.width = "40%";
+				td.style.width = "25%";
 
 				td.style.paddingLeft = "2em";
 
@@ -1170,6 +1171,32 @@
 				var td = document.createElement("th");
 
 				td.innerHTML ="Status";
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="User";
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="User Role";
 
 				td.style.background = "#868687";
 
@@ -1201,28 +1228,39 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
 
+					var td = document.createElement("td");
 					td.innerHTML = "<%= @i %>"
-
+					td.style.paddingLeft = "1em";
 					tr.appendChild(td);
+
 
 					var td = document.createElement("td");
-
 					tr.appendChild(td);
-
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= comment[:reason]%>";
 
+
 					var td = document.createElement("td");
-
 					tr.appendChild(td);
-
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= comment[:status]%>";
 
 					var td = document.createElement("td");
-
+					td.style.paddingLeft = "1em";
 					tr.appendChild(td);
+					td.innerHTML = "<%= comment[:user]%>";
 
+
+				    var td = document.createElement("td");
+					tr.appendChild(td);
+					td.style.paddingLeft = "1em";
+					td.innerHTML = "<%= comment[:user_role]%>";
+
+
+					var td = document.createElement("td");
+					tr.appendChild(td);
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= Date.parse(comment[:created_at].to_s).strftime('%d/%b/%Y') rescue '' %>";
 
 				<%end%>

@@ -549,6 +549,7 @@ class PeopleController < ApplicationController
       else
 
           if SETTINGS["potential_duplicate"]
+
               record = {}
               record["first_name"] = @person.first_name
               record["last_name"] = @person.last_name
@@ -565,6 +566,8 @@ class PeopleController < ApplicationController
               record["father_first_name"] = (@person.father_first_name rescue nil)
               record["id"] = @person.id
               record["district_code"] = @person.district_code
+
+             
               SimpleElasticSearch.add(record)
           end
 
@@ -578,7 +581,8 @@ class PeopleController < ApplicationController
 
           @comments = []
           PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["created_at"]}.each do |status|
-            @comments << {created_at: status.created_at,status: status.status , reason: status.comment } if status.comment.present?
+            user = User.find(status.creator)
+            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name} #{user.last_name}", user_role: user.role } if status.comment.present?
           end
           #raise @comments.inspect
           render :layout => "landing"
