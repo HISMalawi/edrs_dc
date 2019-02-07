@@ -26,6 +26,11 @@ t7 = Thread.new{
 	u =User.all.count
 	puts u
 }
+
+t8 = Thread.new{
+	b =Barcode.all.count
+	puts b
+}
 t1.join
 t2.join
 t3.join
@@ -33,3 +38,4 @@ t4.join
 t5.join
 t6.join
 t7.join
+t8.join

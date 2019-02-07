@@ -302,6 +302,7 @@ class UsersController < ApplicationController
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
 
     district_code = current_user.district_code
+    
     if SETTINGS['district_code'].present?
       district_code = SETTINGS['district_code']
     end
