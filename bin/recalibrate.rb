@@ -1,6 +1,4 @@
 #Load metadata
-puts "#{Rails.root}"
-exit
 puts "########### LOADING METADATA PLEASE WAIT ITS GOING TO TAKE A MOMENT ###########"
 `cd #{Rails.root} && bundle exec rails r bin/scripts/load_metadata_to_sql.rb`
 puts "########### DONE LOADING METADATA ###########"
