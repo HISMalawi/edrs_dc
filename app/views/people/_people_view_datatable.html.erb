@@ -137,6 +137,11 @@
 				}
 			<%end%>
 		<%end%>
+		<% if @den.present? && @den %>
+			url = url + "&den=true"
+		<%else%>
+			url = url + "&den=false"
+		<%end %>
 
 		if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
 
