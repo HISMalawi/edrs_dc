@@ -27,5 +27,31 @@
             }
       },500)
 <%end%>
+function checkIfHQIsOnline(){
+            simpleAjaxRequest("/application/hq_is_online", function(data){ 
 
+                data = JSON.parse(data)  
+                if (data.status) {
+                    __$("hq_sync").innerHTML = "HQ is Online";
+                    __$("hq_sync").style.backgroundColor="#b8d6bd";
+                    if (__$("print_btn")) {
+                      sync_online = true;
+                      
+                    }
+
+                }else{
+                    __$("hq_sync").innerHTML = "HQ is Offline";
+                    __$("hq_sync").style.backgroundColor="#d6bab8";
+                    if (__$("print_btn")) {
+                      sync_online = false;
+                    }
+
+                }
+                
+          });
+}
+checkIfHQIsOnline();
+setInterval(function(){
+  checkIfHQIsOnline();
+},10000);
 </script>

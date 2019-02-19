@@ -1,3 +1,4 @@
+require 'open3'
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -30,8 +31,11 @@ class ApplicationController < ActionController::Base
                 "passwordLength",
                 "confirm_username",
                 "reaprove_record",
-               "find_identifier",
-               "dispatch_barcodes"]
+                "find_identifier",
+                "dispatch_barcodes",
+                "do_print_these",
+                "death_certificate",
+                "hq_is_online"]
   before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
@@ -366,6 +370,40 @@ class ApplicationController < ActionController::Base
 
                      }
   end
+
+  def create_barcode(person)
+    if person.npid.blank?
+       npid = Npid.by_assigned.keys([false]).first
+       person.npid = npid.national_id
+       person.save
+    end
+    `bundle exec rails r bin/generate_barcode #{person.npid.present?? person.npid : '123456'} #{person.id} #{SETTINGS['barcodes_path']}`
+  end
+
+  def create_qr_barcode(person)
+    if person.npid.blank?
+       npid = Npid.by_assigned.keys([false]).first
+       person.npid = npid.national_id
+       person.save
+    end
+    `bundle exec rails r bin/generate_qr_code #{person.id} #{SETTINGS['qrcodes_path']}`    
+  end
+  def is_up?(host)
+    host, port = host.split(':')
+    a, b, c = Open3.capture3("nc -vw 5 #{host} #{port}")
+    b.scan(/succeeded/).length > 0
+  end
+
+  def hq_is_online
+      hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+      online = is_up?(hq_link) rescue false
+      if online
+         render :text => {status: true}.to_json
+      else
+         render :text => {status: false}.to_json  
+      end
+  end
+
   protected
 
   def login!(user,portal_link = nil)
@@ -447,6 +485,7 @@ class ApplicationController < ActionController::Base
 
   def check_user_level_and_site
     user = User.current_user
+    return if user.blank?
     if SETTINGS['site_type'] == "facility" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code.to_s != SETTINGS['facility_code'].to_s
     end

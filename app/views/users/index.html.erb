@@ -12,30 +12,6 @@
   </div>
  <%end %>
 
- <% if User.current_user.activities_by_level("Facility").include?("Deactivate User")  %>
-     <div class="touch_btn" onmousedown="window.location = '/view_active'" >
-              <div class="icon">
-                                       <i class="fa fa-ban"></i>
-              </div>
-              <div class="button_label">Block User</div>
-              <div class="button_description">  Block existing users.</div>
-
-                                
-    </div>
- <% end %>
-
-  <% if User.current_user.activities_by_level("Facility").include?("Activate User")  %>
-     <div class="touch_btn" onmousedown="window.location = '/view_blocked'" >
-                                <div class="icon">
-                                       <i class="fa fa-unlock-alt"></i>
-                                </div>
-                                <div class="button_label">Unblock</div>
-                                <div class="button_description">  Give back access rights to blocked user</div>
-
-                                
-  </div>
-<% end %>
-
 <% if User.current_user.activities_by_level("Facility").include?("View Users")  %>
 
   <div class="touch_btn" onmousedown="window.location = '/view_users'" >

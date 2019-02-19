@@ -13,7 +13,8 @@ class LoginsController < ApplicationController
   def create
     username = params[:user][:username]
     password = params[:user][:password]
-    user = User.get_active_user(username)
+    #user = User.get_active_user(username)
+    user = UserModel.where(username: username, active: 1).first
     if user and user.password_matches?(password)
 
       ############## Checking if the user is from the district ####################################
@@ -30,7 +31,7 @@ class LoginsController < ApplicationController
       else
         #do something if remote
         if (user.role !="System Administrator") && (user.site_code != "HQ")
-          user_district = District.find(user.district_code).name
+          user_district = DistrictRecord.find(user.district_code).name
 
           if SETTINGS['exclude'].split(",").include? user_district
 
@@ -105,10 +106,15 @@ class LoginsController < ApplicationController
       end      
     end
 
-    user_access = UserAccess.by_user_id.key(User.current_user.id).each
-    user_access.each do |access|
-      access.destroy
+    begin
+      user_access = UserAccess.by_user_id.key(User.current_user.id).each rescue []
+      user_access.each do |access|
+        access.destroy
+      end      
+    rescue Exception => e
+      
     end
+
 
     logout!
    

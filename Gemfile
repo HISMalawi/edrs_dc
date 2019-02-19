@@ -67,3 +67,11 @@ gem 'couch_tap'
 gem "whitesimilarity"
 
 gem 'mac-address'
+
+gem 'pdfkit'
+
+gem 'barby'
+
+gem 'rmagick'
+
+gem 'rqrcode'

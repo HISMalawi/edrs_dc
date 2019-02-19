@@ -13,3 +13,10 @@
  include_lo_role: true
  restrict_same_creatials_for_multiple_users: true
  printer_name: ME,Printer2
+ barcodes_path: /home/usr/barcodes/ 
+ certificates_path: /home/usr/certificates/
+ dispatch_path: /home/usr/dispatch/
+ wkhtmltopdf: /usr/bin/wkhtmltopdf
+ decentralized_printing: false
+ print_qrcode: false
+ qr_codes_path: /home/usr/qrcodes/

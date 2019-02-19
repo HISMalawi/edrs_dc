@@ -303,6 +303,8 @@ Rails.application.routes.draw do
 
   get "/my_account" => "users#my_account"
 
+  get "/users/show"
+
   get "/build_mysql" => "users#build_mysql"
 
   get '/build_mysql_database' => 'users#build_mysql_database'
@@ -381,6 +383,13 @@ Rails.application.routes.draw do
 ##############################################################################################################################
   get "/dc/print_certificates"
   get "dc/search_records_to_print"
+  get "/dc/do_print_these"
+  get "/death_certificate/:id" => "dc#death_certificate"
+  get "/dc/printed"
+  get "/dc/dc_printed"
+  get "/dc/hq_printed"
+  get "/application/hq_is_online"
+  get "/dc/print_preview"
 
   resources :users
 

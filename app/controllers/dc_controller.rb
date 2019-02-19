@@ -200,13 +200,49 @@ class DcController < ApplicationController
 		
 	end
 
+
+	def printed
+		@section = "Printed Records"
+		@next_url = params[:next_url]
+		render :layout => "landing"
+			
+	end	
+
 	def closed
+
+		@section = "Printed Records"
+
+		@statuses = ["HQ PRINTED","DC PRINTED"]
+
+		@next_url = "/dc/closed"
+
+		@den = true 
+
+		render :template =>"/people/view"
+		
+	end
+
+	def dc_printed
+
+		@section = "Printed Records"
+
+		@statuses = ["DC PRINTED"]
+
+		@next_url = "/dc/dc_printed"
+
+		@den = true 
+
+		render :template =>"/people/view"
+		
+	end
+
+	def hq_printed
 
 		@section = "Printed Records"
 
 		@statuses = ["HQ PRINTED"]
 
-		@next_url = "/dc/closed"
+		@next_url = "/dc/dc_printed"
 
 		@den = true 
 
@@ -661,6 +697,102 @@ class DcController < ApplicationController
 	    end
 	    render :text => people.to_json
 	end
+
+	def do_print_these
+    	selected = params[:selected].split("|")
+
+    	paper_size = GlobalProperty.find("paper_size").value rescue "A4"
+    
+	    if paper_size == "A4"
+	       zoom = 0.83
+	    elsif paper_size == "A5"
+	       zoom = 0.6
+	    end
+     
+	    selected.each do |key|
+
+	      person = Person.find(key.strip)
+
+	      if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{person.id}.png")
+	      		create_qr_barcode(person)
+	      		sleep(1)
+	      	  end
+	      else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{person.id}.png")
+		        create_barcode(person)
+		        sleep(1)
+		      end	      	
+	      end
+
+
+	      next if person.blank?
+	      
+	      id = person.id
+	      
+	      output_file = "#{SETTINGS['certificates_path']}#{id}.pdf"
+
+	      input_url = "#{CONFIG["protocol"]}://#{request.env["SERVER_NAME"]}:#{request.env["SERVER_PORT"]}/death_certificate/#{id}"
+
+
+	      thread = Thread.new {
+	        Kernel.system "#{SETTINGS['wkhtmltopdf']} --zoom #{zoom} --page-size #{paper_size} #{input_url} #{output_file}"
+	        #PDFKit.new(input_url, :page_size => paper_size, :zoom => zoom).to_file(output_file)
+
+	        sleep(4)
+
+	        Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
+
+	        PersonRecordStatus.change_status(person,"DC PRINTED")
+	        
+	      }
+
+	      sleep(1)
+	  
+	   end
+	    
+	   redirect_to "/dc/print_certificates?next_url=/dc/manage_cases?next_url=/" and return
+	end
+
+	def death_certificate
+		@person = Person.find(params[:id])
+	    @place_of_death = place_of_death(@person)
+	    @drn = @person.drn
+	    @den = @person.den
+
+	    if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+	      		create_qr_barcode(@person)
+	      		sleep(5)
+	      		redirect_to request.fullpath and return
+	      	  end
+	     else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+		        create_barcode(@person)
+		        sleep(5)
+		        redirect_to request.fullpath and return
+		      end	      	
+	    end
+	    @barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
+
+	    @date_registered = @person.created_at
+	    PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|s| s.created_at}.each do |state|
+	      if state.status == "HQ ACTIVE"
+	          @date_registered = state.created_at
+	          break;
+	      end
+	    end
+	    
+	  
+	    render :layout => false, :template => 'dc/death_certificate_print_a5'
+	end
+
+	def print_preview
+	    @section = "Print Preview"
+	    @targeturl = "/print" 
+	    @person = Person.find(params[:id])
+	    @available_printers = SETTINGS["printer_name"].split(',')
+  	end
 
 	protected
 end
