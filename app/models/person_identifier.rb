@@ -91,6 +91,12 @@ class PersonIdentifier < CouchRest::Model::Base
   def self.assign_den(person, creator)
     year = Date.today.year
     district_code = person.district_code
+    if SETTINGS['site_type'] == "dc"
+        return if person.district_code.to_s.squish != SETTINGS['district_code'].to_s.squish
+    else 
+        return if SETTINGS['exclude'].split(",").include?(DistrictRecord.where(district_id: district_code).first.name)
+    end
+
 
     dens = DeathEntryNumber.where(district_code: district_code, year: year).order(:value) rescue nil
     
