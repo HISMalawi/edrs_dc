@@ -18,7 +18,7 @@ SimpleSQL.query_exec(create_facility_table);
 create_barcode_table = "CREATE TABLE IF NOT EXISTS barcodes (
 							barcode_id varchar(225) NOT NULL,
 							person_record_id varchar(225) NOT NULL,
-							barcode varchar(100) NOT NULL,
+							barcode varchar(255) NOT NULL,
 							assigned INT(1),
 							district_code varchar(5) NOT NULL,
 							creator varchar(225) NOT NULL,
@@ -26,6 +26,9 @@ create_barcode_table = "CREATE TABLE IF NOT EXISTS barcodes (
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
 SimpleSQL.query_exec(create_barcode_table);
 
+alter_person_identifier_id = "ALTER TABLE person_identifier MODIFY COLUMN person_identifier_id VARCHAR(255)"
+
+SimpleSQL.query_exec(alter_person_identifier_id);
 
 SimpleSQL.load_dump("#{Rails.root}/db/dump.sql");
 

@@ -86,7 +86,6 @@ class DcController < ApplicationController
 
 
 	def approve_record
-	
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
 		begin
@@ -498,7 +497,16 @@ class DcController < ApplicationController
                                                           [params[:id],"DC REPRINT DAMAGED"],
                                                           [params[:id],"DC AMEND"]]).each
       	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
-      	#@person.change_status("DC AMEND")
+
+      	change_keys = @amendment_audit.change_log.keys rescue []
+      	place0 = {}
+      	place1 = {}
+      	change_keys.each do |key|
+      		place0[key] = (@amendment_audit.change_log[key][0] rescue "")
+      		place1[key] = (@amendment_audit.change_log[key][1] rescue "")
+      	end
+
+
 		@section ="Amendments"
 		
 	end
@@ -523,7 +531,7 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
 		if amendment_audit.present?
-			param_keys = params[:person].keys
+			param_keys = params[:person].keys + (params[:prev].keys rescue [])
 			hash = amendment_audit.change_log
 			param_keys.each do |key|
 				unless hash.present?
@@ -545,7 +553,8 @@ class DcController < ApplicationController
 			amendment_audit.audit_type = "DC AMEND"
 			amendment_audit.change_log = {}
 
-			param_keys = params[:person].keys
+			param_keys = params[:person].keys + (params[:prev].keys rescue [])
+
 			param_keys.each do |key|
 				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
 			end
@@ -592,6 +601,8 @@ class DcController < ApplicationController
 		@next_url = "/dc/confirmed_duplicated"
 	    render :template =>"/people/view"
 	end
+
+
 	def counts_by_status
 		status = params[:status]
 		district_code = SETTINGS['district_code']
