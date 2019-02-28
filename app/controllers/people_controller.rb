@@ -584,9 +584,13 @@ class PeopleController < ApplicationController
           @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 
 
+          comment_statuses = []
 
           @comments = []
-          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["created_at"]}.each do |status|
+          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["updated_at"]}.each do |status|
+            next if comment_statuses.include?(status.status)
+            next if status.status.blank?
+            comment_statuses << status.status
             user = User.find(status.creator)
             @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name} #{user.last_name}", user_role: user.role } if status.comment.present?
           end
