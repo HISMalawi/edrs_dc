@@ -1,6 +1,6 @@
 #Creating metadata tables
 create_facility_table = "CREATE TABLE IF NOT EXISTS health_facility (
-                            health_facility_id varchar(225) NOT NULL,
+                            health_facility_id varchar(255) NOT NULL,
                             district_id varchar(5) NOT NULL,
   							facility_code varchar(40),
  							name varchar(40),
@@ -16,12 +16,12 @@ create_facility_table = "CREATE TABLE IF NOT EXISTS health_facility (
 SimpleSQL.query_exec(create_facility_table); 
 
 create_barcode_table = "CREATE TABLE IF NOT EXISTS barcodes (
-							barcode_id varchar(225) NOT NULL,
+							barcode_id varchar(255) NOT NULL,
 							person_record_id varchar(225) NOT NULL,
 							barcode varchar(255) NOT NULL,
 							assigned INT(1),
 							district_code varchar(5) NOT NULL,
-							creator varchar(225) NOT NULL,
+							creator varchar(255) NOT NULL,
                           PRIMARY KEY (barcode_id)
                         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
 SimpleSQL.query_exec(create_barcode_table);
