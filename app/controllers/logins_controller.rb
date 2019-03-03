@@ -68,7 +68,7 @@ class LoginsController < ApplicationController
             redirect_to "/" and return 
            end
 
-           if user.password_attempt >= 5
+           if user.password_attempt >= 5 && (SETTINGS['password_can_expire'] rescue false)
              logout!
              flash[:error] = 'Your password has expired.Please contact your System Administrator.'
              redirect_to "/", referrer_param => referrer_path and return

@@ -129,6 +129,7 @@ class PersonIdentifier < CouchRest::Model::Base
                                                       updated_at: Time.now)
           if identifier_record.present?
 
+
             status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
             begin
@@ -136,12 +137,20 @@ class PersonIdentifier < CouchRest::Model::Base
             rescue
             end
 
-            PersonRecordStatus.create({
+            approved_already_status = RecordStatus.where(person_record_id: person.id.to_s, status: "HQ ACTIVE").first
+
+            if approved_already_status.present? 
+              approved_already_status_couch = PersonRecordStatus.find(approved_already_status.id)
+              approved_already_status_couch.voided = false
+              approved_already_status_couch.save
+            else
+              PersonRecordStatus.create({
                                       :person_record_id => person.id.to_s,
                                       :status => "HQ ACTIVE",
                                       :district_code => (district_code rescue SETTINGS['district_code']),
                                       :comment=> "Record approved at DC",
-                                      :creator => creator})
+                                      :creator => creator})              
+            end
 
             person.approved = "Yes"
             person.approved_at = Time.now

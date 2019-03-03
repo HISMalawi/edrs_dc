@@ -130,11 +130,10 @@ class Person < CouchRest::Model::Base
   end
 
   def set_district_code
-    unless self.district_code.present?
-      self.district_code = SETTINGS["district_code"]
-    end 
     if SETTINGS['site_type'] == "remote"
-      self.district_code = User.current_user.district_code
+      self.district_code = User.current_user.district_code unless self.district_code.present?
+    else
+       self.district_code = SETTINGS["district_code"] unless self.district_code.present?
     end   
   end
 

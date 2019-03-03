@@ -34,9 +34,12 @@ class Barcode < CouchRest::Model::Base
         next if field == "_rev"
         next if field == "created_at"
         next if field == "updated_at"
+        next if field == "assigned"
         if field =="_id"
             sql_record["barcode_id"] = self[field]
-        else
+        elsif self[field] == "barcode"
+            sql_record[field] = "#{self[field].to_i}".squish
+        else          
             sql_record[field] = self[field]
         end
 

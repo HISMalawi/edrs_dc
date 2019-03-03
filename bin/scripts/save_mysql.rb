@@ -82,7 +82,13 @@ while page <= pages
 				end
 			end		
 		end
-		identifier.insert_update_into_mysql
+		begin
+			identifier.insert_update_into_mysql
+		rescue Exception => e
+			error = "#{identifier.id} : #{e.to_s}"
+			add_to_file(error)
+		end
+		
 	end
 
 	puts page
@@ -99,7 +105,12 @@ id = []
 
 while page <= pages
 	Barcode.all.page(page).per(pagesize).each do |barcode|
-		barcode.insert_update_into_mysql
+		begin
+			barcode.insert_update_into_mysql
+		rescue Exception => e
+			error = "#{barcode.id} : #{e.to_s}"
+			add_to_file(error)
+		end
 	end
 
 	puts page

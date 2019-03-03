@@ -195,13 +195,13 @@
     <input type="hidden" name="next_url" value="<%= params[:next_url]%>">
 		<% if @field  == "person[birthdate]" %>
 
-					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown"}  %>
+					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown", :value=> (@person.birthdate.to_date.year rescue '')}  %>
 
 		  			<%= select_tag "person[birth_month]", options_for_select(["January","February","March","April","May","June","July","August","September","October","November","December"], " "), {:helpText => 'Month of Birth', :condition => '$("person_birth_year").value.toLowerCase() != "unknown"',:validationJS => "validateDOB();",:validationMessage => 'Please enter a valid date', :tt_onLoad =>"__$('keyboard').style.display = 'none'"}%>
 
 		  			<%= text_field_tag "person[age_estimate]", nil, {:helpText => 'Age Estimate', :absoluteMin => 1, :absoluteMax => 120, :field_type => 'number', :condition => '$("person_birth_year").value == "Unknown"', :tt_onLoad => "$('nextButton').style.display = 'block';", :tt_pageStyleClass => "Numeric NumbersOnly",:tt_onUnLoad => "setEstimatedAgeValue()"} %> 
 
-		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues();"%>
+		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues();", :value=> (@person.birthdate.to_date.day rescue '') %>
 
 
             <input type="hidden" id="person_birthdate" name="person[birthdate]">
