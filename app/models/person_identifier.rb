@@ -88,7 +88,7 @@ class PersonIdentifier < CouchRest::Model::Base
       end
   end
 
-  def self.assign_den(person, creator)
+  def self.assign_den(person, creator) 
     year = Date.today.year
     district_code = person.district_code
     if SETTINGS['site_type'] == "dc"
@@ -112,7 +112,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
     den_assigned_to_person = DeathEntryNumber.where(district_code: district_code, year: year, value: num).first
 
-    person_assigened_den =  DeathEntryNumber.where(person_record_id:person.id.to_s).first.value rescue nil
+    person_assigened_den =  DeathEntryNumber.where(person_record_id:person.id.to_s).first rescue nil
 
     
 
@@ -170,11 +170,13 @@ class PersonIdentifier < CouchRest::Model::Base
         self.can_assign_den = true
 
     elsif den_assigned_to_person.present?
-
+      
       puts "DEN is assign to #{den_assigned_to_person.person_record_id rescue ''}"
       self.can_assign_den = true
 
     elsif person_assigened_den.present?
+          verify_not_duplicate(person_assigened_den)
+          person_assigened_den.push_to_couch
 
           status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
@@ -205,6 +207,16 @@ class PersonIdentifier < CouchRest::Model::Base
     else
         puts "Can not assign DEN"
     end
+  end
+
+  def verify_not_duplicate(assigned)
+      den = PersonIdentifier.find("#{assigned.district_code}/#{assigned.value.to_s.rjust(7,"0")}/#{assigned.year}")
+      if assigned.person_record_id == den.person_record_id
+        return
+      else
+        den.person_record_id = assigned.person_record_id
+        den.save
+      end
   end
 
   def self.generate_drn(person)
