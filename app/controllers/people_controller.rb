@@ -304,6 +304,7 @@ class PeopleController < ApplicationController
       den = person.den rescue ""
       drn = person.drn rescue ""
 
+     
       if den.blank? && params[:den].present? && eval(params[:den])
         next
       end
@@ -311,7 +312,7 @@ class PeopleController < ApplicationController
       person = person.as_json
       person["den"] = den
       person["drn"] = drn
-      people << person 
+      people << person
     end
 
 =begin
