@@ -408,6 +408,13 @@ class ApplicationController < ActionController::Base
 
   def login!(user,portal_link = nil)
     session[:current_user_id] = user.username
+    if SETTINGS["site_type"] == "remote"
+        session[:district_code] = user.district_code 
+    else
+        session[:district_code] = SETTINGS["district_code"]     
+    end
+   
+
     user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
     @current_user = user
     Audit.ip_address_accessor = request.remote_ip

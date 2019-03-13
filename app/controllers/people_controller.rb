@@ -60,6 +60,16 @@ class PeopleController < ApplicationController
 	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
      @current_nationality = Nationality.by_nationality.key("Malawian").last
+     if session[:district_code].blank?
+        if SETTINGS['site_type'] == "dc" || SETTINGS['site_type'] == "facility"
+            session[:district_code] = SETTINGS['district_code'] 
+        else
+            flash[:error] = 'Session expired please login again!'
+            redirect_to "/login" and return          
+        end
+        @district_code =  session[:district_code]
+     end
+     
 	   if !params[:id].blank?
 	   else
 	    	@person = Person.new if @person.nil?

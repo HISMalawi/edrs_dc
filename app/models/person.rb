@@ -22,7 +22,7 @@ class Person < CouchRest::Model::Base
 
   #before_save :encrypt_data
 
-  before_save :set_facility_code,:set_district_code
+  before_save :set_facility_code #,:set_district_code
   after_save :insert_update_into_mysql
   after_create :create_stat, :insert_update_into_mysql
 
@@ -131,9 +131,9 @@ class Person < CouchRest::Model::Base
 
   def set_district_code
     if SETTINGS['site_type'] == "remote"
-      self.district_code = User.current_user.district_code unless self.district_code.present?
+      self.district_code = User.current_user.district_code if self.district_code.blank?
     else
-       self.district_code = SETTINGS["district_code"] unless self.district_code.present?
+       self.district_code = SETTINGS["district_code"] if self.district_code.blank?
     end   
   end
 
