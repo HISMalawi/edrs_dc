@@ -67,8 +67,9 @@ class PeopleController < ApplicationController
             flash[:error] = 'Session expired please login again!'
             redirect_to "/login" and return          
         end
-        @district_code =  session[:district_code]
      end
+
+     @district_code =  session[:district_code]
      
 	   if !params[:id].blank?
 	   else

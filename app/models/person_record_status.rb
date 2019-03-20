@@ -64,23 +64,6 @@ class PersonRecordStatus < CouchRest::Model::Base
         s.voided = true
         s.save
       end
-=begin
-		PersonRecordStatus.by_person_recent_status.key(person.id).each 
-
-		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
-		if status.present?
-			status.update_attributes({:voided => true})
-			PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => currentstatus,
-                                  :prev_status => status.status,
-                                  :comment => comment,
-                                  :district_code => person.district_code,
-                                  :creator => (User.current_user.id rescue nil)})
-		else
-			
-		end
-=end
 		
 	end
 	def insert_update_into_mysql
