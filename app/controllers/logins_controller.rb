@@ -7,13 +7,29 @@ class LoginsController < ApplicationController
       uri = URI::parse(params["referrer"])
       @portal = uri.query.split("=")[1] rescue nil
     end
+    @districts = []
+    DistrictRecord.all.each  do |e| 
+       next if e.name.include?("City")
+       next if SETTINGS['exclude'].split(",").include?(e.name)
+       @districts << e.name
+    end
     render :layout => false
   end
 
   def create
     username = params[:user][:username]
     password = params[:user][:password]
-    user = User.get_active_user(username)
+    #user = User.get_active_user(username)
+    user = UserModel.where(username: username, active: 1).first
+
+    if SETTINGS['site_type'] == "remote"
+      district = DistrictRecord.where(name: params[:user][:district]).first
+
+      if user.present? && user.district_code != district.id
+              flash[:error] = 'User does not have rights for the district selected'
+              redirect_to "/login" and return
+      end
+    end
     if user and user.password_matches?(password)
 
       ############## Checking if the user is from the district ####################################
@@ -30,7 +46,7 @@ class LoginsController < ApplicationController
       else
         #do something if remote
         if (user.role !="System Administrator") && (user.site_code != "HQ")
-          user_district = District.find(user.district_code).name
+          user_district = DistrictRecord.find(user.district_code).name
 
           if SETTINGS['exclude'].split(",").include? user_district
 
@@ -61,24 +77,36 @@ class LoginsController < ApplicationController
         
         login!(user,params[:remote_portal])
 
-        if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
-           if user.password_attempt >= 5 && (username.downcase != 'admin' || username.downcase != "admin#{SETTINGS['facility_code']}" || username.downcase != "admin#{SETTINGS['district_code']}")
+        # Password expirely should be refined
+=begin
+        if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90 && false
+          
+           if user.role =="System Administrator"
+            redirect_to "/" and return 
+           end
+
+           if user.password_attempt >= 5 && (SETTINGS['password_can_expire'] rescue false)
              logout!
              flash[:error] = 'Your password has expired.Please contact your System Administrator.'
              redirect_to "/", referrer_param => referrer_path and return
            else
+             @password_attempt = user.password_attempt
              user.update_attributes(:password_attempt => user.password_attempt + 1)
-             flash[:error] = 'Your password has expired.Please change it!!!'
+
+             flash[:error] = 'Your password has expired.Please change it!!! or you will be logged out'
              redirect_to "/change_password" and return
            end
         else
-        
-           if (Time.now.to_date - user.last_password_date.to_date).to_i >= 85 && (Time.now.to_date - user.last_password_date.to_date).to_i < 90
-           		flash[:info] = 'Your password will expire soon. Please change it.'
+          
+           if user.role !="System Administrator"
+             if (Time.now.to_date - user.last_password_date.to_date).to_i >= 85 && (Time.now.to_date - user.last_password_date.to_date).to_i < 90
+             		flash[:info] = 'Your password will expire soon. Please change it.'
+             end
            end
-
            redirect_to default_path and return
-        end   
+        end 
+=end  
+        redirect_to default_path and return
       else
           flash[:error] = 'That username and/or password is not valid for this level'
           redirect_to "/login" and return
@@ -97,10 +125,15 @@ class LoginsController < ApplicationController
       end      
     end
 
-    user_access = UserAccess.by_user_id.key(User.current_user.id).each
-    user_access.each do |access|
-      access.destroy
+    begin
+      user_access = UserAccess.by_user_id.key(User.current_user.id).each rescue []
+      user_access.each do |access|
+        access.destroy
+      end      
+    rescue Exception => e
+      
     end
+
 
     logout!
    

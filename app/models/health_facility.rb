@@ -17,8 +17,6 @@ class HealthFacility < CouchRest::Model::Base
       view :by__id
       view :by_name
       view :by_facility_code
-      view :by_facility_type
-      view :by_f_type
       view :by_district_id,
            :map=>"function(doc){
                     if(doc.type == 'HealthFacility' && doc.name.length > 0){
@@ -26,8 +24,24 @@ class HealthFacility < CouchRest::Model::Base
                     }
            }"
       view :by_district_id_and_name
-      view :by_zone
       view :by_latitude_and_longitude
+  end
+
+  def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = Facility.where(health_facility_id: self.id).first
+      sql_record = Facility.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        if field =="_id"
+            sql_record["health_facility_id"] = self[field]
+        else
+            sql_record[field] = self[field]
+        end
+
+      end
+      sql_record.save
   end
   
 end

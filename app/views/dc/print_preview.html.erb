@@ -1,0 +1,139 @@
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<script type="text/javascript" language="javascript" src="/bootstrap/js/bootstrap.min.js" ></script>
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
+<style type="text/css">
+    iframe{
+        width: 70%;
+        margin-left:15%;
+        border: 1px solid gray;
+    }
+    #shield{
+      position: absolute;
+      width: 100% !important;
+      height: 100% !important;
+      left: 0px;
+      top: 0px;
+      background: rgba(128,128,128,0.35);
+      z-index: 1050;
+      display: none;
+    }
+    #messagebox, #printers{
+      position : absolute;
+      left: 25%;
+      width: 50%;
+      background: #ffffff;
+      top: 13.5%;
+      display: none;
+      z-index: 4000;
+      text-align: center;
+  }
+</style>
+<div style="width: 100%;background: #5c6066">
+      <iframe style="background: #ffffff" id="iframe" src="/death_certificate/<%= @person.id %>"></iframe>
+</div>
+<div id="shield">
+  <div  id="printers">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header btn-primary" >
+          <button type="button" class="close"  onclick="__$('printers').style.display = 'none'; hideModal()">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title">Select a printer</h4>
+        </div>
+        <div class="modal-body" style="width: 96%">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <table class="table table-condensed table-striped table-hover">
+                <tbody>
+                  <% @available_printers.each do |printer| %>
+                      <tr onmousedown="setPrinter('<%= printer %>')" value="<%= printer %>" class="table-row" style="cursor: pointer">
+                        <td style="width: 50%;padding-left: 30%"><input id="<%= printer %>" type="radio" class="printer_radio_button" value="<%= printer %>" name="printer_name"/></td><td style="width: 50%"> <label for="<%= printer %>"><%= printer %></label></td>
+                      </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            <% if @dispatch.present? && @dispatch %>
+              <button type="button" class="btn btn-primary btn-small" onclick="dispatchSelected()" >Dispatch</button>
+            <%else%>
+              <button type="button" class="btn btn-info btn-small" onclick="printSelected()" > Print </button>
+            <%end%>
+              <button type="button" class="btn btn-default btn-small" onclick="__$('printers').style.display = 'none';hideModal()" > Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+<%if  @person.status.present? && @person.status == "HQ CAN PRINT" %>
+      <button  id="print_btn" class="gray" style="position:absolute; right:10%; bottom:4%" ><span>Print</span></button>
+
+  <%end%>
+<script type="text/javascript">
+  var selected = {}
+  var printer = ""
+  function __$(id){
+    return document.getElementById(id);
+  }
+
+  function resizeDiv(){
+      var wH = window.innerHeight;
+      
+      __$("containt").style.height = (wH * 0.815)+"px";
+      __$("iframe").style.height = (wH * 0.815)+"px";
+  }
+
+  function hideModal(){
+        $("#shield").css('display','none')
+  }
+
+  function loadPopup(id){
+        $("#shield").show()
+        __$(id).style.display = "block";
+  }
+
+  resizeDiv()
+  function checkIfHQIsOnline(){
+            simpleAjaxRequest("/application/hq_is_online", function(data){ 
+
+                data = JSON.parse(data)  
+                if (data.status) {
+                    __$("hq_sync").innerHTML = "HQ is Online";
+                    __$("hq_sync").style.backgroundColor="#b8d6bd";
+
+          if(!__$('print_btn').getAttribute('onclick')){
+                      __$('print_btn').setAttribute('onclick',"loadPopup('printers');");
+              } 
+            __$('print_btn').setAttribute('class',"green")
+                }else{
+                    __$("hq_sync").innerHTML = "HQ is Offline";
+                    __$("hq_sync").style.backgroundColor="#d6bab8";
+                    __$('print_btn').removeAttribute('onclick');
+                __$('print_btn').setAttribute('class',"gray");
+
+                }
+                
+          });
+  }
+  checkIfHQIsOnline();
+  setInterval(function(){
+    checkIfHQIsOnline();
+  },10000);
+
+  function setPrinter(printer_name){
+      printer = printer_name;
+  }
+
+  function printSelected(){
+ 
+        window.location.href = "/dc/do_print_these?printer_name="+printer+"&selected=<%= @person.id %>";
+      
+  }
+</script>

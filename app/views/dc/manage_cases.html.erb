@@ -87,6 +87,7 @@
                                   </div>
                               <%end %>
 
+
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role == "ADR"%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases?next_url=/'" >
@@ -99,6 +100,7 @@
                                     
                                   </div>
                               <%end %>
+
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/voided?next_url=/dc/manage_cases?next_url=/'" >
@@ -113,7 +115,7 @@
                               <%end%>
                               <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
-                                   <div class="touch_btn" onmousedown="window.location = '/dc/closed?next_url=/dc/manage_cases?next_url=/'" >
+                                   <div class="touch_btn" onmousedown="window.location = '/dc/printed?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
                                              <i class="fa fa-folder-open"></i>
                                       </div>

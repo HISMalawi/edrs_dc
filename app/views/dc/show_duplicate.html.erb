@@ -67,36 +67,27 @@
 
 					<tr>
 						<td><b>Place of Death</b></td>
-						<% if @person.place_of_death == 'Hospital/Institution'%>
 
-					 	<td><%= @person.hospital_of_death %></td>
+					 	<td><%= ApplicationController.new.place_of_death(@person) %></td>
+					</tr>
 
-						<%elsif @person.place_of_death == 'Home'%>
-
-							 <td><%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%> , <%= @person.place_of_death_village%> District</td>
-
-						<%elsif @person.place_of_death == 'Other' %>
-
-							 <td><%= @person.other_place_of_death rescue '' %></td>
-
-						<% end %>
+					<tr>
+						<td><b>Mother Firstname</b></td>
+						<td><%= @person.mother_first_name %></td>
 					</tr>
 					<tr>
 						<td><b>Mother surname</b></td>
 						<td><%= @person.mother_last_name %></td>
 					</tr>
 					<tr>
-						<td><b>Mother Firstname</b></td>
-						<td><%= @person.mother_first_name %></td>
+						<td><b>Father Firstname</b></td>
+						<td><%= @person.father_first_name %></td>
 					</tr>
 					<tr>
 						<td><b>Father Surname</b></td>
 						<td><%= @person.father_last_name %></td>
 					</tr>
-					<tr>
-						<td><b>Father Firstname</b></td>
-						<td><%= @person.father_first_name %></td>
-					</tr>
+
 
 	</table>
 	<table style="width:48% !important;float:right" class="record existing">
@@ -129,23 +120,8 @@
 
 					<tr>
 						<td><b>Place of Death</b></td>
-						<% if @person.place_of_death == 'Hospital/Institution'%>
 
-					 	<td><%= @person.hospital_of_death %></td>
-
-						<%elsif @person.place_of_death == 'Home'%>
-
-							 <td><%= @person.place_of_death_village %> Village, TA <%= @person.place_of_death_ta%> , <%= @person.place_of_death_village%> District</td>
-
-						<%elsif @person.place_of_death == 'Other' %>
-
-							 <td><%= @person.other_place_of_death rescue '' %></td>
-
-						<% end %>
-					</tr>
-					<tr>
-						<td><b>Home address</b></td>
-						<td></td>
+					 	<td><%= ApplicationController.new.place_of_death(@person) %></td>
 					</tr>
 					<tr>
 						<td><b>Mother surname</b></td>
@@ -214,7 +190,7 @@
 
 			var ids = "<%= @existing_ids %>".split("|");
 
-			var id_to_void = "";
+			var id_to_proceed = "";
 
 			var void_url =""
 			var number = 0;
@@ -350,18 +326,7 @@
 
 					var td = document.createElement("td");
 
-					if (data.place_of_death == 'Hospital/Institution'){
-
-					 	td.innerHTML = data.hospital_of_death;
-
-					}else if(data.place_of_death == 'Home'){
-						 td.innerHTML = data.place_of_death_village +"Village, TA "+data.place_of_death_ta+
-						 				data.place_of_death_village+" District";
-
-					}else if(data.place_of_death == 'Other'){
-
-						 td.innerHTML = data.other_place_of_death
-					}
+					td.innerHTML = data.death_place
 
 					tr.appendChild(td);
 
@@ -504,7 +469,7 @@
 				ids[0] = "<%= params[:id] %>"
 				setTimeout(function(){
 					if (__$("msg.topic")) {
-						__$("msg.topic").innerHTML ="Choose record to void"
+						__$("msg.topic").innerHTML ="Choose record to proceed with other(s) will be voided"
 					}
 					
 					var msg = __$("msg.content");
@@ -551,18 +516,15 @@
 
 			function setRecordToVoid(element){
 				__$("radio"+element.id).checked = true
-				id_to_void = element.id
+				id_to_proceed = element.id
 			}
 
 			function voidDuplicate(){
-				var person_id = "<%= @person.id %>";
-				var duplicate_id ="<%=@duplicates_audit.id%>";
-				if (id_to_void == person_id){
-					void_url = void_url  +"/"+id_to_void+"/"+duplicate_id+"?next_url=<%=params[:next_url]%>&select=false"
-				}else{
-					void_url = void_url  +"/"+id_to_void+"/"+person_id+"?next_url=<%=params[:next_url]%>&select=true"
-				}
+
+
+				var audit_id = "<%=@duplicates_audit.id%>"
+
+				window.location.href = void_url+ "/"+id_to_proceed+"/"+audit_id + "?next_url=<%=params[:next_url]%>"
 				
-				window.location.href = void_url;
 			}
 </script>

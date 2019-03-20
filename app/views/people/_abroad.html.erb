@@ -7,9 +7,16 @@
     var facility_name = "<%=@facility.name rescue ''%>"
     var district = "<%= @district.name %>"
 </script>
+<style type="text/css">
+  #SHIFT{
+     float: right;
+     display: block;
+  }
+</style>
 <script src="/assets/edrs.js"></script>
 <script src="/assets/form.js"></script>
 <%= form_for @person, :url => '/people/create', :method => :post do |f| %>
+  <input type="hidden" name="person[district_code]" id="person_district_code" value="<%= @district_code%>">
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
 	<% if params[:registration_type].include? "Deaths Abroad"%>

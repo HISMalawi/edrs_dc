@@ -1,10 +1,12 @@
 <script type="text/javascript">
-			if (window.top[0] ===undefined) {
+	if (window.top[0] ===undefined) {
 
-			}else{
+	}else{
 				
-				window.top.location = window.top[0].location.href
-			}
+		window.top.location = window.top[0].location.href
+	}
+			//Sync status 
+	var sync_online = false;
 </script>
 <style type="text/css">
 		input[type=radio].css-checkbox {
@@ -160,7 +162,9 @@
   <%else %>
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="unLock()"><span>Back</span></button>
    <%end %>
- <% if !@locked %>
+
+  <% if User.current_user.district_code == @person.district_code %>
+
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
@@ -221,11 +225,11 @@
 		<%end%>
 	<%end%>
 
-	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+	<%if (@status.present? && @status.status == "HQ PRINTED") ||  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			
 			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Mark for Reprint</span></button>
 	<%end%>
-	<%if  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+	<%if  (@status.present? && @status.status == "HQ PRINTED") || (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
 			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amend Record</span></button>
 
 	<%end%>
@@ -233,7 +237,12 @@
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
 	<%end%>
-<%end%>
+
+	<%if  @status.present? && @status.status == "HQ CAN PRINT" %>
+			<button  id="print_btn" class="gray" style="float: right; margin-right:3%" ><span>Print Preview</span></button>
+
+	<%end%>
+ <%end%>
 	<% if @comments.count > 0 %>
 		<button style="float: right; margin-right:3%" onmousedown="viewPersonComment()"><span>View Record's Trail</span></button>
 	<%end%>
@@ -254,7 +263,7 @@
 <div id="table_container">
 
 		<table id="summary" style="">
-		<% if @locked %>
+		<% if @locked && false %>
 		  <tr>
 		  		<td colspan="6" style="color:red;text-align:center"> <center><b>Record is locked since it is been reviewed by another user please check later</b></center></td>
 		  </tr>
@@ -288,7 +297,7 @@
             <td style="border-right:none"><b>Registration Category : </b></td>
             <td colspan="2" style="color:#4775a1; border-left:none"><%= @person.registration_type%></td>
             <td colspan="2" style="border-right:none"><b>Record Status : </b></td>
-            <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status%></td>
+            <td colspan="2" style="color:#4775a1;border-left:none"><%= @person.status == "HQ CAN PRINT" ? "CAN PRINT" : @person.status%></td>
             <td style="border-right:none"><b>DEN: </b></td>
             <td style="color:#4775a1;border-left:none"><%= @person.den rescue 'XXXXXXXXX'%></td>
             <td style="border-right:none"><b>DRN: </b></td>
@@ -346,12 +355,12 @@
 			</tr>
 			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
+				<td class="clickable" onclick="editField('place_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> <%= @person.hospital_of_death %></td>
 			</tr>
 			<%else%>
 			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
+				<td class="clickable" onclick="editField('place_of_death')" ><input type="radio" name="radiog_dark" id="facility" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Health Facility</label></td>
 				<td colspan="8" style="border-bottom: 1.5px solid black"> 
 				<% if @person.place_of_death_foreign =="Health Facility" %>
 					<% if @person.place_of_death_foreign_hospital.present? %>
@@ -363,18 +372,18 @@
 			</tr>
 			<%end%>
 			<tr>
-				<td class="clickable" onclick="editField('hospital_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
+				<td class="clickable" onclick="editField('place_of_death')" ><input type="radio" name="radiog_dark" id="home" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Home</label></td>
 			<% if (@person.place_of_death_country == 'Malawi' || @person.place_of_death_village) %>
 				<td class="clickable">Address</td>
-				<td class="clickable" onclick="editField('place_of_death_district')" >District</td>
+				<td class="clickable" onclick="editField('place_of_death')" >District</td>
 				<% if @person.place_of_death != "Other" %>
 					<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_district %></td>
 				<%else%>
 					<td style="border-bottom:1.5px solid black"></td>
 				<%end%>
-				<td class="clickable" onclick="editField('place_of_death_ta')">TA</td>
+				<td class="clickable" onclick="editField('place_of_death')">TA</td>
 				<td style="border-bottom:1.5px solid black"><%= @person.place_of_death_ta %></td>
-				<td class="clickable" onclick="editField('place_of_death_village')" >Village</td>
+				<td class="clickable" onclick="editField('place_of_death')" >Village</td>
 				<td style="border-bottom:1.5px solid black" colspan="2"><%= @person.place_of_death_village %></td>
 			<%else%>
 				<td class="clickable" onclick="editField('place_of_death_country')" >Country</td>
@@ -404,7 +413,7 @@
 			<% end %>
 			</tr>
 			<tr>
-				<td class="clickable" onclick="editField('place_of_death_country')" ><input type="radio" name="radiog_dark" id="other" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
+				<td class="clickable" onclick="editField('place_of_death')" ><input type="radio" name="radiog_dark" id="other" class="css-checkbox" /><label for="radio4" class="css-label radGroup2">Other</label></td>
 				<% if @person.place_of_death=="Other" && @person.place_of_death_district != "Not indicated" %>
 					<td colspan="8"><%= @person.other_place_of_death rescue '' %>, <%= @person.place_of_death_district rescue '' %></td>
 				<%else%>
@@ -695,28 +704,54 @@
 			var check_status_interval;
 			function markForApproval(){
 					var url = "/dc/approve_record/<%= @person.id%>?next_url=<%=params[:next_url]%>";
+
+					__$("ok_button").removeAttribute("onclick");
+					__$("ok_button").className = "gray";
+
+
+
 				  	if (__$("msg.shield")) {
                               document.body.removeChild(__$("msg.shield"));
                      }
-                     ajaxGETRequest(url,function(data){
-                     	var data = JSON.parse(data);
 
-                     	if(data.marked && eval(data.marked)){
-                     		setTimeout(function(){
-                     			checkApprovalStatus('/dc/check_approval_status/<%= @person.id%>')
-                     		},100);
-                     	}
-                     	if(data.incomplete && eval(data.incomplete)){
-                     		showPopupMessage("Record incomplete","Completeness check");
-                     	}
-                     	if(data.duplicates && eval(data.duplicates)){
-                     		duplicatesPopup(data.people);
-                     		__$("popup.ok").removeAttribute("onclick");
-                     		__$("popup.ok").onclick = function(){
-                     			window.location.href = "<%params[:next_url] rescue '/'%>"
-                     		}
-                     	}
-                     })
+					var shield = document.createElement("div");
+                	shield.style.position = "absolute";
+                	shield.style.top = "10%";
+                	shield.style.left = "0px";
+                	shield.style.width = "100%";
+                	shield.style.height = "90%";
+                	shield.id = "msg.shield";
+                	shield.style.backgroundColor = "rgba(128,128,128,0.35)";
+                	shield.style.zIndex = 1050;
+
+                    var opts = {
+                                      lines: 15             // The number of lines to draw
+                                    , length: 56            // The length of each line
+                                    , width: 4              // The line thickness
+                                    , radius: 40            // The radius of the inner circle
+                                    , scale: 1.0            // Scales overall size of the spinner
+                                    , corners: 1            // Roundness (0..1)
+                                    , color: '#000'         // #rgb or #rrggbb
+                                    , opacity: 1/4          // Opacity of the lines
+                                    , rotate: 0             // Rotation offset
+                                    , direction: 1          // 1: clockwise, -1: counterclockwise
+                                    , speed: 1              // Rounds per second
+                                    , trail: 100            // Afterglow percentage
+                                    , fps: 20               // Frames per second when using setTimeout()
+                                    , zIndex: 2e9           // Use a high z-index by default
+                                    , className: 'spinner'  // CSS class to assign to the element
+                                    , top: '50%'            // center vertically
+                                    , left: '50%'           // center horizontally
+                                    , shadow: false         // Whether to render a shadow
+                                    , hwaccel: false        // Whether to use hardware acceleration (might be buggy)
+                                    , position: 'absolute'  // Element positioning
+                      }
+
+                    var spinner = new Spinner(opts).spin(shield)
+
+                    document.body.appendChild(shield);
+
+                    window.location = url;
 
 			}
 			function checkApprovalStatus(url){
@@ -1120,9 +1155,10 @@
 
 				var popup_container = __$("msg.popup")
 
-				popup_container.style.width = "40%";
+				popup_container.style.width = "60%";
 
-				popup_container.style.left =  "calc(43% - 210px)";
+				popup_container.style.left =  "20%"
+				//"calc(43% - 210px)";
 
 				popup_container.style.top =  "10%";
 
@@ -1166,7 +1202,7 @@
 
 				td.style.background = "#868687";
 
-				td.style.width = "40%";
+				td.style.width = "25%";
 
 				td.style.paddingLeft = "2em";
 
@@ -1178,6 +1214,32 @@
 				var td = document.createElement("th");
 
 				td.innerHTML ="Status";
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="User";
+
+				td.style.background = "#868687";
+
+				td.style.paddingLeft = "2em";
+
+				td.style.color ="#ffffff";
+
+				tr.appendChild(td);
+
+
+				var td = document.createElement("th");
+
+				td.innerHTML ="User Role";
 
 				td.style.background = "#868687";
 
@@ -1209,28 +1271,39 @@
 
 					table.appendChild(tr);
 
-					var td = document.createElement("td");
 
+					var td = document.createElement("td");
 					td.innerHTML = "<%= @i %>"
-
+					td.style.paddingLeft = "1em";
 					tr.appendChild(td);
+
 
 					var td = document.createElement("td");
-
 					tr.appendChild(td);
-
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= comment[:reason]%>";
 
+
 					var td = document.createElement("td");
-
 					tr.appendChild(td);
-
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= comment[:status]%>";
 
 					var td = document.createElement("td");
-
+					td.style.paddingLeft = "1em";
 					tr.appendChild(td);
+					td.innerHTML = "<%= comment[:user]%>";
 
+
+				    var td = document.createElement("td");
+					tr.appendChild(td);
+					td.style.paddingLeft = "1em";
+					td.innerHTML = "<%= comment[:user_role]%>";
+
+
+					var td = document.createElement("td");
+					tr.appendChild(td);
+					td.style.paddingLeft = "1em";
 					td.innerHTML = "<%= Date.parse(comment[:created_at].to_s).strftime('%d/%b/%Y') rescue '' %>";
 
 				<%end%>
@@ -1268,4 +1341,30 @@
 
 
 		   	//duplicatesPopup();
+function checkIfHQIsOnline(){
+            simpleAjaxRequest("/application/hq_is_online", function(data){ 
+
+                data = JSON.parse(data)  
+                if (data.status) {
+                    __$("hq_sync").innerHTML = "HQ is Online";
+                    __$("hq_sync").style.backgroundColor="#b8d6bd";
+
+					if(!__$('print_btn').getAttribute('onclick')){
+				              __$('print_btn').setAttribute('onclick',"window.location.href='/dc/print_preview?id=<%=@person.id%>&next_url=<%=params[:next_url].to_s%>'");
+				      } 
+				    __$('print_btn').setAttribute('class',"blue")
+                }else{
+                    __$("hq_sync").innerHTML = "HQ is Offline";
+                    __$("hq_sync").style.backgroundColor="#d6bab8";
+                    __$('print_btn').removeAttribute('onclick');
+          			__$('print_btn').setAttribute('class',"gray");
+
+                }
+                
+          });
+}
+checkIfHQIsOnline();
+setInterval(function(){
+  checkIfHQIsOnline();
+},10000);
 </script>

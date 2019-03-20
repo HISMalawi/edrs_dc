@@ -34,9 +34,30 @@ class DcController < ApplicationController
 		
 	end
 
+	def cause_of_death_dispatch
+		@section = "CCU Dispatch"		
+	end
+
+	def dispatch_barcodes
+		cause_of_death_dispatch = CauseOfDeathDispatch.create({dispatch: params[:barcodes]})
+		flash[:notice] = "CCU Dispatch Saved"
+		render :text => "ok"
+	end
+
+	def manage_ccu_dispatch
+		@section = "Manage CCU Dispatch"
+		@next_url = "/"
+	end
+
+	def view_ccu_dispatch
+		@section = "CCU Dispatch"
+	end
+
+	def ccu_dispatches
+		render :text => CauseOfDeathDispatch.by_created_at.page(params[:page]).per(20).each.to_json
+	end
 
 	def manage_cases
-
 		@section = "Manage Cases"
 
 		render :layout => "landing"
@@ -65,98 +86,14 @@ class DcController < ApplicationController
 
 
 	def approve_record
-
 		person = Person.find(params[:id])
-
-
-		if record_complete?(person)
-			   duplicate = nil
-			   record = {}
-	           record["first_name"] = person.first_name
-	           record["last_name"] = person.last_name
-	           record["middle_name"] = (person.middle_name rescue nil)
-	           record["gender"] = person.gender
-	           record["place_of_death_district"] = person.place_of_death_district
-	           record["birthdate"] = person.birthdate
-	           record["date_of_death"] = person.date_of_death
-	           record["mother_last_name"] = (person.mother_last_name rescue nil)
-	           record["mother_middle_name"] = (person.mother_middle_name rescue nil)
-	           record["mother_first_name"] = (person.mother_first_name rescue nil)
-	           record["father_last_name"] = (person.father_last_name rescue nil)
-	           record["father_middle_name"] = (person.father_middle_name rescue nil)
-	           record["father_first_name"] = (person.father_first_name rescue nil)
-	           record["id"] = person.id
-	           record["district_code"] =  (person.district_code rescue SETTINGS["district_code"])
-
-	           if SETTINGS["potential_duplicate"]
-	           		duplicate =   SimpleElasticSearch.query_duplicate_coded(record,SETTINGS['duplicate_precision'])
-	           end
-				
-			   if duplicate.blank?  ||  true
-					status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-
-					if status.status =="HQ REJECTED"
-						PersonRecordStatus.change_status(person, "DC REAPPROVED")
-						unlock_users_record(person)
-					else
-						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-						unlock_users_record(person)
-					end
-					
-					last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-			        job_interval = SETTINGS['ben_assignment_interval']
-			        job_interval = 1.5 if job_interval.blank?
-			        job_interval = job_interval.to_f
-			        now = Time.now
-			        if (now - last_run_time).to_f > job_interval
-			          AssignDen.perform_in(job_interval)
-			        end
-					
-					render :text => {marked: true}.to_json
-				else
-					can_mark_as_potential_duplicate = false
-
-					existing = []
-					ids = []
-					duplicate.each do |dup| 
-					 	if dup[0] != params[:id]
-					 		existing << dup
-					 		ids << dup[0]
-					 		dup_status = Person.find(dup[0]).status rescue ""
-					 		can_mark_as_potential_duplicate = true if dup_status !="DC POTENTIAL DUPLICATE"
-					 	end
-					end
-					if can_mark_as_potential_duplicate 
-						change_log = [{:duplicates => ids.to_s}]
-						Audit.create({
-	                      :record_id  => person.id.to_s,
-	                      :audit_type => "POTENTIAL DUPLICATE",
-	                      :reason     => "Record is a potential",
-	                      :change_log => change_log
-					     })
-					     PersonRecordStatus.change_status(person, "DC POTENTIAL DUPLICATE","Record is a potential")
-					     unlock_users_record(person)
-					     render :text => {:duplicates=> true, :people => existing}.to_json
-					else
-						PersonRecordStatus.change_status(person, "MARKED APPROVAL")
-						unlock_users_record(person)
-						render :text => {marked: true}.to_json
-					end
-				end
-			    #redirect_to "#{params[:next_url].to_s}"
-
-		else
-			PersonRecordStatus.change_status(person, "DC INCOMPLETE","Approve record not successful")
-			Audit.create({
-				:record_id => params[:id].to_s    , 
-				:audit_type=>"DC INCOMPLETE",
-				:level => "Person",
-				:reason => "Approve record not successful"})
+		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+		begin
 			unlock_users_record(person)
-			render :text => {incomplete: true}.to_json
-				#redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Can not approve Record&error=Record not complete"
+		rescue
 		end
-		
+
+		redirect_to "#{params[:next_url].to_s}"
 	end
 
 	def check_approval_status
@@ -262,13 +199,49 @@ class DcController < ApplicationController
 		
 	end
 
+
+	def printed
+		@section = "Printed Records"
+		@next_url = params[:next_url]
+		render :layout => "landing"
+			
+	end	
+
 	def closed
+
+		@section = "Printed Records"
+
+		@statuses = ["HQ PRINTED","DC PRINTED"]
+
+		@next_url = "/dc/closed"
+
+		@den = true 
+
+		render :template =>"/people/view"
+		
+	end
+
+	def dc_printed
+
+		@section = "Printed Records"
+
+		@statuses = ["DC PRINTED"]
+
+		@next_url = "/dc/dc_printed"
+
+		@den = true 
+
+		render :template =>"/people/view"
+		
+	end
+
+	def hq_printed
 
 		@section = "Printed Records"
 
 		@statuses = ["HQ PRINTED"]
 
-		@next_url = "/dc/closed"
+		@next_url = "/dc/dc_printed"
 
 		@den = true 
 
@@ -372,6 +345,8 @@ class DcController < ApplicationController
 	def confirm_not_duplicate
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+		check_den_assignment
+
 		unlock_users_record(person)
 		Audit.user = params[:user_id].to_s
 		Audit.create({
@@ -398,9 +373,31 @@ class DcController < ApplicationController
 	end
 
 	def confirm_duplicate
+		
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC DUPLICATE",params[:comment])
-		Person.void_person(person,params[:user_id])
+
+		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
+			PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+			check_den_assignment
+		end
+		
+		audit_record = Audit.find(params[:audit_id])
+		if audit_record.record_id != params[:id]
+			PersonRecordStatus.change_status(Person.find(audit_record.record_id), "DC DUPLICATE",params[:comment])
+			Person.void_person(Person.find(audit_record.record_id),params[:user_id])
+		end
+
+		audit_log = audit_record.change_log rescue []
+
+		audit_log.each do |d|
+			ids = d["duplicates"].split("|")
+			ids.each do |id|
+				next if params[:id] == id
+				PersonRecordStatus.change_status(Person.find(id), "DC DUPLICATE",params[:comment])
+				Person.void_person(Person.find(id),params[:user_id])
+			end
+		end
+		
 		Audit.user = params[:user_id].to_s
 
 		Audit.create({
@@ -411,10 +408,7 @@ class DcController < ApplicationController
 						:reason => params[:comment],
 						:change_log =>[{:audit_id => params[:audit_id]}]
 		})
-
-		if eval(params[:select].to_s)
-			PersonRecordStatus.change_status(Person.find(params[:audit_id]), "MARKED APPROVAL",params[:comment])
-		end
+			
 		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 
@@ -503,7 +497,16 @@ class DcController < ApplicationController
                                                           [params[:id],"DC REPRINT DAMAGED"],
                                                           [params[:id],"DC AMEND"]]).each
       	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
-      	#@person.change_status("DC AMEND")
+
+      	change_keys = @amendment_audit.change_log.keys rescue []
+      	place0 = {}
+      	place1 = {}
+      	change_keys.each do |key|
+      		place0[key] = (@amendment_audit.change_log[key][0] rescue "")
+      		place1[key] = (@amendment_audit.change_log[key][1] rescue "")
+      	end
+
+
 		@section ="Amendments"
 		
 	end
@@ -528,7 +531,7 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
 		if amendment_audit.present?
-			param_keys = params[:person].keys
+			param_keys = params[:person].keys + (params[:prev].keys rescue [])
 			hash = amendment_audit.change_log
 			param_keys.each do |key|
 				unless hash.present?
@@ -550,7 +553,8 @@ class DcController < ApplicationController
 			amendment_audit.audit_type = "DC AMEND"
 			amendment_audit.change_log = {}
 
-			param_keys = params[:person].keys
+			param_keys = params[:person].keys + (params[:prev].keys rescue [])
+
 			param_keys.each do |key|
 				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
 			end
@@ -597,6 +601,8 @@ class DcController < ApplicationController
 		@next_url = "/dc/confirmed_duplicated"
 	    render :template =>"/people/view"
 	end
+
+
 	def counts_by_status
 		status = params[:status]
 		district_code = SETTINGS['district_code']
@@ -605,7 +611,8 @@ class DcController < ApplicationController
 		end
 		key = [district_code,status]
 
-		count = PersonRecordStatus.by_district_code_and_record_status.key(key).each.count
+		#count = PersonRecordStatus.by_district_code_and_record_status.key(key).each.count
+		count = RecordStatus.where("status ='#{status}' AND district_code='#{district_code}' AND voided=0").count
 
 		render :text => {:count => count}.to_json	
 	end
@@ -658,6 +665,145 @@ class DcController < ApplicationController
 		end
 		render :text => people.to_json
 	end
+	def check_den_assignment
+		last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
+		job_interval = SETTINGS['ben_assignment_interval']
+		job_interval = 1.5 if job_interval.blank?
+		job_interval = job_interval.to_f
+		now = Time.now
+
+		if (now - last_run_time).to_f > job_interval
+			if SETTINGS['site_type'].to_s != "facility"
+				if (defined? PersonIdentifier.can_assign_den).nil?
+					PersonIdentifier.can_assign_den = true
+				end
+				AssignDen.perform_in(job_interval)
+			end
+					        
+		end
+	end
+
+	#Decentralize printing
+	def print_certificates
+		@section = "Print Certificates"
+		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED"]
+		@available_printers = SETTINGS["printer_name"].split(',')
+		@next_url = "/dc/print_certificates"
+		@den = true 
+		render :template =>"/dc/default_batch"		
+	end
+
+	def search_records_to_print
+		status = params[:statuses]
+	    page = params[:page] rescue 0
+	    size = params[:size] rescue 40
+	    people = []
+	    record_status = []
+
+	    
+	    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(size.to_i).offset(page.to_i  * size.to_i).each do |status|
+	      
+	      person = Record.find(status.person_record_id) rescue nil
+ 		  people << fields_for_data_table(person)
+	    end
+	    render :text => people.to_json
+	end
+
+	def do_print_these
+    	selected = params[:selected].split("|")
+
+    	paper_size = GlobalProperty.find("paper_size").value rescue "A4"
+    
+	    if paper_size == "A4"
+	       zoom = 0.83
+	    elsif paper_size == "A5"
+	       zoom = 0.6
+	    end
+     
+	    selected.each do |key|
+
+	      person = Person.find(key.strip)
+
+	      if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{person.id}.png")
+	      		create_qr_barcode(person)
+	      		sleep(1)
+	      	  end
+	      else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{person.id}.png")
+		        create_barcode(person)
+		        sleep(1)
+		      end	      	
+	      end
+
+
+	      next if person.blank?
+	      
+	      id = person.id
+	      
+	      output_file = "#{SETTINGS['certificates_path']}#{id}.pdf"
+
+	      input_url = "#{CONFIG["protocol"]}://#{request.env["SERVER_NAME"]}:#{request.env["SERVER_PORT"]}/death_certificate/#{id}"
+
+
+	      thread = Thread.new {
+	        Kernel.system "#{SETTINGS['wkhtmltopdf']} --zoom #{zoom} --page-size #{paper_size} #{input_url} #{output_file}"
+	        #PDFKit.new(input_url, :page_size => paper_size, :zoom => zoom).to_file(output_file)
+
+	        sleep(4)
+
+	        Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
+
+	        PersonRecordStatus.change_status(person,"DC PRINTED")
+	        
+	      }
+
+	      sleep(1)
+	  
+	   end
+	    
+	   redirect_to "/dc/print_certificates?next_url=/dc/manage_cases?next_url=/" and return
+	end
+
+	def death_certificate
+		@person = Person.find(params[:id])
+	    @place_of_death = place_of_death(@person)
+	    @drn = @person.drn
+	    @den = @person.den
+
+	    if SETTINGS['print_qrcode']
+	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+	      		create_qr_barcode(@person)
+	      		sleep(5)
+	      		redirect_to request.fullpath and return
+	      	  end
+	     else
+		      if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+		        create_barcode(@person)
+		        sleep(5)
+		        redirect_to request.fullpath and return
+		      end	      	
+	    end
+	    @barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
+
+	    @date_registered = @person.created_at
+	    PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|s| s.created_at}.each do |state|
+	      if state.status == "HQ ACTIVE"
+	          @date_registered = state.created_at
+	          break;
+	      end
+	    end
+	    
+	  
+	    render :layout => false, :template => 'dc/death_certificate_print_a5'
+	end
+
+	def print_preview
+	    @section = "Print Preview"
+	    @targeturl = "/print" 
+	    @person = Person.find(params[:id])
+	    @available_printers = SETTINGS["printer_name"].split(',')
+  	end
 
 	protected
 end

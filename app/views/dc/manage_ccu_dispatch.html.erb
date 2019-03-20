@@ -1,0 +1,26 @@
+<style type="text/css">
+  
+     
+</style>
+<div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
+    <div id="buttons" style="display: inline ">
+             <div class="touch_btn" " onmousedown="window.location = '/dc/cause_of_death_dispatch'" >
+                 <div class="icon">
+                      <i class="fa fa-folder-open"></i>
+                  </div>
+                  <div class="button_label">CCU Dispatch</div>
+                  <div class="button_description">  </div>                                 
+             </div>
+
+              <div class="touch_btn" onmousedown="window.location = '/dc/view_ccu_dispatch'" >
+                  <div class="icon">
+                        <i class="fa fa-folder-open"></i>
+                   </div>
+                   <div class="button_label">View CCU Dispatch</div>
+                    <div class="button_description">  </div>                               
+              </div>        
+                                      
+    </div>
+</div>
+<%= render :partial => "landing_resize" %>
+<button class="blue" style="position:absolute;right:3%;bottom:5%" onmousedown="window.location='/'">Back</button>

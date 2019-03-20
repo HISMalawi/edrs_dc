@@ -1,7 +1,8 @@
-
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
 <div id="table_container">
-
-        <table>
+        <table id="records_table">
                 <thead>
                     <tr>
                         <th>
@@ -19,13 +20,26 @@
                         <th>
                             Status
                         </th>
-                        <th colspan="3">
+                        <th>
                             Operations
                         </th>
                     </tr>
                 </thead>
                 <tbody id="table_body">
-                    
+                    <% @i = 0 %>
+
+                    <% @users.each do |user| %>
+                         <% @i = @i + 1 %>
+                        <tr>
+                            <td><%= @i %></td>
+                            <td><%= user.username %></td>
+                            <td><%= user.first_name %> <%= user.last_name %></td>
+                             <td><%= user.role %></td>
+                            <td><%= user.active ? 'ACTIVE' : 'BLOCKED' %></td>
+                            <td><button class="blue" onclick="window.location='/users/show?id=<%=user.id%>'">VIEW</button></td>
+                        </tr>
+
+                    <%end%>
                 </tbody>
         </table>
     
@@ -36,320 +50,186 @@
         left : 40%;
         z-index: 100000;
     }
-</style>
-<div id="pagination">
-    <button id="prev" class="gray prev" onmousedown="navPrevPage()"><span>|<<</span></button>
-    <button id="next" class="gray next" onmousedown="navNextPage()"><span>>>|</span></button>
-        
-</div>
+    #records_table_filter{
+            margin-top: 0.3%;
+            margin-right: 0;
+            margin-bottom: 0.3%;
 
-<i class="fa fa-user-plus" style="position: absolute; font-size : 3.5em ;right: 15% ;bottom: 8%;box-shadow: 2.5px 2.5px 1px #888888;border : 0.005em solid #b3b1b1; padding: 0.1%;" onclick="window.location = '/people/form_container?url=<%= new_user_path%>&next_url=/users/'"></i>
+    }
+    #records_table_paginate{ 
+        float: left;
+        margin-left: 1%;
+    }
+</style>
+
+<div style="position : absolute; min-width : 30%; bottom:4%; right :1%; margin-right : 1%">
+
+</div>
 <%= render :partial => "/dc/landing_resize" %>
-<script>
-    function __$(id){
-        return document.getElementById(id);
+<script type="text/javascript">
+    $(document).ready(()=>{
+        datatable = $("#records_table").dataTable({
+            "lengthChange": false,
+            "bInfo": false,
+            "pageLength": 7
+       })    
+       var search =__$('records_table_filter').getElementsByTagName("input")[0];
+       search.setAttribute("onfocus","changeFocusToMe(this)")
+       search.setAttribute("onblur","__$('keyboardcontainer').style.visibility='hidden'")
+       setTimeout(function(){
+                                page = page + 1
+                                loadTable(page);
+       },1000);    
+    });
+
+    var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+    var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
+    var capcase = false;
+    var type = "abc"
+
+    function cap(a){
+            return a.toUpperCase();
     }
 
-    var query_url = "/query_users?" 
+    function appendValue(value){
+            if(control === undefined){
+                focusFirstInput()
+            }
+            control.value = control.value + value
+            datatable.fnFilter(control.value);
+            setTimeout(function(){
+                control.focus();
+            },5);
 
-    if (Object.getOwnPropertyNames(Date.prototype).indexOf("format") < 0) {
+            
+    }
 
-            Object.defineProperty(Date.prototype, "format", {
-                value: function (format) {
-                    var date = this;
+    function deleteFromValue(){
+            control.value = control.value.slice(0, control.value.length - 1)
+    }
 
-                    var result = "";
+    function clear(){
+            control.value = ""
+    }
 
-                    if (!format) {
+    function changeKeboardType(keyboard){
+            type  = keyboard;
+            changeFocusToMe(control)
+    }
 
-                        format = ""
+    function changeFocusToMe(element){
+            control = element
+            var container = __$("table_container")
+            var width = 700;
+            var height = 380;
+            if(__$("keyboardcontainer")){
+                __$("keyboardcontainer").style.visibility ="visible"
+                __$("keyboardcontainer").innerHTML = "";
+            }else{
+                var div = document.createElement("div");
+                div.id = "keyboardcontainer";
+                div.style.textAlign ="center"
+                div.style.position = "absolute";
+                div.style.width = width + "px";
+                div.style.height = height + "px";
+                div.style.backgroundColor = "#eee";
+                div.style.border = "1px solid #26262b";
+                div.style.display ="block"
+                div.style.padding ="0.5%";
+                div.style.borderRadius = "1px";
+                div.style.left = "calc(50% - " + (width / 2) + "px)";
+                div.style.top = "calc(50% - " + (height * 0.3) + "px)";
+                div.style.border = "1px outset #fff";
+                div.style.boxShadow = "3px 1.5px 3px 0px rgba(0,0,0,0.75)";
+                div.style.fontFamily = "arial, helvetica, sans-serif";
+                div.style.MozUserSelect = "none";
+                container.appendChild(div);
+            }
 
+            var groups = eval(type)
+            
+            for(var i = 0 ; i < groups.length;i++){
+                    var row = document.createElement("div");
+                    row.className = "row"
+                    __$("keyboardcontainer").appendChild(row);
+                    var keys = groups[i].split("");
+                    for(var j = 0 ; j < keys.length ; j++){
+                        var button = document.createElement("button");
+                        var key = capcase ? cap(keys[j]) : keys[j]
+                        button.innerHTML = key ;
+                        button.className = "blue"
+                        button.setAttribute("onmousedown", "appendValue('"+key+"')");
+                        button.setAttribute("onmouseup", "control.focus()")
+                        row.appendChild(button);
                     }
 
-                    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            }
 
-                    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
-                        "October", "November", "December"];
+            var row = document.createElement("div");
+            row.className = "row"
+            __$("keyboardcontainer").appendChild(row);
 
-                    if (format.match(/YYYY\-mm\-dd\sHH\:\MM\:SS/)) {
+            var button = document.createElement("button");
+            button.innerHTML = type == "abc" ? "qwerty" : "abc";
+            button.className = "orange";
+            button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
+            button.onmouseup = function(){
+                control.focus()
+            }
+            row.appendChild(button);
 
-                        result = date.getFullYear() + "-" + stock;
-                        padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
-                        stock.padZeros(date.getDate(), 2) + " " + stock.padZeros(date.getHours(), 2) + ":" +
-                        stock.padZeros(date.getMinutes(), 2) + ":" + stock.padZeros(date.getSeconds(), 2);
-
-                    } else if (format.match(/YYYY\-mm\-dd/)) {
-
-                        result = date.getFullYear() + "-" + stock.padZeros((parseInt(date.getMonth()) + 1), 2) + "-" +
-                            stock.padZeros(date.getDate(), 2);
-
-                    } else if (format.match(/mmm\/d\/YYYY/)) {
-
-                        result = months[parseInt(date.getMonth())] + "/" + date.getDate() + "/" + date.getFullYear();
-
-                    } else if (format.match(/d\smmmm,\sYYYY/)) {
-
-                        result = date.getDate() + " " + monthNames[parseInt(date.getMonth())] + ", " + date.getFullYear();
-
-                    } else {
-
-                        result = date.getDate() + "/" + months[parseInt(date.getMonth())] + "/" + date.getFullYear();
-
-                    }
-
-                    return result;
+            var button = document.createElement("button");
+            button.innerHTML = capcase ? "cap" : cap("CAP");
+            button.style.marginLeft = "1%";
+            button.onmousedown = function(){
+                if(capcase){
+                    capcase = false
+                    buildkeyBoard(type)
+                }else{
+                    capcase = true
+                    buildkeyBoard(type)
                 }
-            });
+            }
+            button.onmouseup = function(){
+                control.focus()
+            }
+            button.className = "blue"
+            row.appendChild(button);
 
-        }
+            var button = document.createElement("button");
+            button.innerHTML = "space";
+            button.className = "blue";
+            button.style.marginLeft = "5%";
+            button.style.marginRight = "5%";
+            button.style.width = "200px"
+            button.setAttribute("onmousedown", "appendValue(' ')")
+            button.setAttribute("onmouseup", "control.focus()")
+            row.appendChild(button);
 
-        function ajaxGETRequest(url, callback, optionalControl) {
+            var button = document.createElement("button");
+            button.innerHTML = "Clear";
+            button.className = "orange";
+            button.style.marginRight = "1%";
 
-            var httpRequest = new XMLHttpRequest();
+            button.onmousedown = function(){
+                clear();
+            }
+            button.onmouseup = function(){
+                control.focus()
+            }
+            row.appendChild(button);
 
-            httpRequest.onreadystatechange = function () {
-
-                if (httpRequest.readyState == 4 && (httpRequest.status == 200 ||
-                    httpRequest.status == 304)) {
-
-                    if (httpRequest.responseText.trim().length > 0) {
-                        var result = httpRequest.responseText;
-
-                        callback(result, optionalControl);
-
-                    } else {
-
-                        callback(undefined);
-
-                    }
-
-                }
-
-            };
-            try {
-                httpRequest.open("GET", url, true);
-                httpRequest.send(null);
-            } catch (e) {
+            var button = document.createElement("button");
+            button.innerHTML = "delete";
+            button.className = "blue"
+            button.onmousedown = function(){
+                deleteFromValue();
+            }
+            button.onmouseup = function(){
+                control.focus()
             }
 
-        }
+            row.appendChild(button);
 
-        var page = 1 ;
-
-        var estimatesize = 0;
-
-        function navNextPage(){
-
-            if(estimatesize >= 8){
-
-                    page ++;
-
-                    loadTable(page);
-
-            }
-
-        }
-
-        function navPrevPage(){
-
-            if(page > 1){
-
-                page--
-
-                loadTable(page);
-
-            }
-
-        }
-
-        function __$(id){
-
-            return document.getElementById(id)
-
-        }
-
-        function loadTable(page){
-
-                    var content = __$("table_container")
-    
-                    var table = __$("table_body");
-
-                    table.innerHTML = ""
-
-                    var search_url = query_url+"page="+page+"&size=8";
-
-                    ajaxGETRequest(search_url,function(data){
-
-                            var data = JSON.parse(data);
-
-                            for(var i = 0 ; i < data.length; i++){
-
-                                estimatesize = i + 1;
-
-                                var tr = document.createElement("tr");
-
-                                table.appendChild(tr);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                td.innerHTML = (page - 1)* 8 + (i + 1);
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                td.innerHTML = data[i].username;
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                td.innerHTML = data[i].name;
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                td.innerHTML = data[i].roles;
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                td.innerHTML = data[i].active ? "<i class='fa fa-check'></i>" : "<i class='fa fa-ban'></i>";
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                var button = document.createElement("button");
-
-                                button.innerHTML = "<span>View</spa>";
-
-                                button.setAttribute("onclick", "window.location ='/users/"+data[i].id+"?next_url=/view_users?page="+page+"'");
-
-                                button.style.width ="90%";
-
-                                td.appendChild(button)
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                 var button = document.createElement("button");
-
-                                button.className = "yellow";
-
-                                button.innerHTML = "<span>Edit</span>";
-
-                                button.setAttribute("onclick", "window.location='/users/" + data[i].id+ "/edit?next_url=/view_users?page="+page+"'");
-
-                                button.style.width ="90%";
-
-                                td.appendChild(button)
-
-                                tr.appendChild(td);
-
-
-                                var td = document.createElement("td");
-
-                                td.style.borderRight= "1px solid black";
-
-                                td.style.borderBottom= "1px solid black";
-
-                                var button = document.createElement("button");
-
-                                if (data[i].active){
-
-                                    button.className = "red";
-
-                                    button.innerHTML = "<span>Block</span>";
-
-                                     button.setAttribute('onmousedown',"window.location='/add_user_comment/"+data[i].id+"?operation=Block&next_url=/view_users?page="+page+"'");
-                                }else{
-                                    button.className = "green";
-
-                                    button.innerHTML = "<span>Unblock</span>";
-
-                                     button.setAttribute('onmousedown',"window.location='/add_user_comment/"+data[i].id+"?operation=Unblock&next_url=/view_users?page="+page+"'"); 
-                                }
-                                button.style.width ="70%";
-
-                                td.appendChild(button)
-
-                                tr.appendChild(td);
-
-                            }
-
-                            if(estimatesize >= 8){
-
-                                __$("next").className = __$("next").className.replace("gray","blue");
-
-                            }else{
-
-                                __$("next").className = __$("next").className.replace("blue","gray");
-
-                            }
-
-                            if(page == 1 ){
-
-                                __$("prev").className = __$("prev").className.replace("blue","gray");
-
-                            }else{
-
-                                __$("prev").className = __$("prev").className.replace("gray","blue");
-
-                            }
-
-                    })
-        }
-
-        <% if params[:page] %>
-
-                page = parseInt("<%= params[:page] %>")
-
-        <%else %>
-
-                page = 1;
-
-        <% end %>
-
-
-        loadTable(page);
-
+    }
 </script>

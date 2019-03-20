@@ -163,7 +163,7 @@ class UsersController < ApplicationController
 
       if SETTINGS['site_type'] == "remote"
 
-        @user.district_code = District.by_name.key(params[:user]['district']).first.id 
+        @user.district_code = DistrictRecord.where(name:params[:user]['district']).first.id 
 
       else
 
@@ -301,7 +301,18 @@ class UsersController < ApplicationController
 
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
 
-    @users = User.all.each
+    district_code = current_user.district_code
+    
+    if SETTINGS['district_code'].present?
+      district_code = SETTINGS['district_code']
+    end
+
+    if district_code.blank?
+       @users = UserModel.all.each
+    else
+       @users = UserModel.where(district_code: district_code).each
+   
+    end
 
     @section = "View Users"
 
@@ -509,6 +520,8 @@ class UsersController < ApplicationController
 
     @user = User.current_user
 
+     @password_attempt = @user.password_attempt
+
     render :layout => "touch"#false#render :layout => "facility"
 
   end
@@ -526,7 +539,7 @@ class UsersController < ApplicationController
   def update_password
      
     user = User.current_user
-    user.plain_password = params[:user][:new_password]
+    user.plain_password = params[:user][:new_password].strip
     user.password_attempt = 0
     user.last_password_date = Time.now
     user.save
@@ -551,12 +564,13 @@ class UsersController < ApplicationController
 
   def update_user_password
 
+    #raise params.inspect
     if params[:user][:new_password] != params[:user][:confirm_password]
       flash["error"] = "Passwords don't match" 
       redirect_to "/users/change_user_password?id=#{params[:user][:id]}" and return
     end
     user = User.find(params[:user][:id])
-    user.plain_password = params[:user][:new_password]
+    user.plain_password = params[:user][:new_password].strip
     user.password_attempt = 0
     user.last_password_date = Time.now
     user.save

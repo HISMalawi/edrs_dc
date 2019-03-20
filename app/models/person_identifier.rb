@@ -1,8 +1,8 @@
 class PersonIdentifier < CouchRest::Model::Base
 
   before_save :set_site_code,:set_district_code,:set_check_digit
-  #after_create :insert_update_into_mysql
-  #after_save :insert_update_into_mysql
+  after_create :insert_update_into_mysql
+  after_save :insert_update_into_mysql
   cattr_accessor :can_assign_den
   cattr_accessor :can_assign_drn
 
@@ -25,30 +25,8 @@ class PersonIdentifier < CouchRest::Model::Base
   design do
     view :by__id
     view :by_person_record_id
-    view :by_identifier_type
     view :by_identifier
-    view :by_identifier_and_identifier_type
     view :by_site_code
-    view :by_district_code_and_den_sort_value,
-         :map => "function(doc) {
-                  if (doc['type'] == 'PersonIdentifier' && doc['den_sort_value'] != null ) {
-                    emit(doc['district_code']+doc['den_sort_value']);
-                  }
-                }"
-    view :by_den_sort_value,
-         :map => "function(doc) {
-                  if (doc['type'] == 'PersonIdentifier' && doc['district_code'] == '#{SETTINGS['district_code']}') {
-                    emit(doc['den_sort_value']);
-                  }
-                }"
-    view :by_drn_sort_value,
-         :map => "function(doc) {
-                  if ((doc['type'] == 'PersonIdentifier')) {
-                    emit(doc['drn_sort_value']);
-                  }
-                }"
-    view :by_district_code
-    view :by_creator
     view :by_created_at
     view :by_person_record_id_and_identifier_type
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
@@ -99,55 +77,114 @@ class PersonIdentifier < CouchRest::Model::Base
     return check_digit
   end
 
-  def self.assign_den(person, creator)
-    if SETTINGS['site_type'] =="remote"
-      year = Date.today.year
-      district_code = User.find(creator).district_code
+  def self.check_for_skipped_dens(dens)
+      den = dens.last.value rescue 0
+      actual_dens =  dens.collect{|d| d.value}
+      difference = [*1..den] - actual_dens
+      if difference.blank?
+          return false, den
+      else
+          return true, difference[0]
+      end
+  end
 
-      start_key = "#{district_code}#{year}0000001"
-      end_key = "#{district_code}#{year}99999999"
-
-      den = PersonIdentifier.by_district_code_and_den_sort_value.startkey(start_key).endkey(end_key).last.identifier rescue nil
-    else
-      den = PersonIdentifier.by_den_sort_value.last.identifier rescue nil
-      year = Date.today.year
+  def self.assign_den(person, creator) 
+    year = Date.today.year
+    district_code = person.district_code
+    if SETTINGS['site_type'] == "dc"
+        return if person.district_code.to_s.squish != SETTINGS['district_code'].to_s.squish
+    else 
+        return if SETTINGS['exclude'].split(",").include?(DistrictRecord.where(district_id: district_code).first.name)
     end
+
+
+    dens = DeathEntryNumber.where(district_code: district_code, year: year).order(:value) rescue nil
     
+    den_value = self.check_for_skipped_dens(dens)
 
-    if den.blank? || !den.match(/#{year}$/)
-      n = 1
+    if den_value[0]
+      num = den_value[1]
     else
-      n = den.scan(/\/\d+\//).last.scan(/\d+/).last.to_i + 1
+      num = den_value[1].to_i + 1
     end
-
-    code = person.district_code
-
-    num = n.to_s.rjust(7,"0")
-    new_den = "#{code}/#{num}/#{year}"
 
     #check_new_den = SimpleSQL.query_exec("SELECT den FROM dens WHERE den ='#{new_den}' LIMIT 1").split("\n")
 
-    den_assigned_to_person = PersonIdentifier.by_identifier.key(new_den).first
+    den_assigned_to_person = DeathEntryNumber.where(district_code: district_code, year: year, value: num).first
 
-    person_assigened_den =  (PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id.to_s, "DEATH ENTRY NUMBER"]).first.identifier rescue nil)
+    person_assigened_den =  DeathEntryNumber.where(person_record_id:person.id.to_s).first rescue nil
+
+    
 
     if self.can_assign_den && person_assigened_den.blank? && den_assigned_to_person.blank?
-        self.can_assign_den = false
-        sort_value = (year.to_s + num).to_i
 
-        identifier_record = PersonIdentifier.new
-        identifier_record.person_record_id = person.id.to_s
-        identifier_record.identifier_type = "DEATH ENTRY NUMBER"
-        identifier_record.identifier =  new_den
-        identifier_record.creator = creator
-        identifier_record.den_sort_value = sort_value
-        identifier_record.district_code = person.district_code
-        if identifier_record.save
+        self.can_assign_den = false
+
+        begin
+          identifier_record = DeathEntryNumber.create(person_record_id: person.id.to_s,
+                                                      value: num,
+                                                      district_code: district_code,
+                                                      year: year,
+                                                      created_at: Time.now,
+                                                      updated_at: Time.now)
+          if identifier_record.present?
+
+
+            status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
+
+            begin
+              status.update_attributes({:voided => true}) 
+            rescue
+            end
+
+            approved_already_status = RecordStatus.where(person_record_id: person.id.to_s, status: "HQ ACTIVE").first
+
+            if approved_already_status.present? 
+              approved_already_status_couch = PersonRecordStatus.find(approved_already_status.id)
+              approved_already_status_couch.voided = false
+              approved_already_status_couch.save
+            else
+              PersonRecordStatus.create({
+                                      :person_record_id => person.id.to_s,
+                                      :status => "HQ ACTIVE",
+                                      :district_code => (district_code rescue SETTINGS['district_code']),
+                                      :comment=> "Record approved at DC",
+                                      :creator => creator})              
+            end
+
+            person.approved = "Yes"
+            person.approved_at = Time.now
+
+            person.save
+
+            Audit.create(record_id: person.id,
+                           audit_type: "Audit",
+                           user_id: creator,
+                           level: "Person",
+                           reason: "Approved record")
+
+          end          
+        rescue Exception => e
+            puts "ReQueue"
+        end
+        self.can_assign_den = true
+
+    elsif den_assigned_to_person.present?
+      
+      puts "DEN is assign to #{den_assigned_to_person.person_record_id rescue ''}"
+      self.can_assign_den = true
+
+    elsif person_assigened_den.present?
+          verify_not_duplicate(person_assigened_den)
+          person_assigened_den.push_to_couch
 
           status = PersonRecordStatus.by_person_recent_status.key(person.id.to_s).last
 
-          status.update_attributes({:voided => true})
-
+          begin
+            status.update_attributes({:voided => true}) 
+          rescue
+          end
+          
           PersonRecordStatus.create({
                                     :person_record_id => person.id.to_s,
                                     :status => "HQ ACTIVE",
@@ -165,35 +202,21 @@ class PersonIdentifier < CouchRest::Model::Base
                          user_id: creator,
                          level: "Person",
                          reason: "Approved record")
-
-          stat = Statistic.by_person_record_id.key(person.id).first
-
-          if stat.present?
-             stat.update_attributes({:date_doc_approved => person.approved_at.to_time})
-          else
-            stat = Statistic.new
-            stat.person_record_id = person.id
-            stat.date_doc_created = person.created_at.to_time
-            stat.date_doc_approved = person.approved_at.to_time
-            stat.save
-          end
-
-        end
-        self.can_assign_den = true
-
-    elsif den_assigned_to_person.present?
-
-      puts "DEN is assign to #{den_assigned_to_person.person_record_id rescue ''}"
-      self.can_assign_den = true
-
-    elsif person_assigened_den.present?
-
-      puts "Person #{den_assigned_to_person.person_record_id rescue ''} already assigned DEN"
       self.can_assign_den = true
 
     else
         puts "Can not assign DEN"
     end
+  end
+
+  def verify_not_duplicate(assigned)
+      den = PersonIdentifier.find("#{assigned.district_code}/#{assigned.value.to_s.rjust(7,"0")}/#{assigned.year}")
+      if assigned.person_record_id == den.person_record_id
+        return
+      else
+        den.person_record_id = assigned.person_record_id
+        den.save
+      end
   end
 
   def self.generate_drn(person)

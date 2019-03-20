@@ -148,6 +148,7 @@ button:active {
     margin: 3px;
 }
 
+
 .button:active {
     background-color: #ffc579 !important;
     background-image: -webkit-gradient(linear, left top, left bottom, from(#ffc579), to(#fb9d23)) !important;
@@ -333,9 +334,9 @@ button:active {
     cursor: pointer;
 }
 
-               #back{
+#back{
 
-                    position: absolute;
+    position: absolute;
 
                     right: 1%;
 
@@ -344,7 +345,7 @@ button:active {
                     padding: 0.1%;
 
                     text-align: center;
-              }
+}
 
               #home_button{
 

@@ -31,7 +31,7 @@
 
 	}
 
-	input{
+	input, select{
 		height: 40px;
 		border: 1px solid #4c79a4;
 		width: 250px;
@@ -82,6 +82,17 @@
 	<div id="inputs">
 	  <%= form_tag(login_path, method: 'post', enctype: 'multipart/form-data', class: 'form form-signup', autocomplete: "off") do %>
 		<table style="margin-left:30%" >
+			<% if SETTINGS['site_type'] == "remote" %>
+			<tr>
+				<td><label for="district">District</label></td>
+				<td><select name="user[district]" id="district">
+					<option>N/A </option>
+					<% @districts.each do |d| %>
+						<option><%= d %></option>
+					<%end%>
+				</select></td>
+			</tr>
+			<%end%>
 			<tr>
 				<td><label for="usename">Username</label></td>
 				<td><input type="" name="user[username]" id="username" onfocus="setFocusToThis(this)"></td>

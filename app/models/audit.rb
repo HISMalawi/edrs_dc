@@ -30,13 +30,10 @@ class Audit < CouchRest::Model::Base
     view :by__id
     view :by_record_id
     view :by_record_id_and_audit_type
-    view :by_record_id_and_reason
-    view :by_audit_type
     view :by_level
     view :by_user_id
     view :by_site_id
     view :by_site_type
-    view :by_voided
     view :by_created_at
     view :by_updated_at
 

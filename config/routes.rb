@@ -130,6 +130,8 @@ Rails.application.routes.draw do
 
   get "/people/find/:id" =>"people#find"
 
+  get "/find_by_barcode/:barcode" => "people#find_by_barcode"
+
   get "/people/new_person_type" => "people#new_person_type"
 
   get "/people/register_special_cases" =>"people#register_special_cases"
@@ -137,6 +139,14 @@ Rails.application.routes.draw do
   post "/search_barcode" => "people#search_barcode"
 
   get "/search_barcode" => "people#search_barcode"
+
+  post "/dispatch_barcodes" =>"dc#dispatch_barcodes"
+
+  get "/dc/manage_ccu_dispatch"
+
+  get "/dc/view_ccu_dispatch"
+
+  get "/dc/ccu_dispatches"
 
   post "/find_identifier" =>"people#find_identifier"
 
@@ -293,6 +303,8 @@ Rails.application.routes.draw do
 
   get "/my_account" => "users#my_account"
 
+  get "/users/show"
+
   get "/build_mysql" => "users#build_mysql"
 
   get '/build_mysql_database' => 'users#build_mysql_database'
@@ -363,7 +375,21 @@ Rails.application.routes.draw do
 
   get "/people/view_datatable"
 
+  get "/dc/cause_of_death_dispatch"
+
 ##############################################################################################################################
+
+###################################################Decentralized printing###########################################################################
+##############################################################################################################################
+  get "/dc/print_certificates"
+  get "dc/search_records_to_print"
+  get "/dc/do_print_these"
+  get "/death_certificate/:id" => "dc#death_certificate"
+  get "/dc/printed"
+  get "/dc/dc_printed"
+  get "/dc/hq_printed"
+  get "/application/hq_is_online"
+  get "/dc/print_preview"
 
   resources :users
 

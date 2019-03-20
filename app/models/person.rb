@@ -22,9 +22,9 @@ class Person < CouchRest::Model::Base
 
   #before_save :encrypt_data
 
-  before_save :set_facility_code,:set_district_code
-  #after_save :insert_update_into_mysql
-  after_create :create_stat #, :insert_update_into_mysql
+  before_save :set_facility_code #,:set_district_code
+  after_save :insert_update_into_mysql
+  after_create :create_stat, :insert_update_into_mysql
 
   cattr_accessor :duplicate
   
@@ -93,10 +93,7 @@ class Person < CouchRest::Model::Base
   end
 
   def create_stat
-    stat = Statistic.by_person_record_id.key(self.id).first
-    if stat.blank?
-        Statistic.create({:person_record_id => self.id, :date_doc_created => self.created_at.to_time})
-    end
+
   end
 
   #Person methods
@@ -133,11 +130,10 @@ class Person < CouchRest::Model::Base
   end
 
   def set_district_code
-    unless self.district_code.present?
-      self.district_code = SETTINGS["district_code"]
-    end 
     if SETTINGS['site_type'] == "remote"
-      self.district_code = User.current_user.district_code
+      self.district_code = User.current_user.district_code if self.district_code.blank?
+    else
+       self.district_code = SETTINGS["district_code"] if self.district_code.blank?
     end   
   end
 
@@ -308,9 +304,20 @@ class Person < CouchRest::Model::Base
                 health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
                 params[:hospital_of_death_id] = health_facility.id rescue nil
-            else
+
+                params[:place_of_death_ta] = ""
+
+                params[:place_of_death_village] = ""
+
+                params[:other_place_of_death] = ""
+
+            elsif params[:place_of_death].downcase.match("home")
 
                 if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
+
+                     params[:hospital_of_death] = ""
+
+                     params[:other_place_of_death] = ""
 
                      place_ta = TraditionalAuthority.by_district_id_and_name.key([district.id,params[:place_of_death_ta]]).first
 
@@ -323,7 +330,10 @@ class Person < CouchRest::Model::Base
                      end
                   
                 end
-
+            else
+                params[:hospital_of_death] = ""
+                params[:place_of_death_ta] = ""
+                params[:place_of_death_village] = ""
             end
 
       end
@@ -426,10 +436,14 @@ class Person < CouchRest::Model::Base
     fields  = self.keys.sort
     sql_record = Record.where(person_id: self.id).first
     sql_record = Record.new if sql_record.blank?
+    
     fields.each do |field|
       next if field == "type"
       next if field == "_rev"
       next if field == "source_id"
+      if field =="voided"
+          sql_record["voided"] =  (self.voided == true ? 1 : 0)
+      end
       if field =="_id"
           sql_record["person_id"] = self[field]
       else
@@ -438,6 +452,171 @@ class Person < CouchRest::Model::Base
 
     end
     sql_record.save
+  end
+
+  def printable_place_of_death
+    place_of_death = ""
+    person = self
+    case person.place_of_death
+      when "Home"
+          if person.place_of_death_village.present? && person.place_of_death_village.to_s.length > 0
+              place_of_death = person.place_of_death_village
+          end
+          if person.place_of_death_ta.present? && person.place_of_death_ta.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_ta}"
+          end
+          if person.place_of_death_district.present? && person.place_of_death_district.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+          end
+      when "Health Facility"
+          place_of_death = "#{person.hospital_of_death}, #{person.place_of_death_district}"
+      else  
+          place_of_death = "#{person.other_place_of_death}, #{person.place_of_death_district}"
+      end
+
+      if person.place_of_death && person.place_of_death.strip.downcase.include?("facility")
+                 place_of_death = "#{person.hospital_of_death}, #{person.place_of_death_district}"
+      elsif person.place_of_death_foreign && person.place_of_death_foreign.strip.downcase.include?("facility")
+             if person.place_of_death_foreign_hospital.present? && person.place_of_death_foreign_hospital.to_s.length > 0
+                place_of_death  = person.place_of_death_foreign_hospital
+             end
+              
+             if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+             end
+      elsif person.place_of_death_foreign && person.place_of_death_foreign.strip =="Home"
+
+              if person.place_of_death_foreign_village.present? && person.place_of_death_foreign_village.length > 0
+                 place_of_death = person.place_of_death_foreign_village
+              end
+
+              if person.place_of_death_foreign_district.present? && person.place_of_death_foreign_district.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_district}"
+              end
+
+              if person.place_of_death_foreign_state.present? && person.place_of_death_foreign_state.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_state}"
+              end
+
+              if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+              end
+        elsif person.place_of_death_foreign && person.place_of_death_foreign.strip =="Other"
+               if person.other_place_of_death.present? && person.other_place_of_death.to_s.length > 0
+                 place_of_death = person.other_place_of_death
+              end
+
+              if person.place_of_death_foreign_village.present? && person.place_of_death_foreign_village.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_village}"
+              end
+
+              if person.place_of_death_foreign_district.present? && person.place_of_death_foreign_district.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_district}"
+              end
+
+              if person.place_of_death_foreign_state.present? && person.place_of_death_foreign_state.to_s.length > 0
+                 place_of_death = "#{place_of_death}, #{person.place_of_death_foreign_state}"
+              end
+
+              if person.place_of_death_country.present? && person.place_of_death_country.to_s.length > 0
+                if person.place_of_death_country == "Other"
+                  place_of_death = "#{place_of_death}, #{person.other_place_of_death_country}"
+                else
+                  place_of_death = "#{place_of_death}, #{person.place_of_death_country}"
+                end
+                 
+              end
+
+      elsif person.place_of_death  && person.place_of_death =="Other"
+                if person.other_place_of_death.present?
+                    place_of_death  = person.other_place_of_death;
+                end
+                if person.place_of_death_district.present?
+                    place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+                end
+      elsif person.place_of_death  && person.place_of_death =="Home"
+          if person.place_of_death_village.present? && person.place_of_death_village.to_s.length > 0
+            if person.place_of_death_village == "Other"
+               place_of_death = person.other_place_of_death_village
+            else
+               place_of_death = person.place_of_death_village
+            end
+             
+          end
+          if person.place_of_death_ta.present? && person.place_of_death_ta.to_s.length > 0
+            if person.place_of_death_ta == "Other"
+                place_of_death = "#{place_of_death}, #{person.other_place_of_death_ta}"
+            else
+                place_of_death = "#{place_of_death}, #{person.place_of_death_ta}"
+            end
+              
+          end
+          if person.place_of_death_district.present? && person.place_of_death_district.to_s.length > 0
+              place_of_death = "#{place_of_death}, #{person.place_of_death_district}"
+          end
+
+    end
+    return place_of_death 
+  end
+
+  def person_name
+    str = "#{self.first_name}"
+    if self.middle_name.present?
+        str = "#{str} #{self.middle_name}"
+    end
+    str = "#{str} #{self.last_name}"
+    return str.strip
+  end
+
+  def fathers_name
+    str = ""
+    if self.father_first_name.present?
+        str = "#{str} #{self.father_first_name}"
+    end
+    if self.father_middle_name.present?
+        str = "#{str} #{self.father_middle_name}"
+    end
+    if self.father_last_name.present?
+        str = "#{str} #{self.father_last_name}"
+    end
+    return str.strip
+  end
+
+  def mothers_name
+    str = ""
+    if self.mother_first_name.present?
+        str = "#{str} #{self.mother_first_name}"
+    end
+    if self.mother_middle_name.present?
+        str = "#{str} #{self.mother_middle_name}"
+    end
+    if self.mother_last_name.present?
+        str = "#{str} #{self.mother_last_name}"
+    end
+    return str.strip  
+  end
+  def self.qr_code_data(id)
+    person = Person.find(id)
+    str = "05~#{person.npid}-#{person.den}-#{person.drn}"
+    str += "~#{person.person_name}~#{person.birthdate.to_date.strftime("%d-%b-%Y")}~#{person.gender.first}"
+    str += "~#{person.nationality}"    
+    str += "~#{person.date_of_death.to_date.strftime("%d-%b-%Y")}"
+    str += "~#{person.printable_place_of_death}"
+    str += ("~#{person.mothers_name}" rescue '~')
+    str += ("~#{person.fathers_name}" rescue '~')
+    str += ("~#{person.created_at.to_date.strftime("%d-%b-%Y")}" rescue nil)
+
+    str
   end
 
   #Person properties
@@ -724,102 +903,6 @@ class Person < CouchRest::Model::Base
 
   design do
     view :by__id
-
-    view :by_source_id
-
-    view :by_created_at
-
-    view :by_updated_at
-
-    view :by_name,
-         :map => "function(doc) {
-                  if (doc['type'] == 'Person') {
-                    emit([doc['first_name_code'], doc['last_name_code']], 1);
-                  }
-                }"
-
-    view :by_name_codes,
-         :map =>"function(doc){
-                    if(doc['type'] == 'Person'){
-                        if(doc['first_name_code'] != null){
-                             emit(doc['first_name_code'], 1);
-                             emit(doc['last_name_code'], 1);
-                        }
-                        if(doc['mother_first_name_code'] != null){
-                            emit(doc['mother_first_name_code'], 1);
-                            emit(doc['mother_last_name_code'], 1);
-                        }
-                        if(doc['father_first_name_code'] != null){
-                            emit(doc['father_first_name_code'], 1);
-                            emit(doc['father_last_name_code'], 1);                          
-                        }
-                        if(doc['father_first_name_code'] != null){
-                            emit(doc['informant_first_name_code'], 1);
-                            emit(doc['informant_last_name_code'], 1);                          
-                        }
-                    }
-                }"
-    view :by_first_name_code
-
-    view :by_last_name_code
-    
-    view :by_approved
-
-    view :by_registration_type
-
-    view :by_district_code_and_registration_type
-
-    view :by_voided_date
-
-    view :by_district_code_and_voided_date
-
-    view :by_id_number
-    view :by_informant_designation
-
-    view :by_other_ta,
-          :map => "function(doc){
-                  if(doc['type'] == 'Person'){
-                     if(doc['other_current_ta'] != null){
-                          emit(doc['other_current_ta'],1);
-                     }
-                     if(doc['other_home_ta'] != null){
-                          emit(doc['other_home_ta'],1);
-                     }
-                    if(doc['other_place_of_death_ta'] != null){
-                          emit(doc['other_place_of_death_ta'],1);
-                     }
-                  }
-              }"
-
-    view :by_other_villages,
-          :map => "function(doc){
-                    if(doc['type'] == 'Person'){
-                       if(doc['other_current_village'] != null){
-                            emit(doc['other_current_village'],1);
-                       }
-                       if(doc['other_home_village'] != null){
-                            emit(doc['other_home_village'],1);
-                       }
-                      if(doc['other_place_of_death_village'] != null){
-                            emit(doc['other_place_of_death_village'],1);
-                       }
-                    }
-              }"
-
-    view :by_other_home_country,
-          :map => "function(doc){
-                        if(doc['type'] == 'Person'){
-                              if(doc['other_home_country'] != null){
-                                  emit(doc['other_home_country'],1);
-                              }
-                              if(doc['other_current_country'] != null){
-                                  emit(doc['other_current_country'],1);
-                              }
-                              if(doc['other_place_of_death_country'] != null){
-                                  emit(doc['other_place_of_death_country'],1);
-                              }
-                        }
-                  }"
 
     filter :facility_sync, "function(doc,req) {return req.query.facility_code == doc.facility_code}"
     filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"

@@ -2,7 +2,8 @@ require 'couchrest_model'
 
 class User < CouchRest::Model::Base
   
-  after_create :create_audit
+  after_create :create_audit, :insert_update_into_mysql
+  after_save :insert_update_into_mysql
 
   before_save :set_site
 
@@ -20,6 +21,7 @@ class User < CouchRest::Model::Base
   property :district_code, String
   property :site_code, String
   property :preferred_keyboard, String, :default => 'abc'
+  property :signature
   property :creator, String
   property :plain_password, String
   property :un_or_block_reason, String
@@ -46,7 +48,6 @@ class User < CouchRest::Model::Base
   design do
     view :by_active
     view :by_username
-    view :by_username_and_active
     view :by_role
     view :by_created_at
     view :by_updated_at
@@ -196,4 +197,21 @@ class User < CouchRest::Model::Base
     Audit.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
   end
   
+  def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = UserModel.where(user_id: self.id).first
+      sql_record = UserModel.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        next if field == "signature"
+        if field =="_id"
+            sql_record["user_id"] = self[field]
+        else
+            sql_record[field] = self[field]
+        end
+
+      end
+      sql_record.save
+  end
 end

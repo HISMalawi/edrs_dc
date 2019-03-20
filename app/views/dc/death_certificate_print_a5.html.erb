@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>eDRS Death Certificate</title>
+  <style>
+ @media all {  
+ body {
+          margin: 0;
+          -moz-user-select: none;
+          font-family: "Nimbus Sans L", "Arial Narrow", sans-serif;
+          margin-left: 10px;
+          margin-right: 10px;
+          color: #000;
+          font-size: 20px;
+         
+        
+      }
+    
+    #mainc {
+    height: 100% !important;
+    
+    }  
+      #barcode {
+        margin-right: 0px;
+        padding-right: 0px;
+        padding-top: 0px;
+        margin-top: 30px;
+        float: right !important;
+        
+      }
+      
+      #childdata {
+       clear: both;
+       width: 21cm;
+       margin-top: 38cm;
+       padding-top: 6cm;
+       margin-left: auto;
+       margin-right: auto;
+       height: 20cm;  
+       }}
+   
+  </style>
+</head>
+
+<body style="color: #000;">
+    <% @long_cert = false %>
+    <% 
+
+      if SETTINGS['print_qrcode']
+              raw = File.read("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+              @data = Base64.encode64(raw)
+      else
+              raw = File.read("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+              @data = Base64.encode64(raw)
+      end
+
+    %>
+    
+    <% raw_sig = File.read(Rails.root.join("public","uploads",User.by_username.key(GlobalProperty.find("signatory").value).last.signature)) rescue nil %>        
+    <% if raw_sig
+      @sig = Base64.encode64(raw_sig)
+     end %>
+             
+<div id="mainc">             
+  <div id="barcode">
+    <p style="text-align: center !important;font-size: 12px;"> <img src ="data:image/png;base64,<%= @data%>" />
+
+    <% if SETTINGS['print_qrcode'] %>
+        <br/></p>
+    <% else%>
+        <br/><%=  @person.npid %></p>    
+    <%end%>
+  </div>
+
+  <div id="childdata">
+
+    <table style="width: 21cm; font-weight: normal;" cellpadding="8" width="100%">
+            <tr>
+            <td style="width: 130px;" align="right">
+              1.
+            </td>
+            <td align="left" style="width: 300px;">
+              Death Entry Number
+            </td>
+            <td align="left">
+             <%= @den %>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 130px;" align="right">
+              2.
+            </td>
+            <td align="left" style="width: 300px;">
+              Registration Number
+            </td>
+            <td align="left">
+              <%= @drn %>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 130px;" align="right">
+              3.
+            </td>
+            <td align="left" style="width: 300px;">
+              Name
+            </td>
+            <td align="left">
+             <%= @person[:first_name] %> <%= @person[:middle_name] %> <%= @person[:last_name] %>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 130px;" align="right">
+              4.
+            </td>
+            <td align="left" style="width: 300px;">
+              Date of Birth
+            </td>
+            <td align="left">
+              <%= (!@person[:birthdate].blank? ? @person[:birthdate].to_date.day : "") %><sup
+                style="font-size: 18px;"><%= (!@person[:birthdate].blank? ?
+                      @person[:birthdate].to_date.day.ordinalize.match(/([a-z]+)/).captures.first : "") %></sup>
+                <%= (!@person[:birthdate].blank? ? @person[:birthdate].to_date.strftime("%B, %Y") : "") %>
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 130px;" align="right">
+              5.
+            </td>
+            <td align="left" style="width: 300px;">
+              Sex
+            </td>
+            <td align="left">
+              <%= @person.gender %>
+            </td>
+          </tr>
+          <tr>
+              <td style="width: 130px;" align="right">
+                6.
+              </td>
+              <td align="left" style="width: 300px;">
+                Date of Death
+              </td>
+              <td align="left">
+                <%= (!@person[:date_of_death].blank? ? @person[:date_of_death].to_date.day : "") %><sup
+                style="font-size: 18px;"><%= (!@person[:date_of_death].blank? ?
+                      @person[:date_of_death].to_date.day.ordinalize.match(/([a-z]+)/).captures.first : "") %></sup>
+                <%= (!@person[:date_of_death].blank? ? @person[:date_of_death].to_date.strftime("%B, %Y") : "") %>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 130px;" align="right">
+                7.
+              </td>
+              <td align="left" style="width: 300px;">
+                Place of Death
+              </td>
+              <td align="left">
+                <%= @place_of_death %>
+              </td>
+            </tr>
+            <% if @person[:mother_last_name].present? && @person[:mother_first_name].present? %>
+            <tr>
+              <td style="width: 130px;" align="right">
+                8.
+              </td>
+              <td align="left" style="width: 300px;">
+                Name of Mother
+              </td>
+              <td align="left">
+                <%= @person[:mother_first_name] %> <%= @person[:mother_middle_name] %> <%= @person[:mother_last_name] %>
+              </td>
+            </tr>
+            <%end%>
+            <% if @person[:father_last_name].present? && @person[:father_first_name].present?%>
+            <tr>
+              <td style="width: 130px;" align="right">
+                <% if @person[:mother_last_name].blank?%>
+                   8.
+                <%else%>
+                   9.
+                <%end%>
+              </td>
+              <td align="left" style="width: 300px;">
+                Name of Father
+              </td>
+              <td align="left">
+                <%= @person[:father_first_name] %> <%= @person[:father_middle_name] %> <%= @person[:father_last_name] %>
+              </td>
+            </tr>
+            <%end%>
+            <tr>
+              <td style="width: 130px;" align="right">
+                <% if @person[:mother_last_name].blank? && @person[:father_last_name].blank?%>
+                   8.
+                <%elsif @person[:mother_last_name].blank? || @person[:father_last_name].blank?%>
+                   9.
+                <%else%>
+                  10.
+                <%end%>
+              </td>
+              <td align="left" style="width: 300px;">
+                Date of Registration
+              </td>
+              <td align="left">
+                <%= (!@date_registered.blank? ? @date_registered.to_date.day : "") %><sup
+                style="font-size: 18px;"><%= (!@date_registered.blank? ?
+                      @date_registered.to_date.day.ordinalize.match(/([a-z]+)/).captures.first : "") %></sup>
+                <%= (!@date_registered.blank? ? @date_registered.to_date.strftime("%B, %Y") : "") %>
+              </td>
+            </tr>
+            
+           <tr><td colspan="3" align="center" valign="middle"><p style="font-size: 18px; font-weight: normal;"><br>I hereby certify the above to be a true and correct extract from the<br/>
+              Death Register kept at NRB.<br/><br/>
+              
+              Dated this <%= Date.today.strftime("%d").to_i rescue nil %><sup><%= Date.today.strftime("%d").to_i.ordinalize.gsub(/\d+/, "") rescue nil %></sup> 
+              <%= Date.today.strftime("%B") rescue nil %>, <%= Date.today.strftime("%Y") rescue nil %>
+              
+          </p></td></tr>  
+        </table>
+    </div>
+    	
+    <div id="signature">
+      <table  align="right" style="padding-right: 40px;margin-right: 40px;">
+          <tr><td><img src ="data:image/png;base64,<%= @sig %>" width="120" height="50" /></td></tr>
+          <tr><td><i style="float: right;">Chief Director</i></td></tr>
+      </table>     
+   </div>
+ </div>  
+</body>
+</html>
