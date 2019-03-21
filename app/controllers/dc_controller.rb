@@ -607,12 +607,15 @@ class DcController < ApplicationController
 		status = params[:status]
 		district_code = SETTINGS['district_code']
 		if SETTINGS['site_type'] == "remote"
-			district_code = User.current_user.district_code
+			district_code = session[:district_code]
 		end
 		key = [district_code,status]
 
 		#count = PersonRecordStatus.by_district_code_and_record_status.key(key).each.count
-		count = RecordStatus.where("status ='#{status}' AND district_code='#{district_code}' AND voided=0").count
+
+		connection = ActiveRecord::Base.connection
+		count =  connection.select_all("SELECT count(a.person_record_id) as total FROM  (SELECT DISTINCT person_record_id FROM person_record_status 
+                                                        WHERE status ='#{status}' AND district_code='#{district_code}' AND voided=0 ) a").as_json.last['total'] rescue 0
 
 		render :text => {:count => count}.to_json	
 	end
@@ -745,20 +748,12 @@ class DcController < ApplicationController
 
 	      input_url = "#{CONFIG["protocol"]}://#{request.env["SERVER_NAME"]}:#{request.env["SERVER_PORT"]}/death_certificate/#{id}"
 
-
-	      thread = Thread.new {
-	        Kernel.system "#{SETTINGS['wkhtmltopdf']} --zoom #{zoom} --page-size #{paper_size} #{input_url} #{output_file}"
+	      Kernel.system "#{SETTINGS['wkhtmltopdf']} --zoom #{zoom} --page-size #{paper_size} #{input_url} #{output_file}"
 	        #PDFKit.new(input_url, :page_size => paper_size, :zoom => zoom).to_file(output_file)
 
-	        sleep(4)
+	      Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
 
-	        Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
-
-	        PersonRecordStatus.change_status(person,"DC PRINTED")
-	        
-	      }
-
-	      sleep(1)
+	      PersonRecordStatus.change_status(person,"DC PRINTED")
 	  
 	   end
 	    
