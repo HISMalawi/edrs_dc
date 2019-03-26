@@ -77,7 +77,9 @@ OPTION 2 :  SETTING UP APPLICATION RELY ON MYSQL FOR QUERRYING BY GETTING MYSQL 
 	* CouchDB configuration
 	* MySQL configuration
 	* Update Settings
-2. Load dump from HQ [REQUIRED]
+2. Load mysql dump from HQ [REQUIRED]
+
+3. Sync couchDB Database [REQUIRED]
 
 4. Save to mysql may take a while [optional]
 	cd /var/www/edrs_dc/ && bundle exec rails  r bin/script/save_mysql.rb
