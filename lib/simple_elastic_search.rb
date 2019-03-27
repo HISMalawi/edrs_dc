@@ -165,7 +165,7 @@ class SimpleElasticSearch
       query_string = "#{person["first_name"]} #{person["last_name"]} #{content}"
 
       potential_duplicates = []
-      hits = self.query("content",query_string,precision,10,0)["data"]
+      hits = self.query("content",query_string,70,10,0)["data"]
 
       hits.each do |hit|
         potential_duplicates << hit if hit["_id"] !=(person.person_id rescue nil)
