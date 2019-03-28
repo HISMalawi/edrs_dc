@@ -174,4 +174,30 @@ else
 	if [ -f $PROCESS_FILE ] ; then
 	  rm $PROCESS_FILE
 	fi`
+
+
+	if SETTINGS['site_type'] == "dc"
+
+		puts "Hello"
+		
+		require 'socket'
+		ip=Socket.ip_address_list.detect{|intf| intf.ipv4_private?}
+		ip.ip_address if ip
+
+		if ip.present?
+			sync = Online.find("#{SETTINGS['district_code']}SYNC")
+
+			sync = Online.new if sync.blank?
+
+			if ip.ip_address.to_s != sync.ip.to_s
+					
+						sync.ip = ip.ip_address
+
+						sync.district_code = SETTINGS['distric_code']
+
+						sync.save
+			end
+		end
+			
+	end
 end
