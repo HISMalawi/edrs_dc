@@ -89,11 +89,11 @@ def save_to_mysql(record,map_key,db_maps)
 	mysql_record.save
 end
 
-if File.file?("/tmp/couch_to_mysql_process.pid")
+if File.file?("/tmp/couch_to_mysql_dc_process.pid")
 	puts "Already tranfering"
 else
 
-	`PROCESS_FILE="/tmp/couch_to_mysql_process.pid"
+	`PROCESS_FILE="/tmp/couch_to_mysql_dc_process.pid"
 
 	if [ -f $PROCESS_FILE ] ; then
 	  exit
@@ -169,7 +169,7 @@ else
 		last_seq.save
 	end
 
-	`PROCESS_FILE="/tmp/couch_to_mysql_process.pid"
+	`PROCESS_FILE="/tmp/couch_to_mysql_dc_process.pid"
 
 	if [ -f $PROCESS_FILE ] ; then
 	  rm $PROCESS_FILE
@@ -177,8 +177,6 @@ else
 
 
 	if SETTINGS['site_type'] == "dc"
-
-		puts "Hello"
 		
 		require 'socket'
 		ip=Socket.ip_address_list.detect{|intf| intf.ipv4_private?}
