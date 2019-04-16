@@ -193,6 +193,8 @@ else
 
 						sync.district_code = SETTINGS['distric_code']
 
+						sync.port = SYNC_SETTINGS[:dc][:port]
+
 						sync.save
 			end
 		end

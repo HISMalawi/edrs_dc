@@ -582,14 +582,17 @@ class DcController < ApplicationController
 		amendment_audit.level ="Person"
 		amendment_audit.save
 
-		PersonRecordStatus.change_status(person, "HQ AMEND")
-		PersonIdentifier.create({
+		PersonRecordStatus.change_status(person, "HQ AMEND",params[:reason])
+		if params[:barcode].present?
+			PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "AMENDMENT Barcode", 
                                       :identifier => params[:barcode].to_s,
                                       :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
                                       :district_code => (person.district_code rescue SETTINGS['district_code']),
-                                      :creator => params[:user_id]})
+                                      :creator => params[:user_id]})			
+		end
+
 		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end

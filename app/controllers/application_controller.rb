@@ -77,9 +77,13 @@ class ApplicationController < ActionController::Base
   end
 
   def unlock_users_record(person)
+    begin
       MyLock.by_user_id_and_person_id.key([User.current_user.id,person.id]).each do |lock|
             lock.destroy
-      end
+      end      
+    rescue Exception => e
+      
+    end
   end
 
   def current_nationality

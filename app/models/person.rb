@@ -426,7 +426,17 @@ class Person < CouchRest::Model::Base
     return self.id_number rescue "XXXXXXXX"
   end
   def barcode
-      PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier rescue "XXXXXXXX"
+      barcode = PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first
+      if barcode.present?
+         return barcode.identifier
+      else
+          barcode = BarcodeRecord.where(person_record_id: self.id).last
+          if barcode.present? 
+                return barcode.barcode
+          else
+                return   "XXXXXXXX"
+          end
+      end
   end
   def drn
       return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier rescue "XXXXXXXX"

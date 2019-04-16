@@ -8,6 +8,8 @@ class Online < CouchRest::Model::Base
   end
   property :district_code, String
   property :ip, String
+  property :port, String
+  property :online, TrueClass, :default => false
   property :time_seen, String
   
   timestamps!
