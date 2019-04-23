@@ -31,6 +31,8 @@ class LoginsController < ApplicationController
       end
     end
     if user and user.password_matches?(password)
+      
+      session[:current_user_id] = user.username
 
       ############## Checking if the user is from the district ####################################
       if SETTINGS['site_type'] != "remote"
@@ -140,7 +142,7 @@ class LoginsController < ApplicationController
     if SETTINGS['app_gate_url'].present?
       redirect_to SETTINGS['app_gate_url'].to_s
     else
-      flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
+      flash[:notice] = "User #{session[:current_user_id].present? ? session[:current_user_id] : ''} has been logged out"
       redirect_to "/", referrer_param => referrer_path and return
     end
   end
