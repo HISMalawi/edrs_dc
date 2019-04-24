@@ -4,7 +4,7 @@ class SimpleElasticSearch
 
       search_content = ""
       if person["middle_name"].present?
-         search_content = self.escape_single_quotes(person["middle_name"]) + ", "
+         search_content = self.escape_single_quotes(person["middle_name"]) + " "
       end 
 
       birthdate_formatted = person["birthdate"].to_date.strftime("%Y %m %d")
@@ -19,30 +19,7 @@ class SimpleElasticSearch
         registration_district = District.find(person["district_code"]).name
         search_content = search_content + registration_district + " " 
       end    
-
-      if person["mother_first_name"].present?
-        search_content = search_content + (person["mother_first_name"] rescue '') + " " 
-      end
-
-      if person["mother_middle_name"].present?
-         search_content = search_content + (person["mother_middle_name"] rescue '') + " " 
-      end   
-
-      if person["mother_last_name"].present?
-         search_content = search_content + (person["mother_last_name"] rescue '') + " " 
-      end  
-
-      if person["father_first_name"].present?
-         search_content = search_content + (person["father_first_name"] rescue '') + " " 
-      end 
-
-      if person["father_middle_name"].present?
-         search_content = search_content + (person["father_middle_name"] rescue '') + " " 
-      end  
-
-      if person["father_last_name"].present?
-         search_content = search_content + (person["father_last_name"] rescue '') + " " 
-      end  
+ 
 
       return search_content.squish
 
@@ -66,31 +43,7 @@ class SimpleElasticSearch
       else
         registration_district = District.find(person["district_code"]).name
         search_content = search_content + registration_district + " " 
-      end    
-
-      if person["mother_first_name"].present?
-        search_content = search_content + (person["mother_first_name"].soundex rescue '') + " " 
-      end
-
-      if person["mother_middle_name"].present?
-         search_content = search_content + (person["mother_middle_name"].soundex rescue '') + " " 
-      end   
-
-      if person["mother_last_name"].present?
-         search_content = search_content + (person["mother_last_name"].soundex rescue '') + " " 
-      end  
-
-      if person["father_first_name"].present?
-         search_content = search_content + (person["father_first_name"].soundex rescue '') + " " 
-      end 
-
-      if person["father_middle_name"].present?
-         search_content = search_content + (person["father_middle_name"].soundex rescue '') + " " 
-      end  
-
-      if person["father_last_name"].present?
-         search_content = search_content + (person["father_last_name"].soundex rescue '') + " " 
-      end  
+      end      
 
       return search_content.squish
   end

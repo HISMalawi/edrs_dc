@@ -136,7 +136,13 @@ class PeopleController < ApplicationController
           record["id"] = person.id
           record["district_code"] = (person.district_code rescue SETTINGS['district_code'])
 
-          SimpleElasticSearch.add(record)
+          if SETTINGS['use_mysql_potential_search']
+              insert_potential_search(record)
+          else
+              SimpleElasticSearch.add(record)            
+          end
+
+          
           
       end
 
@@ -528,7 +534,41 @@ class PeopleController < ApplicationController
         @locked = false
       end
 
+      #Duplicate capturing 
+      if SETTINGS["potential_duplicate"]
+
+              record = {}
+              record["first_name"] = @person.first_name
+              record["last_name"] = @person.last_name
+              record["middle_name"] = (@person.middle_name rescue nil)
+              record["gender"] = @person.gender
+              record["place_of_death_district"] = @person.place_of_death_district
+              record["birthdate"] = @person.birthdate
+              record["date_of_death"] = @person.date_of_death
+              record["mother_last_name"] = (@person.mother_last_name rescue nil)
+              record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
+              record["mother_first_name"] = (@person.mother_first_name rescue nil)
+              record["father_last_name"] = (@person.father_last_name rescue nil)
+              record["father_middle_name"] = (@person.father_middle_name rescue nil)
+              record["father_first_name"] = (@person.father_first_name rescue nil)
+              record["id"] = @person.id
+              record["district_code"] = @person.district_code
+
+              
+              if SETTINGS['use_mysql_potential_search']
+                 insert_potential_search(record)
+                 duplicate = duplicate_present_in_mysql(record)
+                 if duplicate == "POTENTIAL"
+                    PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
+                 elsif duplicate == "EXACT"
+                    PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                 end
+              else
+                SimpleElasticSearch.add(record)            
+              end
+      end
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
 
 
       #Recorrecting statuses thatt have not changed
@@ -565,29 +605,6 @@ class PeopleController < ApplicationController
       elsif @status.status.include?("DUPLICATE")
         redirect_to "/dc/show_duplicate/#{params[:id]}?next_url=#{params[:next_url]}"
       else
-
-          if SETTINGS["potential_duplicate"]
-
-              record = {}
-              record["first_name"] = @person.first_name
-              record["last_name"] = @person.last_name
-              record["middle_name"] = (@person.middle_name rescue nil)
-              record["gender"] = @person.gender
-              record["place_of_death_district"] = @person.place_of_death_district
-              record["birthdate"] = @person.birthdate
-              record["date_of_death"] = @person.date_of_death
-              record["mother_last_name"] = (@person.mother_last_name rescue nil)
-              record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
-              record["mother_first_name"] = (@person.mother_first_name rescue nil)
-              record["father_last_name"] = (@person.father_last_name rescue nil)
-              record["father_middle_name"] = (@person.father_middle_name rescue nil)
-              record["father_first_name"] = (@person.father_first_name rescue nil)
-              record["id"] = @person.id
-              record["district_code"] = @person.district_code
-
-             
-              SimpleElasticSearch.add(record)
-          end
 
           @person_place_details = place_details(@person)
 
@@ -671,7 +688,11 @@ class PeopleController < ApplicationController
               record["id"] = person.id
               record["district_code"] = (User.current_user.district_code rescue SETTINGS['district_code'])
 
-              SimpleElasticSearch.add(record)
+              if SETTINGS['use_mysql_potential_search']
+                  insert_potential_search(record)
+              else
+                  SimpleElasticSearch.add(record)            
+              end
           end
       end
 
@@ -1095,6 +1116,33 @@ end
       end
   end
 
+  def insert_potential_search(person)
+      connection = ActiveRecord::Base.connection
+      find_sql = "SELECT * FROM potential_search WHERE person_id='#{person['id']}';"
+      content = "#{person['first_name']} #{person['last_name']} #{SimpleElasticSearch.format_content(person)}".upcase
+      if connection.select_all(find_sql).as_json.blank?
+          sql = "INSERT INTO potential_search (person_id,content,created_at,updated_at) VALUES('#{person['id']}','#{content}', NOW(), NOW());"
+          connection.execute(sql)
+      else
+          sql = "UPDATE potential_search SET content = '#{content}', updated_at = NOW() WHERE person_id='#{person['id']}';"
+          connection.execute(sql)
+      end
+  end
+
+  def duplicate_present_in_mysql(person)
+      connection =  ActiveRecord::Base.connection
+      content = "#{person['first_name']} #{person['last_name']} #{SimpleElasticSearch.format_content(person)}".upcase
+      sql = "SELECT id,person_id,content, MATCH(content) AGAINST('#{content}') AS score FROM 
+             potential_search WHERE MATCH(content) AGAINST('#{content}') ORDER BY score DESC LIMIT 10;"
+
+      potention_results =  connection.select_all(sql)
+      results = []
+      potention_results.each do |p|
+        
+      end
+
+    
+  end
 
   protected
 
