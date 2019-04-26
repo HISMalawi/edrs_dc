@@ -133,6 +133,7 @@ class PeopleController < ApplicationController
           record["father_last_name"] = (params[:person][:father_last_name] rescue nil)
           record["father_middle_name"] = (params[:person][:father_middle_name] rescue nil)
           record["father_first_name"] = (params[:person][:father_first_name] rescue nil)
+          record["location"] = record["place_of_death_district"]
           record["id"] = person.id
           record["district_code"] = (person.district_code rescue SETTINGS['district_code'])
 
@@ -552,16 +553,26 @@ class PeopleController < ApplicationController
               record["father_middle_name"] = (@person.father_middle_name rescue nil)
               record["father_first_name"] = (@person.father_first_name rescue nil)
               record["id"] = @person.id
+              record["person_id"] = @person.id
+              record["location"] = record["place_of_death_district"]
               record["district_code"] = @person.district_code
-
               
               if SETTINGS['use_mysql_potential_search']
-                 insert_potential_search(record)
-                 duplicate = duplicate_present_in_mysql(record)
-                 if duplicate == "POTENTIAL"
-                    PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
-                 elsif duplicate == "EXACT"
-                    PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                 record["gender"] = @person.gender.first
+                 DeDuplication.add(record,true,false,false)
+                 @duplicates = DeDuplication.query_duplicate(record,50,true)
+                 if @duplicates.present?
+                    audit = Audit.new
+                    audit.audit_type = "POTENTIAL DUPLICATE"
+                    audit.record_id = record["person_id"]
+                    audit.change_log =[{'duplicates' => @duplicates.collect{|d|d["person_id"]}.join("|")}]
+                    audit.reason = "Record is a potential"
+                    audit.save
+                   if @duplicates.count == 1 && @duplicates.first["score"] == 100
+                      PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                   else
+                      PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
+                   end                   
                  end
               else
                 SimpleElasticSearch.add(record)            
@@ -603,7 +614,7 @@ class PeopleController < ApplicationController
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
       elsif @status.status.include?("DUPLICATE")
-        redirect_to "/dc/show_duplicate/#{params[:id]}?next_url=#{params[:next_url]}"
+        redirect_to "/dc/show_duplicate/#{params[:id]}?index=0&next_url=#{params[:next_url]}"
       else
 
           @person_place_details = place_details(@person)
@@ -1129,20 +1140,6 @@ end
       end
   end
 
-  def duplicate_present_in_mysql(person)
-      connection =  ActiveRecord::Base.connection
-      content = "#{person['first_name']} #{person['last_name']} #{SimpleElasticSearch.format_content(person)}".upcase
-      sql = "SELECT id,person_id,content, MATCH(content) AGAINST('#{content}') AS score FROM 
-             potential_search WHERE MATCH(content) AGAINST('#{content}') ORDER BY score DESC LIMIT 10;"
-
-      potention_results =  connection.select_all(sql)
-      results = []
-      potention_results.each do |p|
-        
-      end
-
-    
-  end
 
   protected
 

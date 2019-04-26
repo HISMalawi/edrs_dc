@@ -313,23 +313,23 @@ class DcController < ApplicationController
 
 	    @person_place_details = place_details(@person)
 
-	    @existing_record = []
 
-	    @existing_ids = ""
-	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).first
+	    @existing_ids = []
+	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).last
 	    @statuses = []
 	    @duplicates_audit.change_log.each do |log|
 	    	unless  log['duplicates'].blank?
-	    		@existing_ids = log['duplicates']
 	    		ids = log['duplicates'].split("|")
 	    		ids.each do |id|
-	    			 @existing_record << id
+	    			 @existing_ids << id
 	    			 @statuses << PersonRecordStatus.by_person_recent_status.key(id).last.status
 	    		end
 	    	end
 	    end
 
-	    @statuses = @statuses.join("|")
+	    @existing_record  = Person.find(@existing_ids[params[:index].to_i])
+
+	    @existing_place_details =  place_details(@existing_record)
 	   
 	    @section = "Resolve Duplicate"
 	end

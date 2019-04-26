@@ -538,6 +538,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def person_hash(person)
+      record = {}
+      record["first_name"] = person.first_name
+      record["last_name"] = person.last_name
+      record["middle_name"] = (person.middle_name rescue nil)
+      record["gender"] = person.gender.first
+      record["birthdate"] = person.birthdate
+      record["date_of_death"] = person.date_of_death
+      record["mother_last_name"] = (person.mother_last_name rescue nil)
+      record["mother_middle_name"] = (person.mother_middle_name rescue nil)
+      record["mother_first_name"] = (person.mother_first_name rescue nil)
+      record["father_last_name"] = (person.father_last_name rescue nil)
+      record["father_middle_name"] = (person.father_middle_name rescue nil)
+      record["father_first_name"] = (person.father_first_name rescue nil)
+      record["person_id"] = person.id
+      record["location"] = person.place_of_death_district
+      return record
+  end
+
   def access_denied
     respond_to do |format|
       format.html { redirect_to login_path(referrer_param => current_path) }
