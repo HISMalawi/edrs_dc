@@ -1,6 +1,4 @@
 class DeDuplication
-
-
 	def self.connection
 		return  ActiveRecord::Base.connection
 	end
@@ -87,7 +85,7 @@ class DeDuplication
           	else
 				sql = "#{sql}'#{person[field]}',"          		
           	end
-          	
+          
           end
           sql = "#{sql}NOW(), NOW());"
           self.connection.execute(sql)
@@ -104,6 +102,7 @@ class DeDuplication
 
 	def self.check_similarity_by_position(newrecord,existingrecord,include_death_date=false,include_mother=false,include_father=false)
 
+		  number_of_fields = 14
 	      score = 0
 	      #0. Records
 	      #newrecord = self.person_details(newrecord_id)
@@ -151,16 +150,60 @@ class DeDuplication
 	      score = score + WhiteSimilarity.similarity(newrecord_district, existingrecord_district)
 
 	      #5. Date of death 
-	      newrecord_date_of_death = newrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
-	      existingrecord_date_of_death = existingrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
+	      if include_death_date
+		      newrecord_date_of_death = newrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
+		      existingrecord_date_of_death = existingrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
 
-	      i = 0
-	      while i < newrecord_date_of_death.length
-	          score = score + WhiteSimilarity.similarity(newrecord_date_of_death[i], existingrecord_date_of_death[i])
-	          i = i + 1
+		      i = 0
+		      while i < newrecord_date_of_death.length
+		          score = score + WhiteSimilarity.similarity(newrecord_date_of_death[i], existingrecord_date_of_death[i])
+		          i = i + 1
+		      end	      	
 	      end
 
-	      return (score / 10) * 100
+      	  # 6. Comparing person mother's name
+	      if include_mother
+		      newrecord_mother_name = "#{newrecord['mother_first_name']} #{newrecord['mother_last_name']}"
+		      existingrecord_mother_name = "#{existingrecord['mother_first_name']} #{existingrecord['mother_last_name']}"
+		      if newrecord_mother_name.squish == existingrecord_mother_name.squish
+		         score = score + 2 
+		      elsif newrecord['mother_first_name'].squish == existingrecord['mother_first_name'].squish
+		         score = score + 1 + WhiteSimilarity.similarity(newrecord['mother_last_name'].squish, existingrecord['mother_last_name'])
+		      elsif newrecord['mother_last_name'].squish == existingrecord['mother_last_name'].squish
+		         score = score + 1 + WhiteSimilarity.similarity(newrecord['mother_first_name'].squish, existingrecord['mother_first_name'])
+		      elsif newrecord['mother_first_name'].squish == existingrecord['mother_last_name'].squish
+		        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['mother_last_name'].squish, existingrecord['mother_first_name'])
+		      elsif newrecord['mother_last_name'].squish == existingrecord['mother_first_name'].squish  
+		        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['mother_first_name'].squish, existingrecord['mother_last_name'])
+		      else
+		         score = score + WhiteSimilarity.similarity(newrecord_mother_name, existingrecord_mother_name) * 2   
+		      end
+	      else
+	      	number_of_fields = number_of_fields - 2
+	      end
+
+	      # 7. Comparing person father's name
+	      if include_father
+		      newrecord_father_name = "#{newrecord['father_first_name']} #{newrecord['father_last_name']}"
+		      existingrecord_father_name = "#{existingrecord['father_first_name']} #{existingrecord['father_last_name']}"
+		      if newrecord_father_name.squish == existingrecord_father_name.squish
+		         score = score + 2 
+		      elsif newrecord['father_first_name'].squish == existingrecord['father_first_name'].squish
+		         score = score + 1 + WhiteSimilarity.similarity(newrecord['father_last_name'].squish, existingrecord['father_last_name'])
+		      elsif newrecord['father_last_name'].squish == existingrecord['father_last_name'].squish
+		         score = score + 1 + WhiteSimilarity.similarity(newrecord['father_first_name'].squish, existingrecord['father_first_name'])
+		      elsif newrecord['father_first_name'].squish == existingrecord['father_last_name'].squish
+		        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['father_last_name'].squish, existingrecord['father_first_name'])
+		      elsif newrecord['father_last_name'].squish == existingrecord['father_first_name'].squish  
+		        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['father_first_name'].squish, existingrecord['father_last_name'])
+		      else
+		         score = score + WhiteSimilarity.similarity(newrecord_father_name, existingrecord_father_name) * 2   
+		      end
+	      else
+	      	number_of_fields = number_of_fields - 2
+	      end
+
+	      return (score / number_of_fields) * 100
 	end
 
 	def self.query_duplicate(person,percent_similarity, include_death_date = false)
