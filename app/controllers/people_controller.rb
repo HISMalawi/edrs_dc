@@ -633,7 +633,7 @@ class PeopleController < ApplicationController
             next if status.comment.blank?
             comment_statuses << status.status
             user = User.find(status.creator)
-            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", (user_role: user.role rescue '') } if status.comment.present?
+            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", user_role: (user.role rescue '') } if status.comment.present?
           end
           #raise @comments.inspect
           render :layout => "landing"
