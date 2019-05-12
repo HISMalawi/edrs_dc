@@ -51,24 +51,19 @@ class PersonRecordStatus < CouchRest::Model::Base
 	end
 
 	def self.change_status(person,currentstatus,comment=nil)
-		status = PersonRecordStatus.by_person_recent_status.key(person.id).last
-		if status.present?
-			status.update_attributes({:voided => true})
-			PersonRecordStatus.create({
-                                  :person_record_id => person.id.to_s,
-                                  :status => currentstatus,
-                                  :prev_status => status.status,
-                                  :comment => comment,
-                                  :district_code => person.district_code,
-                                  :creator => (User.current_user.id rescue nil)})
-		else
-			PersonRecordStatus.create({
+
+		new_status = PersonRecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,
                                   :comment => comment,
                                   :district_code => person.district_code,
                                   :creator => (User.current_user.id rescue nil)})
-		end
+
+      PersonRecordStatus.by_person_recent_status.key(person.id).each.sort_by{|d| d.created_at}.each do |s|
+        next if s === new_status
+        s.voided = true
+        s.save
+      end
 		
 	end
 	def insert_update_into_mysql

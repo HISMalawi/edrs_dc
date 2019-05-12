@@ -45,6 +45,10 @@
 						<td><%= @person.last_name %></td>
 					</tr>
 					<tr>
+						<td><b>Middle Name</b></td>
+						<td><%= @person.middle_name %></td>
+					</tr>
+					<tr>
 						<td><b>First Name</b></td>
 						<td><%= @person.first_name %></td>
 					</tr>
@@ -54,7 +58,7 @@
 					</tr>
 					<tr>
 						<td><b>Sex</b></td>
-						<td><%= @person.gender %></td>
+						<td><%= @person.gender.first %></td>
 					</tr>
 					<tr>
 						<td><b>Date of Birth</b></td>
@@ -72,20 +76,29 @@
 					</tr>
 
 					<tr>
-						<td><b>Mother Firstname</b></td>
-						<td><%= @person.mother_first_name %></td>
-					</tr>
-					<tr>
 						<td><b>Mother surname</b></td>
 						<td><%= @person.mother_last_name %></td>
 					</tr>
 					<tr>
-						<td><b>Father Firstname</b></td>
-						<td><%= @person.father_first_name %></td>
+						<td><b>Mother Middle name</b></td>
+						<td><%= @person.mother_middle_name %></td>
 					</tr>
+					<tr>
+						<td><b>Mother Firstname</b></td>
+						<td><%= @person.mother_first_name %></td>
+					</tr>
+
 					<tr>
 						<td><b>Father Surname</b></td>
 						<td><%= @person.father_last_name %></td>
+					</tr>
+				    <tr>
+						<td><b>Father Middle name</b></td>
+						<td><%= @person.father_middle_name %></td>
+					</tr>
+				    <tr>
+						<td><b>Father Firstname</b></td>
+						<td><%= @person.father_first_name %></td>
 					</tr>
 
 
@@ -93,59 +106,67 @@
 	<table style="width:48% !important;float:right" class="record existing">
 				<thead>
 					<tr>
-						<th colspan="2" id="existing_head" style="background:#6889b1"></th>
+						<th colspan="2" id="existing_head" style="background:#6889b1">Existing Record(<%= @existing_record.status rescue "" %>)</th>
 					</tr>
 				</thead>
 				<tbody id="existing">
 					<tr>
 						<td><b>Surname</b></td>
-						<td><%= @person.last_name %></td>
+						<td><%= @existing_record.last_name %></td>
 					</tr>
 					<tr>
 						<td><b>Middle Name</b></td>
-						<td><%= @person.middle_name %></td>
+						<td><%= @existing_record.middle_name %></td>
 					</tr>
 					<tr>
 						<td><b>First Name</b></td>
-						<td><%= @person.first_name %></td>
+						<td><%= @existing_record.first_name %></td>
+					</tr>
+					<tr>
+						<td><b>Nationality</b></td>
+						<td><%= @existing_record.nationality%></td>
+					</tr>
+					<tr>
+						<td><b>Sex</b></td>
+						<td><%= @existing_record.gender.first %></td>
 					</tr>
 					<tr>
 						<td><b>Date of Birth</b></td>
-						<td><%= Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %></td>
+						<td><%= Date.parse(@existing_record.birthdate.to_s).strftime("%d/%b/%Y") %></td>
 					</tr>
 					<tr>
 						<td><b>Date of Death</b></td>
-						<td><%= Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
+						<td><%= Date.parse(@existing_record.date_of_death.to_s).strftime("%d/%b/%Y") %></td>
 					</tr>
 
 					<tr>
 						<td><b>Place of Death</b></td>
 
-					 	<td><%= ApplicationController.new.place_of_death(@person) %></td>
+					 	<td><%= ApplicationController.new.place_of_death(@existing_record) %></td>
 					</tr>
 					<tr>
 						<td><b>Mother surname</b></td>
-						<td><%= @person.mother_last_name %></td>
+						<td><%= @existing_record.mother_last_name %></td>
 					</tr>
 					<tr>
 						<td><b>Mother Middle Name</b></td>
-						<td><%= @person.mother_middle_name %></td>
+						<td><%= @existing_record.mother_middle_name %></td>
 					</tr>
 					<tr>
 						<td><b>Mother Firstname</b></td>
-						<td><%= @person.mother_first_name %></td>
+						<td><%= @existing_record.mother_first_name %></td>
 					</tr>
 					<tr>
 						<td><b>Father Surname</b></td>
-						<td><%= @person.father_last_name %></td>
+						<td><%= @existing_record.father_last_name %></td>
 					</tr>
 					<tr>
 						<td><b>Father Middle Name</b></td>
-						<td><%= @person.father_middle_name %></td>
+						<td><%= @existing_record.father_middle_name %></td>
 					</tr>
 					<tr>
 						<td><b>Father Firstname</b></td>
-						<td><%= @person.father_first_name %></td>
+						<td><%= @existing_record.father_first_name %></td>
 					</tr>
 				</tbody>
 	</table>
@@ -188,238 +209,14 @@
 			
 
 
-			var ids = "<%= @existing_ids %>".split("|");
-
-			var id_to_proceed = "";
-
-			var void_url =""
-			var number = 0;
-
+			
 			function showNext(){
 
-				var url = "/people/find/"+ids[number];
-				ajaxGETRequest(url, function(data){
-
-					console.log(url);
-					var data  = JSON.parse(data);
-					var table = __$("existing");
-					table.innerHTML ="";
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Surname";
-					td.style.fontWeight ="bold";
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.last_name;
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "First Name";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.first_name;
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.style.fontWeight ="bold";
-
-					td.innerHTML = "Nationality";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.nationality
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Sex";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.gender
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Date of Birth";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML =(new Date(data.birthdate)).format();
-
-					tr.appendChild(td);
-
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Date of Death";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = (new Date(data.date_of_death)).format();
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Place of Death";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.death_place
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Mother First Name";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.mother_first_name
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Mother Last Name";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.mother_last_name
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Father First Name";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.father_first_name
-
-					tr.appendChild(td);
-
-					var tr = document.createElement("tr");
-
-					table.appendChild(tr);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = "Fathe Last Name";
-
-					td.style.fontWeight ="bold";
-
-					tr.appendChild(td);
-
-					var td = document.createElement("td");
-
-					td.innerHTML = data.father_last_name
-
-					tr.appendChild(td);
- 
-					__$("existing_head").innerHTML = "Existing Record ("+data.status+") "+( number + 1 )+"/"+ids.length; 
-					if (data.status.toLowerCase().indexOf("voided") >= 0) {
-						 __$("existing_head").style.backgroundColor = "#b4b1b1"
-					}
-					if(ids.length <= 1){
-						__$("next_similar").style.display="none"
-					}
-
-					number = (number + 1) % ids.length;
-
-				});
-
-				
+				window.location.href = "/dc/show_duplicate/<%=params[:id]%>?index=<%=(params[:index].to_i + 1) % @existing_ids.count %>&next_url=/"
 			}
 
-			showNext();
-
 			function resolveDuplicate(){
+				var ids = "<%= @existing_ids.join(',') %>".split(",");
 				showPopupMessage("Record is a potential duplicate to <b>"+ids.length+ "</b> other record(s)", "Resolve Duplicates");
 				var bt_panel = __$("pop_button_panel");
 				bt_panel.innerHTML ="";
@@ -429,7 +226,7 @@
 				duplicate.onmousedown = function(){
 					var url ="/people/form_container?url=/confirm_duplicate_comment/<%= @person.id %>/<%=@duplicates_audit.id %>?next_url=<%=params[:next_url]%>";
 					var statuses = '<%= @statuses%>'
-					if(statuses.indexOf("DC ACTIVE") >= 0 && "<%= @existing_ids %>".split("|").length == 1){
+					if(statuses.indexOf("DC ACTIVE") >= 0 && "<%= @existing_ids.join(',') %>".split(",").length == 1){
 						chooseRecordToVoid();
 						
 					}else{
@@ -463,7 +260,7 @@
 
 			function chooseRecordToVoid(url){
 				void_url = "/people/form_container?url=/confirm_duplicate_comment"
-				var ids = "<%= @existing_ids %>".split("|");
+				var ids = "<%= @existing_ids.join(',') %>".split(",");
 				ids.push("<%= params[:id] %>");
 				ids[ids.length - 1] = ids[0]
 				ids[0] = "<%= params[:id] %>"

@@ -10,6 +10,8 @@ var registration_type ="<%= params[:registration_type] rescue '' %>"
 var district = "<%= params[:district].present? ? params[:district] : '' %>"
 var amendment = "<%=@amendment rescue ''%>";
 
+var ids = []
+
 <% if @statuses.present? %>
     var statuses = "<%= @statuses.join(",") %>".split(",");
 <%end%>
@@ -126,6 +128,17 @@ function addRows(data, skip_parse) {
     person_id = people[i]["person_id"];
     spam = document.createElement("spam");
     select = "<input type = 'checkbox' id='"+person_id+"' onclick='checkRecord(this)'/>";
+
+    if (ids.indexOf(person_id) >= 0) {
+        continue;
+    }else{
+      ids.push(person_id);
+    }
+
+    if (!den) {
+        continue;
+    }
+    
     var btn = document.createElement("input");
       btn.setAttribute("type", "button");
       btn.setAttribute("value", "View");

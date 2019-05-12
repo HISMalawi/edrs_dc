@@ -60,6 +60,17 @@ class PeopleController < ApplicationController
 	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
      @current_nationality = Nationality.by_nationality.key("Malawian").last
+     if session[:district_code].blank?
+        if SETTINGS['site_type'] == "dc" || SETTINGS['site_type'] == "facility"
+            session[:district_code] = SETTINGS['district_code'] 
+        else
+            flash[:error] = 'Session expired please login again!'
+            redirect_to "/login" and return          
+        end
+     end
+
+     @district_code =  session[:district_code]
+     
 	   if !params[:id].blank?
 	   else
 	    	@person = Person.new if @person.nil?
@@ -122,10 +133,17 @@ class PeopleController < ApplicationController
           record["father_last_name"] = (params[:person][:father_last_name] rescue nil)
           record["father_middle_name"] = (params[:person][:father_middle_name] rescue nil)
           record["father_first_name"] = (params[:person][:father_first_name] rescue nil)
+          record["location"] = record["place_of_death_district"]
           record["id"] = person.id
           record["district_code"] = (person.district_code rescue SETTINGS['district_code'])
 
-          SimpleElasticSearch.add(record)
+          if SETTINGS['use_mysql_potential_search']
+              insert_potential_search(record)
+          else
+              SimpleElasticSearch.add(record)            
+          end
+
+          
           
       end
 
@@ -517,7 +535,51 @@ class PeopleController < ApplicationController
         @locked = false
       end
 
+      #Duplicate capturing 
+      if SETTINGS["potential_duplicate"]
+
+              record = {}
+              record["first_name"] = @person.first_name
+              record["last_name"] = @person.last_name
+              record["middle_name"] = (@person.middle_name rescue nil)
+              record["gender"] = @person.gender
+              record["place_of_death_district"] = @person.place_of_death_district
+              record["birthdate"] = @person.birthdate
+              record["date_of_death"] = @person.date_of_death
+              record["mother_last_name"] = (@person.mother_last_name rescue nil)
+              record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
+              record["mother_first_name"] = (@person.mother_first_name rescue nil)
+              record["father_last_name"] = (@person.father_last_name rescue nil)
+              record["father_middle_name"] = (@person.father_middle_name rescue nil)
+              record["father_first_name"] = (@person.father_first_name rescue nil)
+              record["id"] = @person.id
+              record["person_id"] = @person.id
+              record["location"] = record["place_of_death_district"]
+              record["district_code"] = @person.district_code
+              
+              if SETTINGS['use_mysql_potential_search']
+                 record["gender"] = @person.gender.first
+                 DeDuplication.add(record,true,false,false)
+                 @duplicates = DeDuplication.query_duplicate(record,50,true)
+                 if @duplicates.present?
+                    audit = Audit.new
+                    audit.audit_type = "POTENTIAL DUPLICATE"
+                    audit.record_id = record["person_id"]
+                    audit.change_log =[{'duplicates' => @duplicates.collect{|d|d["person_id"]}.join("|")}]
+                    audit.reason = "Record is a potential"
+                    audit.save
+                   if @duplicates.count == 1 && @duplicates.first["score"] == 100
+                      PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                   else
+                      PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
+                   end                   
+                 end
+              else
+                SimpleElasticSearch.add(record)            
+              end
+      end
       @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+
 
 
       #Recorrecting statuses thatt have not changed
@@ -552,31 +614,8 @@ class PeopleController < ApplicationController
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
       elsif @status.status.include?("DUPLICATE")
-        redirect_to "/dc/show_duplicate/#{params[:id]}?next_url=#{params[:next_url]}"
+        redirect_to "/dc/show_duplicate/#{params[:id]}?index=0&next_url=#{params[:next_url]}"
       else
-
-          if SETTINGS["potential_duplicate"]
-
-              record = {}
-              record["first_name"] = @person.first_name
-              record["last_name"] = @person.last_name
-              record["middle_name"] = (@person.middle_name rescue nil)
-              record["gender"] = @person.gender
-              record["place_of_death_district"] = @person.place_of_death_district
-              record["birthdate"] = @person.birthdate
-              record["date_of_death"] = @person.date_of_death
-              record["mother_last_name"] = (@person.mother_last_name rescue nil)
-              record["mother_middle_name"] = (@person.mother_middle_name rescue nil)
-              record["mother_first_name"] = (@person.mother_first_name rescue nil)
-              record["father_last_name"] = (@person.father_last_name rescue nil)
-              record["father_middle_name"] = (@person.father_middle_name rescue nil)
-              record["father_first_name"] = (@person.father_first_name rescue nil)
-              record["id"] = @person.id
-              record["district_code"] = @person.district_code
-
-             
-              SimpleElasticSearch.add(record)
-          end
 
           @person_place_details = place_details(@person)
 
@@ -591,9 +630,10 @@ class PeopleController < ApplicationController
           PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["updated_at"]}.each do |status|
             next if comment_statuses.include?(status.status)
             next if status.status.blank?
+            next if status.comment.blank?
             comment_statuses << status.status
             user = User.find(status.creator)
-            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name} #{user.last_name}", user_role: user.role } if status.comment.present?
+            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", (user_role: user.role rescue '') } if status.comment.present?
           end
           #raise @comments.inspect
           render :layout => "landing"
@@ -660,7 +700,11 @@ class PeopleController < ApplicationController
               record["id"] = person.id
               record["district_code"] = (User.current_user.district_code rescue SETTINGS['district_code'])
 
-              SimpleElasticSearch.add(record)
+              if SETTINGS['use_mysql_potential_search']
+                  insert_potential_search(record)
+              else
+                  SimpleElasticSearch.add(record)            
+              end
           end
       end
 
@@ -1081,6 +1125,19 @@ end
         else
            render :text => {:response => false}.to_json
         end            
+      end
+  end
+
+  def insert_potential_search(person)
+      connection = ActiveRecord::Base.connection
+      find_sql = "SELECT * FROM potential_search WHERE person_id='#{person['id']}';"
+      content = "#{person['first_name']} #{person['last_name']} #{SimpleElasticSearch.format_content(person)}".upcase
+      if connection.select_all(find_sql).as_json.blank?
+          sql = "INSERT INTO potential_search (person_id,content,created_at,updated_at) VALUES('#{person['id']}','#{content}', NOW(), NOW());"
+          connection.execute(sql)
+      else
+          sql = "UPDATE potential_search SET content = '#{content}', updated_at = NOW() WHERE person_id='#{person['id']}';"
+          connection.execute(sql)
       end
   end
 

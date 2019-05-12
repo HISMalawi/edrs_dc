@@ -16,3 +16,5 @@ Country|country:
     _id: country_id
 Nationality|nationality:
     _id: nationality_id
+Barcode|barcodes:
+    _id: barcode_id

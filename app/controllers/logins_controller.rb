@@ -7,6 +7,12 @@ class LoginsController < ApplicationController
       uri = URI::parse(params["referrer"])
       @portal = uri.query.split("=")[1] rescue nil
     end
+    @districts = []
+    DistrictRecord.all.each  do |e| 
+       next if e.name.include?("City")
+       next if SETTINGS['exclude'].split(",").include?(e.name)
+       @districts << e.name
+    end
     render :layout => false
   end
 
@@ -15,7 +21,18 @@ class LoginsController < ApplicationController
     password = params[:user][:password]
     #user = User.get_active_user(username)
     user = UserModel.where(username: username, active: 1).first
+
+    if SETTINGS['site_type'] == "remote"
+      district = DistrictRecord.where(name: params[:user][:district]).first
+
+      if user.present? && user.username != 'admin' && user.district_code != district.id
+              flash[:error] = 'User does not have rights for the district selected'
+              redirect_to "/login" and return
+      end
+    end
     if user and user.password_matches?(password)
+      
+      session[:current_user_id] = user.username
 
       ############## Checking if the user is from the district ####################################
       if SETTINGS['site_type'] != "remote"
@@ -62,7 +79,9 @@ class LoginsController < ApplicationController
         
         login!(user,params[:remote_portal])
 
-        if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90
+        # Password expirely should be refined
+=begin
+        if (Time.now.to_date - user.last_password_date.to_date).to_i >= 90 && false
           
            if user.role =="System Administrator"
             redirect_to "/" and return 
@@ -87,7 +106,9 @@ class LoginsController < ApplicationController
              end
            end
            redirect_to default_path and return
-        end   
+        end 
+=end  
+        redirect_to default_path and return
       else
           flash[:error] = 'That username and/or password is not valid for this level'
           redirect_to "/login" and return
@@ -121,7 +142,7 @@ class LoginsController < ApplicationController
     if SETTINGS['app_gate_url'].present?
       redirect_to SETTINGS['app_gate_url'].to_s
     else
-      flash[:notice] = "User #{User.current_user.username rescue ''} has been logged out"
+      flash[:notice] = "User #{session[:current_user_id].present? ? session[:current_user_id] : ''} has been logged out"
       redirect_to "/", referrer_param => referrer_path and return
     end
   end
