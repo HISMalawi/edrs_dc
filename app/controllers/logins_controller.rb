@@ -25,7 +25,7 @@ class LoginsController < ApplicationController
     if SETTINGS['site_type'] == "remote"
       district = DistrictRecord.where(name: params[:user][:district]).first
 
-      if user.present? && user.district_code != district.id
+      if user.present? && user.username != 'admin' && user.district_code != district.id
               flash[:error] = 'User does not have rights for the district selected'
               redirect_to "/login" and return
       end
