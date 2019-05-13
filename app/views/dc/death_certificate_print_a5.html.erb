@@ -24,7 +24,13 @@
         margin-right: 0px;
         padding-right: 0px;
         padding-top: 0px;
+
+    <% if SETTINGS['print_qrcode'] == true %>
+        margin-top: -15px;
+        padding: 0px;
+    <% else %>
         margin-top: 30px;
+    <% end %>
         float: right !important;
         
       }
@@ -36,7 +42,11 @@
        padding-top: 6cm;
        margin-left: auto;
        margin-right: auto;
-       height: 20cm;  
+      <% if SETTINGS['print_qrcode'] == true %>
+              height: 18cm;
+      <% else %>
+              height: 19cm;
+      <% end %> 
        }}
    
   </style>
@@ -218,13 +228,23 @@
           </p></td></tr>  
         </table>
     </div>
-    	
-    <div id="signature">
-      <table  align="right" style="padding-right: 40px;margin-right: 40px;">
-          <tr><td><img src ="data:image/png;base64,<%= @sig %>" width="120" height="50" /></td></tr>
-          <tr><td><i style="float: right;">Chief Director</i></td></tr>
-      </table>     
-   </div>
+
+   <div id="signature">
+    <table style="width: 100%;">
+      <tr>
+        <td>
+              <img src ="data:image/png;base64,<%= @sig %>" width="120" height="50" align="right" style="padding-right: 40px;margin-right: 40px;" />
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 0px;padding-right: 95px;">
+          <div style="width: 100%;text-align: right;font-size: 16px !important;margin:0px;">
+            Chief Director
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
  </div>  
 </body>
 </html>
