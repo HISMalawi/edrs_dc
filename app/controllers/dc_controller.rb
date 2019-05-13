@@ -718,7 +718,7 @@ class DcController < ApplicationController
 	def do_print_these
     	selected = params[:selected].split("|")
 
-    	paper_size = GlobalProperty.find("paper_size").value rescue "A4"
+    	paper_size = "A5" #GlobalProperty.find("paper_size").value rescue "A4"
     
 	    if paper_size == "A4"
 	       zoom = 0.83
