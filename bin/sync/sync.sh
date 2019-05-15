@@ -61,7 +61,7 @@ AUTH_SOURCE_URL="${SOURCE_PROTOCOL}://${SOURCE_USERNAME}:${SOURCE_PASSWORD}@${SO
 TARGET_URL="${TARGET_PROTOCOL}://${TARGET_HOST}:${TARGET_PORT}/${TARGET_DB}"
 AUTH_TARGET_URL="${TARGET_PROTOCOL}://${TARGET_USERNAME}:${TARGET_PASSWORD}@${TARGET_HOST}:${TARGET_PORT}"
 
-SYNC_TO_TARGET=`eval curl -s -k -H \"Content-Type: application/json\" -X POST -d \'{\"source\": \"${SOURCE_URL}\", \"target\": \"${TARGET_URL}\", \"continuous\": true }\' \"${AUTH_TARGET_URL}/_replicate\"`
+SYNC_TO_TARGET=`eval curl -s -k -H \"Content-Type: application/json\" -X POST -d \'{\"source\": \"${SOURCE_URL}\", \"target\": \"${TARGET_URL}\", \"continuous\": true }\' \"${AUTH_SOURCE_URL}/_replicate\"`
 if [ "$SITE_TYPE" = "dc" ]; then
 	SYNC_PEOPLE_FROM_TARGET=`eval curl -s -k -H \"Content-Type: application/json\" -X POST -d \'{\"source\": \"${TARGET_URL}\", \"target\": \"${SOURCE_URL}\", \"continuous\": true, \"filter\": \"Person/district_sync\", \"query_params\": {\"district_code\": \"${DISTRICT_CODE}\"}}\' \"${AUTH_SOURCE_URL}/_replicate\"`
 	SYNC_IDENTIFIER_FROM_TARGET=`eval curl -s -k -H \"Content-Type: application/json\" -X POST -d \'{\"source\": \"${TARGET_URL}\", \"target\": \"${SOURCE_URL}\", \"continuous\": true, \"filter\": \"PersonIdentifier/district_sync\", \"query_params\": {\"district_code\": \"${DISTRICT_CODE}\"}}\' \"${AUTH_SOURCE_URL}/_replicate\"`
