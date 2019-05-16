@@ -692,7 +692,7 @@ class DcController < ApplicationController
 	#Decentralize printing
 	def print_certificates
 		@section = "Print Certificates"
-		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED"]
+		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED", "HQ CAN RE PRINT"]
 		@available_printers = SETTINGS["printer_name"].split(',')
 		@next_url = "/dc/print_certificates"
 		@den = true 

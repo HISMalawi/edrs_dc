@@ -81,4 +81,21 @@ class Audit < CouchRest::Model::Base
     self.ip_address =   (AuditTrail.ip_address_accessor rescue (request.remote_ip rescue `ip route show`[/default.*/][/\d+\.\d+\.\d+\.\d+/] rescue "0.0.0.0"))
     self.mac_address =  (AuditTrail.mac_address_accessor rescue (` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue MacAddress.address))
  end
+
+ def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = AuditRecord.where(audit_record_id: self.person_record_id, barcode: self.barcode).first
+      sql_record = AuditRecord.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+        if field =="_id"
+            sql_record["audit_record_id"] = self[field]
+        else          
+            sql_record[field] = self[field]
+        end
+
+      end
+      sql_record.save
+  end
 end

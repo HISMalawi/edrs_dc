@@ -521,7 +521,7 @@ class ApplicationController < ActionController::Base
                   )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
     SimpleSQL.query_exec(create_query); 
 
-    create_audit_trail_table = "CREATE TABLE audit_trail(
+    create_audit_trail_table = "CREATE TABLE IF NOT EXISTS audit_trail(
                                   audit_record_id VARCHAR(255) NOT NULL,
                                   record_id VARCHAR(255) NOT NULL,
                                   audit_type VARCHAR(50) DEFAULT NULL,
