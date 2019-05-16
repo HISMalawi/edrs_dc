@@ -2,7 +2,7 @@ require 'couchrest_model'
 
 class Audit < CouchRest::Model::Base
   
-  before_save :set_site_id, :set_site_type, :set_user_id,:set_creator, :set_location
+  before_save :set_site_id, :set_site_type, :set_user_id,:set_creator, :set_location,:insert_update_into_mysql
 
   property :record_id, String # Person/Audit...
   property :audit_type, String # Quality Control | Reprint | Audit | Amendment | User Access
