@@ -89,10 +89,12 @@ class Audit < CouchRest::Model::Base
       fields.each do |field|
         next if field == "type"
         next if field == "_rev"
-        if field =="_id"
+        if field =="voided"
+          sql_record["voided"] =  (self.voided == true ? 1 : 0)
+        elsif field =="_id"
             sql_record["audit_record_id"] = self[field]
         else          
-            sql_record[field] = self[field]
+            sql_record[field] = self[field].to_s
         end
 
       end
