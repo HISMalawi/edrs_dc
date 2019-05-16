@@ -399,7 +399,11 @@ class ApplicationController < ActionController::Base
   end
 
   def hq_is_online
-      hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+      if SETTINGS["site_type"] == "facility"
+         hq_link = "#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}"
+      else
+         hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+      end    
       online = is_up?(hq_link) rescue false
       if online
          render :text => {status: true}.to_json
