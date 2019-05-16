@@ -67,7 +67,7 @@ while page <= pages
 			den = DeathEntryNumber.where(person_record_id: identifier.person_record_id).first
 			if den.blank?
 				componets = identifier.identifier.split("/")
-				if Person.find(identifier.person_record_id).district_code = identifier.district_code
+				if Person.find(identifier.person_record_id).district_code == identifier.district_code
 					begin
 						DeathEntryNumber.create(
 								person_record_id: identifier.person_record_id, 
