@@ -238,7 +238,7 @@
 
 	<%end%>
 
-	<%if  @status.present? && @status.status == "HQ CAN PRINT" %>
+	<%if  @status.present? && ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED", "HQ CAN RE PRINT"].include?(@status.status) %>
 			<button  id="print_btn" class="gray" style="float: right; margin-right:3%" ><span>Print Preview</span></button>
 
 	<%end%>
