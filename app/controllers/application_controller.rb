@@ -519,8 +519,30 @@ class ApplicationController < ActionController::Base
                     PRIMARY KEY (id),
                     FULLTEXT KEY content (content)
                   )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SimpleSQL.query_exec(create_query);           
-                      
+    SimpleSQL.query_exec(create_query); 
+
+    create_audit_trail_table = "CREATE TABLE audit_trail(
+                                  audit_record_id VARCHAR(255) NOT NULL,
+                                  record_id VARCHAR(255) NOT NULL,
+                                  audit_type VARCHAR(50) DEFAULT NULL,
+                                  level VARCHAR(50) NOT NULL,
+                                  model VARCHAR(50) DEFAULT NULL,
+                                  field VARCHAR(50) DEFAULT NULL,
+                                  previous_value VARCHAR(255) DEFAULT NULL,
+                                  current_value VARCHAR(255) DEFAULT NULL,
+                                  reason VARCHAR(255) DEFAULT NULL,
+                                  user_id VARCHAR(255) DEFAULT NULL, 
+                                  site_id VARCHAR(255) DEFAULT NULL,
+                                  site_type VARCHAR(50) DEFAULT NULL,
+                                  ip_address VARCHAR(64) DEFAULT NULL,
+                                  mac_address VARCHAR(255) DEFAULT NULL,
+                                  change_log VARCHAR(255) DEFAULT NULL,
+                                  creator VARCHAR(255) DEFAULT NULL,
+                                  voided INT(1) DEFAULT NULL,
+                                  created_at DATETIME DEFAULT NULL,
+                                  updated_at DATETIME DEFAULT NULL,
+                                  PRIMARY KEY (audit_record_id)) ENGINE=InnoDB DEFAULT CHARSET=latin1;;"          
+    SimpleSQL.query_exec(create_audit_trail_table);                   
   end
 
   def check_den_table
