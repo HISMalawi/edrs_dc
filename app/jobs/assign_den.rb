@@ -17,15 +17,19 @@ class AssignDen
     queue.each do |record|
         person = record.person
 
-        if SETTINGS['site_type'] == "remote"
-              next if SETTINGS['exclude'].split(",").include?(District.find(person.district_code).name)
-        end
+        if person.den == "XXXXXXXX"
+          if SETTINGS['site_type'] == "remote"
+                next if SETTINGS['exclude'].split(",").include?(District.find(person.district_code).name)
+          end
 
-        PersonIdentifier.assign_den(person, record.creator)
+          PersonIdentifier.assign_den(person, record.creator)
 
-        #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
-        if Rails.env == 'development'
-          SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
+          #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
+          if Rails.env == 'development'
+            SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
+          end
+        else
+          PersonRecordStatus.change_status(person, "HQ ACTIVE")          
         end
     end rescue (AssignDen.perform_in(job_interval))
   end

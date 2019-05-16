@@ -54,7 +54,7 @@
 
     %>
     
-    <% raw_sig = File.read(Rails.root.join("public","uploads",User.by_username.key(GlobalProperty.find("signatory").value).last.signature)) rescue nil %>        
+    <% raw_sig = File.read(Rails.root.join("public","uploads","signature.png")) rescue nil %>        
     <% if raw_sig
       @sig = Base64.encode64(raw_sig)
      end %>
