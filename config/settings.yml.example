@@ -21,4 +21,4 @@
  wkhtmltopdf: /usr/bin/wkhtmltopdf
  decentralized_printing: false
  print_qrcode: false
- qr_codes_path: /home/usr/qrcodes/
+ qrcodes_path: /home/usr/qrcodes/

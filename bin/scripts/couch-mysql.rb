@@ -3,6 +3,27 @@ require "yaml"
 DIR = File.dirname(__FILE__)
 
 
+file = "#{Rails.root}/log/couch_mysql.log"
+
+if !File.exist?(file)
+	File.open(file, "w+") do |f|
+		  f.write("Log for #{Time.now}")
+	end
+else
+	File.open(file, "a+") do |f|
+	  f.write("\nLog for #{Time.now}")
+	end	
+end
+
+def add_to_file(e,content)
+    file = "#{Rails.root}/log/couch_mysql.log"
+
+	File.open(file, "a+") do |f|
+	  f.write("\n#{e} => #{content}")
+	end
+end
+
+
 def save_to_mysql(record,map_key,db_maps)
 	$models = {
 				"people" => "Record",
@@ -61,14 +82,13 @@ def save_to_mysql(record,map_key,db_maps)
 
 			next if record["doc"][field].blank?
 			next if field == "type"
-
-			next if table == "barcodes" && field == "created_at"
-			next if table == "barcodes" && field == "updated_at"
-				
 			if field == "_id"
 				field = primary_key
 			end
 			
+			next if table == "barcodes" && field == "created_at"
+			next if table == "barcodes" && field == "updated_at"
+
 			#value = record["doc"][field].to_s.gsub("'","''")
 			date_field = ["created_at","updated_at","last_password_date","birthdate","date_of_death"]
 			if date_field.include?(field)
@@ -89,11 +109,10 @@ def save_to_mysql(record,map_key,db_maps)
 	mysql_record.save
 end
 
-if File.file?("/tmp/couch_to_mysql_dc_process.pid")
-	puts "Already tranfering"
+if File.file?("/tmp/couch_to_mysql_process.pid")
 else
 
-	`PROCESS_FILE="/tmp/couch_to_mysql_dc_process.pid"
+	`PROCESS_FILE="/tmp/couch_to_mysql_process.pid"
 
 	if [ -f $PROCESS_FILE ] ; then
 	  exit
@@ -147,10 +166,14 @@ else
 		seq = data["last_seq"] 
 		records.each do |record|
 				db_maps.keys.each do |key|
-
 					parts = key.split("|")
 					if record["doc"]["type"] == parts[0]
-						save_to_mysql(record,key,db_maps)
+						begin
+							save_to_mysql(record,key,db_maps)							
+						rescue Exception => e
+							add_to_file(e,content)
+						end
+						
 					else
 						next
 					end
@@ -169,35 +192,9 @@ else
 		last_seq.save
 	end
 
-	`PROCESS_FILE="/tmp/couch_to_mysql_dc_process.pid"
+	`PROCESS_FILE="/tmp/couch_to_mysql_process.pid"
 
 	if [ -f $PROCESS_FILE ] ; then
 	  rm $PROCESS_FILE
 	fi`
-
-
-	if SETTINGS['site_type'] == "dc"
-		
-		require 'socket'
-		ip=Socket.ip_address_list.detect{|intf| intf.ipv4_private?}
-		ip.ip_address if ip
-
-		if ip.present?
-			sync = Online.find("#{SETTINGS['district_code']}SYNC")
-
-			sync = Online.new if sync.blank?
-
-			if ip.ip_address.to_s != sync.ip.to_s
-					
-						sync.ip = ip.ip_address
-
-						sync.district_code = SETTINGS['distric_code']
-
-						sync.port = SYNC_SETTINGS[:dc][:port]
-
-						sync.save
-			end
-		end
-			
-	end
 end
