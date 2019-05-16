@@ -84,7 +84,7 @@ class Audit < CouchRest::Model::Base
 
  def insert_update_into_mysql
       fields  = self.keys.sort
-      sql_record = AuditRecord.where(audit_record_id: self.audit_record_id).first
+      sql_record = AuditRecord.where(audit_record_id: self["_id"]).first
       sql_record = AuditRecord.new if sql_record.blank?
       fields.each do |field|
         next if field == "type"
