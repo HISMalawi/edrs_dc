@@ -54,12 +54,20 @@ while page <= pages
 		if identifier.identifier_type == "Form Barcode"
           barcode = BarcodeRecord.where(person_record_id: identifier.person_record_id).last
           if barcode.blank?
-			 	Barcode.create({
+          	record = nil
+          	begin
+          		record = Barcode.create({
                               :person_record_id => identifier.person_record_id,
                               :barcode => identifier.identifier,
                               :district_code => identifier.district_code,
                               :creator => identifier.creator
                 }) 
+          	rescue Exception => e
+				record.destroy
+				error = "#{identifier.id} : #{e.to_s}"
+				add_to_file(error)          		
+          	end
+
           end						
 		end
 	end
