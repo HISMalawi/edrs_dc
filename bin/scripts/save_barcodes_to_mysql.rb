@@ -1,3 +1,23 @@
+file = "#{Rails.root}/log/save_barcorde_mysql.log"
+
+if !File.exist?(file)
+	File.open(file, "w+") do |f|
+		  f.write("Log for #{Time.now}")
+	end
+else
+	File.open(file, "a+") do |f|
+	  f.write("\nLog for #{Time.now}")
+	end	
+end
+
+def add_to_file(content)
+    file = "#{Rails.root}/log/save_barcodes_mysql.log"
+
+	File.open(file, "a+") do |f|
+	  f.write("\n#{content}")
+	end
+end
+
 count = Barcode.count
 pagesize = 200
 pages = (count / pagesize) + 1
