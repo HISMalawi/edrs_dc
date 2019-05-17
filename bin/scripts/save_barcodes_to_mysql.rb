@@ -53,6 +53,7 @@ while page <= pages
 	PersonIdentifier.all.page(page).per(pagesize).each do |identifier|
 		if identifier.identifier_type == "Form Barcode"
           barcode = BarcodeRecord.where(person_record_id: identifier.person_record_id).last
+          next if Person.find(identifier.person_record_id).district_code != SETTINGS['district_code']
           if barcode.blank?
           	record = nil
           		record = Barcode.create({
