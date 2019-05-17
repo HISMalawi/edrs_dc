@@ -41,6 +41,23 @@ while page <= pages
 end
 
 
+count = Person.count
+pagesize = 200
+pages = (count / pagesize) + 1
+
+page = 1
+
+id = []
+
+while page <= pages
+	Person.all.page(page).per(pagesize).each do |status|
+		status.insert_update_into_mysql
+	end
+
+	puts page
+	page = page + 1
+end
+
 count = PersonIdentifier.count
 pagesize = 200
 pages = (count / pagesize) + 1
