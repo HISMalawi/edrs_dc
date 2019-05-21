@@ -321,4 +321,27 @@ class Report < ActiveRecord::Base
 	    #raise query.to_s
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender]}
 	end
+
+	def self.audits(params)	
+		offset = params[:page].to_i  *  40
+		query = "DATE_FORMAT(created_at,'%Y-%m-%d') BETWEEN '#{params[:start_date]}' AND '#{params[:end_date]}'"
+		#query = "DATE_FORMAT(created_at,'%Y-%m-%d') BETWEEN '2019-01-01' AND '2019-05-21'"
+		data = []
+
+		AuditRecord.where(query).order("created_at DESC").limit(40).offset(offset).each do |audit|
+			entry = {}
+			user = User.find(audit.user_id)
+			next if user.blank?
+			entry["username"] = user.username
+			entry["name"] = "#{user.first_name} #{user.last_name} (#{user.role})"
+			entry["audit_type"] =  audit.audit_type
+			entry["change"] = (audit.model.present? ? audit.model.humanize : "N/A")
+			entry["previous_value"] = (audit.previous_value.present? ? audit.previous_value : "N/A")
+			entry["current_value"] = (audit.current_value.present? ? audit.current_value : "N/A")
+			entry["reason"] =  audit.reason
+			entry["time"] = audit.created_at.to_time.strftime("%Y-%m-%d  %H:%M")
+			data << entry
+		end
+		return data
+	end
 end

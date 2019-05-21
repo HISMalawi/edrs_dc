@@ -33,6 +33,7 @@ class LoginsController < ApplicationController
     if user and user.password_matches?(password)
       
       session[:current_user_id] = user.username
+      session[:expires_at] =  Time.current + 4.hours 
 
       ############## Checking if the user is from the district ####################################
       if SETTINGS['site_type'] != "remote"

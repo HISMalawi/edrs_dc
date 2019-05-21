@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
                 "do_print_these",
                 "death_certificate",
                 "hq_is_online"]
-  before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
+  before_filter :perform_basic_auth,:check_session_expirely,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
@@ -475,6 +475,18 @@ class ApplicationController < ActionController::Base
     authorize! :access, :anything
   end
 
+  def check_session_expirely
+    if session[:expires_at].present?
+      if session[:expires_at].to_time < Time.now
+          session[:expires_at] = nil
+          flash[:error] = 'You have been log out'
+          redirect_to "/login" and return
+      else
+          session[:expires_at] =  Time.current + 4.hours         
+      end
+    end    
+  end
+
   def check_cron_jobs
     last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
     job_interval = SETTINGS['ben_assignment_interval']
@@ -510,6 +522,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_database
+
     create_query = "CREATE TABLE IF NOT EXISTS potential_search (
                     id int(11) NOT NULL AUTO_INCREMENT,
                     person_id varchar(255) NOT NULL UNIQUE,
