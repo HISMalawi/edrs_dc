@@ -10,7 +10,7 @@ couch_port = couch_db_settings["port"]
 
 Kernel.system("curl -X DELETE http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}")
 Kernel.system("curl -X PUT http://#{couch_username}:#{couch_password}@#{couch_host}:#{couch_port}/#{couch_db}")
-Kernel.system("cd #{Rails.root}/bin/couchdb-dump/ && bash couchdb-backup.sh -r -H #{couch_host} -d #{couch_db} -f #{Rails.root}/db/edrs_dc.json -u #{couch_username} -p #{couch_password}")
+Kernel.system("cd #{Rails.root}/bin/couchdb-dump/ && bash couchdb-backup.sh -r -H #{couch_host} -d #{couch_db} -f #{Rails.root}/db/edrs_dc.json -u #{couch_username} -p #{couch_password} -P #{couch_port}")
 
 SimpleSQL.load_dump("#{Rails.root}/db/edrs_dc.sql");
 

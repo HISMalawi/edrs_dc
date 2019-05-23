@@ -84,6 +84,4 @@ OPTION 2 :  SETTING UP APPLICATION RELY ON MYSQL FOR QUERRYING BY GETTING MYSQL 
 4. Save to mysql may take a while [optional]
 	cd /var/www/edrs_dc/ && bundle exec rails  r bin/script/save_mysql.rb
 
-5. Add clone jobs in clone tab[REQUIRED]
-	cd /var/www/edrs_dc/ && bundle exec rails  r bin/add_to_crontab.rb
-6. Restart Nginx
+ 
