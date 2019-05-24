@@ -66,4 +66,3 @@ SETTING UP MIGRATION
 
 2. On the console of your DC/FC application, type the command rails r bin/scripts/migration/migration_script.rb to initiate the migration process.
 
- 
