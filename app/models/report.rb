@@ -324,7 +324,7 @@ class Report < ActiveRecord::Base
 
 	def self.audits(params)	
 		offset = params[:page].to_i  *  40
-		query = "DATE_FORMAT(created_at,'%Y-%m-%d') BETWEEN '#{params[:start_date]}' AND '#{params[:end_date]}'"
+		query = "DATE_FORMAT(created_at,'%Y-%m-%d') >= '#{params[:start_date]}' AND DATE_FORMAT(created_at,'%Y-%m-%d') <= '#{params[:end_date]}'"
 		#query = "DATE_FORMAT(created_at,'%Y-%m-%d') BETWEEN '2019-01-01' AND '2019-05-21'"
 		data = []
 

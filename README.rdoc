@@ -10,9 +10,16 @@ Things you may want to cover:
 
 * System dependencies
 	* The application needs the following installed on the server
-		* couchDB >= 1.6.1 
-		* MYSQL	  >= 5.5.0
-		* elasticsearch 5.4.2
+	    * MYSQL 5.6 (preferable) or 5.5
+	    * Couch-DB 1.6.1
+	    * JDK 1.8
+	    * Elastic-search 5.4.2
+	    	*https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.4.2.deb
+			*https://www.elastic.co/guide/en/beats/libbeat/5.4/elasticsearch-installation.html
+	    * ImageMagick 6.9.10-35
+			*https://gist.github.com/makenova/78bb63aaa1050e2ad8019ee1e7e7b433
+	    *  wkhtmltopdf 0.12.3 (with patched qt) follow the link
+	    	*https://gist.github.com/yajra/80ae402e2084191cd1f6e17fa581320e
 
 * Configuration
 	 * MYSQL
@@ -34,7 +41,6 @@ Things you may want to cover:
 
 * Database creation and initialization
 	* run bundle exec rake edrs:setup
-	* run bundle exec rake edrs:create_users
 
 * How to run the test suite
 	* passenger start or rails s
@@ -60,30 +66,4 @@ SETTING UP MIGRATION
 
 2. On the console of your DC/FC application, type the command rails r bin/scripts/migration/migration_script.rb to initiate the migration process.
 
-OPTION 1 : SETTING UP APPLICATION RELY ON MYSQL FOR QUERRYING IF THE APPLICATION WAS NOT RELYING ON MYSQL
-========================================================================================================
-
-1. Make sure the following is done
-	* CouchDB configuration
-	* MySQL configuration
-	* Update Settings
-2.	Recalibrating 
-	  cd /var/www/edrs_dc/ && bundle exec rails  r bin/recalibate.rb
-3. Restart Nginx
-
-OPTION 2 :  SETTING UP APPLICATION RELY ON MYSQL FOR QUERRYING BY GETTING MYSQL DUMP FOR HQ
-
-1. Make sure the following is done
-	* CouchDB configuration
-	* MySQL configuration
-	* Update Settings
-2. Load mysql dump from HQ [REQUIRED]
-
-3. Sync couchDB Database [REQUIRED]
-
-4. Save to mysql may take a while [optional]
-	cd /var/www/edrs_dc/ && bundle exec rails  r bin/script/save_mysql.rb
-
-5. Add clone jobs in clone tab[REQUIRED]
-	cd /var/www/edrs_dc/ && bundle exec rails  r bin/add_to_crontab.rb
-6. Restart Nginx
+ 

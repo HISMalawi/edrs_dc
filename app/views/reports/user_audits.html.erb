@@ -163,7 +163,7 @@
 	    }
 	  } 
 
-	  url = "/reports/get_audits?start_date=<%=@start_date%>&end_date=<%=@end_date%>"
+	  url = "/reports/get_audits?start_date=<%=@start_date.to_time.strftime('%Y-%m-%d')%>&end_date=<%=@end_date.to_time.strftime('%Y-%m-%d')%>"
 	  url = url + "&page="+current_page +"&size="+40
 
 	  console.log(url);
