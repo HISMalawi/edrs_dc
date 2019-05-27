@@ -6,6 +6,7 @@ puts "##########################################################################
 puts "########### LOADING DATA PLEASE WAIT ITS GOING TO TAKE A MOMENT ######################"
 #Save data to mysql
 `cd #{Rails.root} && bundle exec rails r bin/scripts/save_mysql.rb`
+`cd #{Rails.root} && bundle exec rails r bin/scripts/save_barcodes_to_mysql.rb`
 puts "########################################################################################"
 puts "################################# DONE LOADING DATA #################################"
 puts "########################################################################################"

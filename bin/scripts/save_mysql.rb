@@ -28,6 +28,7 @@ id = []
 
 while page <= pages
 	PersonRecordStatus.all.page(page).per(pagesize).each do |status|
+		next if status.district_code != SETTINGS['district_code']
 		status.insert_update_into_mysql
 	end
 
@@ -45,6 +46,7 @@ id = []
 
 while page <= pages
 	Person.all.page(page).per(pagesize).each do |status|
+		next if status.district_code != SETTINGS['district_code']
 		status.insert_update_into_mysql
 	end
 
@@ -63,6 +65,7 @@ id = []
 
 while page <= pages
 	PersonIdentifier.all.page(page).per(pagesize).each do |identifier|
+		next if (identifier.person.district_code rescue "") != SETTINGS['district_code']
 		if identifier.identifier_type == "DEATH ENTRY NUMBER"
 			den = DeathEntryNumber.where(person_record_id: identifier.person_record_id).first
 			if den.blank?
@@ -95,27 +98,7 @@ while page <= pages
 	page = page + 1
 end
 
-count = Barcode.count
-pagesize = 200
-pages = (count / pagesize) + 1
 
-page = 1
-
-id = []
-
-while page <= pages
-	Barcode.all.page(page).per(pagesize).each do |barcode|
-		begin
-			barcode.insert_update_into_mysql
-		rescue Exception => e
-			error = "#{barcode.id} : #{e.to_s}"
-			add_to_file(error)
-		end
-	end
-
-	puts page
-	page = page + 1
-end
 
 count = User.count
 pagesize = 200
