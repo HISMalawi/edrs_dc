@@ -523,16 +523,19 @@ class ApplicationController < ActionController::Base
 
   def check_database
 
-    create_query = "CREATE TABLE IF NOT EXISTS potential_search (
-                    id int(11) NOT NULL AUTO_INCREMENT,
-                    person_id varchar(255) NOT NULL UNIQUE,
-                    content TEXT,
-                    created_at datetime NOT NULL,
-                    updated_at datetime NOT NULL,
-                    PRIMARY KEY (id),
-                    FULLTEXT KEY content (content)
-                  )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SimpleSQL.query_exec(create_query); 
+    if SETTINGS['use_mysql_potential_search']
+      create_query = "CREATE TABLE IF NOT EXISTS potential_search (
+                      id int(11) NOT NULL AUTO_INCREMENT,
+                      person_id varchar(255) NOT NULL UNIQUE,
+                      content TEXT,
+                      created_at datetime NOT NULL,
+                      updated_at datetime NOT NULL,
+                      PRIMARY KEY (id),
+                      FULLTEXT KEY content (content)
+                    )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+
+      SimpleSQL.query_exec(create_query);
+    end 
 
     create_audit_trail_table = "CREATE TABLE IF NOT EXISTS audit_trail(
                                   audit_record_id VARCHAR(255) NOT NULL,
