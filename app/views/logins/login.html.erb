@@ -96,7 +96,15 @@
 			<tr>
 				<td><label for="usename">Username</label></td>
 				<td><input type="" name="user[username]" id="username" onfocus="setFocusToThis(this)"></td>
-				<td rowspan="2" autocomplete="off" ><button  class="green">Login</button></td>
+				<td rowspan="2" autocomplete="off" ><button  class="blue">Login</button></td>
+				
+				<td rowspan="2">
+                                 <% if !SETTINGS['app_gate_url'].blank? %>
+                                        <button class="green" onmousedown="window.location = '<%=SETTINGS['app_gate_url']%>'">Portal</button>
+                                <% end %>
+
+                                </td>
+
 			</tr>
 			<tr>
 				<td><label for="password">Password</label></td>

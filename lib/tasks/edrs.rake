@@ -1,8 +1,13 @@
 namespace :edrs do
-  desc "Creating default user"
+  desc "Setup"
   
   task setup: :environment do
     require Rails.root.join('bin','./setup.rb')
+  end
+
+  desc "Recalibarate"
+  task recalibrate: :environment do
+    require Rails.root.join('bin','./recalibrate.rb')
   end
 
   task sync: :environment do
