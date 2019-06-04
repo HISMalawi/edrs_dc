@@ -22,7 +22,13 @@ class LoginsController < ApplicationController
     #user = User.get_active_user(username)
     user = UserModel.where(username: username, active: 1).first
 
-    if user and user.password_matches?(password) and user.district_code == SETTINGS['district_code']
+    if user and user.password_matches?(password)
+
+      if  user.username != 'admin' and  user.district_code != SETTINGS['district_code']
+        flash[:error] = 'That username and/or password is not valid.'
+        redirect_to '/login' and return
+          
+      end
 
       session[:current_user_id] = user.username
       session[:expires_at] =  Time.current + 4.hours
