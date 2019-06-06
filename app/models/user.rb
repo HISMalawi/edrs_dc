@@ -207,6 +207,8 @@ class User < CouchRest::Model::Base
         next if field == "signature"
         if field =="_id"
             sql_record["user_id"] = self[field]
+        elsif field =="active"
+            sql_record[field] = (self[field] == true ? 1 : 0)
         else
             sql_record[field] = self[field]
         end
