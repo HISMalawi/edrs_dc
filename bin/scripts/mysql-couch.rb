@@ -38,9 +38,9 @@ while page <= pages
 			rescue RestClient::ExceptionWithResponse => err
   				puts  err.response.inspect
 			end
-			
+			puts person.id
 			RecordStatus.where(person_record_id: person.id).each do |status|
-				couch_status = PersonRecord.find(status.id)
+				couch_status = PersonRecordStatus.find(status.id)
 				next if couch_status.present?
 				status_json = status.attributes
 				status.attributes.keys.each do |key|
@@ -58,7 +58,7 @@ while page <= pages
 	  				puts  err.response.inspect
 				end				
 			end
-			puts person.id
+
 		end
 	end
 
