@@ -18,6 +18,7 @@ couch_port = couch_db_settings["port"]
 while page <= pages
 	Record.all.limit(200).offset(page * 200).each do |person|
 		#raise person.attributes.inspect
+
 		couch_record = Person.find(person.id);
 		if couch_record.blank?
 			barcode = BarcodeRecord.where(person_record_id: person.id).first
@@ -38,6 +39,7 @@ while page <= pages
 			rescue RestClient::ExceptionWithResponse => err
   				puts  err.response.inspect
 			end
+			id << person.id
 			puts person.id
 			RecordStatus.where(person_record_id: person.id).each do |status|
 				couch_status = PersonRecordStatus.find(status.id)
@@ -65,3 +67,6 @@ while page <= pages
 	puts page
 	page = page + 1
 end
+puts "////////////////////////////////////////////////////////////////////////////////"
+puts "Missing Records #{id.count}"
+puts "////////////////////////////////////////////////////////////////////////////////"
