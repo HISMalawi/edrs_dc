@@ -399,9 +399,28 @@ class ApplicationController < ActionController::Base
   end
 
   def hq_is_online
+
       if SETTINGS["site_type"] == "facility"
          hq_link = "#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}"
       else
+        online = Online.find("#{SETTINGS['district_code']}SYNC")
+        if online.blank?
+            online = Online.new
+            online.ip = SYNC_SETTINGS[:dc][:host]
+            online.port = SYNC_SETTINGS[:dc][:port]
+            online.time_seen = Time.now
+            online.save
+        else
+            if online.ip != SYNC_SETTINGS[:dc][:host]
+              online.ip = SYNC_SETTINGS[:dc][:host]
+              online.save
+            end
+
+            if online.port != SYNC_SETTINGS[:dc][:port]
+              online.port = SYNC_SETTINGS[:dc][:port]
+              online.save
+            end
+        end
          hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
       end    
       online = is_up?(hq_link) rescue false
