@@ -225,11 +225,11 @@
 		<%end%>
 	<%end%>
 
-	<%if (@status.present? && @status.status == "HQ PRINTED") ||  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+	<%if (@status.present? && @status.status == "HQ PRINTED") ||  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") || (@status.present? && @status.status == "DC PRINTED")  || (@status.present? && @status.status == "DC DISPATCHED")%>
 			
 			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Mark for Reprint</span></button>
 	<%end%>
-	<%if  (@status.present? && @status.status == "HQ PRINTED") || (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") %>
+	<%if  (@status.present? && @status.status == "HQ PRINTED") || (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED")  || (@status.present? && @status.status == "DC PRINTED")  || (@status.present? && @status.status == "DC DISPATCHED")%>
 			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amend Record</span></button>
 
 	<%end%>

@@ -452,13 +452,15 @@ class DcController < ApplicationController
 	def mark_for_reprint
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
-		PersonIdentifier.create({
-                                      :person_record_id => person.id.to_s,
-                                      :identifier_type => "Reprint Barcode", 
-                                      :identifier => params[:barcode].to_s,
-                                      :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
-                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
-                                      :creator => params[:user_id]})
+		if params[:barcode].present?
+            Barcode.create({
+                              :person_record_id => person.id.to_s,
+                              :barcode => person_params[:barcode].to_s,
+                              :district_code => (person.district_code  rescue SETTINGS['district_code']),
+                              :creator => params[:user_id]
+                              })			
+			
+		end
 
 		Audit.create({
 							:record_id => params[:id].to_s    , 
