@@ -23,7 +23,6 @@
 
 				border: 1px solid #bcb5b5;
 				margin-top: 1%;
-				overflow-y: scroll;
 
 
 		}
@@ -57,38 +56,6 @@
 				cursor: pointer;
 
 		}
-		.scroll{
-			background: #bed5de;
-
-            border : 0.005em solid #b3b1b1;
-
-            font-size: 3.8em;
-
-            min-width: 20px;
-
-            margin: 0.3%;
-
-            box-shadow: 2.5px 2.5px 1px #888888;
-
-           	padding: 0.1%;
-
-           	text-align: center
-		}
-		#up {
-			position: absolute;
-
-			right: 3%;
-
-			top :13%;
-		}
-
-		#down {
-			position: absolute;
-
-			right: 3%;
-
-			bottom :20%;
-		}
 		#popup_details{
 			width: 90%;
 			margin: auto;
@@ -113,14 +80,24 @@
 		}
 		#amendment{
 			margin-top: 0.5% !important;
+			width: 98% !important;
+			margin: auto;
+
 		}
 		#amendment th{
 			font-size:1.2em;
+			border:1px solid #ffffff !important;
+			border-bottom: 1px solid gray !important;
 		}
 		#amendment td{
-			width: 40%;
-			border: 1px solid #ffffff !important;
+			width: 30%;
+			border-left: 1px solid gray !important;
 			padding: 6px;
+		}
+		#amendment td:nth-child(3){
+			width: 5%;
+			background-color: #ffffff;
+			border: 1px solid gray !important;
 		}
 </style>
 
@@ -137,14 +114,16 @@
 
 </div>
 
+
 <div id="table_container">
 
 		
 		<table id="amendment">	
 			<tr>
-				<td style="visibility:hidden;width: 20%"></td>
-				<th style="background:#fbf7e2;color:#DEB887;border:1px solid #ffffff">Exiting record</th>
-				<th style="background:#dff0d8;color:#3cb865;border:1px solid #ffffff">Amended record</th>
+				<th style="visibility:hidden;width: 20%;"></th>
+				<th style="background:#fbf7e2;color:#DEB887;">Exiting record</th>
+				<th style="width: 5% !important; background-color: #ffffff; color: #96bfd4">Edit</th>
+				<th style="background:#dff0d8;color:#3cb865;">Amended record</th>
 			</tr>
 			<tr>
 				<td style="width: 20%;">
@@ -152,6 +131,9 @@
                 </td>
                 <td>
                   <%= @person.drn %>
+                </td>
+                <td>
+                	<button class="gray"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>               	
                 </td>
                 <td>
                 <%= @person.drn %>
@@ -165,6 +147,9 @@
                   <%= @person.den %>
                 </td>
                 <td>
+                	<button class="gray"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>               	
+                </td>
+                <td>
                 <%= @person.den %>
                 </td>
 			</tr>
@@ -176,7 +161,10 @@
                   <%= @person.barcode %>
                 </td>
                 <td>
-               <%= @amendment_audit.change_log['barcode'][0] rescue '' %>
+                	<button class="gray"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>               	
+                </td>
+                <td>
+               	  <%= @person.barcode %>
                 </td>
 			</tr>
 			<tr class="clickable" onclick="editField('first_name')">
@@ -184,7 +172,10 @@
                   First Name :
                 </td>
                 <td>
-                  <%= @amendment_audit.change_log['first_name'][1] rescue @person.first_name %>
+                  <%= @amendment_audit.change_log['first_name'][1] rescue @person.first_name %> 
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>               	
                 </td>
                 <td>
                   <%= @amendment_audit.change_log['first_name'][0] rescue '' %>
@@ -198,6 +189,9 @@
                   <%=  @amendment_audit.change_log['last_name'][1] rescue @person.last_name %>
                 </td>
                 <td>
+					<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                    <%= @amendment_audit.change_log['last_name'][0] rescue '' %>
                 </td>
 			</tr>
@@ -207,6 +201,9 @@
                 </td>
                 <td>
                   <%= @amendment_audit.change_log['middle_name'][1] rescue  @person.middle_name %>
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
                 </td>
                 <td>
                 	<%= @amendment_audit.change_log['middle_name'][0] rescue '' %>
@@ -220,6 +217,9 @@
                  <%= Date.parse(@amendment_audit.change_log['birthdate'][1].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.birthdate.to_s).strftime("%d/%b/%Y") %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                	 <%= Date.parse(@amendment_audit.change_log['birthdate'][0].to_s).strftime("%d/%b/%Y") rescue ''%>
                 </td>
 			</tr>
@@ -229,6 +229,9 @@
                 </td>
                 <td>
                  <%= @amendment_audit.change_log['gender'][1] rescue @person.gender %>
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
                 </td>
                 <td>
                  <%= @amendment_audit.change_log['gender'][0] rescue '' %>
@@ -242,6 +245,9 @@
                  <%=Date.parse(@amendment_audit.change_log['date_of_death'][1].to_s).strftime("%d/%b/%Y") rescue  Date.parse(@person.date_of_death.to_s).strftime("%d/%b/%Y") %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                 <%=Date.parse(@amendment_audit.change_log['date_of_death'][0].to_s).strftime("%d/%b/%Y") rescue '' %>
                 </td>
 			</tr>
@@ -251,6 +257,9 @@
                 </td>
                 <td>
                 	<%= @amendment_audit.change_log['place_of_death'][1] rescue ApplicationController.new.place_of_death(@person) %>
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
                 </td>
                 <td>
                 	<%= @amendment_audit.change_log['place_of_death'][0] rescue '' %>
@@ -264,6 +273,9 @@
                   <%= @amendment_audit.change_log['mother_first_name'][1] rescue (@person.mother_first_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                 	<%= @amendment_audit.change_log['mother_first_name'][0] rescue '' %>
                 </td>
 			</tr>
@@ -273,6 +285,9 @@
                 </td>
                 <td>
                    <%= @amendment_audit.change_log['mother_last_name'][1] rescue (@person.mother_last_name rescue 'N/A') %>
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
                 </td>
                 <td>
                 	<%= @amendment_audit.change_log['mother_last_name'][0] rescue '' %>
@@ -286,6 +301,9 @@
                   <%= @amendment_audit.change_log['mother_middle_name'][1] rescue (@person.mother_middle_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                  <%= @amendment_audit.change_log['mother_middle_name'][0] rescue '' %>
                 </td>
 			</tr>
@@ -295,6 +313,9 @@
                 </td>
                 <td>
                    <%= @amendment_audit.change_log['father_first_name'][1] rescue (@person.father_first_name rescue 'N/A') %>
+                </td>
+                <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
                 </td>
                 <td>
                   <%= @amendment_audit.change_log['father_first_name'][0] rescue '' %>
@@ -308,6 +329,9 @@
                   <%= @amendment_audit.change_log['father_last_name'][1] rescue (@person.father_last_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                   <%= @amendment_audit.change_log['father_last_name'][0] rescue '' %>
                 </td>
 			</tr>
@@ -319,18 +343,16 @@
                   <%= @amendment_audit.change_log['father_middle_name'][1] rescue (@person.father_middle_name rescue 'N/A') %>
                 </td>
                 <td>
+                	<button class="blue"><i style='float: right; font-size: 1.5em' class="fa fa-edit"></i></button>
+                </td>
+                <td>
                  <%= @amendment_audit.change_log['father_middle'][0] rescue '' %>
                 </td>
 			</tr>
 		</table>
 
 </div>
-  <div id="up" class="scroll" onmousedown="up()">
-     <i class=" fa fa-arrow-up"></i>
- </div>
- <div id="down" class="scroll" onmousedown="down()">
-     <i class=" fa fa-arrow-down"></i>
- </div>
+<%= render :partial => "/dc/scroll" %>
 <script type="text/javascript">
 			function __$(id){
 				return document.getElementById(id);
@@ -391,19 +413,6 @@
 			function editField(field){
 
 					window.location = "/people/form_container?url=/dc/amendment_edit_field/<%= @person.id %>/"+field+"?next_url=<%=params[:next_url]%>"
-
-			}
-
-			function up(){
-
-				//alert("Yeeeeeei up")
-				__$("table_container").scrollBy(0, -100);
-				
-			}
-
-			function down(){
-
-				__$("table_container").scrollBy(0,100);
 
 			}
 
