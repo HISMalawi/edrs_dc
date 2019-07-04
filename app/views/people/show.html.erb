@@ -269,6 +269,15 @@
 		  </tr>
 		<%end%>
           <tr>
+          	  <% if @person.cause_of_death1.blank? && @person.manner_of_death.present? %>
+	          	  <td style="background: #dbdada;font-weight: bold;">
+	          	  		NR-10C
+	          	  </td>
+          	  <%else%>
+	          	  <td style="background: #dbdada;font-weight: bold;">
+	          	  		NR10
+	          	  </td>
+          	  <%end%>
               <% if @person.court_order.present? && @person.registration_type == "Missing Persons"%>
               <td ><b >Court order attached ? :</b> </td>
               <td colspan="2" style="text-align:left"><%= @person.court_order%></td>
@@ -312,7 +321,7 @@
 			</tr>
 
 			<tr>
-				<td rowspan="10" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
+				<td rowspan="<%= @person.cause_of_death1.blank? && @person.manner_of_death.present? ? 14 : 10 %>" style="background-color:#dbdada;">PART 1 <br/>PERSONAL DETAILS OF DECEASED</td>
 				<td>1</td>
 				<td  class="clickable" onclick="editField('last_name')">Surname</td>
 				<td colspan="2" ><%= @person.last_name %></td>
@@ -420,6 +429,107 @@
 					<td colspan="8"><%= @person.other_place_of_death rescue '' %></td>
 				<%end%>
 			</tr>
+	<% if @person.cause_of_death1.blank? && @person.manner_of_death.present? %>
+			<tr>
+				<td rowspan="2">8</td>
+				<td rowspan="2" class="clickable">Manner of Death</td>
+				<td><input type="radio" name="manner_of_death" id="natural" class="css-checkbox" /><label for="natural" class="css-label radGroup2">Natural</label></td>
+				<td><input type="radio" name="manner_of_death" id="accident" class="css-checkbox" /><label for="accident" class="css-label radGroup2">Accident</label></td>
+				<td><input type="radio" name="manner_of_death" id="homicide" class="css-checkbox" /><label for="homicide" class="css-label radGroup2">Homicide</label></td>
+				<td><input type="radio" name="manner_of_death" id="sucide" class="css-checkbox" /><label for="sucide" class="css-label radGroup2">Sucide</label></td>
+				<td colspan="2"><input type="radio" name="manner_of_death" id="pending_investigation" class="css-checkbox" /><label for="pending_investigation" class="css-label radGroup2">Pending Investigation</label></td>
+				<td colspan="2"><input type="radio" name="manner_of_death" id="could_not_be_determined" class="css-checkbox" /><label for="could_not_be_determined" class="css-label radGroup2">Could not be determined</label></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="radio" name="manner_of_death" id="other" class="css-checkbox" /><label for="other" class="css-label radGroup2">Other</label>
+				</td>
+				<td class="clickable">
+					Specify 
+				</td>
+				<td colspan="5">
+					
+				</td>
+			</tr>
+			<tr>
+				<td rowspan="2">9</td>
+				<td rowspan="2" class="clickable">If Accident, how did it occur?</td>
+				<td colspan="2">
+					<input type="radio" name="death_by_accident" id="Motor Vehicle(Driver)" class="css-checkbox" />
+					<label for="Motor Vehicle(Driver)" class="css-label radGroup2">Motor Vehicle(Driver)</label>
+				</td>
+				<td colspan="3">
+					<input type="radio" name="death_by_accident" id="Motor Vehicle(Passenger)" class="css-checkbox" />
+					<label for="Motor Vehicle(Passenger)" class="css-label radGroup2">Motor Vehicle(Passenger)</label>
+				</td>
+				<td colspan="3">
+					<input type="radio" name="death_by_accident" id="Motor vehicle(Pedestrian)" class="css-checkbox" />
+					<label for="Motor vehicle(Pedestrian)" class="css-label radGroup2">Motor vehicle(Pedestrian)</label>
+				</td>
+
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="radio" name="death_by_accident" id="Drowning" class="css-checkbox" />
+					<label for="Drowning" class="css-label radGroup2">Drowning</label>
+				</td>
+				<td>
+					<input type="radio" name="death_by_accident" id="Other" class="css-checkbox" />
+					<label for="Other" class="css-label radGroup2">Other</label>
+				</td>
+				<td class="clickable">
+					Specify
+				</td>
+				<td colspan="4">
+					
+				</td>
+			</tr>
+			<tr>
+				<td>10</td>
+				
+			<% if (@person.current_country == "Malawi" || @person.current_district) %>
+				<td colspan="3" class="clickable" onclick="editField('current_district')">Physical residential address</td>
+				<td class="clickable" onclick="editField('current_district')" >District </td>
+				<td><%= @person.current_district%></td>
+				<td class="clickable" onclick="editField('current_ta')">TA</td>
+				<td><%= @person.current_ta %></td>
+				<td class="clickable" onclick="editField('current_village')" >Village</td>
+				<td><%= @person.current_village %></td>
+			<%else%>
+				<td class="clickable" onclick="editField('current_district')">Physical address</td>
+				<td class="clickable" onclick="editField('current_country')" >Country</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_country.to_s !='Other'? @person.current_country : (@person.other_current_country rescue '') %></td>
+				<td class="clickable" onclick="editField('current_foreign_state')">State</td>
+				<td style="border-bottom:1.5px solid black"><%= @person.current_foreign_state %></td>
+				<td class="clickable" onclick="editField('current_foreign_district')" >District</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.current_foreign_district  %></td>
+				<td class="clickable" onclick="editField('current_foreign_village')" >Town</td>
+				<td style="border-bottom:1.5px solid black" ><%= @person.current_foreign_village  %></td>
+			<%end%>
+			</tr>
+			<tr>
+				<td>11</td>
+				<td colspan="3" class="clickable" onclick="editField('home_district')">Home address</td>
+				<td class="clickable" onclick="editField('home_district')" >District </td>
+				<td><%= @person.home_district %></td>
+				<td class="clickable" onclick="editField('home_ta')">TA</td>
+				<td><%= @person.home_ta %></td>
+				<td class="clickable" onclick="editField('home_village')" >Village</td>
+				<td><%= @person.home_village %></td>
+			</tr>
+			<tr>
+				<td>12</td>
+				<% if @person.died_while_pregnant == "Yes" ||  @person.died_while_pregnant == "NO" %>
+					<td colspan="8" class="clickable" onclick="editField('died_while_pregnant')" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
+					<td><%= @person.died_while_pregnant rescue "" %></td>
+				<%else%>
+					<td colspan="8" class="clickable" >In case this is a female death, did the death occur while pregnant, at the time of delivery or within 6 weeks after the end of pregnancy?</td>
+					<td>N/A</td>
+				<%end%>
+			</tr>	
+
+	<%else%>
+
 			<tr>
 				<td>8</td>
 				
@@ -463,6 +573,7 @@
 					<td>N/A</td>
 				<%end%>
 			</tr>
+		<%end%>
 			<tr>
 				<td rowspan="6">PART 2 <br/><br/>DETAILS OF PARENT</td>
 				<td colspan="10" class="clickable" onclick="" ><center>Mother's details</center></td>
