@@ -399,9 +399,28 @@ class ApplicationController < ActionController::Base
   end
 
   def hq_is_online
+
       if SETTINGS["site_type"] == "facility"
          hq_link = "#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}"
       else
+        online = Online.find("#{SETTINGS['district_code']}SYNC")
+        if online.blank?
+            online = Online.new
+            online.ip = SYNC_SETTINGS[:dc][:host]
+            online.port = SYNC_SETTINGS[:dc][:port]
+            online.time_seen = Time.now
+            online.save
+        else
+            if online.ip != SYNC_SETTINGS[:dc][:host]
+              online.ip = SYNC_SETTINGS[:dc][:host]
+              online.save
+            end
+
+            if online.port != SYNC_SETTINGS[:dc][:port]
+              online.port = SYNC_SETTINGS[:dc][:port]
+              online.save
+            end
+        end
          hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
       end    
       online = is_up?(hq_link) rescue false
@@ -523,16 +542,19 @@ class ApplicationController < ActionController::Base
 
   def check_database
 
-    create_query = "CREATE TABLE IF NOT EXISTS potential_search (
-                    id int(11) NOT NULL AUTO_INCREMENT,
-                    person_id varchar(255) NOT NULL UNIQUE,
-                    content TEXT,
-                    created_at datetime NOT NULL,
-                    updated_at datetime NOT NULL,
-                    PRIMARY KEY (id),
-                    FULLTEXT KEY content (content)
-                  )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SimpleSQL.query_exec(create_query); 
+    if SETTINGS['use_mysql_potential_search']
+      create_query = "CREATE TABLE IF NOT EXISTS potential_search (
+                      id int(11) NOT NULL AUTO_INCREMENT,
+                      person_id varchar(255) NOT NULL UNIQUE,
+                      content TEXT,
+                      created_at datetime NOT NULL,
+                      updated_at datetime NOT NULL,
+                      PRIMARY KEY (id),
+                      FULLTEXT KEY content (content)
+                    )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
+
+      SimpleSQL.query_exec(create_query);
+    end 
 
     create_audit_trail_table = "CREATE TABLE IF NOT EXISTS audit_trail(
                                   audit_record_id VARCHAR(255) NOT NULL,
