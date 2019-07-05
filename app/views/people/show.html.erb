@@ -433,55 +433,86 @@
 			<tr>
 				<td rowspan="2">8</td>
 				<td rowspan="2" class="clickable">Manner of Death</td>
-				<td><input type="radio" name="manner_of_death" id="natural" class="css-checkbox" /><label for="natural" class="css-label radGroup2">Natural</label></td>
-				<td><input type="radio" name="manner_of_death" id="accident" class="css-checkbox" /><label for="accident" class="css-label radGroup2">Accident</label></td>
-				<td><input type="radio" name="manner_of_death" id="homicide" class="css-checkbox" /><label for="homicide" class="css-label radGroup2">Homicide</label></td>
-				<td><input type="radio" name="manner_of_death" id="sucide" class="css-checkbox" /><label for="sucide" class="css-label radGroup2">Sucide</label></td>
-				<td colspan="2"><input type="radio" name="manner_of_death" id="pending_investigation" class="css-checkbox" /><label for="pending_investigation" class="css-label radGroup2">Pending Investigation</label></td>
-				<td colspan="2"><input type="radio" name="manner_of_death" id="could_not_be_determined" class="css-checkbox" /><label for="could_not_be_determined" class="css-label radGroup2">Could not be determined</label></td>
+				<td>
+						<input type="radio" name="manner_of_death" id="natural" class="css-checkbox" 
+							 <%= @person.manner_of_death == 'Natural'? 'checked = true' : '' %> disabled/>
+							 <label for="natural" class="css-label radGroup2">Natural</label>
+				</td>
+				<td>
+						<input type="radio" name="manner_of_death" id="accident" class="css-checkbox"
+							<%= @person.manner_of_death == 'Accident'? 'checked = true' : '' %> disabled />
+						<label for="accident" class="css-label radGroup2">Accident</label>
+				</td>
+				<td>
+						<input type="radio" name="manner_of_death" id="homicide" class="css-checkbox" 
+							<%= @person.manner_of_death == 'Homicide'? 'checked = true' : '' %> disabled/>
+						<label for="homicide" class="css-label radGroup2">Homicide</label>
+				</td>
+				<td>
+						<input type="radio" name="manner_of_death" id="sucide" class="css-checkbox"
+							<%= @person.manner_of_death == 'Sucide'? 'checked = true' : '' %> disabled />
+						<label for="sucide" class="css-label radGroup2">Sucide</label>
+				</td>
+				<td colspan="2">
+						<input type="radio" name="manner_of_death" id="pending_investigation" class="css-checkbox" 
+							<%= @person.manner_of_death == 'Pending Investigation'? 'checked = true' : '' %> disabled/>
+							<label for="pending_investigation" class="css-label radGroup2">Pending Investigation</label>
+				</td>
+				<td colspan="2">
+						<input type="radio" name="manner_of_death" id="could_not_be_determined" class="css-checkbox"
+							<%= @person.manner_of_death == 'Could not be determined'? 'checked = true' : '' %> disabled/>
+							<label for="could_not_be_determined" class="css-label radGroup2">Could not be determined</label>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input type="radio" name="manner_of_death" id="other" class="css-checkbox" /><label for="other" class="css-label radGroup2">Other</label>
+					<input type="radio" name="manner_of_death" id="other" class="css-checkbox"
+							<%= @person.manner_of_death == 'Other'? 'checked = true' : '' %> disabled />
+							<label for="other" class="css-label radGroup2">Other</label>
 				</td>
 				<td class="clickable">
 					Specify 
 				</td>
 				<td colspan="5">
-					
+						<%= @person.other_manner_of_death rescue '' %>
 				</td>
 			</tr>
 			<tr>
 				<td rowspan="2">9</td>
 				<td rowspan="2" class="clickable">If Accident, how did it occur?</td>
 				<td colspan="2">
-					<input type="radio" name="death_by_accident" id="Motor Vehicle(Driver)" class="css-checkbox" />
+					<input type="radio" name="death_by_accident" id="Motor Vehicle(Driver)" class="css-checkbox"
+						<%= @person.death_by_accident == 'Motor vehicle(Driver)'? 'checked = true' : '' %> disabled />
 					<label for="Motor Vehicle(Driver)" class="css-label radGroup2">Motor Vehicle(Driver)</label>
 				</td>
 				<td colspan="3">
-					<input type="radio" name="death_by_accident" id="Motor Vehicle(Passenger)" class="css-checkbox" />
+					<input type="radio" name="death_by_accident" id="Motor Vehicle(Passenger)" class="css-checkbox" 
+						<%= @person.death_by_accident == 'Motor vehicle(Passenger)'? 'checked = true' : '' %> disabled/>
 					<label for="Motor Vehicle(Passenger)" class="css-label radGroup2">Motor Vehicle(Passenger)</label>
 				</td>
 				<td colspan="3">
-					<input type="radio" name="death_by_accident" id="Motor vehicle(Pedestrian)" class="css-checkbox" />
+					<input type="radio" name="death_by_accident" id="Motor vehicle(Pedestrian)" class="css-checkbox" 
+						<%= @person.death_by_accident == 'Motor vehicle(Pedestrian)'? 'checked = true' : '' %> disabled/>
 					<label for="Motor vehicle(Pedestrian)" class="css-label radGroup2">Motor vehicle(Pedestrian)</label>
 				</td>
 
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input type="radio" name="death_by_accident" id="Drowning" class="css-checkbox" />
+					<input type="radio" name="death_by_accident" id="Drowning" class="css-checkbox" 
+						<%= @person.death_by_accident == 'Drowning'? 'checked = true' : '' %> disabled/>
 					<label for="Drowning" class="css-label radGroup2">Drowning</label>
 				</td>
 				<td>
-					<input type="radio" name="death_by_accident" id="Other" class="css-checkbox" />
+					<input type="radio" name="death_by_accident" id="Other" class="css-checkbox" 
+						<%= @person.death_by_accident == 'Other'? 'checked = true' : '' %> disabled/>
 					<label for="Other" class="css-label radGroup2">Other</label>
 				</td>
 				<td class="clickable">
 					Specify
 				</td>
 				<td colspan="4">
-					
+						<%= @person.other_death_by_accident rescue '' %>
 				</td>
 			</tr>
 			<tr>
