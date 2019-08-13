@@ -27,6 +27,7 @@
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration" value="No">
   <input type="hidden" name="person[potential_duplicate]" id="potential_duplicate" condition="false">
   <input type="hidden" name="person[is_exact_duplicate]" id="person_is_exact_duplicate" condition="false">
+  
 	<% if params[:registration_type].include? "Missing"%>
 		<section name="Proof of reported missing">
 			<sub id="person_court_order_section" name="Documents attached">
