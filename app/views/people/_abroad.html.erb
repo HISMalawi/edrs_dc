@@ -19,6 +19,14 @@
   <input type="hidden" name="person[district_code]" id="person_district_code" value="<%= @district_code%>">
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
+  <section  name="Form type">
+      <sub id="select_form_type" name="Select type of the form">
+          <select id="form_type" name="form_type" helpText="Select type of death form" >
+                <option>NR-10 </option>
+                <option>NR-10C</option>
+          </select>
+    </sub>
+  </section>
 	<% if params[:registration_type].include? "Deaths Abroad"%>
         <section name="Proof of death abroad">
             <sub id="person_commissioner_documents_section" name="Documents attached">
@@ -83,6 +91,45 @@
                             {:helpText => "Other specify (<i>Place of death</i>) <i style='color: red'>*</i>",
                              :condition => "__$('person_place_of_death_foreign').value.match('Other')"}  %>        
              
+            </sub>
+
+            <sub id="manner_of_death_details" name="Manner of Death details" >
+                  <select helpText="Manner of death" name="person[manner_of_death]" 
+                          id="person_manner_of_death"
+                          condition="__$('form_type').value == 'NR-10C'"
+                          tt_requireNextClick = false
+                          tt_pageStyleClass ="NoKeyboard" >
+                          <option>Natural</option>
+                          <option>Accident</option>
+                          <option>Homicide</option>
+                          <option>Sucide</option>
+                          <option>Pending Investigation</option>
+                          <option>Could not be determined</option>
+                          <option>Other</option>
+                  </select>
+
+                  <input type="text" name="person[other_manner_of_death]" 
+                          id="person_other_manner_of_death" 
+                          helpText="Other manner of death specify"
+                          condition="__$('person_manner_of_death').value == 'Other'">
+
+
+                  <select id="person_death_by_accident" name="person[death_by_accident]" 
+                          helpText="If accidental death, how did it occur?"
+                          condition="__$('person_manner_of_death').value == 'Accident'"
+                          tt_requireNextClick = false
+                          tt_pageStyleClass ="NoKeyboard">
+                          <option>Motor vehicle(Driver)</option>
+                          <option>Motor vehicle(Passenger)</option>
+                          <option>Motor vehicle(Pedestrian)</option>
+                          <option>Drowning</option>
+                          <option>Other</option>
+                  </select>
+
+                  <input type="text" name="person[other_death_by_accident]" 
+                         id="person_other_death_by_accident"
+                         helpText="Other accidental death specify"
+                         condition= "__$('person_death_by_accident').value == 'Other'">
             </sub>
 
             <%= render :partial => "physical_address" %>
