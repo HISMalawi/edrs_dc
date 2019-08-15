@@ -163,12 +163,7 @@ class PeopleController < ApplicationController
       #create status
 
       if Person.duplicate.nil?
-          PersonRecordStatus.create({
-                                      :person_record_id => person.id.to_s,
-                                      :status => "DC ACTIVE",
-                                      :comment =>"Record Created",
-                                      :district_code =>  person.district_code,
-                                      :creator => User.current_user.id})
+          RecordStatus.change_status(person,"DC ACTIVE","Record Created",(User.current_user.id rescue nil))
         else
           
           change_log = [{:duplicates => Person.duplicate.to_s}]
@@ -194,12 +189,7 @@ class PeopleController < ApplicationController
               end
           end
 
-          PersonRecordStatus.create({
-                                      :person_record_id => person.id.to_s,
-                                      :status => status,
-                                      :district_code => person.district_code,
-                                      :comment =>"System mark record as a potential",
-                                      :creator => User.current_user.id})
+          RecordStatus.change_status(person,status,"System mark record as a potential",(User.current_user.id rescue nil))
 
           Person.duplicate = nil
 
@@ -569,31 +559,31 @@ class PeopleController < ApplicationController
                     audit.reason = "Record is a potential"
                     audit.save
                    if @duplicates.count == 1 && @duplicates.first["score"] == 100
-                      PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                      RecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
                    else
-                      PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
+                      RecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
                    end                   
                  end
               else
                 SimpleElasticSearch.add(record)            
               end
       end
-      @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+      @status = RecordStatus.where(person_record_id: params[:id], voided: false).last
 
 
 
       #Recorrecting statuses thatt have not changed
 
-      PersonRecordStatus.by_person_recent_status.key(params[:id]).each.sort_by{|d| d.created_at}.each do |s|
+      RecordStatus.where(person_record_id: params[:id], voided: false).sort_by{|d| d.created_at}.each do |s|
         next if s === @status
         s.voided = true
         s.save
       end
 
       if @status.blank? || @status.status.blank?
-        last_status = PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|d| d.created_at}.last
+        last_status = RecordStatus.where(person_record_id: @person.id).each.sort_by{|d| d.created_at}.last
         if last_status.blank?
-          PersonRecordStatus.change_status(@person, "DC ACTIVE")
+          RecordStatus.change_status(@person, "DC ACTIVE",nil, (User.current_user.id rescue nil))
           redirect_to request.fullpath and return
         end
         states = {
@@ -602,11 +592,11 @@ class PeopleController < ApplicationController
                     "MARKED APPROVAL" => "MARKED APPROVAL"
                  }
         if last_status.blank?
-           PersonRecordStatus.change_status(@person, "DC ACTIVE")
+           RecordStatus.change_status(@person, "DC ACTIVE",nil,(User.current_user.id rescue nil))
         elsif states[last_status.status].blank?
-          PersonRecordStatus.change_status(@person, "DC COMPLETE")
+          RecordStatus.change_status(@person, "DC COMPLETE",nil,(User.current_user.id rescue nil))
         else  
-          PersonRecordStatus.change_status(@person, states[last_status.status])
+          RecordStatus.change_status(@person, states[last_status.status], nil,(User.current_user.id rescue nil))
         end  
         redirect_to request.fullpath and return
       end
@@ -627,7 +617,7 @@ class PeopleController < ApplicationController
           comment_statuses = []
 
           @comments = []
-          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["updated_at"]}.each do |status|
+          RecordStatus.where(person_record_id: @person.id).each.sort_by {|k| k["updated_at"]}.each do |status|
             next if comment_statuses.include?(status.status)
             next if status.status.blank?
             next if status.comment.blank?
@@ -641,7 +631,7 @@ class PeopleController < ApplicationController
   end
   def find
     person = Person.find(params[:id])
-    person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
+    person["status"] = RecordStatus.where(person_record_id: params[:id], voided: false).last.status
     render :text => person_selective_fields(person).to_json
   end
 

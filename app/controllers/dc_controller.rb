@@ -23,11 +23,11 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 
 		if record_complete?(person)
-				PersonRecordStatus.change_status(person, "DC COMPLETE","Marked as complete")
+				RecordStatus.change_status(person, "DC COMPLETE","Marked as complete", (User.current_user.id rescue nil))
 				unlock_users_record(person)
 				redirect_to "#{params[:next_url].to_s}"
 		else
-				PersonRecordStatus.change_status(person, "DC INCOMPLETE", "System marked as incomplete")
+				RecordStatus.change_status(person, "DC INCOMPLETE", "System marked as incomplete", (User.current_user.id rescue nil))
 				unlock_users_record(person)
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
@@ -87,7 +87,7 @@ class DcController < ApplicationController
 
 	def approve_record
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+		RecordStatus.change_status(person, "MARKED APPROVAL", nil, (User.current_user.id rescue nil))
 		begin
 			unlock_users_record(person)
 		rescue
@@ -118,14 +118,14 @@ class DcController < ApplicationController
 
 	def reaprove_record
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
+		RecordStatus.change_status(person, "DC REAPPROVED",params[:reason],(User.current_user.id rescue nil))
 		unlock_users_record(person)
 		redirect_to params[:next_url]
 	end
 
 	def reject_record
 			person = Person.find(params[:id])
-			PersonRecordStatus.change_status(person, "DC REJECTED",params[:reason])	
+			RecordStatus.change_status(person, "DC REJECTED",params[:reason],(User.current_user.id rescue nil))	
 			unlock_users_record(person)		
 			Audit.create({
 							:record_id => params[:id].to_s    , 
@@ -147,7 +147,7 @@ class DcController < ApplicationController
 	
 	def mark_as_pending
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
+		RecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}",(User.current_user.id rescue nil))
 		unlock_users_record(person)
 		Audit.create({
 							:record_id => params[:id].to_s    , 
@@ -344,7 +344,7 @@ class DcController < ApplicationController
 
 	def confirm_not_duplicate
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+		RecordStatus.change_status(person, "MARKED APPROVAL",params[:comment],(User.current_user.id rescue nil))
 		check_den_assignment
 
 		unlock_users_record(person)
@@ -377,13 +377,13 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 
 		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
-			PersonRecordStatus.change_status(person, "MARKED APPROVAL",params[:comment])
+			RecordStatus.change_status(person, "MARKED APPROVAL",params[:comment],(User.current_user.id rescue nil))
 			check_den_assignment
 		end
 		
 		audit_record = Audit.find(params[:audit_id])
 		if audit_record.record_id != params[:id]
-			PersonRecordStatus.change_status(Person.find(audit_record.record_id), "DC DUPLICATE",params[:comment])
+			RecordStatus.change_status(Person.find(audit_record.record_id), "DC DUPLICATE",params[:comment],(User.current_user.id rescue nil))
 			Person.void_person(Person.find(audit_record.record_id),params[:user_id])
 		end
 
@@ -393,7 +393,7 @@ class DcController < ApplicationController
 			ids = d["duplicates"].split("|")
 			ids.each do |id|
 				next if params[:id] == id
-				PersonRecordStatus.change_status(Person.find(id), "DC DUPLICATE",params[:comment])
+				RecordStatus.change_status(Person.find(id), "DC DUPLICATE",params[:comment],(User.current_user.id rescue nil))
 				Person.void_person(Person.find(id),params[:user_id])
 			end
 		end
@@ -439,7 +439,7 @@ class DcController < ApplicationController
 
 	def approve_reprint
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "HQ REPRINT",params[:reason])
+		RecordStatus.change_status(person, "HQ REPRINT",params[:reason],(User.current_user.id rescue nil))
 		Audit.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC APPROVE REPRINT",
@@ -451,7 +451,7 @@ class DcController < ApplicationController
 
 	def mark_for_reprint
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
+		RecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason],(User.current_user.id rescue nil))
 		if params[:barcode].present?
             Barcode.create({
                               :person_record_id => person.id.to_s,
@@ -473,13 +473,13 @@ class DcController < ApplicationController
 	def sent_to_hq_for_reprint
 		person = Person.find(params[:id])
 		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
-		PersonRecordStatus.change_status(person, status.status.gsub("DC","HQ"))
+		RecordStatus.change_status(person, status.status.gsub("DC","HQ"),nil, (User.current_user.id rescue nil))
 		unlock_users_record(person)
 		redirect_to "/dc/reprint_requests?next_url=/dc/manage_requests?next_url=/"
 	end
 	def do_amend
 		person = Person.find(params[:id])
-		PersonRecordStatus.change_status(person, "DC AMEND")
+		RecordStatus.change_status(person, "DC AMEND", nil, (User.current_user.id rescue nil))
 		unlock_users_record(person)
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
@@ -584,7 +584,7 @@ class DcController < ApplicationController
 		amendment_audit.level ="Person"
 		amendment_audit.save
 
-		PersonRecordStatus.change_status(person, "HQ AMEND",params[:reason])
+		RecordStatus.change_status(person, "HQ AMEND",params[:reason], (User.current_user.id rescue nil))
 		if params[:barcode].present?
 			PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
@@ -758,7 +758,7 @@ class DcController < ApplicationController
 
 	      Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
 
-	      PersonRecordStatus.change_status(person,"DC PRINTED")
+	      RecordStatus.change_status(person,"DC PRINTED", "Printed at DC",(User.current_user.id rescue nil))
 	  
 	   end
 	    

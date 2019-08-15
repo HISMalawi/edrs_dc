@@ -29,7 +29,7 @@ class AssignDen
             SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
           end
         else
-          PersonRecordStatus.change_status(person, "HQ ACTIVE")          
+          RecordStatus.change_status(person, "HQ ACTIVE", "Approved at HQ",(record.creator rescue  nil))          
         end
     end rescue (AssignDen.perform_in(job_interval))
   end

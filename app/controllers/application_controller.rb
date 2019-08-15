@@ -322,11 +322,11 @@ class ApplicationController < ActionController::Base
                     "MARKED APPROVAL" => "MARKED APPROVAL"
                  }
         if last_status.blank?
-           PersonRecordStatus.change_status(person, "DC ACTIVE")
+           RecordStatus.change_status(person, "DC ACTIVE", nil, (User.current_user.id rescue nil))
         elsif states[last_status.status].blank?
-          PersonRecordStatus.change_status(person, "DC COMPLETE")
+          RecordStatus.change_status(person, "DC COMPLETE", nil, (User.current_user.id rescue nil))
         else  
-          PersonRecordStatus.change_status(person, states[last_status.status])
+          RecordStatus.change_status(person, states[last_status.status], nil,(User.current_user.id rescue nil))
         end  
           status = PersonRecordStatus.by_person_recent_status.key(person.id).last.status
       end
