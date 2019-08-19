@@ -28,14 +28,18 @@
   <input type="hidden" name="person[potential_duplicate]" id="potential_duplicate" condition="false">
   <input type="hidden" name="person[is_exact_duplicate]" id="person_is_exact_duplicate" condition="false">
 
+  <% if true%>
+  <input type="hidden" name="form_type" id="form_type" value="<%=params[:form_type]%>">
+  <%else%>
   <section  name="Form type">
       <sub id="select_form_type" name="Select type of the form">
-          <select id="form_type" name="form_type" helpText="Select type of death form" >
+          <select id="form_type" name="form_type" helpText="Select type of death form <i style='color: red'>*</i>" >
                 <option>NR-10 </option>
                 <option>NR-10C</option>
           </select>
     </sub>
   </section>
+  <%end%>
 	<% if params[:registration_type].include? "Missing"%>
 		<section name="Proof of reported missing">
 			<sub id="person_court_order_section" name="Documents attached">
@@ -68,7 +72,7 @@
 			</sub>
 		</section>
 	<%end%>
-	<% if true %>
+	<% if params[:form_type] == 'NR-10' %>
 		<section name="Barcode">
 			<sub id="person_barcode_section" name="Barcode">
     <% if SETTINGS['show_keyboard_for_barcode'].present? && SETTINGS['show_keyboard_for_barcode'] %>
@@ -212,7 +216,7 @@
                       
             </sub>
             <sub id="manner_of_death_details" name="Manner of Death details" >
-                  <select helpText="Manner of death" name="person[manner_of_death]" 
+                  <select helpText="Manner of death <i style='color: red'>*</i>" name="person[manner_of_death]" 
                           id="person_manner_of_death"
                           condition="__$('form_type').value == 'NR-10C'"
                           tt_requireNextClick = false
@@ -228,12 +232,12 @@
 
                   <input type="text" name="person[other_manner_of_death]" 
                           id="person_other_manner_of_death" 
-                          helpText="Other manner of death specify"
+                          helpText="Other manner of death specify <i style='color: red'>*</i>"
                           condition="__$('person_manner_of_death').value == 'Other'">
 
 
                   <select id="person_death_by_accident" name="person[death_by_accident]" 
-                          helpText="If accidental death, how did it occur?"
+                          helpText="If accidental death, how did it occur? <i style='color: red'>*</i>"
                           condition="__$('person_manner_of_death').value == 'Accident'"
                           tt_requireNextClick = false
                           tt_pageStyleClass ="NoKeyboard">
@@ -246,7 +250,7 @@
 
                   <input type="text" name="person[other_death_by_accident]" 
                          id="person_other_death_by_accident"
-                         helpText="Other accidental death specify"
+                         helpText="Other accidental death specify <i style='color: red'>*</i>"
                          condition= "__$('person_death_by_accident').value == 'Other'">
             </sub>
 
@@ -255,7 +259,7 @@
             <%= render :partial => "home_address" %>
 
             <sub id='pregnancy_status' name="Pregnancy status">
-               <%= select_tag("person[died_while_pregnant]", options_for_select(['','Yes', 'No'], (@person[:died_while_pregnant])),
+               <%= select_tag("person[died_while_pregnant]", options_for_select(['','Yes', 'No', 'Unknown'], (@person[:died_while_pregnant])),
                         :helpText =>"Did the death occur while pregnant? <i style='color: red'>*</i><br/><i style='font-size: 18px;'> (During pregnant or at the time of delivery or within 6 weeks after the end of pregnancy)</i>", 
                         :condition =>"validatePregnancy()",
                         :tt_requireNextClick => false,

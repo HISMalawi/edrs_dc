@@ -1,4 +1,6 @@
 <form method="get" action="/people/new_split">
+	<%= raise params[:form_type].inspect %>
+	<input type="hidden" id="form_type" name="form_type" value="<%= params[:form_type]%>">
 	<select name="registration_type" helpText ="Select Special Case Category" >
 		<option value="Abnormal Deaths">Abnormal Deaths</option>
 		<option value="Dead on Arrival">Dead on Arrival(Brought in dead)</option>

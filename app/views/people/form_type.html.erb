@@ -1,0 +1,38 @@
+
+<style type="text/css">
+  
+     
+</style>
+<div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
+                        <div id="buttons" style="display: inline ">
+
+                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+
+                              <div class="touch_btn" onmousedown="window.location = '/people/new_person_type?form_type=NR-10'" >
+                                <div class="icon">
+                                       <i class="fa fa-wpforms"></i>
+                                </div>
+                                <div class="button_label">NR-10</div>
+                                <div class="button_description">  NR-10.</div>
+
+                                
+                              </div>
+                          <%end%>
+
+                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+
+                                  <div class="touch_btn" onmousedown="window.location = '/people/new_person_type?form_type=NR-10C'" >
+                                    <div class="icon">
+                                           <i class="fa fa-wpforms"></i>
+                                    </div>
+                                    <div class="button_label">NR-10C</div>
+                                    <div class="button_description">  NR-10C </div>
+
+                                    
+                                  </div>
+                          <%end%>
+
+                        </div>
+</div>
+<%= render :partial => "/dc/landing_resize" %>
+</script>

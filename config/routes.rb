@@ -68,6 +68,8 @@ Rails.application.routes.draw do
   
   get 'people/new_split' => "people#new_split"
 
+  get '/people/form_type'
+
   post 'people/create' => "people#create"
 
   post "/search_similar_record" => "people#search_similar_record"

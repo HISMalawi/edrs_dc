@@ -52,6 +52,14 @@ class PeopleController < ApplicationController
       render :layout => "landing" 
   end
 
+  def form_type
+      @section = "Select Form Type"
+      @facility = facility
+      @district = district
+      @targeturl = "/"
+      render :layout => "landing"
+  end
+
   def register_special_cases
       render :layout => "touch"
   end
