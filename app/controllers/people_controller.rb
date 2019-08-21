@@ -1113,9 +1113,9 @@ end
   def form_container
       #raise params.inspect
       if params[:url].present?
-         @url = params[:url]
+         @url = "#{params[:url]}&form_type=#{params[:form_type]}"
       else
-         @url = "/people/new?registration_type=Normal Cases"
+         @url = "/people/new?registration_type=Normal Cases&form_type=#{params[:form_type]}"
       end
       if params[:next_url].present?
         @next_url = params[:next_url]
