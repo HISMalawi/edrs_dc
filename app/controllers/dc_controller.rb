@@ -455,7 +455,7 @@ class DcController < ApplicationController
 		if params[:barcode].present?
             Barcode.create({
                               :person_record_id => person.id.to_s,
-                              :barcode => person_params[:barcode].to_s,
+                              :barcode => params[:barcode].to_s,
                               :district_code => (person.district_code  rescue SETTINGS['district_code']),
                               :creator => params[:user_id]
                               })			
