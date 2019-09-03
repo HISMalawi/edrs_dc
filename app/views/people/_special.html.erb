@@ -35,14 +35,7 @@
   <input type="hidden" name="person[district_code]" id="person_district_code" value="<%= @district_code%>">
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" value="No">
-  <section  name="Form type">
-      <sub id="select_form_type" name="Select type of the form">
-          <select id="form_type" name="form_type" helpText="Select type of death form" >
-                <option>NR-10 </option>
-                <option>NR-10C</option>
-          </select>
-    </sub>
-  </section>
+  <input type="hidden" name="form_type" id="form_type" value="<%=params[:form_type]%>">
     <% if params[:registration_type].include? "Unclaimed bodies"%>
         <section name="Police report">
             <sub id="person_police_report_section" name="Police report attached">
@@ -60,14 +53,21 @@
             </sub>
         </section>
     <%end%>
-	<% if true %>
-		<section name="Barcode">
-			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",
-        :tt_onUnLoad=>"removeDollar();checkBarcode()"} %>
-			</sub>
-		</section>
-	<%end%>
+  <% if params[:form_type] == 'NR-10' %>
+    <section name="Barcode">
+      <sub id="person_barcode_section" name="Barcode">
+    <% if SETTINGS['show_keyboard_for_barcode'].present? && SETTINGS['show_keyboard_for_barcode'] %>
+        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",
+        :tt_onUnLoad=>"removeDollar();checkBarcode()",
+        :tt_onLoad=>"overRideCancel();removeAutoComplete()"
+        } %>
+    <%else%>
+        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",
+        :tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
+    <%end%>
+      </sub>
+    </section>
+  <%end%>
     <section name="Personal details of deceased">
             <sub id="person_details" name="Details of deceased">
 
