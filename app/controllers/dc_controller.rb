@@ -38,6 +38,11 @@ class DcController < ApplicationController
 		@section = "CCU Dispatch"		
 	end
 
+	def cause_dispatch
+		@dispatch = CauseOfDeathDispatch.find(params[:id])
+		@section = "CCU Dispatches"
+	end
+
 	def dispatch_barcodes
 		cause_of_death_dispatch = CauseOfDeathDispatch.create({dispatch: params[:barcodes]})
 		flash[:notice] = "CCU Dispatch Saved"
@@ -54,7 +59,7 @@ class DcController < ApplicationController
 	end
 
 	def ccu_dispatches
-		render :text => CauseOfDeathDispatch.by_created_at.page(params[:page]).per(20).each.to_json
+		render :text => CauseOfDeathDispatch.by_created_at.page(params[:page]).per(20).each.reject{|d| d.district_code !=  SETTINGS["district_code"]}.to_json
 	end
 
 	def manage_cases

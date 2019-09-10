@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
+<style type="text/css">
+  
+     
+</style>
+<div id="table_container">
+      <table id="records_table">
+        <thead>
+          <tr>
+            <th>
+              #
+            </th>
+            <th>
+              Barcode
+            </th>
+            <th>
+              DEN
+            </th>
+            <th>
+              Name
+            </th>
+
+            <th>
+              Gender
+            </th>
+            <th>
+              Date of Death
+            </th>
+            <th>
+              View Record
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table_body">
+              <% @i = 1 %>
+              <% @dispatch.dispatch.each do |d| %>
+                  <tr>
+                    <% @person =Barcode.by_barcode.key(d).last.person rescue nil %>
+                    <% next if @person.blank? %>
+                    <td><%= @i %></td>
+                    <td><%= d %></td>
+                    <td><%= @person.den %></td>
+                    <td><%= @person.first_name %> <%= @person.last_name %></td>
+                    <td><%= @person.gender %></td>
+                    <td><%= @person.date_of_death %></td>
+                    <td><button onclick="window.location='/people/view/<%=@person.id%>?next_url=<%= request.fullpath %>'"><span>View</span></button></td>
+                  </tr>
+                    <% @i = @i + 1%>
+              <%end%>
+        </tbody>
+    </table>
+</div>
+<button class="green"  style="position: absolute; bottom: 5%; right:2%" onmousedown="window.location= '<%= params[:next_url] %>'"><span>Back</span></button>
+<%= render :partial => "/dc/landing_resize" %>
+<script type="text/javascript">
+    var datatable;
+    datatable = $("#records_table").dataTable({
+                  "lengthChange": false,
+                  "pageLength": 6,
+                  "order": [[ 0, "asc" ]],
+                  "bInfo": false,
+                  "autoWidth": true
+    });
+</script>

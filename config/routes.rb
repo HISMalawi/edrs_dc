@@ -150,6 +150,8 @@ Rails.application.routes.draw do
 
   get "/dc/ccu_dispatches"
 
+  get "/cause_dispatch/:id" => "dc#cause_dispatch"
+
   post "/find_identifier" =>"people#find_identifier"
 
   get "/find_identifier" =>"people#find_identifier"

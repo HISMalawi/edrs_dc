@@ -15,6 +15,9 @@
             <th>
               Date dispatched created
             </th>
+            <th>
+                Operations
+            </th>
           </tr>
         </thead>
         <tbody id="table_body">
@@ -46,7 +49,9 @@
               database_empty = true
           }else{
               for (var i =0; i < data.length; i++) {
-                datatable.api().row.add([increment,data[i].dispatch.length,data[i].created_at]).draw();
+                var link = "window.location = \"/cause_dispatch/"+data[i]["_id"]+"?next_url=<%= request.fullpath %>\"";
+                var button = "<button class='blue' onclick='"+link+"'><span>View</span></button>"
+                datatable.api().row.add([data[i].dispatch_number,data[i].dispatch.length,data[i].created_at, button]).draw();
                 increment++
               }
               page = page + 1

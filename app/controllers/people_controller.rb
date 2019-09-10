@@ -802,7 +802,7 @@ class PeopleController < ApplicationController
       end
     end
 
-    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li>"
+    render :text => list.sort_by {|w| w["name"]}.collect { |w| "<li>#{w.name}" }.join("</li>")+"</li><li>Other</li>"
   end
 
   def nationalities

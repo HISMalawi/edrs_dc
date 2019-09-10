@@ -1,6 +1,7 @@
 class CauseOfDeathDispatch < CouchRest::Model::Base
-	before_save :set_district_code,:set_creator
+	before_save :set_district_code,:set_creator, :set_number
 	property :dispatch,[]
+	property :dispatch_number, Integer
 	property :received,[]
 	property :district_code, String
 	property :creator, String
@@ -14,6 +15,10 @@ class CauseOfDeathDispatch < CouchRest::Model::Base
 		filter :district_sync, "function(doc,req) {return req.query.district_code == doc.district_code}"
     end
 
+    def set_number
+
+    	self.dispatch_number = self.by_district_code.key(SETTINGS['district_code']).each.count + 1 if self.dispatch_number.blank?
+    end
    	def set_district_code
 	    unless self.district_code.present?
 	      self.district_code = SETTINGS["district_code"]
