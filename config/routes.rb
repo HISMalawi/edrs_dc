@@ -144,6 +144,8 @@ Rails.application.routes.draw do
 
   post "/dispatch_barcodes" =>"dc#dispatch_barcodes"
 
+  get "/dispatch_barcodes" =>"dc#dispatch_barcodes"
+
   get "/dc/manage_ccu_dispatch"
 
   get "/dc/view_ccu_dispatch"

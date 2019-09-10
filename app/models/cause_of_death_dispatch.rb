@@ -17,7 +17,7 @@ class CauseOfDeathDispatch < CouchRest::Model::Base
 
     def set_number
 
-    	self.dispatch_number = self.by_district_code.key(SETTINGS['district_code']).each.count + 1 if self.dispatch_number.blank?
+    	self.dispatch_number = CauseOfDeathDispatch.by_district_code.key(SETTINGS['district_code']).each.count + 1 if self.dispatch_number.blank?
     end
    	def set_district_code
 	    unless self.district_code.present?
