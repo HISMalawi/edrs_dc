@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
 
 	def registration_type_and_gender
 		@section ="By Registration type and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")
@@ -35,6 +36,7 @@ class ReportsController < ApplicationController
 	end
 	def place_of_death_and_gender
 		@section ="By place of death and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")
@@ -309,6 +311,7 @@ class ReportsController < ApplicationController
 
 	def by_date_of_death
 		@section ="By date of death and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")

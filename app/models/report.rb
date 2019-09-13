@@ -223,12 +223,26 @@ class Report < ActiveRecord::Base
 		if params[:type].present? && params[:type] != "All"
 			type_query = " AND people.registration_type = '#{params[:type]}'"
 		end
-		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
-	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+
+		facility_query = ""
+		if params[:facility].present? && params[:facility] != "All"
+			edrs = ['Kamuzu Central Hospital']
+			if params[:facility] == "eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death IN ('#{edrs.join("','")}')"
+			elsif params[:facility] == "Non eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death NOT IN ('#{edrs.join("','")}')"
+			else	
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death ='#{params[:facility]}'"
+			end
+			
+		end
+		query = "SELECT count(*) as total 
+	    				 FROM (SELECT DISTINCT person_record_id FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
 					 	 WHERE status = '#{status}' #{gender_query}
 					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' AND person_record_status.voided = 0
 					 	 AND DATE_FORMAT(person_record_status.created_at,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}'
-					 	#{type_query}"
+					 	#{type_query} #{facility_query}) a"
+
 
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0), :gender => params[:gender], :type => params[:type]}
 	end
@@ -268,12 +282,26 @@ class Report < ActiveRecord::Base
 			place_query = " AND people.place_of_death = '#{params[:place]}'"
 		end
 
-		query = "SELECT count(*) as total, gender , status, person_record_status.created_at , person_record_status.updated_at 
-	    				 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
+		facility_query = ""
+		if params[:facility].present? && params[:facility] != "All"
+			edrs = ['Kamuzu Central Hospital']
+			if params[:facility] == "eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death IN ('#{edrs.join("','")}')"
+			elsif params[:facility] == "Non eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death NOT IN ('#{edrs.join("','")}')"
+			else	
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death ='#{params[:facility]}'"
+			end
+			
+		end
+
+		#raise params.inspect
+		query = "SELECT count(*) as total FROM ( 
+	    				 SELECT DISTINCT person_record_id FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
 					 	 WHERE status = '#{status}' #{gender_query} 
 					 	 AND person_record_status.district_code = '#{User.current_user.district_code}' AND person_record_status.voided = 0
 					 	 AND DATE_FORMAT(person_record_status.created_at,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}' 
-	    				#{place_query}"
+	    				#{place_query} #{facility_query}) a"
 
 	    #raise query.to_s
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender], :place => params[:place]}
@@ -315,10 +343,22 @@ class Report < ActiveRecord::Base
 			districts_query = User.current_user.district_code
 		end
 
+		facility_query = ""
+		if params[:facility].present? && params[:facility] != "All"
+			edrs = ['Kamuzu Central Hospital']
+			if params[:facility] == "eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death IN ('#{edrs.join("','")}')"
+			elsif params[:facility] == "Non eDRS Facilities"
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death NOT IN ('#{edrs.join("','")}')"
+			else	
+				facility_query = " AND people.hospital_of_death IS NOT NULL AND people.hospital_of_death ='#{params[:facility]}'"
+			end
+			
+		end
+
 		query = "SELECT count(*) as total FROM people WHERE people.district_code IN ('#{User.current_user.district_code}') #{gender_query}
-				 AND DATE_FORMAT(people.date_of_death,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}'"
+				 AND DATE_FORMAT(people.date_of_death,'%Y-%m-%d') BETWEEN '#{start_date}' AND '#{end_date}' #{facility_query}"
 	    
-	    #raise query.to_s
 		return {:count=> (connection.select_all(query).as_json.last['total'] rescue 0) , :gender => params[:gender]}
 	end
 
