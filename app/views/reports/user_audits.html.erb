@@ -1,0 +1,190 @@
+<link rel="stylesheet" href="/datatable/media/css/jquery.dataTables.min.css">
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" src="/datatable/media/js/jquery.dataTables.min.js"></script>
+<style type="text/css">
+	#report{
+		width :100%;
+		font-size: 1.4em;
+		border-collapse: collapse;
+        overflow: auto;
+
+	}
+
+	#report tr:nth-child(odd){
+		background: #dcdbdb;
+
+	}
+
+	#report td, #report th {
+		border : 1px solid lightgray;
+		padding: 1em;
+	}
+
+	#report th {
+		background: #4c79a3;
+		color:#ffffff;
+	}
+
+	#statuses{
+		list-style: none
+	}
+	#statuses li {
+		font-size: 1.5em;
+		display:  block;
+		padding: 0.6em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	#statuses li:hover {
+		background: #9ec6e2;
+	}
+	#containt{
+		height: calc(100-10px) !important;
+	}
+
+	#time_line{
+		font-size: 1.2em;
+		min-width: 100px;
+		background: #dcdbdb;
+		padding: 1%;
+		border-radius: 10px;
+		border: 1px solid lightgray;
+	}
+
+    #table{
+        font-size: 1em;
+        color: darkslategray;
+    }
+    #table th{
+        border: 1px solid #6281a7;
+        background-color: rgb(98, 129, 167);
+        width: 2%;
+        color: rgb(238, 238, 238);
+        padding: 0.5em;
+    }
+    #table td{
+       border: 1px solid #d3d3d3;
+       padding: 0.6em;
+    }
+
+    .cat{
+      font-weight: bold;
+    }
+    .mintable{
+      width: 100%; 
+      border:none;
+      border-collapse: collapse;
+    }
+    .mintable td, .mintable th{
+        width: 33.33333% !important;
+        text-align: right;
+        padding-right: 10%;
+    }
+    .clickable{
+		list-style: none;
+		margin-right:2em;
+	}
+	.clickable li {
+		font-size: 1.3em;
+		display:  block;
+		padding: 0.4em;
+		border-bottom: 1px dotted lightgray;
+	}
+
+	.clickable li:hover {
+		background: #9ec6e2;
+	}
+</style>
+<table style="width:100%; margin-top: 1.5%;">
+    <tr><td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="3"><%= @section %> </td></tr>
+    <tr>
+        <td style="width:30% ; font-size :1.3em;font-weight:bold;padding-left:2%">
+            <%= @period %>      
+        </td>
+        <td style="text-align:right;width:10%">
+            
+        </td>
+        <td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.path %>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+    </tr>
+</table>
+<table id="table">
+	<thead>		
+		<th>User</th>
+		<th>Name(Role)</th>
+		<th>Audit Type</th>
+		<th>Change</th>
+		<th>Previous Value</th>
+		<th>Current Value</th>
+		<th>Activity</th>
+		<th>Time</th>
+	</thead>
+	<tbody id="content">
+		
+	</tbody>
+</table>
+
+<%= render :partial => "/dc/landing_resize" %>
+<script type="text/javascript">
+	var current_page = 0;
+	var dataTable = null;
+    function addRows(data, skip_parse) {
+
+	  data = JSON.parse(data);
+	  for (var i = 0; i < data.length; i++) {
+
+	    dataTable.api().row.add([data[i].username, data[i].name, data[i].audit_type, data[i].change,data[i].previous_value,data[i].current_value, data[i].reason, data[i].time]).draw();
+
+	  }
+
+	  if(data.length > 0) {
+	    current_page ++;
+	    getData(current_page);
+	  }
+
+	}
+
+	function getData(current_page){
+	  if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari  
+	    xmlhttp=new XMLHttpRequest();                                             
+	  }else{// code for IE6, IE5                                                  
+	    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");                           
+	  }
+	                                                                           
+	  xmlhttp.onreadystatechange=function() {                                     
+	    if (xmlhttp.readyState==4 && xmlhttp.status==200) {                       
+	      var results = xmlhttp.responseText;
+
+	      if(results == 'undefined' || results == '' || results == '"not validate"' || results.length == 0) {
+	        return;                                                               
+	      }else{
+
+	        addRows(results);                                                           
+	      }                                                                       
+	    }
+	  } 
+
+	  url = "/reports/get_audits?start_date=<%=@start_date.to_time.strftime('%Y-%m-%d')%>&end_date=<%=@end_date.to_time.strftime('%Y-%m-%d')%>"
+	  url = url + "&page="+current_page +"&size="+40
+
+	  console.log(url);
+	  xmlhttp.open("GET",url,true);
+	  xmlhttp.send();
+	}
+
+	function initDataTable(){        
+	  try {  
+	     dataTable = $('#table').dataTable({
+	                  "pageLength": 7,
+	                  "autoWidth": true,
+	                  "lengthChange": false
+	                });
+	  }catch(e){
+	    alert(e);
+	  }
+
+	  getData(current_page);
+	}
+
+	initDataTable();
+
+</script>

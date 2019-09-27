@@ -3,6 +3,27 @@ require "yaml"
 DIR = File.dirname(__FILE__)
 
 
+file = "#{Rails.root}/log/couch_mysql.log"
+
+if !File.exist?(file)
+	File.open(file, "w+") do |f|
+		  f.write("Log for #{Time.now}")
+	end
+else
+	File.open(file, "a+") do |f|
+	  f.write("\nLog for #{Time.now}")
+	end	
+end
+
+def add_to_file(e,content)
+    file = "#{Rails.root}/log/couch_mysql.log"
+
+	File.open(file, "a+") do |f|
+	  f.write("\n#{e} => #{content}")
+	end
+end
+
+
 def save_to_mysql(record,map_key,db_maps)
 	$models = {
 				"people" => "Record",
@@ -61,14 +82,13 @@ def save_to_mysql(record,map_key,db_maps)
 
 			next if record["doc"][field].blank?
 			next if field == "type"
-
-			next if table == "barcodes" && field == "created_at"
-			next if table == "barcodes" && field == "updated_at"
-				
 			if field == "_id"
 				field = primary_key
 			end
 			
+			next if table == "barcodes" && field == "created_at"
+			next if table == "barcodes" && field == "updated_at"
+
 			#value = record["doc"][field].to_s.gsub("'","''")
 			date_field = ["created_at","updated_at","last_password_date","birthdate","date_of_death"]
 			if date_field.include?(field)
@@ -90,7 +110,6 @@ def save_to_mysql(record,map_key,db_maps)
 end
 
 if File.file?("/tmp/couch_to_mysql_process.pid")
-	puts "Already tranfering"
 else
 
 	`PROCESS_FILE="/tmp/couch_to_mysql_process.pid"
@@ -147,10 +166,14 @@ else
 		seq = data["last_seq"] 
 		records.each do |record|
 				db_maps.keys.each do |key|
-
 					parts = key.split("|")
 					if record["doc"]["type"] == parts[0]
-						save_to_mysql(record,key,db_maps)
+						begin
+							save_to_mysql(record,key,db_maps)							
+						rescue Exception => e
+							add_to_file(e,content)
+						end
+						
 					else
 						next
 					end

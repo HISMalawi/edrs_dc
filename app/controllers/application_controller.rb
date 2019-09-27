@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
                 "do_print_these",
                 "death_certificate",
                 "hq_is_online"]
-  before_filter :perform_basic_auth,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
+  before_filter :perform_basic_auth,:check_session_expirely,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
@@ -77,9 +77,13 @@ class ApplicationController < ActionController::Base
   end
 
   def unlock_users_record(person)
+    begin
       MyLock.by_user_id_and_person_id.key([User.current_user.id,person.id]).each do |lock|
             lock.destroy
-      end
+      end      
+    rescue Exception => e
+      
+    end
   end
 
   def current_nationality
@@ -395,7 +399,30 @@ class ApplicationController < ActionController::Base
   end
 
   def hq_is_online
-      hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+
+      if SETTINGS["site_type"] == "facility"
+         hq_link = "#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}"
+      else
+        online = Online.find("#{SETTINGS['district_code']}SYNC")
+        if online.blank?
+            online = Online.new
+            online.ip = SYNC_SETTINGS[:dc][:host]
+            online.port = SYNC_SETTINGS[:dc][:port]
+            online.time_seen = Time.now
+            online.save
+        else
+            if online.ip != SYNC_SETTINGS[:dc][:host]
+              online.ip = SYNC_SETTINGS[:dc][:host]
+              online.save
+            end
+
+            if online.port != SYNC_SETTINGS[:dc][:port]
+              online.port = SYNC_SETTINGS[:dc][:port]
+              online.save
+            end
+        end
+         hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
+      end    
       online = is_up?(hq_link) rescue false
       if online
          render :text => {status: true}.to_json
@@ -467,6 +494,18 @@ class ApplicationController < ActionController::Base
     authorize! :access, :anything
   end
 
+  def check_session_expirely
+    if session[:expires_at].present?
+      if session[:expires_at].to_time < Time.now
+          session[:expires_at] = nil
+          flash[:error] = 'You have been log out'
+          redirect_to "/login" and return
+      else
+          session[:expires_at] =  Time.current + 4.hours         
+      end
+    end    
+  end
+
   def check_cron_jobs
     last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
     job_interval = SETTINGS['ben_assignment_interval']
@@ -502,57 +541,43 @@ class ApplicationController < ActionController::Base
   end
 
   def check_database
-    create_query = "CREATE TABLE IF NOT EXISTS documents (
-                    id int(11) NOT NULL AUTO_INCREMENT,
-                    couchdb_id varchar(255) NOT NULL UNIQUE,
-                    group_id varchar(255) DEFAULT NULL,
-                    group_id2 varchar(255) DEFAULT NULL,
-                    date_added datetime DEFAULT NULL,
-                    title TEXT,
-                    content TEXT,
-                    created_at datetime NOT NULL,
-                    updated_at datetime NOT NULL,
-                    PRIMARY KEY (id),
-                    FULLTEXT KEY content (content)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
-    SimpleSQL.query_exec(create_query);
 
-    create_status_table = "CREATE TABLE IF NOT EXISTS person_record_status (
-                            person_record_status_id varchar(225) NOT NULL,
-                            person_record_id varchar(255) DEFAULT NULL,
-                            status varchar(255) DEFAULT NULL,
-                            prev_status varchar(255) DEFAULT NULL,
-                            district_code varchar(255) DEFAULT NULL,
-                            facility_code varchar(255) DEFAULT NULL,
-                            voided tinyint(1) NOT NULL DEFAULT '0',
-                            reprint tinyint(1) NOT NULL DEFAULT '0',
-                            registration_type  varchar(255) DEFAULT NULL,
-                            creator varchar(255) DEFAULT NULL,
-                            updated_at datetime DEFAULT NULL,
-                            created_at datetime DEFAULT NULL,
-                          PRIMARY KEY (person_record_status_id)
-                        ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
-    SimpleSQL.query_exec(create_status_table);   
+    if SETTINGS['use_mysql_potential_search']
+      create_query = "CREATE TABLE IF NOT EXISTS potential_search (
+                      id int(11) NOT NULL AUTO_INCREMENT,
+                      person_id varchar(255) NOT NULL UNIQUE,
+                      content TEXT,
+                      created_at datetime NOT NULL,
+                      updated_at datetime NOT NULL,
+                      PRIMARY KEY (id),
+                      FULLTEXT KEY content (content)
+                    )ENGINE=InnoDB DEFAULT CHARSET=latin1;"
 
-    create_identifier_table = "CREATE TABLE IF NOT EXISTS person_identifier (
-                                person_identifier_id varchar(225) NOT NULL,
-                                person_record_id varchar(255) DEFAULT NULL,
-                                identifier_type varchar(255) DEFAULT NULL,
-                                identifier varchar(255) DEFAULT NULL,
-                                check_digit text,
-                                site_code varchar(255) DEFAULT NULL,
-                                den_sort_value int(11) DEFAULT NULL,
-                                drn_sort_value int(11) DEFAULT NULL,
-                                district_code varchar(255) DEFAULT NULL,
-                                creator varchar(255) DEFAULT NULL,
-                                _rev varchar(255) DEFAULT NULL,
-                                updated_at datetime DEFAULT NULL,
-                                created_at datetime DEFAULT NULL,
-                              PRIMARY KEY (person_identifier_id)
-                            ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"  
+      SimpleSQL.query_exec(create_query);
+    end 
 
-    SimpleSQL.query_exec(create_identifier_table);            
-                      
+    create_audit_trail_table = "CREATE TABLE IF NOT EXISTS audit_trail(
+                                  audit_record_id VARCHAR(255) NOT NULL,
+                                  record_id VARCHAR(255) NOT NULL,
+                                  audit_type VARCHAR(50) DEFAULT NULL,
+                                  level VARCHAR(50) NOT NULL,
+                                  model VARCHAR(50) DEFAULT NULL,
+                                  field VARCHAR(50) DEFAULT NULL,
+                                  previous_value VARCHAR(255) DEFAULT NULL,
+                                  current_value VARCHAR(255) DEFAULT NULL,
+                                  reason VARCHAR(255) DEFAULT NULL,
+                                  user_id VARCHAR(255) DEFAULT NULL, 
+                                  site_id VARCHAR(255) DEFAULT NULL,
+                                  site_type VARCHAR(50) DEFAULT NULL,
+                                  ip_address VARCHAR(64) DEFAULT NULL,
+                                  mac_address VARCHAR(255) DEFAULT NULL,
+                                  change_log VARCHAR(255) DEFAULT NULL,
+                                  creator VARCHAR(255) DEFAULT NULL,
+                                  voided INT(1) DEFAULT NULL,
+                                  created_at DATETIME DEFAULT NULL,
+                                  updated_at DATETIME DEFAULT NULL,
+                                  PRIMARY KEY (audit_record_id)) ENGINE=InnoDB DEFAULT CHARSET=latin1;;"          
+    SimpleSQL.query_exec(create_audit_trail_table);                   
   end
 
   def check_den_table
@@ -572,6 +597,25 @@ class ApplicationController < ActionController::Base
                                   ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"
           #SimpleSQL.query_exec(create_query_den_table)
     end
+  end
+
+  def person_hash(person)
+      record = {}
+      record["first_name"] = person.first_name
+      record["last_name"] = person.last_name
+      record["middle_name"] = (person.middle_name rescue nil)
+      record["gender"] = person.gender.first
+      record["birthdate"] = person.birthdate
+      record["date_of_death"] = person.date_of_death
+      record["mother_last_name"] = (person.mother_last_name rescue nil)
+      record["mother_middle_name"] = (person.mother_middle_name rescue nil)
+      record["mother_first_name"] = (person.mother_first_name rescue nil)
+      record["father_last_name"] = (person.father_last_name rescue nil)
+      record["father_middle_name"] = (person.father_middle_name rescue nil)
+      record["father_first_name"] = (person.father_first_name rescue nil)
+      record["person_id"] = person.id
+      record["location"] = person.place_of_death_district
+      return record
   end
 
   def access_denied

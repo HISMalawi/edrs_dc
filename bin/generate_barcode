@@ -12,6 +12,11 @@ if ARGV.length > 2
   # 1 filename
   # 2 directory_name
 
+  require 'barby'
+  require 'barby/barcode'
+  require 'barby/barcode/qr_code'
+  require 'barby/outputter/png_outputter'
+
   barcode = Barby::Code128B.new(ARGV[0])
 
 	file = File.open("#{ARGV[2]}/#{ARGV[1]}.png", "wb")

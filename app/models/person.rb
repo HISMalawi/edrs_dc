@@ -180,9 +180,13 @@ class Person < CouchRest::Model::Base
 
             if !params[:hospital_of_death].blank? && params[:place_of_death].downcase.match("health facility")
 
-                health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
+                if params[:hospital_of_death] == "Other"
+                  params[:hospital_of_death] = params[:other_hospital_of_death]
+                else
+                  health_facility = HealthFacility.by_district_id_and_name.key([district.id, params[:hospital_of_death]]).first
 
-                params[:hospital_of_death_id] = health_facility.id
+                  params[:hospital_of_death_id] = health_facility.id
+                end
             else
 
                 if !params[:place_of_death_ta].blank? && params[:place_of_death_ta] != "Other"
@@ -426,7 +430,17 @@ class Person < CouchRest::Model::Base
     return self.id_number rescue "XXXXXXXX"
   end
   def barcode
-      PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first.identifier rescue "XXXXXXXX"
+      barcode = PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first
+      if barcode.present?
+         return barcode.identifier
+      else
+          barcode = BarcodeRecord.where(person_record_id: self.id).last
+          if barcode.present? 
+                return barcode.barcode
+          else
+                return   "XXXXXXXX"
+          end
+      end
   end
   def drn
       return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier rescue "XXXXXXXX"

@@ -32,7 +32,7 @@ function checkIfHQIsOnline(){
 
                 data = JSON.parse(data)  
                 if (data.status) {
-                    __$("hq_sync").innerHTML = "HQ is Online";
+                    __$("hq_sync").innerHTML = "<%= SETTINGS['site_type'] =='facility' ? 'DC' : 'HQ' %> is Online";
                     __$("hq_sync").style.backgroundColor="#b8d6bd";
                     if (__$("print_btn")) {
                       sync_online = true;
@@ -40,7 +40,7 @@ function checkIfHQIsOnline(){
                     }
 
                 }else{
-                    __$("hq_sync").innerHTML = "HQ is Offline";
+                    __$("hq_sync").innerHTML = "<%= SETTINGS['site_type'] =='facility' ? 'DC' : 'HQ' %> is Offline";
                     __$("hq_sync").style.backgroundColor="#d6bab8";
                     if (__$("print_btn")) {
                       sync_online = false;

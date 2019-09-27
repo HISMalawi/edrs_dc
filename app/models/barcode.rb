@@ -17,7 +17,7 @@ class Barcode < CouchRest::Model::Base
   end
 
   def set_district_code
-    	self.district_code = self.person.district_code
+    	self.district_code = (self.person.district_code rescue SETTINGS['district_code'])
   end
 
   def person

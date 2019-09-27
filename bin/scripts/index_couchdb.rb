@@ -31,6 +31,16 @@ t8 = Thread.new{
 	b =Barcode.all.count
 	puts b
 }
+
+t9 = Thread.new{
+	b =HealthFacility.all.count
+	puts b
+}
+
+t10 = Thread.new{
+	b =Role.all.count
+	puts b
+}
 t1.join
 t2.join
 t3.join
@@ -39,3 +49,5 @@ t5.join
 t6.join
 t7.join
 t8.join
+t9.join
+t10.join

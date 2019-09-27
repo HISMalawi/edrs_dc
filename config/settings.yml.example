@@ -3,6 +3,7 @@
  district_code:  #BT | LL | ZA
  exact_duplicate: true
  potential_duplicate: true # false when elasticsearch is not present
+ use_mysql_potential_search: false
  duplicate_precision: 90 #percentage precision
  site_type: dc #facility | dc | remote
  den_assignment_interval: 3
@@ -20,4 +21,4 @@
  wkhtmltopdf: /usr/bin/wkhtmltopdf
  decentralized_printing: false
  print_qrcode: false
- qr_codes_path: /home/usr/qrcodes/
+ qrcodes_path: /home/usr/qrcodes/

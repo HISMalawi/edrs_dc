@@ -19,4 +19,10 @@ config/*.yml
 Gemfile.lock
 passenger-standalone*
 app/db/MySQL_data/*.sql
-
+<<<<<<< HEAD
+db/dumps/*.sql
+db/dumps/*.json
+=======
+db/*.sql
+db/*.json
+>>>>>>> e209304c7e6e9585b3af7989e8c970185b61c28a

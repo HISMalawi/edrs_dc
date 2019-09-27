@@ -316,7 +316,7 @@
 				       	var place_of_death =(__$("person_place_of_death") && __$("person_place_of_death").value ? __$('person_place_of_death').value : "");
 				       	
 				       	if (place_of_death == 'Health Facility'){
-				       		td.innerHTML = __$("person_hospital_of_death").value + ", "+__$("person_place_of_death_district").value;
+				       		td.innerHTML = (__$("person_hospital_of_death").value == "Other" ? __$("person_other_hospital_of_death").value : __$("person_hospital_of_death").value ) + ", "+__$("person_place_of_death_district").value;
 
 				        }else if(place_of_death == 'Home') {
 				        	var place_of_death_details = ""
@@ -736,7 +736,7 @@
 		        var hospital_of_death = "";
 
 		        if(__$("person_hospital_of_death") && __$("person_hospital_of_death").value){
-		        	hospital_of_death = __$('person_hospital_of_death').value;
+		        	hospital_of_death = __$("person_hospital_of_death").value == "Other" ? __$("person_other_hospital_of_death").value : __$("person_hospital_of_death").value ;
 		        }
 		        if(__$("place_of_death_foreign_hospital") && __$("place_of_death_foreign_hospital").value){
 		        	hospital_of_death =  __$('place_of_death_foreign_hospital').value ;

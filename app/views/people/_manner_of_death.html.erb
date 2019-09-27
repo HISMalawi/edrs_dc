@@ -1,0 +1,44 @@
+<% if ["Normal Cases","Abnormal Deaths","Deaths Abroad"].include?(params[:registration_type])  && params[:form_type] == 'NR-10C'%>
+						<sub id="manner_of_death_details" name="Manner of Death details" >
+									<select helpText="Manner of death <i style='color: red'>*</i>" name="person[manner_of_death]" 
+													id="person_manner_of_death"
+													condition="__$('form_type').value == 'NR-10C'"
+													tt_requireNextClick = false
+													tt_pageStyleClass ="NoKeyboard"  <% ["Normal Cases","Abnormal Deaths","Deaths Abroad"].include?(params[:registration_type]) ? '' : 'condition=false' %> >
+												<% if ["Normal Cases","Deaths Abroad"].include?(params[:registration_type]) %>
+													<option>Natural</option>
+												<%end%>
+												<% if ["Abnormal Deaths","Deaths Abroad"].include?(params[:registration_type]) %>
+													<option>Accident</option>
+													<option>Homicide</option>
+													<option>Suicide</option>
+													<option>Pending Investigation</option>
+													<option>Could not be determined</option>
+													<option>Other</option>
+												<%end%>
+									</select>
+
+									<input type="text" name="person[other_manner_of_death]" 
+													id="person_other_manner_of_death" 
+													helpText="Other manner of death specify <i style='color: red'>*</i>"
+													condition="__$('person_manner_of_death').value == 'Other'">
+
+
+									<select id="person_death_by_accident" name="person[death_by_accident]" 
+													helpText="If accidental death, how did it occur? <i style='color: red'>*</i>"
+													condition="__$('person_manner_of_death').value == 'Accident'"
+													tt_requireNextClick = false
+													tt_pageStyleClass ="NoKeyboard">
+													<option>Motor vehicle(Driver)</option>
+													<option>Motor vehicle(Passenger)</option>
+													<option>Motor vehicle(Pedestrian)</option>
+													<option>Drowning</option>
+													<option>Other</option>
+									</select>
+
+									<input type="text" name="person[other_death_by_accident]" 
+												 id="person_other_death_by_accident"
+												 helpText="Other accidental death specify <i style='color: red'>*</i>"
+												 condition= "__$('person_death_by_accident').value == 'Other'">
+						</sub>
+<%end%>

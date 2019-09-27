@@ -1,0 +1,57 @@
+<style type="text/css">
+    #up {
+      position: absolute;
+
+      right: 3%;
+
+      top :13%;
+    }
+
+    #down {
+      position: absolute;
+
+      right: 3%;
+
+      bottom :20%;
+    }
+		.scroll{
+			background: #bed5de;
+
+            border : 0.005em solid #b3b1b1;
+
+            font-size: 1.5em;
+
+            width: 100px;
+
+            margin: 0.3%;
+
+            box-shadow: 2.5px 2.5px 1px #888888;
+
+           	padding: 0.1%;
+
+           	text-align: center
+		}
+</style>
+<script type="text/javascript">
+		    function up(){
+
+				__$("table_container").scrollBy(0, -100);
+				
+			}
+
+			function down(){
+
+				__$("table_container").scrollBy(0,100);
+
+			}
+</script>
+  <div id="up" class="scroll" onmousedown="up()">
+     <i class=" fa fa-arrow-up"></i>
+     <br/>
+     <span>Scroll</span>
+ </div>
+ <div id="down" class="scroll" onmousedown="down()">
+     <span>Scroll</span>
+     <br/>
+     <i class=" fa fa-arrow-down"></i>
+ </div>

@@ -1,7 +1,8 @@
 <script type="text/javascript">
 	var start_date = "<%= params[:start_date] rescue ''%>";
 	var end_date = "<%= params[:end_date] rescue ''%>";
-	var timeline = "<%= params[:timeline] %>";
+	var timeline = "<%= params[:timeline] %>";    
+	var facility = "<%=params[:facility] rescue 'All'%>";
 </script>
 <style type="text/css">
 	#report{
@@ -98,18 +99,28 @@
 	}
 </style>
 <table style="width:100%; margin-top: 1.5%;">
-    <tr><td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="3"><%= @section %> </td></tr>
+    <tr>
+    	<td style="width:30% ; font-size :1.6em;font-weight:bold;padding-left:2%;border-bottom:1px solid gray" colspan="4">
+            <%= @section %>
+            (<%= params[:status] rescue 'DC ACTIVE' %>)
+            <br/>
+            <i><%=params[:facility] == 'All' || params[:facility].blank? ? "" : "Health Facility : #{params[:facility]}"%></i>
+        </td>
+    </tr>
     <tr>
         <td style="width:30% ; font-size :1.3em;font-weight:bold;padding-left:2%">
             <%= @period %>      
         </td>
+		<td style="text-align:right;width:10%">
+			<button onclick="loadStates()">Select status</button>
+		</td>
         <td style="text-align:right;width:10%">
-            
+            <button  onclick="loadFacilities()">Select Facility of Death</button>
         </td>
-        <td style="text-align:right;width:10%"><button onclick="window.location.href ='/pick_dates?url=<%=request.path %>&next_url=<%=params[:next_url]%>'"><span>Pick Dates</span></button></td>
+		<td style="text-align:right;width:10%"><button onclick="pickDate()"><span>Pick Dates</span></button></td>
     </tr>
 	<tr>
-		<td colspan="3">
+		<td colspan="4">
 				<div style="width: 100%;height: 500px; overflow-y:scroll;border:1px solid gray;" >
 					
 					<table id='table' style="width: 100%;" cellpadding="5" cellspacing="0">
@@ -131,7 +142,259 @@
 		</td>
 	</tr>
 </table>
+
+<form method="get" action="<%= request.path %>" id="form">
+	<input type="hidden" name="timeline" value="<%=params[:timeline]%>">
+	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
+    <input type="hidden" name="start_date" value="<%= params[:start_date] rescue ''%>">
+    <input type="hidden" name="end_date" value="<%= params[:end_date] rescue ''%>">
+    <input type="hidden" id="facility" name="facility" value="<%= params[:facility] rescue 'All'%>">
+	<input type="hidden" name="status" id="status" value="<%=params[:status] rescue 'DC ACTIVE'%>">
+</form>
+<style type="text/css">
+     #facilities{
+            position: absolute; 
+            width: 40%; 
+            left: 30%; 
+            top: 8%;
+            border: 1px solid  gray;
+            box-shadow: 2.5px 2.5px 1px #888888;
+            background: #ffffff;
+     }
+     #facilities > input {
+            width: 90%;
+            margin-left: 5%;
+            font-size: 2em;
+     }
+     #facility_list{
+            //min-height: 200px;
+            //max-height: 450px;
+            height: 250px;
+            background: #ffffff;
+            overflow-y: scroll;
+            width: 100%;
+     }
+     #keyboardcontainer{
+        z-index: 2000;
+     }
+</style>
 <script type="text/javascript">
+    function filterFunction() {
+
+          var input, filter, ul, li, a, i;
+
+          input = document.getElementById("search");
+
+          filter = input.value.toUpperCase();
+
+          div = document.getElementById("facilities");
+
+          a = div.getElementsByTagName("li");
+
+          for (i = 0; i < a.length; i++) {
+
+            txtValue = a[i].textContent || a[i].innerText;
+
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+
+              a[i].style.display = "";
+
+            } else {
+
+              a[i].style.display = "none";
+
+            }
+          }
+    } 
+
+    function loadFacilities(){
+        __$("facilities").style.visibility="visible"
+    }
+    var qwerty = ["1234567890", "qwertyuiop","asdfghjkl:","zxcvbnm,.?","_-@()+;=\\\/"]
+    var abc    = ["1234567890", "abcdefghij","klmnopqrs:","tuvwxyz,.?","_-@()+;=\\\/"]
+    var capcase = false;
+    var type = "abc"
+
+    function cap(a){
+            return a.toUpperCase();
+    }
+    function appendValue(value){
+            if(control === undefined){
+                focusFirstInput()
+            }
+            control.value = control.value + value
+            filterFunction();
+            setTimeout(function(){
+                control.focus();
+            },1);
+
+            
+    }
+
+    function deleteFromValue(){
+            control.value = control.value.slice(0, control.value.length - 1)
+            datatable.fnFilter(control.value);
+            setTimeout(function(){
+                control.focus();
+            },1);
+    }
+
+    function clear(){
+            control.value = ""
+            datatable.fnFilter(control.value);
+            setTimeout(function(){
+                control.focus();
+            },1);
+    }
+
+    function changeKeboardType(keyboard){
+            type  = keyboard;
+            changeFocusToMe(control);
+            datatable.fnFilter(control.value);
+            setTimeout(function(){
+                control.focus();
+            },1);
+    }
+
+    function changeFocusToMe(element){
+            control = element
+            var container = __$("table_container")
+            var width = 800;
+            var height = 380;
+            if(__$("keyboardcontainer")){
+                __$("keyboardcontainer").style.visibility ="visible"
+                __$("keyboardcontainer").innerHTML = "";
+            }else{
+                var div = document.createElement("div");
+                div.id = "keyboardcontainer";
+                div.style.textAlign ="center";
+                div.style.position = "absolute";
+                div.style.width = width + "px";
+                div.style.height = height + "px";
+                div.style.backgroundColor = "#eee";
+                div.style.border = "1px solid #26262b";
+                div.style.display ="block"
+                div.style.padding ="0.5%";
+                div.style.borderRadius = "1px";
+                div.style.left = "calc(50% - " + (width / 2) + "px)";
+                div.style.top = "calc(50% - " + (height * 0.3) + "px)";
+                div.style.border = "1px outset #fff";
+                div.style.boxShadow = "3px 1.5px 3px 0px rgba(0,0,0,0.75)";
+                div.style.fontFamily = "arial, helvetica, sans-serif";
+                div.style.MozUserSelect = "none";
+                container.appendChild(div);
+            }
+
+            var groups = eval(type)
+            
+            for(var i = 0 ; i < groups.length;i++){
+                    var row = document.createElement("div");
+                    row.className = "row"
+                    __$("keyboardcontainer").appendChild(row);
+                    var keys = groups[i].split("");
+                    for(var j = 0 ; j < keys.length ; j++){
+                        var button = document.createElement("button");
+                        var key = capcase ? cap(keys[j]) : keys[j]
+                        button.innerHTML = key ;
+                        button.className = "blue"
+                        button.setAttribute("onmousedown", "appendValue('"+key+"')");
+                        button.setAttribute("onmouseup", "control.focus()")
+                        row.appendChild(button);
+                    }
+
+            }
+
+            var row = document.createElement("div");
+            row.className = "row"
+            __$("keyboardcontainer").appendChild(row);
+
+            var button = document.createElement("button");
+            button.innerHTML = type == "abc" ? "qwerty" : "abc";
+            button.className = "orange";
+            button.setAttribute("onmousedown", "changeKeboardType('"+button.innerHTML+"')")
+            button.onmouseup = function(){
+                control.focus()
+            }
+            row.appendChild(button);
+
+            var button = document.createElement("button");
+            button.innerHTML = capcase ? "cap" : cap("CAP");
+            button.style.marginLeft = "1%";
+            button.onmousedown = function(){
+                if(capcase){
+                    capcase = false
+                    buildkeyBoard(type)
+                }else{
+                    capcase = true
+                    buildkeyBoard(type)
+                }
+            }
+            button.onmouseup = function(){
+                control.focus()
+            }
+            button.className = "blue"
+            row.appendChild(button);
+
+            var button = document.createElement("button");
+            button.innerHTML = "space";
+            button.className = "blue";
+            button.style.marginLeft = "5%";
+            button.style.marginRight = "5%";
+            button.style.width = "200px"
+            button.setAttribute("onmousedown", "appendValue(' ')")
+            button.setAttribute("onmouseup", "control.focus()")
+            row.appendChild(button);
+
+            var button = document.createElement("button");
+            button.innerHTML = "Clear";
+            button.className = "orange";
+            button.style.marginRight = "1%";
+
+            button.onmousedown = function(){
+                clear();
+            }
+            button.onmouseup = function(){
+                control.focus()
+            }
+            row.appendChild(button);
+
+            var button = document.createElement("button");
+            button.innerHTML = "delete";
+            button.className = "blue"
+            button.onmousedown = function(){
+                deleteFromValue();
+            }
+            button.onmouseup = function(){
+                control.focus()
+            }
+
+            row.appendChild(button);
+
+    }
+
+    function selected(element){
+        __$('search').value = element.innerHTML;
+        facility = element.innerHTML;
+        __$("facility").value = facility
+        __$('form').submit();
+    }
+</script>
+<div id="facilities" style="visibility: hidden">
+       <button style="float:right;" onclick="__$('facilities').style.visibility='hidden'"><span >Cancel</span></button>
+       <br/>
+       <input type="text" placeholder="Search.." id="search" onfocus= "changeFocusToMe(this)" onkeyup="filterFunction()" onblur="__$('keyboardcontainer').style.visibility='hidden'"> 
+       <div id="facility_list">
+           <ul class="clickable">
+                <li onclick="selected(this)">All</li>
+                <li onclick="selected(this)">eDRS Facilities</li>
+                <li onclick="selected(this)">Non eDRS Facilities</li>
+                <% @facilities.each do |f| %>
+                        <li onclick="selected(this)"><%= f.name %></li>
+                <%end%>
+           </ul>           
+       </div>
+</div>
+<script>
 	function __$(id){
         return document.getElementById(id);
     }
@@ -143,22 +406,155 @@
     }
 
     resizeDiv();
-	function fetchData(){
+
+    function loadReport(element){
+    	var list = __$("statuses").getElementsByTagName('li');
+    	for(var i = 0 ; i < list.length ; i++){
+    		list[i].style.background ="#ffffff";
+    	}
+    	element.style.background ="#9ec6e2";
+    	var url ="/report_data/"+element.id;
+    	if(start_date.length > 2){
+    		__$("time_line").innerHTML = (new Date(start_date).format())+" to "+(new Date(end_date).format());
+    		url = url + "?start_date="+start_date+"&end_date="+end_date;
+    	}else{
+    		url = url +"?timeline="+time_line;
+    		__$("time_line").innerHTML = time_line;
+    	}
+    	status_map ={
+				"Reported" :"DC ACTIVE",
+				"Registered" : "HQ ACTIVE",
+				"Duplicates" :"DC DUPLICATE",
+				"Printed" :"HQ CLOSED",
+				"Dispatched" :"HQ DISPATCHED"
+		}
+
+    	ajaxGETRequest(url,function(data){
+    		var data = JSON.parse(data);
+    		__$('female').innerHTML = data.female;
+    		__$('male').innerHTML = data.male;
+    		__$('total').innerHTML = parseInt(data.male) + parseInt(data.female);
+    	});
+    }
+
+    var reported = __$("Reported");
+
+    //loadReport(reported);
+    var statuses = {
+                        "DC ACTIVE"         : "DC ACTIVE",
+                        "DC COMPLETE"       : "DC COMPLETE",
+                        "HQ ACTIVE"         : "HQ ACTIVE",
+                        "DC VOIDED"         : "DC VOIDED",
+                        "DC AMEND"          : "DC AMEND",
+                        "DC LOST"           : "DC LOST",
+                        "DC DAMAGED"        : "DC DAMAGED",
+                        "HQ PRINTED"        : "HQ PRINTED" ,
+                        "HQ DISPATCHED"     : "HQ DISPATCHED" 
+    }
+
+    function loadStates(){
+    	loadTab();
+    	var popup = __$("msg.popup");
+    	popup.style.textAlign = "center";
+    	var title = document.createElement("h2");
+    	title.innerHTML = "Select Status";
+    	popup.appendChild(title);
+    	
+    	var ul = document.createElement("ul");
+    	ul.className = "clickable"
+    	popup.appendChild(ul);
+
+    	var states = Object.keys(statuses);
+    	for(var i = 0 ; i < states.length ; i++){
+    		var li = document.createElement("li");
+    		li.id = states[i];
+    		li.setAttribute("onclick","activate(statuses,this)")
+    		li.innerHTML = states[i];
+    		ul.appendChild(li);
+    	}
+
+    	var buttonCancel = document.createElement("button");
+    	buttonCancel.innerHTML = "Cancel";
+    	buttonCancel.className ="red";
+    	buttonCancel.style.marginRight = "15%";
+    	buttonCancel.onmousedown = function(){
+    		document.body.removeChild(__$("msg.shield"));
+    	}
+    	popup.appendChild(buttonCancel);
+
+    	var button = document.createElement("button");
+    	button.innerHTML = "Fetch data";
+    	button.onmousedown = function(){
+    		__$("form").submit();
+    	}
+    	popup.appendChild(button);
+    }
+
+    function activate(elements,element){
+    	var ids = Object.keys(elements);
+    	for(var i = 0 ; i < ids.length ; i++){
+    		__$(ids[i]).style.background = "#ffffff";
+    	}
+
+    	__$("status").value = statuses[element.id]
+    	__$(element.id).style.background = "#9ec6e2";
+    	
+    }
+
+    function loadTab(){
+    	var shield = document.createElement("div");
+        shield.style.position = "absolute";
+        shield.style.top = "0px";
+        shield.style.left = "0px";
+        shield.style.width = "100%";
+        shield.style.height = "100%";
+        shield.id = "msg.shield";
+        shield.style.backgroundColor = "rgba(128,128,128,0.5)";
+        shield.style.zIndex = 1050;
+
+        document.body.appendChild(shield);
+
+        var width = 500;
+         var height = 550;
+
+        var div = document.createElement("div");
+        div.id = "msg.popup";
+        div.style.position = "absolute";
+        div.style.width = width + "px";
+        div.style.height = height + "px";
+        div.style.backgroundColor = "#ffffff";
+        div.style.border = "1px solid #26262b"
+        div.style.borderRadius = "1px";
+        div.style.left = "calc(50% - " + (width / 2) + "px)";
+        div.style.top = "calc(50% - " + (height * 0.6) + "px)";
+        div.style.border = "1px outset #fff";
+        div.style.boxShadow = "5px 2px 5px 0px rgba(0,0,0,0.75)";
+        div.style.fontFamily = "arial, helvetica, sans-serif";
+        div.style.MozUserSelect = "none";
+
+        shield.appendChild(div);
+    }
+
+    function fetchData(status){
                 var gender = ["Female","Male","Total"]
                 for(var i = 0 ; i < gender.length ; i++){
                     var url = "/reports/by_date_of_death_and_gender"
-                    url = url + "?gender="+gender[i]
+                    url = url + "?status="+status+"&gender="+gender[i];
                     if(start_date.length > 2){
-                        url = url + "&start_date="+start_date+"&end_date="+end_date;
+                        url = url+"&timeline="+timeline + "&start_date="+start_date+"&end_date="+end_date;
                     }else{
                         url = url +"&timeline="+timeline;
                     }
+                    url = url + "&facility="+ facility;
                     ajaxGETRequest(url,function(data){
                                 var data = JSON.parse(data);
-                                console.log(data);
                                 __$(data.gender).innerHTML = data.count
                     });
-                }      
+                }       
     }
-    fetchData()
+    fetchData("<%=params[:status] rescue 'DC ACTIVE'%>");
+    function pickDate(){
+        var url ="/pick_dates?url=<%=request.fullpath %>&status=<%=params[:status]%>&next_url=<%=params[:next_url]%>&facility=<%=params[:facility]%>"
+        window.location = url;
+    }
 </script>

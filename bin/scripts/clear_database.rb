@@ -25,26 +25,44 @@ if Rails.env == "development"
         d.destroy
      end
 
+     User.all.each do |d|
+        next if d.username == "admin"
+        d.destroy     
+     end
+
      SETTING = YAML.load_file("#{Rails.root}/config/elasticsearchsetting.yml")['elasticsearch']
      puts `curl -XDELETE #{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}`
 
      sql = "SET FOREIGN_KEY_CHECKS = 0;"
      SimpleSQL.query_exec(sql)
 
-        create_status_table = "DELETE FROM  person_record_status WHERE person_record_id IS NOT NULL;"
-        SimpleSQL.query_exec(create_status_table); 
+    delete_status_table = "DELETE FROM  person_record_status WHERE person_record_id IS NOT NULL;"
+    SimpleSQL.query_exec(delete_status_table); 
 
-         puts "Drop person_record_status"  
+    puts "Drop person_record_status"  
 
-        create_identifier_table = "DELETE FROM person_identifier WHERE identifier IS NOT NULL;"  
+    delete_identifier_table = "DELETE FROM person_identifier WHERE identifier IS NOT NULL;"  
                                 
-        SimpleSQL.query_exec(create_identifier_table);
+    SimpleSQL.query_exec(delete_identifier_table);
 
-        puts "Drop person_record_status"   
+    delete_barcodes = "DELETE FROM barcodes WHERE barcode IS NOT NULL;"
 
-        create_people_table = "SET FOREIGN_KEY_CHECKS = 0;
+    SimpleSQL.query_exec(delete_barcodes);
+
+    delete_barcodes = "DELETE FROM user WHERE username !='admin';"
+
+    SimpleSQL.query_exec(delete_barcodes);
+
+    delete_potential_table = "SET FOREIGN_KEY_CHECKS = 0;
+                              DELETE FROM potential_search WHERE person_id IS NOT NULL ;
+                              SET FOREIGN_KEY_CHECKS = 1;"
+    SimpleSQL.query_exec(delete_potential_table)  
+
+    puts "Drop person_record_status"   
+
+    delete_people_table = "SET FOREIGN_KEY_CHECKS = 0;
                               DELETE FROM people WHERE person_id IS NOT NULL ;
                               SET FOREIGN_KEY_CHECKS = 1;"
-    SimpleSQL.query_exec(create_people_table)    
+    SimpleSQL.query_exec(delete_people_table)   
 
 end

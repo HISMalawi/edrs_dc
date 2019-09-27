@@ -4,14 +4,14 @@
 </style>
 <div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
       <div id="buttons" style="display: inline ">
-           <div class="touch_btn" onmousedown="window.location = '/people/new_split?registration_type=Normal Cases'" >
+           <div class="touch_btn" onmousedown="window.location = '/people/new_split?registration_type=Normal Cases&form_type=<%=params[:form_type]%>'" >
             <div class="icon">
                 <i class="fa fa-edit"></i>
             </div>
             <div class="button_label">Normal Cases</div>
                 <div class="button_description"> </div>
           </div>
-           <div class="touch_btn" onmousedown="window.location = '/people/form_container?url=/people/register_special_cases?next_url=/people/new_person_type'" >
+           <div class="touch_btn" onmousedown="window.location = '/people/form_container?url=/people/register_special_cases?next_url=/people/new_person_type&form_type=<%=params[:form_type]%>'" >
             <div class="icon">
                 <i class="fa fa-edit"></i>
             </div>

@@ -3,6 +3,7 @@ require 'couchrest_model'
 class Audit < CouchRest::Model::Base
   
   before_save :set_site_id, :set_site_type, :set_user_id,:set_creator, :set_location
+  after_save :insert_update_into_mysql
 
   property :record_id, String # Person/Audit...
   property :audit_type, String # Quality Control | Reprint | Audit | Amendment | User Access
@@ -81,4 +82,24 @@ class Audit < CouchRest::Model::Base
     self.ip_address =   (AuditTrail.ip_address_accessor rescue (request.remote_ip rescue `ip route show`[/default.*/][/\d+\.\d+\.\d+\.\d+/] rescue "0.0.0.0"))
     self.mac_address =  (AuditTrail.mac_address_accessor rescue (` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue MacAddress.address))
  end
+
+ def insert_update_into_mysql
+      fields  = self.keys.sort
+      sql_record = AuditRecord.where(audit_record_id: self["_id"]).first
+      sql_record = AuditRecord.new if sql_record.blank?
+      fields.each do |field|
+        next if field == "type"
+        next if field == "_rev"
+
+        if field =="voided"
+          sql_record["voided"] =  (self.voided == true ? 1 : 0)
+        elsif field =="_id"
+            sql_record["audit_record_id"] = self[field]
+        else          
+            sql_record[field] = self[field].to_s
+        end
+
+      end
+      sql_record.save
+  end
 end

@@ -8,6 +8,7 @@ class ReportsController < ApplicationController
 
 	def registration_type_and_gender
 		@section ="By Registration type and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")
@@ -35,6 +36,7 @@ class ReportsController < ApplicationController
 	end
 	def place_of_death_and_gender
 		@section ="By place of death and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")
@@ -309,6 +311,7 @@ class ReportsController < ApplicationController
 
 	def by_date_of_death
 		@section ="By date of death and gender"
+		@facilities = Facility.where(district_id:SETTINGS['district_code']).order(:name)
 		case params[:timeline]
 		when "Today"
 				start_date = Time.now.strftime("%d/%b/%Y")
@@ -337,6 +340,38 @@ class ReportsController < ApplicationController
 
 	def by_date_of_death_and_gender
 		data = Report.by_date_of_death_and_gender(params)
+		render :text => data.to_json
+	end
+
+	def user_audits
+		@section ="User Audit" 
+		case params[:timeline]
+		when "Today"
+				@start_date = Time.now.strftime("%d/%b/%Y")
+				@end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Today (#{@start_date})"
+		when "Current week"
+				@start_date = Time.now.beginning_of_week.strftime("%d/%b/%Y")
+				@end_date =	Date.today.strftime("%d/%b/%Y")
+				@period = "Current week (From #{@start_date} to #{@end_date})"
+		when "Current month"
+				@start_date = Time.now.beginning_of_month.strftime("%d/%b/%Y")
+				@end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current month (From #{@start_date} to #{@end_date})"
+		when "Current year"
+				@start_date = Time.now.beginning_of_year.strftime("%d/%b/%Y")
+				@end_date =	Date.today.to_time.strftime("%d/%b/%Y")
+				@period = "Current year (From #{@start_date} to #{@end_date})"
+		when "Date range"
+				@start_date = DateTime.parse(params[:start_date]).strftime("%d/%b/%Y")
+				@end_date =	DateTime.parse(params[:end_date]).to_time.strftime("%d/%b/%Y")
+				@period = "From #{@start_date} to #{@end_date}"
+		end
+		render :layout => "landing"
+	end
+
+	def get_audits
+		data = Report.audits(params)
 		render :text => data.to_json
 	end
 end

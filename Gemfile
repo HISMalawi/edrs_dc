@@ -72,6 +72,6 @@ gem 'pdfkit'
 
 gem 'barby'
 
-#gem 'rmagick'
+gem 'rmagick'
 
 gem 'rqrcode'

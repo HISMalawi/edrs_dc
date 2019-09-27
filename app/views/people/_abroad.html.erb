@@ -19,6 +19,7 @@
   <input type="hidden" name="person[district_code]" id="person_district_code" value="<%= @district_code%>">
 	<input type="hidden" name="person[registration_type]" id="person_registration_type" value="<%=params[:registration_type]%>">
 	<input type="hidden" name="person[delayed_registration]" id="person_delayed_registration"value="No">
+  <input type="hidden" name="form_type" id="form_type" value="<%=params[:form_type]%>">
 	<% if params[:registration_type].include? "Deaths Abroad"%>
         <section name="Proof of death abroad">
             <sub id="person_commissioner_documents_section" name="Documents attached">
@@ -26,13 +27,21 @@
             </sub>
         </section>
     <%end%>
-	<% if true %>
-		<section name="Barcode">
-			<sub id="person_barcode_section" name="Barcode">
-				<%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",:tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
-			</sub>
-		</section>
-	<%end%>
+  <% if params[:form_type] == 'NR-10' %>
+    <section name="Barcode">
+      <sub id="person_barcode_section" name="Barcode">
+    <% if SETTINGS['show_keyboard_for_barcode'].present? && SETTINGS['show_keyboard_for_barcode'] %>
+        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",
+        :tt_onUnLoad=>"removeDollar();checkBarcode()",
+        :tt_onLoad=>"overRideCancel();removeAutoComplete()"
+        } %>
+    <%else%>
+        <%= text_field_tag "person[barcode]",nil , {:helpText=> "Scan Form Barcode <i style='color: red'>*</i>",:tt_pageStyleClass =>"NoKeyboard",
+        :tt_onUnLoad=>"removeDollar();checkBarcode()",:tt_onLoad=>"overRideCancel();removeAutoComplete()"} %>
+    <%end%>
+      </sub>
+    </section>
+  <%end%>
     <section name="Personal details of deceased">
             <%= render :partial => "name_and_dob" %>
             <sub id="death_details" name="Details of death">
@@ -84,6 +93,8 @@
                              :condition => "__$('person_place_of_death_foreign').value.match('Other')"}  %>        
              
             </sub>
+
+            <%= render :partial => 'manner_of_death' %>
 
             <%= render :partial => "physical_address" %>
 

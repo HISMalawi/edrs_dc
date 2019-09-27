@@ -80,7 +80,7 @@
       function addRow(value){
           var button = __$("finish");
           button.className = "green";
-          button.setAttribute("onclick","postBarcords()");
+          button.setAttribute("onmousedown","postBarcords()");
           console.log(button.className);
           $.getJSON("/find_by_barcode/"+value, function(data){
             if (barcodes.indexOf(value) >= 0 ) {

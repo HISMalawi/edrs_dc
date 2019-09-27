@@ -4,7 +4,7 @@ class SimpleElasticSearch
 
       search_content = ""
       if person["middle_name"].present?
-         search_content = self.escape_single_quotes(person["middle_name"]) + ", "
+         search_content = self.escape_single_quotes(person["middle_name"]) + " "
       end 
 
       birthdate_formatted = person["birthdate"].to_date.strftime("%Y %m %d")
@@ -19,30 +19,7 @@ class SimpleElasticSearch
         registration_district = District.find(person["district_code"]).name
         search_content = search_content + registration_district + " " 
       end    
-
-      if person["mother_first_name"].present?
-        search_content = search_content + (person["mother_first_name"] rescue '') + " " 
-      end
-
-      if person["mother_middle_name"].present?
-         search_content = search_content + (person["mother_middle_name"] rescue '') + " " 
-      end   
-
-      if person["mother_last_name"].present?
-         search_content = search_content + (person["mother_last_name"] rescue '') + " " 
-      end  
-
-      if person["father_first_name"].present?
-         search_content = search_content + (person["father_first_name"] rescue '') + " " 
-      end 
-
-      if person["father_middle_name"].present?
-         search_content = search_content + (person["father_middle_name"] rescue '') + " " 
-      end  
-
-      if person["father_last_name"].present?
-         search_content = search_content + (person["father_last_name"] rescue '') + " " 
-      end  
+ 
 
       return search_content.squish
 
@@ -66,31 +43,7 @@ class SimpleElasticSearch
       else
         registration_district = District.find(person["district_code"]).name
         search_content = search_content + registration_district + " " 
-      end    
-
-      if person["mother_first_name"].present?
-        search_content = search_content + (person["mother_first_name"].soundex rescue '') + " " 
-      end
-
-      if person["mother_middle_name"].present?
-         search_content = search_content + (person["mother_middle_name"].soundex rescue '') + " " 
-      end   
-
-      if person["mother_last_name"].present?
-         search_content = search_content + (person["mother_last_name"].soundex rescue '') + " " 
-      end  
-
-      if person["father_first_name"].present?
-         search_content = search_content + (person["father_first_name"].soundex rescue '') + " " 
-      end 
-
-      if person["father_middle_name"].present?
-         search_content = search_content + (person["father_middle_name"].soundex rescue '') + " " 
-      end  
-
-      if person["father_last_name"].present?
-         search_content = search_content + (person["father_last_name"].soundex rescue '') + " " 
-      end  
+      end      
 
       return search_content.squish
   end
@@ -165,7 +118,7 @@ class SimpleElasticSearch
       query_string = "#{person["first_name"]} #{person["last_name"]} #{content}"
 
       potential_duplicates = []
-      hits = self.query("content",query_string,precision,10,0)["data"]
+      hits = self.query("content",query_string,70,10,0)["data"]
 
       hits.each do |hit|
         potential_duplicates << hit if hit["_id"] !=(person.person_id rescue nil)
@@ -181,10 +134,129 @@ class SimpleElasticSearch
       potential_duplicates = []
       hits = self.query("coded_content",query_string,precision,10,0)["data"]
       
-      potential_duplicates = SimpleElasticSearch.white_similarity(person,hits,precision)
+      potential_duplicates = SimpleElasticSearch.similarity(person,hits,precision)
 
       return potential_duplicates
   end
+
+
+  def self.similarity(person, hits,precision)
+
+    potential_duplicates = []
+    content =  "#{person["first_name"]} #{person["last_name"]} #{self.format_content(person)}"
+    hits.each do |hit|
+      next if hit["_id"].squish ==(person["id"].squish rescue nil)
+      hit_content = hit["_source"]["content"]
+      potential_hit = hit
+      potential_hit["similarity_score"] = self.check_similarity_by_position(person,hit["_id"]).to_f
+      if potential_hit["similarity_score"] >= precision.to_i
+        potential_duplicates <<  hit
+      end
+      #WhiteSimilarity.similarity(content, hit_content) >= (precision/100)
+    end
+
+    return potential_duplicates
+  end
+
+  def self.check_similarity_by_position(newrecord,existingrecord_id)
+    
+    return 0 if existingrecord_id.to_s == "0"
+      scores = {
+                "name" => 2,
+                "dob" => 3,
+                "gender" => 1,
+                "pob" => 1,
+                "mother_name" => 2
+      }
+
+      score = 0
+      #0. Records
+      #newrecord = self.person_details(newrecord_id)
+      person = self.person_details(existingrecord_id) rescue nil
+
+      #raise person.inspect
+      return 0 if person.blank?
+
+      existingrecord = person
+
+      # 1. Comparing person name
+      newrecord_name = "#{newrecord['first_name']} #{newrecord['last_name']}"
+      existingrecord_name = "#{existingrecord['first_name']} #{existingrecord['last_name']}"
+      if newrecord_name.squish == existingrecord_name.squish
+         score = score + 2 
+      elsif newrecord['first_name'].squish == existingrecord['first_name'].squish
+         score = score + 1 + WhiteSimilarity.similarity(newrecord['last_name'].squish, existingrecord['last_name'])
+      elsif newrecord['last_name'].squish == existingrecord['last_name'].squish
+         score = score + 1 + WhiteSimilarity.similarity(newrecord['first_name'].squish, existingrecord['first_name'])
+      elsif newrecord['first_name'].squish == existingrecord['last_name'].squish
+        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['last_name'].squish, existingrecord['first_name'])
+      elsif newrecord['last_name'].squish == existingrecord['first_name'].squish  
+        score = score + 0.9 + WhiteSimilarity.similarity(newrecord['first_name'].squish, existingrecord['last_name'])
+      else
+         score = score + WhiteSimilarity.similarity(newrecord_name, existingrecord_name) * 2   
+      end
+     
+      # 2. Comparing date of birth
+      newrecord_birthdate = newrecord["birthdate"].to_date.strftime("%Y-%m-%d").split("-")
+      existingrecord_birthdate = existingrecord["birthdate"].to_date.strftime("%Y-%m-%d").split("-")
+
+      i = 0
+      while i < newrecord_birthdate.length
+          score = score + WhiteSimilarity.similarity(newrecord_birthdate[i], existingrecord_birthdate[i])
+          i = i + 1
+      end
+      
+      # 3. Comparing gender
+      newrecord_gender = newrecord["gender"].first.upcase
+      existingrecord_gender = existingrecord["gender"].first.upcase
+      if newrecord_gender == existingrecord_gender
+          score = score + 1
+      else
+          score = score + 0
+      end
+
+      # 4. comparing districts of birth
+      newrecord_district = newrecord["place_of_death_district"]
+      existingrecord_district = existingrecord["place_of_death_district"]
+      score = score + WhiteSimilarity.similarity(newrecord_district, existingrecord_district)
+
+      #5. Date of death 
+      newrecord_date_of_death = newrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
+      existingrecord_date_of_death = existingrecord["date_of_death"].to_date.strftime("%Y-%m-%d").split("-")
+
+      i = 0
+      while i < newrecord_date_of_death.length
+          score = score + WhiteSimilarity.similarity(newrecord_date_of_death[i], existingrecord_date_of_death[i])
+          i = i + 1
+      end
+
+      return (score / 10) * 100
+  end
+
+  def self.person_details(id)
+      person = {}
+      @person = Person.find(id)
+
+      person["id"] = @person.id.to_s
+      person["first_name"]= @person.first_name rescue ''
+      person["last_name"] =  @person.last_name rescue ''
+      person["middle_name"] = @person.middle_name rescue ''
+      person["gender"] = (@person.gender == 'F' ? 'Female' : 'Male')
+      person["birthdate"]= @person.birthdate.to_date
+      person["birthdate_estimated"] = @person.birthdate_estimated
+      person["date_of_death"]= @person.date_of_death.to_date
+      person["nationality"]=  @person.nationality rescue ''
+
+      person["place_of_death_district"] = @person.place_of_death_district
+    
+      person["mother_first_name"]= @person.mother_first_name rescue ''
+      person["mother_last_name"] =  @person.mother_last_name  rescue ''
+      person["mother_middle_name"] = @person.mother_middle_name rescue ''
+      person["district_code"] = (@person.district_code rescue "")
+      return person
+  end
+
+
   def self.white_similarity(person, hits,precision)
     potential_duplicates = []
     content =  "#{person["first_name"]} #{person["last_name"]} #{self.format_content(person)}"

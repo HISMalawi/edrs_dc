@@ -68,6 +68,8 @@ Rails.application.routes.draw do
   
   get 'people/new_split' => "people#new_split"
 
+  get '/people/form_type'
+
   post 'people/create' => "people#create"
 
   post "/search_similar_record" => "people#search_similar_record"
@@ -142,11 +144,15 @@ Rails.application.routes.draw do
 
   post "/dispatch_barcodes" =>"dc#dispatch_barcodes"
 
+  get "/dispatch_barcodes" =>"dc#dispatch_barcodes"
+
   get "/dc/manage_ccu_dispatch"
 
   get "/dc/view_ccu_dispatch"
 
   get "/dc/ccu_dispatches"
+
+  get "/cause_dispatch/:id" => "dc#cause_dispatch"
 
   post "/find_identifier" =>"people#find_identifier"
 
@@ -376,6 +382,10 @@ Rails.application.routes.draw do
   get "/people/view_datatable"
 
   get "/dc/cause_of_death_dispatch"
+
+  get "/reports/user_audits"
+
+  get "/reports/get_audits"
 
 ##############################################################################################################################
 
