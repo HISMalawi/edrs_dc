@@ -160,7 +160,7 @@
 
 			<%end%>
 			<% if (@status.present? && @status.status == "HQ REJECTED") %>
-				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>?'"><span>Reapprove</span></button>
+				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>?next_url=<%=params[:next_url]%>?'"><span>Reapprove</span></button>
 			<%end%>
 		<%else%>
 			<%if  (@status.present? && @status.status == "DC COMPLETE") %>
@@ -169,7 +169,7 @@
 			<%end%>
 
 			<% if (@status.present? && @status.status == "HQ REJECTED") %>
-				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>&next_url=<%=params[:next_url]%>'"><span>Reapprove</span></button>
+				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>?next_url=<%=params[:next_url]%>?'"><span>Reapprove</span></button>
 			<%end%>
 		<%end%>
 	<%end%>
