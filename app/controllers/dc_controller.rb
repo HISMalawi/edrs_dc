@@ -455,6 +455,7 @@ class DcController < ApplicationController
 	end
 
 	def mark_for_reprint
+		raise params[:id].inspect
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
 		if params[:barcode].present?
@@ -490,6 +491,7 @@ class DcController < ApplicationController
 	end
 
 	def amendment
+		#raise params[:id].inspect
 		@person = Person.find(params[:id])
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
       	@person_place_details = place_details(@person)
@@ -571,23 +573,30 @@ class DcController < ApplicationController
 	end
 
 	def add_amendment_comment
+		#raise params[:id].inspect
 		@action = '/proceed_amend'
 		render :layout =>'touch'
 	end
 
 	def proceed_amend
 		person = Person.find(params[:id])
+
+	
 		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
+		#raise amendment_audit.inspect
+
 		amend_keys = amendment_audit.change_log.keys
 		amend_keys.each do |key|
 			#person[key] = amendment_audit.change_log[key][0]
 			person.update_attributes({key => amendment_audit.change_log[key][0]})
 		end
 		#person.save
+
  
 		amendment_audit.reason = "DC Amendment : #{params[:reason]}"
 		amendment_audit.level ="Person"
 		amendment_audit.save
+
 
 		PersonRecordStatus.change_status(person, "HQ AMEND",params[:reason])
 		if params[:barcode].present?
@@ -603,6 +612,7 @@ class DcController < ApplicationController
 		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end
+	
 
 	def printed_amendmets
 		@prev_statuses = ["DC AMEND","DC LOST","DC DAMAGED"]
