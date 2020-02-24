@@ -455,7 +455,7 @@ class DcController < ApplicationController
 	end
 
 	def mark_for_reprint
-		raise params[:id].inspect
+		#raise params[:id].inspect
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
 		if params[:barcode].present?
