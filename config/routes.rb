@@ -291,6 +291,8 @@ Rails.application.routes.draw do
 
   get "/view_users" => "users#view"
 
+  get "/users/new"
+
   get "/edit_account" => "users#edit_account"
 
   get "/query_users" => "users#query"
