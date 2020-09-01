@@ -3,7 +3,7 @@ class AssignDen
   workers 1
 
   def perform()
-    queue = RecordStatus.where("status = 'MARKED APPROVAL' AND voided = 0 AND district_code='LL'").each
+    queue = RecordStatus.where("status = 'MARKED APPROVAL' AND voided = 0 AND district_code='#{SETTINGS['district_code']}'").each
     job_interval = SETTINGS['den_assignment_interval']
     job_interval = 1.5 if job_interval.blank?
     job_interval = job_interval.to_f
@@ -23,13 +23,17 @@ class AssignDen
           end
 
           PersonIdentifier.assign_den(person, record.creator)
-
+           
           #checkCreatedSync(record.id, "HQ OPEN", record.request_status)
           if Rails.env == 'development'
             SuckerPunch.logger.info "#{record.id} => #{record.district_id_number}"
           end
         else
-          PersonRecordStatus.change_status(person, "HQ ACTIVE")          
+          if person.status == "MARKED APPROVAL"
+            PersonRecordStatus.change_status(person, "HQ ACTIVE")
+          end 
+          record.voided = 1
+          record.save  
         end
     end rescue (AssignDen.perform_in(job_interval))
   end
