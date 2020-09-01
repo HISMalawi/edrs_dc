@@ -5,7 +5,7 @@ def remove_redu_states(person_id)
     uniqstatus = statuses.collect{|d| d.status}.uniq
 
     uniqstatus.each do |us|
-        redundantstatuses = PersonRecordStatus.by_person_record_id_and_status.key([person_id, us]).each.sort_by{|s| s.created_at}
+        redundantstatuses = PersonRecordStatus.by_person_record_id.key(person_id).each.reject{|s| s.status != us}.sort_by{|s| s.created_at}
         puts "destroying multiple #{us}"
         redundantstatuses.each_with_index do |red, i|
                 if i != 0
