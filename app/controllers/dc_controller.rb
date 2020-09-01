@@ -93,6 +93,7 @@ class DcController < ApplicationController
 	def approve_record
 		person = Person.find(params[:id])
 		PersonRecordStatus.change_status(person, "MARKED APPROVAL")
+		AssignDen.perform_in(2)
 		begin
 			unlock_users_record(person)
 		rescue
