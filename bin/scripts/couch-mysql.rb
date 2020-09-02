@@ -30,7 +30,12 @@ def save_to_mysql(record,map_key,db_maps)
 				"person_record_status" => "RecordStatus",
 				"person_identifier" => "RecordIdentifier",
 				"user" => "UserModel",
-				"barcodes"=>"BarcodeRecord"
+				"barcodes"=>"BarcodeRecord",
+				"district"=> "DistrictRecord",
+				"health_facility" => "Facility",
+				"traditional_authority" => "TA",
+				"village" => "VillageRecord"
+
 	}
 
 	table = map_key.split("|")[1]
