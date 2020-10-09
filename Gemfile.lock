@@ -224,6 +224,3 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   whenever
   whitesimilarity
-
-BUNDLED WITH
-   1.16.6

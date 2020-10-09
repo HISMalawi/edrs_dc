@@ -7,7 +7,7 @@ hq = @settings[:hq]
 
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -20,7 +20,7 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
 
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -33,7 +33,7 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
 
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -46,7 +46,7 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
 
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -59,7 +59,7 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
                   
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
               source: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
-              target: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              target: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -75,7 +75,7 @@ puts "There are #{person_count } people"
 if hq[:bidirectional] == true
 
     target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              source: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Person/district_sync',
@@ -89,7 +89,7 @@ if hq[:bidirectional] == true
     end
 
     person_ids_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              source: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'PersonIdentifier/district_sync',
@@ -103,7 +103,7 @@ if hq[:bidirectional] == true
     end
 
     audits_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              source: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Audit/facility_sync',
@@ -117,7 +117,7 @@ if hq[:bidirectional] == true
     end
 
     sync_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              source: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Sync/district_sync',
@@ -131,7 +131,7 @@ if hq[:bidirectional] == true
     end
 
     record_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{hq[:protocol]}://#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
+              source: "#{hq[:protocol]}://#{hq[:username]}:#{hq[:password]}@#{hq[:host]}:#{hq[:port]}/#{hq[:primary]}",
                   target: "#{source[:protocol]}://#{source[:host]}:#{source[:port]}/#{source[:primary]}",
                   connection_timeout: 60000,
                   filter: 'PersonRecordStatus/district_sync',

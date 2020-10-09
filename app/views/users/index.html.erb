@@ -1,7 +1,8 @@
 <div id="default" style="width: 84%; height: 400px; text-align: center; vertical-align: top;margin:auto">
  <% if User.current_user.activities_by_level("Facility").include?("Create User")  %>
 
-    <div class="touch_btn" onmousedown="window.location = '/people/form_container?url=<%= new_user_path%>&next_url=/users/'" >
+<!--    <div class="touch_btn" onmousedown="window.location = '/people/form_container?url=<%= new_user_path%>&next_url=/users/'" > -->
+  <div class="touch_btn" onmousedown="window.location = '/users/new'" >
                                 <div class="icon">
                                        <i class="fa fa-user-plus"></i>
                                 </div>
