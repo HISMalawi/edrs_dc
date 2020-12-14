@@ -445,7 +445,7 @@ class ApplicationController < ActionController::Base
     user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
     @current_user = user
     Audit.ip_address_accessor = request.remote_ip
-    Audit.mac_address_accessor = ` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2]
+    Audit.mac_address_accessor = ` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue nil
     Audit.create({
                           :record_id  => @current_user.id,
                           :audit_type => "User Access",

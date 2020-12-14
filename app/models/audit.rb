@@ -80,7 +80,7 @@ class Audit < CouchRest::Model::Base
  end
  def set_location
     self.ip_address =   (AuditTrail.ip_address_accessor rescue (request.remote_ip rescue `ip route show`[/default.*/][/\d+\.\d+\.\d+\.\d+/] rescue "0.0.0.0"))
-    self.mac_address =  (AuditTrail.mac_address_accessor rescue (` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue MacAddress.address))
+    self.mac_address =  (AuditTrail.mac_address_accessor rescue (` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue (MacAddress.address rescue nil)))
  end
 
  def insert_update_into_mysql
