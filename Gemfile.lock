@@ -108,7 +108,11 @@ GEM
       daemon_controller (>= 1.2.0)
       rack
       rake (>= 0.8.1)
+    pdf-core (0.7.0)
     pdfkit (0.8.4.1)
+    prawn (2.2.1)
+      pdf-core (~> 0.7.0)
+      ttfunk (~> 1.5)
     public_suffix (3.0.3)
     rack (1.5.5)
     rack-test (0.6.3)
@@ -172,6 +176,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (1.4.1)
+    ttfunk (1.5.1)
     turbolinks (5.2.0)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -182,6 +187,8 @@ GEM
     whenever (0.10.0)
       chronic (>= 0.6.3)
     whitesimilarity (0.0.2)
+    wicked_pdf (1.1.0)
+    wkhtmltopdf-binary (0.12.3.1)
     yajl-ruby (1.1.0)
 
 PLATFORMS
@@ -205,6 +212,7 @@ DEPENDENCIES
   mysql2 (~> 0.3.21)
   passenger (= 4.0.53)
   pdfkit
+  prawn
   rails (= 4.1.15)
   rake (= 10.3.2)
   rb-readline
@@ -224,3 +232,8 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   whenever
   whitesimilarity
+  wicked_pdf (= 1.1.0)
+  wkhtmltopdf-binary
+
+BUNDLED WITH
+   1.17.3
