@@ -875,7 +875,7 @@ class DcController < ApplicationController
 					 save_to_file: "#{output_file}",
 					 page_size: 'A5',
 					 template: 'dc/death_certificate_print_a5',
-					 zoom: 0.6,
+					 zoom: 0.83,
 					 dpi: 75
 
 		# render :layout => false, :template => 'dc/death_certificate_print_a5'
