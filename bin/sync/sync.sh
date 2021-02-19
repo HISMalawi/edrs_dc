@@ -55,10 +55,10 @@ fi
 DISTRICT_CODE=`ruby -ryaml -e "puts YAML::load_file('../../config/settings.yml')[:district_code]"`
 FACILITY_CODE=`ruby -ryaml -e "puts YAML::load_file('../../config/settings.yml')[:facility_code]"`
 
-SOURCE_URL="${SOURCE_PROTOCOL}://${SOURCE_HOST}:${SOURCE_PORT}/${SOURCE_DB}"
+SOURCE_URL="${SOURCE_PROTOCOL}://${SOURCE_USERNAME}:${SOURCE_PASSWORD}@${SOURCE_HOST}:${SOURCE_PORT}/${SOURCE_DB}"
 AUTH_SOURCE_URL="${SOURCE_PROTOCOL}://${SOURCE_USERNAME}:${SOURCE_PASSWORD}@${SOURCE_HOST}:${SOURCE_PORT}"
 
-TARGET_URL="${TARGET_PROTOCOL}://${TARGET_HOST}:${TARGET_PORT}/${TARGET_DB}"
+TARGET_URL="${TARGET_PROTOCOL}://${TARGET_USERNAME}:${TARGET_PASSWORD}@${TARGET_HOST}:${TARGET_PORT}/${TARGET_DB}"
 AUTH_TARGET_URL="${TARGET_PROTOCOL}://${TARGET_USERNAME}:${TARGET_PASSWORD}@${TARGET_HOST}:${TARGET_PORT}"
 
 SYNC_TO_TARGET=`eval curl -s -k -H \"Content-Type: application/json\" -X POST -d \'{\"source\": \"${SOURCE_URL}\", \"target\": \"${TARGET_URL}\", \"continuous\": true }\' \"${AUTH_SOURCE_URL}/_replicate\"`
