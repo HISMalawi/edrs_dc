@@ -4,6 +4,8 @@ class DcController < ApplicationController
 
 	before_filter :check_user_level_and_site
 
+	require 'prawn'
+
 	def index
 
 	  @facility = facility
@@ -713,7 +715,7 @@ class DcController < ApplicationController
 		@statuses = ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED", "HQ CAN RE PRINT"]
 		@available_printers = SETTINGS["printer_name"].split(',')
 		@next_url = "/dc/print_certificates"
-		@den = true 
+		@den = true
 		render :template =>"/dc/default_batch"		
 	end
 
@@ -723,8 +725,7 @@ class DcController < ApplicationController
 	    size = params[:size] rescue 40
 	    people = []
 	    record_status = []
-
-	    
+		
 	    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(size.to_i).offset(page.to_i  * size.to_i).each do |status|
 	      
 	      person = Record.find(status.person_record_id) rescue nil
@@ -760,58 +761,124 @@ class DcController < ApplicationController
 		      end	      	
 	      end
 
-
 	      next if person.blank?
 	      
 	      id = person.id
 	      
 	      output_file = "#{SETTINGS['certificates_path']}#{id}.pdf"
 
-	      input_url = "#{CONFIG["protocol"]}://#{request.env["SERVER_NAME"]}:#{request.env["SERVER_PORT"]}/death_certificate/#{id}"
+				unless File.exist?(output_file)
+					batch_death_certificate(id)
+				end
 
-	      Kernel.system "#{SETTINGS['wkhtmltopdf']} --zoom #{zoom} --page-size #{paper_size} #{input_url} #{output_file}"
-	        #PDFKit.new(input_url, :page_size => paper_size, :zoom => zoom).to_file(output_file)
+				unless SETTINGS['test_print'] == 'enabled'
+					Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
 
-	      Kernel.system "lp -d #{params[:printer_name]} #{SETTINGS['certificates_path']}#{id}.pdf\n"
+					PersonRecordStatus.change_status(person, "DC PRINTED")
+				end
 
-	      PersonRecordStatus.change_status(person,"DC PRINTED")
-	  
-	   end
+			end
 	    
 	   redirect_to "/dc/print_certificates?next_url=/dc/manage_cases?next_url=/" and return
 	end
 
+	def batch_death_certificate(id='')
+		@person = Record.find(id)
+		@place_of_death = place_of_death(@person)
+		@drn = @person.drn
+		@den = @person.den
+
+		if SETTINGS['print_qrcode']
+			if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+				create_qr_barcode(@person)
+				sleep(5)
+				redirect_to request.fullpath and return
+			end
+		else
+			if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+				create_barcode(@person)
+				sleep(5)
+				redirect_to request.fullpath and return
+			end
+		end
+
+		@barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
+
+		@date_registered = @person.created_at
+		RecordStatus.where(person_record_id: @person.id, status: "HQ ACTIVE").each.sort_by{|s| s.created_at}.each do |state|
+			if state.status == "HQ ACTIVE"
+				@date_registered = state.created_at
+				break
+			end
+		end
+
+		output_file = "#{SETTINGS['certificates_path']}#{@person.id}.pdf"
+
+		# create an instance of ActionView, so we can use the render method outside of a controller
+		av = ActionView::Base.new
+		av.view_paths = ActionController::Base.view_paths
+
+		# need these in case view constructs any links or references any helper methods.
+		av.class_eval do
+			include Rails.application.routes.url_helpers
+			include ApplicationHelper
+		end
+
+		pdf_html = av.render :template => 'dc/death_certificate_print_a5', :layout => nil,
+												 :locals => {:@person => @person,
+																		 :@place_of_death => @place_of_death, :@drn => @drn, :@den => @den,
+																		 :@date_registered => @date_registered}
+
+		# use wicked_pdf gem to create PDF from the doc HTML
+		doc_pdf = WickedPdf.new.pdf_from_string(pdf_html, :page_size => 'A5', zoom: 0.6, dpi: 75)
+
+		# save PDF to disk
+		File.open(output_file, 'wb') do |file|
+			file << doc_pdf
+		end
+
+		# render :layout => false, :template => 'dc/death_certificate_print_a5'
+	end
+
 	def death_certificate
-		@person = Person.find(params[:id])
-	    @place_of_death = place_of_death(@person)
-	    @drn = @person.drn
-	    @den = @person.den
+		@person = Record.find(params[:id])
+		@place_of_death = place_of_death(@person)
+		@drn = @person.drn
+		@den = @person.den
 
-	    if SETTINGS['print_qrcode']
-	      	  if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
-	      		create_qr_barcode(@person)
-	      		sleep(5)
-	      		redirect_to request.fullpath and return
-	      	  end
-	     else
-		      if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
-		        create_barcode(@person)
-		        sleep(5)
-		        redirect_to request.fullpath and return
-		      end	      	
-	    end
-	    @barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
+		if SETTINGS['print_qrcode']
+			if !File.exist?("#{SETTINGS['qrcodes_path']}QR#{@person.id}.png")
+				create_qr_barcode(@person)
+				sleep(5)
+				redirect_to request.fullpath and return
+			end
+		else
+			if !File.exist?("#{SETTINGS['barcodes_path']}#{@person.id}.png")
+				create_barcode(@person)
+				sleep(5)
+				redirect_to request.fullpath and return
+			end
+		end
+		@barcode = File.read("#{CONFIG['barcodes_path']}#{@person.id}.png") rescue nil
 
-	    @date_registered = @person.created_at
-	    PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|s| s.created_at}.each do |state|
-	      if state.status == "HQ ACTIVE"
-	          @date_registered = state.created_at
-	          break;
-	      end
-	    end
-	    
-	  
-	    render :layout => false, :template => 'dc/death_certificate_print_a5'
+		@date_registered = @person.created_at
+		RecordStatus.where(person_record_id: @person.id, status: "HQ ACTIVE").each.sort_by{|s| s.created_at}.each do |state|
+			if state.status == "HQ ACTIVE"
+				@date_registered = state.created_at
+				break
+			end
+		end
+
+		output_file = "#{SETTINGS['certificates_path']}#{@person.id}.pdf"
+
+		render pdf: "#{@person.id}",
+					 save_to_file: "#{output_file}",
+					 page_size: 'A5',
+					 template: 'dc/death_certificate_print_a5',
+					 zoom: 0.6,
+					 dpi: 75
+
+		# render :layout => false, :template => 'dc/death_certificate_print_a5'
 	end
 
 	def print_preview

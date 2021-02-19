@@ -22,3 +22,4 @@
  decentralized_printing: false
  print_qrcode: false
  qrcodes_path: /home/usr/qrcodes/
+ test_print: disabled #should be disabled, change to enabled if you are testing printing and you don't want records to actually print or change status
