@@ -598,27 +598,6 @@ class PeopleController < ApplicationController
         s.save
       end
 
-      if @status.blank? || @status.status.blank?
-        last_status = PersonRecordStatus.by_person_record_id.key(@person.id).each.sort_by{|d| d.created_at}.last
-        if last_status.blank?
-          PersonRecordStatus.change_status(@person, "DC ACTIVE")
-          redirect_to request.fullpath and return
-        end
-        states = {
-                    "DC ACTIVE" =>"DC COMPLETE",
-                    "DC COMPLETE" => "MARKED APPROVAL",
-                    "MARKED APPROVAL" => "MARKED APPROVAL"
-                 }
-        if last_status.blank?
-           PersonRecordStatus.change_status(@person, "DC ACTIVE")
-        elsif states[last_status.status].blank?
-          PersonRecordStatus.change_status(@person, "DC COMPLETE")
-        else  
-          PersonRecordStatus.change_status(@person, states[last_status.status])
-        end  
-        redirect_to request.fullpath and return
-      end
-
       if @status.status =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
       elsif @status.status.include?("DUPLICATE")
