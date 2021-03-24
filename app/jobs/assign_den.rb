@@ -3,6 +3,7 @@ class AssignDen
   workers 1
 
   def perform()
+    return if SETTINGS['site_type'] =="facility"
     queue = RecordStatus.where("status = 'MARKED APPROVAL' AND voided = 0 AND district_code='#{SETTINGS['district_code']}'").each
     job_interval = SETTINGS['den_assignment_interval']
     job_interval = 1.5 if job_interval.blank?

@@ -7,8 +7,8 @@ fc = @settings[:fc]
 dc = @settings[:dc]
 
 source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
-              target: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+              source: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+              target: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
               connection_timeout: 60000,
               retries_per_request: 20,
               http_connections: 30,
@@ -17,8 +17,8 @@ source_to_target = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d 
 
 if dc[:bidirectional] == true
     target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-                  source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
-                  target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+                  source: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+                  target: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Person/facility_sync',
               		query_params: {
@@ -29,8 +29,8 @@ if dc[:bidirectional] == true
   
 
     pid_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-                  source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
-                  target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+                  source: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+                  target: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
                   filter: 'PersonIdentifier/facility_sync',
                   query_params: {
@@ -41,8 +41,8 @@ if dc[:bidirectional] == true
 
 
     audits_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-                  source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
-                  target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+                  source: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+                  target: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                   connection_timeout: 60000,
                   filter: 'Audit/facility_sync',
                   query_params: {
@@ -52,8 +52,8 @@ if dc[:bidirectional] == true
    
 
     sync_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-                source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
-                target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+                source: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+                target: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
                 connection_timeout: 60000,
                 filter: 'Sync/facility_sync',
                 query_params: {
@@ -63,8 +63,8 @@ if dc[:bidirectional] == true
    
 
     record_status_target_to_source = %x[curl -s -k -H 'Content-Type: application/json' -X POST -d '#{{
-              source: "#{dc[:protocol]}://#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
-              target: "#{fc[:protocol]}://#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
+              source: "#{dc[:protocol]}://#{dc[:username]}:#{dc[:password]}@#{dc[:host]}:#{dc[:port]}/#{dc[:primary]}",
+              target: "#{fc[:protocol]}://#{fc[:username]}:#{fc[:password]}@#{fc[:host]}:#{fc[:port]}/#{fc[:primary]}",
               connection_timeout: 60000,
               filter: 'PersonRecordStatus/facility_sync',
               query_params: {
