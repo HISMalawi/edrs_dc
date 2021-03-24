@@ -14,9 +14,9 @@ gem 'coffee-rails', '~> 4.0.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer',  platforms: :ruby
 
-gem 'wicked_pdf', '1.1.0'
-# wkhtmltopdf-binary
-gem 'wkhtmltopdf-binary'
+# gem 'wicked_pdf', '1.1.0'
+# # wkhtmltopdf-binary
+# gem 'wkhtmltopdf-binary'
 gem 'prawn'
 
 # Use jquery as the JavaScript library
@@ -76,10 +76,10 @@ gem "whitesimilarity"
 
 gem 'mac-address'
 
-gem 'pdfkit'
+# gem 'pdfkit'
 
-gem 'barby'
+# gem 'barby'
 
-gem 'rmagick'
+# gem 'rmagick'
 
-gem 'rqrcode'
+# gem 'rqrcode'
