@@ -288,7 +288,18 @@ class Person < CouchRest::Model::Base
       if params[:potential_duplicate].present?
             Person.duplicate = params[:potential_duplicate]
       end
+      i = 1 
       
+      if parameters[:other_sig_cause_of_death1].present?
+        other_sig_cause_of_death = {}
+        other_hospital_of_death["1"] = {}
+        other_hospital_of_death["1"]["cause"] = parameters[:other_sig_cause_of_death1]
+        if parameters[:other_sig_cause_of_death2].present?
+          other_hospital_of_death["2"] = {}
+          other_hospital_of_death["2"]["cause"] = parameters[:other_sig_cause_of_death2]
+          params[:cause_of_death_conditions] = other_sig_cause_of_death
+        end
+      end
       Person.create(params)
     
   end

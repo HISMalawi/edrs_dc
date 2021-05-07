@@ -1,0 +1,134 @@
+<section name="MCCOD">
+    <sub id="person_confirm_mccod_section" name="Confirm MCCOD on Form">
+        <select name="person[confirm_mccod]" id="person_confirm_mccod" helpText="Is MCCOD available of the form?  <i style='color: red'>*</i>" tt_requireNextClick="false">
+                <option>Yes</option>
+                <option>No</option>
+        </select>
+    </sub>
+    <sub id="person_mccod_part1_section" name="Part I">
+        <%= text_field_tag "person[cause_of_death1]", nil, { :helpText => "Condition (a) <i style='color: red'>*</i>", :condition=>"__$('person_confirm_mccod').value=='Yes'"} %>
+        <%= text_field_tag "person[onset_death_interval1]", nil, { :helpText => "Time onset interval for Condition (a) <i style='color: red'>*</i>", :field_type => 'number', :optional => true,:tt_pageStyleClass => "Numeric NumbersOnly", :condition=>"__$('person_cause_of_death1').value.length > 0 "} %>
+        <select helpText="Unit for time onset interval for Condition (a) <i style='color: red'>*</i>" name="person[unit_onset_death_interval1]" 
+            id="person_unit_onset_death_interval1"
+            optional = "true"
+            condition="__$('person_onset_death_interval1').value.length > 0"
+            tt_pageStyleClass ="NoKeyboard" >
+                    <option>Second(s)</option>
+                    <option>Minute(s)</option>
+                    <option>Hour(s)</option>
+                    <option>Day(s)</option>
+                    <option>Week(s)</option>
+                    <option>Month(s)</option>
+                    <option>Year(s)</option>
+        </select>
+        
+        <%= text_field_tag "person[cause_of_death2]", nil, { :helpText => "Condition (b)", :condition=>"__$('person_cause_of_death1').value.length > 0",:optional => true} %>
+        <%= text_field_tag "person[onset_death_interval2]", nil, { :helpText => "Time onset interval for Condition (b) <i style='color: red'>*</i>", :field_type => 'number', :optional => true, :tt_pageStyleClass => "Numeric NumbersOnly", :condition=>"__$('person_cause_of_death2').value.length > 0 "} %>
+        <select helpText="Unit for time onset interval for Condition (b) <i style='color: red'>*</i>" name="person[unit_onset_death_interval2]" 
+            id="person_unit_onset_death_interval2"
+            optional = "true"
+            condition="__$('person_onset_death_interval2').value.length > 0"
+            tt_pageStyleClass ="NoKeyboard" >
+                    <option>Second(s)</option>
+                    <option>Minute(s)</option>
+                    <option>Hour(s)</option>
+                    <option>Day(s)</option>
+                    <option>Week(s)</option>
+                    <option>Month(s)</option>
+                    <option>Year(s)</option>
+        </select>
+        
+        <%= text_field_tag "person[cause_of_death3]", nil, { :helpText => "Condition (c)", :condition=>"__$('person_cause_of_death2').value.length > 0",:optional => true} %>
+        <%= text_field_tag "person[onset_death_interval3]", nil, { :helpText => "Time onset interval for Condition (c) <i style='color: red'>*</i>",:field_type => 'number', :optional => true,:tt_pageStyleClass => "Numeric NumbersOnly", :condition=>"__$('person_cause_of_death3').value.length > 0 "} %>
+        <select helpText="Unit for time onset interval for Condition (c) <i style='color: red'>*</i>" name="person[unit_onset_death_interval3]" 
+            id="person_unit_onset_death_interval3"
+            optional = "true"
+            condition="__$('person_onset_death_interval3').value.length > 0"
+            tt_pageStyleClass ="NoKeyboard" >
+                    <option>Second(s)</option>
+                    <option>Minute(s)</option>
+                    <option>Hour(s)</option>
+                    <option>Day(s)</option>
+                    <option>Week(s)</option>
+                    <option>Month(s)</option>
+                    <option>Year(s)</option>
+        </select>
+
+        <%= text_field_tag "person[cause_of_death4]", nil, { :helpText => "Condition (d)", :condition=>"__$('person_cause_of_death3').value.length > 0",:optional => true} %>
+        <%= text_field_tag "person[onset_death_interval4]", nil, { :helpText => "Time onset interval for Condition (d) <i style='color: red'>*</i>", :field_type => 'number',:optional => true, :tt_pageStyleClass => "Numeric NumbersOnly", :condition=>"__$('person_cause_of_death4').value.length > 0 "} %>
+        <select helpText="Unit for time onset interval for Condition (d) <i style='color: red'>*</i>" name="person[unit_onset_death_interval4]" 
+            id="person_unit_onset_death_interval4"
+            optional = "true"
+            condition="__$('person_onset_death_interval4').value.length > 0"
+            tt_pageStyleClass ="NoKeyboard" >
+                    <option>Second(s)</option>
+                    <option>Minute(s)</option>
+                    <option>Hour(s)</option>
+                    <option>Day(s)</option>
+                    <option>Week(s)</option>
+                    <option>Month(s)</option>
+                    <option>Year(s)</option>
+        </select>
+
+    </sub>
+    <sub id="person_mccod_part2_section" name="Part II">
+        <%= text_field_tag "person[other_sig_cause_of_death1]", nil, { :helpText => "Other significant Cause 1", :condition=>"__$('person_cause_of_death1').value.length > 0",:optional => true} %>
+        <%= text_field_tag "person[other_sig_cause_of_death2]", nil, { :helpText => "Other significant Cause 2", :condition=>"__$('person_other_sig_cause_of_death1').value.length > 0"} %>
+    </sub>
+    <sub id="person_mccod_autopsy_section" name="Autopsy">
+        <%= select_tag("person[autopsy_requested]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Autopsy Requested",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()", :condition=>"__$('person_confirm_mccod').value=='Yes'") %>
+        <%= select_tag("person[autopsy_requested]",options_for_select([" ", "Yes", "No"], nil),:helpText =>"Autopsy findings used for certification?",:condition=>"__$('person_autopsy_requested').value=='Yes'",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()") %>
+    </sub>
+
+    <sub id="person_mccod_manner_of_death_section" name="Manner of death">
+        <select helpText="Manner of death <i style='color: red'>*</i>" name="person[manner_of_death]" 
+            id="person_manner_of_death"
+            tt_requireNextClick = false
+            condition="__$('person_confirm_mccod').value=='Yes'"
+            tt_pageStyleClass ="NoKeyboard" >
+                    <option>Natural</option>
+                    <option>Accident</option>
+                    <option>Homicide</option>
+                    <option>Suicide</option>
+                    <option>Pending Investigation</option>
+                    <option>Could not be determined</option>
+                    <option>Other</option>
+            </select>
+
+            <input type="text" name="person[other_manner_of_death]" 
+                id="person_other_manner_of_death" 
+                helpText="Other manner of death specify <i style='color: red'>*</i>"
+                condition="__$('person_manner_of_death').value == 'Other'">
+
+
+            <select id="person_death_by_accident" name="person[death_by_accident]" 
+                helpText="If accidental death, how did it occur? <i style='color: red'>*</i>"
+                condition="__$('person_manner_of_death').value == 'Accident'"
+                tt_requireNextClick = false
+                tt_pageStyleClass ="NoKeyboard">
+                <option>Motor vehicle(Driver)</option>
+                <option>Motor vehicle(Passenger)</option>
+                <option>Motor vehicle(Pedestrian)</option>
+                <option>Drowning</option>
+                <option>Other</option>
+            </select>
+
+            <input type="text" name="person[other_death_by_accident]" 
+            id="person_other_death_by_accident"
+            helpText="Other accidental death specify <i style='color: red'>*</i>"
+            condition= "__$('person_death_by_accident').value == 'Other'">
+    </sub>
+    <sub id="person_mccod_certifier_section" name="Certifier's details">
+            <%= text_field_tag "person[date_certifier_signed]",nil,
+                {:helpText => "Date Certifier signed <i style='color: red'>*</i>",
+                                    :field_type => "date" ,
+                                    :value => Date.today.strftime("%Y-%m-%d"),
+                                    :optional => true,
+                                    :tt_onLoad =>"removeUnknown()",
+                                    :condition=>"__$('person_confirm_mccod').value=='Yes'"}%>
+            <%= text_field_tag "person[certifier_name]", nil, { :helpText => "Name of Certifier", :condition=>"__$('person_confirm_mccod').value=='Yes'"} %>
+            <%= text_field_tag "person[certifier_license_number]", nil, { :helpText => "MCM Reg Number", :condition=>"__$('person_confirm_mccod').value=='Yes'",:optional => true} %>
+            <%= select_tag("person[position_of_certifier]",options_for_select([" ", "Physician", "Clinical Officer","Medical Assistant","Other"], nil),:helpText =>"Designation of medical certifier",:tt_requireNextClick => false,:tt_onLoad=>"overRideCancel()", :condition=>"__$('person_confirm_mccod').value=='Yes'") %>
+            <%= text_field_tag "person[other_position_of_certifier]", nil, { :helpText => "Other Designation", :condition=>"__$('person_position_of_certifier').value =='Other' && __$('person_confirm_mccod').value=='Yes'",:optional => true} %>
+    </sub>
+</section>

@@ -226,7 +226,12 @@
 		<%= render :partial => "parents_details" %>
 
 		<%= render :partial => "informant" %>
+		
+	<% if params[:form_type] != "NR-10C" %>
 
+		<%= render :partial => "setion2" %>
+	<%end%>
+		
 		<%= render :partial => "verification" %>
 
 <% end %>
