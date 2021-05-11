@@ -76,7 +76,7 @@ class Audit < CouchRest::Model::Base
     end
   end 
  def set_creator
-    self.creator = (User.current_user.id rescue User.by_created_at.each.first.id)
+    self.creator = (User.current_user.id rescue nil)
  end
  def set_location
     self.ip_address =   (AuditTrail.ip_address_accessor rescue (request.remote_ip rescue `ip route show`[/default.*/][/\d+\.\d+\.\d+\.\d+/] rescue "0.0.0.0"))
