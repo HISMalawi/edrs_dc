@@ -161,7 +161,25 @@ class Person < CouchRest::Model::Base
                         :district_code =>(self.district_code rescue SETTINGS['district_code']),
                         :creator => User.current_user.id})
   end
-
+  def self.calculate_time(onset_death_interval,unit)
+    onset_interval = onset_death_interval
+    if unit == "Second(s)"
+      onset_interval = onset_death_interval
+    elsif unit == "Minute(s)"
+      onset_interval = onset_death_interval * 60
+    elsif unit == "Hour(s)"
+      onset_interval = onset_death_interval * 60 * 60
+    elsif unit == "Day(s)"
+      onset_interval = onset_death_interval * 60 * 60 * 24
+    elsif unit == "Week(s)"
+      onset_interval = onset_death_interval * 60 * 60 * 24 * 7
+    elsif unit == "Month(s)"
+      onset_interval = onset_death_interval * 60 * 60 * 24 * 30
+    elsif unit == "Year(s)"
+      onset_interval = onset_death_interval * 60 * 60 * 24 * 365
+    end
+    return onset_interval
+  end
   def self.create_person(parameters)
       params = parameters[:person]
 
@@ -299,6 +317,23 @@ class Person < CouchRest::Model::Base
           other_hospital_of_death["2"]["cause"] = parameters[:other_sig_cause_of_death2]
           params[:cause_of_death_conditions] = other_sig_cause_of_death
         end
+      end
+
+      if params[:onset_death_interval1].present?
+        params[:onset_death_interval1] = self.calculate_time(params[:onset_death_interval1].to_i,params[:unit_onset_death_interval1])
+        
+      end
+
+      if params[:onset_death_interval2].present?
+        params[:onset_death_interval2] = self.calculate_time(params[:onset_death_interval2].to_i,params[:unit_onset_death_interval2])
+      end
+
+      if params[:onset_death_interval3].present?
+        params[:onset_death_interval3] = self.calculate_time(params[:onset_death_interval3].to_i,params[:unit_onset_death_interval3])
+      end
+
+      if params[:onset_death_interval4].present?
+        params[:onset_death_interval4] = self.calculate_time(params[:onset_death_interval4].to_i,params[:unit_onset_death_interval4])
       end
       Person.create(params)
     

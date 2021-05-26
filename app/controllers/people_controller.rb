@@ -530,7 +530,7 @@ class PeopleController < ApplicationController
   end
 
   def show
-      @person = Person.find(params[:id])
+      @person = to_readable(Person.find(params[:id]))
 
       @lock = MyLock.by_person_id.key(params[:id]).last
       if @lock.blank?

@@ -171,6 +171,29 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def to_readable(person)
+    (1..4).each do |i|
+      if person["cause_of_death#{i}"].blank?
+        person["cause_of_death#{i}"] = (person["other_cause_of_death#{i}"] rescue "")
+      end
+      secs = person["onset_death_interval#{i}"].to_i
+      time_to_string = [[60, :second], [60, :minute], [24, :hour], [365, :day],[1000, :year]].map{ |count, name|
+        if secs > 0
+          secs, n = secs.divmod(count)
+          if n > 0 
+            if n == 1
+              "#{n.to_i} #{name}"
+            elsif n > 1
+              "#{n.to_i} #{name}s"
+            end
+          end
+        end
+      }.compact.reverse.join(' ')
+      person["onset_death_interval#{i}"] = time_to_string
+    end
+    return person
+  end
+  
   def readable_format(result)
       person = Person.find(result['_id'])
       return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+

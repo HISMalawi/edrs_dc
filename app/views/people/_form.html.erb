@@ -44,6 +44,7 @@
 			</sub>
 		</section>
 	<%end%>
+
 	<% if params[:registration_type].include? "Abnormal Deaths"%>
 		<section name="Police report">
 			<sub id="person_police_report_section" name="Police report attached">
@@ -226,7 +227,7 @@
 		<%= render :partial => "parents_details" %>
 
 		<%= render :partial => "informant" %>
-		
+	
 	<% if params[:form_type] != "NR-10C" %>
 
 		<%= render :partial => "setion2" %>
