@@ -529,8 +529,96 @@ class PeopleController < ApplicationController
       redirect_to params[:next_url]
   end
 
+  def remove_redu_states(person_id)
+      #puts person_id
+      state = ["DC ACTIVE", "DC COMPLETE","HQ ACTIVE","HQ COMPLETE","MARKED HQ APPROVAL", "HQ CAN PRINT", "HQ PRINTED","HQ DISPATCHED"]
+      statuses = PersonRecordStatus.by_person_record_id.key(person_id).each
+      statuses.each do |st|
+          st.insert_update_into_mysql
+      end
+      
+      uniqstatus = statuses.collect{|d| d.status}.uniq
+
+      uniqstatus.each do |us|
+          redundantstatuses = PersonRecordStatus.by_person_record_id.key(person_id).each.reject{|s| s.status != us}.sort_by{|s| s.created_at}
+
+          puts "destroying multiple #{us}"
+          redundantstatuses.each_with_index do |red, i|
+                  if i != 0
+                      begin
+                          redundantstatuses[i].destroy
+                      rescue
+                          puts "Error : #{redundantstatuses[i].id}"
+                          puts "Retry"
+                          begin
+                              RecordStatus.find(redundantstatuses[i].id).destroy
+                              PersonRecordStatus.find(redundantstatuses[i].id).destroy
+                              
+                          rescue
+                              puts "Fail"
+                          end
+                      end
+                  else
+                      redundantstatuses[i].insert_update_into_mysql
+                  end
+          end
+      end
+
+      puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>"
+
+      PersonRecordStatus.by_person_record_id.key(person_id).each do |s|
+          if s.status.blank?
+              s.destroy
+          end
+      end
+    
+      last = 0
+
+      RecordStatus.where(person_record_id: person_id).order(:created_at).each do |d|
+          person_status = PersonRecordStatus.by_person_recent_status.key(d.person_record_id).last
+          if state.find_index(d.status).to_i > last
+              last = state.find_index(d.status).to_i
+          end
+
+          if person_status.present? && state.find_index(d.status).to_i < state.find_index(person_status.status).to_i
+                  d.voided = 1 
+                  d.save
+          end
+          couch_status = PersonRecordStatus.find(d.person_record_status_id)
+          if couch_status.blank?
+              d.destroy
+          end
+      end
+
+      RecordStatus.where(person_record_id: person_id, voided: 0).each do |d|
+          if last != state.find_index(d.status).to_i
+                  couch_status = PersonRecordStatus.find(d.person_record_status_id)
+                  couch_status.voided = true
+                  couch_status.save
+                  d.voided = 1 
+                  d.save
+          else
+              couch_status = PersonRecordStatus.find(d.person_record_status_id)
+              couch_status.voided = false
+              couch_status.save
+              d.voided = 0 
+              d.save            
+          end
+      end
+      RecordStatus.where(person_record_id: person_id,status: state[last] ).each do |d|
+          puts d.status
+          couch_status = PersonRecordStatus.find(d.person_record_status_id)
+          couch_status.voided = false
+          couch_status.save
+          d.voided = 0 
+          d.save  
+      end
+
+  end
+
   def show
-      @person = Person.find(params[:id])
+      
+      @person = to_readable(Person.find(params[:id]))
 
       @lock = MyLock.by_person_id.key(params[:id]).last
       if @lock.blank?
@@ -577,30 +665,37 @@ class PeopleController < ApplicationController
                     audit.reason = "Record is a potential"
                     audit.save
                    if @duplicates.count == 1 && @duplicates.first["score"] == 100
-                      PersonRecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
+                      RecordStatus.change_status(@person, 'DC EXACT DUPLICATE','System caught it as exact duplicate')
                    else
-                      PersonRecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
+                      RecordStatus.change_status(@person, 'DC POTENTIAL DUPLICATE','System caught it as potential duplicate')
                    end                   
                  end
               else
                 SimpleElasticSearch.add(record)            
               end
       end
-      @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+      # @status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 
 
 
-      #Recorrecting statuses thatt have not changed
+      # #Recorrecting statuses thatt have not changed
 
-      PersonRecordStatus.by_person_recent_status.key(params[:id]).each.sort_by{|d| d.created_at}.each do |s|
-        next if s === @status
-        s.voided = true
-        s.save
-      end
+      # PersonRecordStatus.by_person_recent_status.key(params[:id]).each.sort_by{|d| d.created_at}.each do |s|
+      #   next if s === @status
+      #   s.voided = true
+      #   s.save
+      # end
 
-      if @status.status =="DC AMEND"
+      connection = ActiveRecord::Base.connection
+      statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{params[:id]}' ORDER BY created_at"
+      statuses = connection.select_all(statuses_query).as_json
+
+      @status = statuses.last
+
+
+      if @status['status'] =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
-      elsif @status.status.include?("DUPLICATE")
+      elsif @status['status'].include?("DUPLICATE")
         redirect_to "/dc/show_duplicate/#{params[:id]}?index=0&next_url=#{params[:next_url]}"
       else
 
@@ -614,13 +709,13 @@ class PeopleController < ApplicationController
           comment_statuses = []
 
           @comments = []
-          PersonRecordStatus.by_person_record_id.key(params[:id]).each.sort_by {|k| k["updated_at"]}.each do |status|
-            next if comment_statuses.include?(status.status)
-            next if status.status.blank?
-            next if status.comment.blank?
-            comment_statuses << status.status
-            user = User.find(status.creator)
-            @comments << {created_at: status.created_at,status: status.status , reason: status.comment, user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", user_role: (user.role rescue '') } if status.comment.present?
+          statuses.each do |status|
+            next if comment_statuses.include?(status['status'])
+            next if status['status'].blank?
+            next if status['comment'].blank?
+            comment_statuses << status['status']
+            user = User.find(status['creator'])
+            @comments << {created_at: status['created_at'],status: status['status'] , reason: status['comment'], user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", user_role: (user.role rescue '') } if status['comment'].present?
           end
           #raise @comments.inspect
           render :layout => "landing"

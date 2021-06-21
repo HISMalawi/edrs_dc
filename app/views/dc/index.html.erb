@@ -22,8 +22,6 @@
                     <td style="width:80%">
                         <div id="buttons" style="display: inline ">
 
-                        
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/search'" >
                                     <div class="icon">
@@ -34,7 +32,6 @@
 
                                     
                                   </div>
-                          <%end%>
 
                           <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
@@ -150,13 +147,22 @@
 
                                       
                                     </div>
+                                    <div class="touch_btn" onmousedown="window.location = '/configs?next_url=/';" >
+                                            <div class="icon">
+                                                  <i class="fa fa-gears"></i>
+                                            </div>
+                                            <div class="button_label">Manage Configs</div>
+                                            <div class="button_description">  Manage own account.</div>
+
+                                    
+                                    </div>
                               <%end%>                              
 
                                 <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/my_account';" >
                                         <div class="icon">
-                                               <i class="fa fa-gears"></i>
+                                               <i class="fa fa-user"></i>
                                         </div>
                                         <div class="button_label">My Account</div>
                                         <div class="button_description">  Manage own account.</div>

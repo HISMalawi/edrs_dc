@@ -3,4 +3,4 @@ if CronJobsTracker.first.blank?
 end
 
 PersonIdentifier.can_assign_den = true
-AssignDen.perform_in(30)
+# AssignDen.perform_in(30)

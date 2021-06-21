@@ -403,6 +403,11 @@ Rails.application.routes.draw do
   get "/application/hq_is_online"
   get "/dc/print_preview"
 
+
+  get "/configs" => "users#configs"
+  post "/save_configs" =>"users#save_configs"
+  
+
   resources :users
 
   resource :login do

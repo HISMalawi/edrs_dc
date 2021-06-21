@@ -171,6 +171,29 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def to_readable(person)
+    (1..4).each do |i|
+      if person["cause_of_death#{i}"].blank?
+        person["cause_of_death#{i}"] = (person["other_cause_of_death#{i}"] rescue "")
+      end
+      secs = person["onset_death_interval#{i}"].to_i
+      time_to_string = [[60, :second], [60, :minute], [24, :hour], [365, :day],[1000, :year]].map{ |count, name|
+        if secs > 0
+          secs, n = secs.divmod(count)
+          if n > 0 
+            if n == 1
+              "#{n.to_i} #{name}"
+            elsif n > 1
+              "#{n.to_i} #{name}s"
+            end
+          end
+        end
+      }.compact.reverse.join(' ')
+      person["onset_death_interval#{i}"] = time_to_string
+    end
+    return person
+  end
+
   def readable_format(result)
       person = Person.find(result['_id'])
       return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
@@ -309,27 +332,15 @@ class ApplicationController < ActionController::Base
 
   def person_selective_fields(person)
 
+
       den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
 
-      if PersonRecordStatus.by_person_recent_status.key(person.id).last.present?
-        status = PersonRecordStatus.by_person_recent_status.key(person.id).last.status
-      else
-        last_status = PersonRecordStatus.by_person_record_id.key(person.id).each.sort_by{|d| d.created_at}.last
-        
-        states = {
-                    "DC ACTIVE" =>"DC COMPLETE",
-                    "DC COMPLETE" => "MARKED APPROVAL",
-                    "MARKED APPROVAL" => "MARKED APPROVAL"
-                 }
-        if last_status.blank?
-           PersonRecordStatus.change_status(person, "DC ACTIVE")
-        elsif states[last_status.status].blank?
-          PersonRecordStatus.change_status(person, "DC COMPLETE")
-        else  
-          PersonRecordStatus.change_status(person, states[last_status.status])
-        end  
-          status = PersonRecordStatus.by_person_recent_status.key(person.id).last.status
-      end
+      connection = ActiveRecord::Base.connection
+      statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{params[:id]}' ORDER BY created_at"
+      statuses = connection.select_all(statuses_query).as_json
+
+      status = statuses.last
+      status = statuses.last['status']
 
       return {
                       _id: person.id,
@@ -518,7 +529,7 @@ class ApplicationController < ActionController::Base
           if (defined? PersonIdentifier.can_assign_den).nil?
             PersonIdentifier.can_assign_den = true
           end
-          AssignDen.perform_in(job_interval)
+          #AssignDen.perform_in(job_interval)
         end
         
     end
@@ -577,7 +588,18 @@ class ApplicationController < ActionController::Base
                                   created_at DATETIME DEFAULT NULL,
                                   updated_at DATETIME DEFAULT NULL,
                                   PRIMARY KEY (audit_record_id)) ENGINE=InnoDB DEFAULT CHARSET=latin1;;"          
-    SimpleSQL.query_exec(create_audit_trail_table);                   
+    SimpleSQL.query_exec(create_audit_trail_table); 
+    create_local_configuration ="CREATE TABLE IF NOT EXISTS local_config (
+                                    local_config_id varchar(200) NOT NULL,
+                                    name varchar(50) NOT NULL,
+                                    value int(1) NOT NULL,
+                                    value_text varchar(100) NOT NULL,
+                                    created_at datetime NOT NULL,
+                                    updated_at datetime NOT NULL,
+                                    PRIMARY KEY (local_config_id),
+                                    UNIQUE KEY name (name)
+                                  ) ENGINE=InnoDB DEFAULT CHARSET=latin1;"    
+      SimpleSQL.query_exec(create_local_configuration);              
   end
 
   def check_den_table

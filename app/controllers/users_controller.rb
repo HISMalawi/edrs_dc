@@ -582,6 +582,15 @@ class UsersController < ApplicationController
 
   end
 
+  def configs
+    @local_configs  = LocalConfig.all
+    @section = "Configs"
+    render :layout => "landing"
+  end
+
+  def save_configs
+  end
+
   def build_mysql
     render :layout => "landing"
   end

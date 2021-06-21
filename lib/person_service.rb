@@ -1,7 +1,6 @@
 require "rails"
 class PersonService
-	def self.qr_code_data(id)
-	    person = Person.find(id)
+	def self.qr_code_data(person)
 	    date_registered = person.created_at
 	    PersonRecordStatus.by_person_record_id.key(person.id).each.sort_by{|s| s.created_at}.each do |state|
 	      if state.status == "HQ ACTIVE"

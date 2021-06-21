@@ -68,6 +68,12 @@
 				padding-left: 10px;
 
 		}
+		#mccod td{
+			
+			text-align: left !important;
+			padding: 10px;
+			padding-left: 10px;
+		}
 		.clickable{
 
 			font-weight: bold;
@@ -670,6 +676,77 @@
 			<tr>	
 			</tr>
 		</table>
+		<% if @person.cause_of_death1.present? %>
+		<table id="mccod">
+			<tr>
+				<th colspan="5">Section II : MCCOD</th>
+			</tr>
+			<tr>
+				<td rowspan="4"> Part I</td>
+				<td><b>(a) </b></td>
+				<td> <%= @person.cause_of_death1 %></td>
+				<td><b>Approximate interval(a)</b></td>
+				<td><%= @person.onset_death_interval1 %></td>
+			</tr>
+			<tr>
+				<td><b>(b) </b></td>
+				<td> <%= @person.cause_of_death2 %></td>
+				<td><b>Approximate interval(b)</b></td>
+				<td><%= @person.onset_death_interval2 %></td>
+			</tr>
+			<tr>
+				<td><b>(c) </b></td>
+				<td> <%= @person.cause_of_death3 %></td>
+				<td><b>Approximate interval(c)</b></td>
+				<td><%= @person.onset_death_interval3 %></td>
+			</tr>
+			<tr>
+				<td><b>(d) </b></td>
+				<td> <%= @person.cause_of_death4 %></td>
+				<td><b>Approximate interval(d)</b></td>
+				<td><%= @person.onset_death_interval4 %></td>
+			</tr>
+			<tr>
+				<td rowspan="2"> Part II </td>
+				<td><b>(i)</b></td>
+				<td colspan="4"> <%= @person.other_hospital_of_death["1"]["cause"] rescue "" %></td>
+			</tr>
+			<tr>
+				<td><b>(ii)</b></td>
+				<td colspan="4"> <%= @person.other_hospital_of_death["2"]["cause"] rescue "" %></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="font-weight:bold">Autopsy Requested?</td>
+				<td><%= @person.autopsy_requested %></td>
+				<td style="font-weight:bold">Autopsy findings used for certification?</td>
+				<td><%= @person.autopsy_used_for_certification %></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="font-weight:bold">Manner of death</td>
+				<td><%= @person.manner_of_death %> </td>
+				<td style="font-weight:bold">If accidental death, how did it occur?</td>
+				<td><%= @person.death_by_accident %></td>
+			</tr>
+
+			<tr>
+				<td></td>
+				<td style="font-weight:bold">Date Certifier signed</td>
+				<td><%= @person.date_certifier_signed %></td>
+				<td style="font-weight:bold">Name of Certifier</td>
+				<td><%= @person.certifier_name %></td>
+			</tr>
+
+			<tr>
+				<td></td>
+				<td style="font-weight:bold">MCM Reg Number</td>
+				<td><%= @person.certifier_license_number %></td>
+				<td style="font-weight:bold">Designation of medical certifier</td>
+				<td><%= @person.position_of_certifier %></td>
+			</tr>
+		</table>
+		<%end%>
 		<% if site_type == "dc" %>
 		<table class="verification">
 			<tr>
@@ -702,7 +779,7 @@
 			<%end%>
 		</table>
 		<%end%>
-
+		<br/>
 </div>
 <%= render :partial => "/dc/scroll" %>
 <script type="text/javascript">
