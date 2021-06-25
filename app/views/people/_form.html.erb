@@ -230,7 +230,7 @@
 	
 	<% if params[:form_type] != "NR-10C" %>
 		<% if SETTINGS['enable_section2'].present? && SETTINGS['enable_section2'] %>
-		<%= render :partial => "setion2" %>
+			<%= render :partial => "setion2" %>
 		<%end%>
 	<%end%>
 		

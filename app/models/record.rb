@@ -15,7 +15,12 @@ class Record < ActiveRecord::Base
 	end
 
   	def status
-       return RecordStatus.where(person_record_id: self.person_id).last.status
+		connection = ActiveRecord::Base.connection
+		statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{self.id}' ORDER BY created_at"
+		statuses = connection.select_all(statuses_query).as_json
+		
+		status = statuses.last
+       return status['status'] rescue ""
   	end
 
 

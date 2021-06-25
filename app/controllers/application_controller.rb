@@ -333,7 +333,7 @@ class ApplicationController < ActionController::Base
   def person_selective_fields(person)
 
 
-      den = PersonIdentifier.by_person_record_id_and_identifier_type.key([person.id,"DEATH ENTRY NUMBER"]).first
+      den = RecordIdentifier.where(person_record_id: person.id, identifier_type: "DEATH ENTRY NUMBER").first
 
       connection = ActiveRecord::Base.connection
       statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{params[:id]}' ORDER BY created_at"
@@ -455,22 +455,23 @@ class ApplicationController < ActionController::Base
 
     user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
     @current_user = user
-    Audit.ip_address_accessor = request.remote_ip
-    Audit.mac_address_accessor = ` arp #{request.remote_ip}`.split(/\n/).last.split(/\s+/)[2] rescue nil
-    Audit.create({
+  
+    AuditRecord.create({
                           :record_id  => @current_user.id,
                           :audit_type => "User Access",
-                          :reason     => "Log in"
+                          :reason     => "Log in",
+                          :level => "User"
     })
 
   end
 
   def logout!
 
-    Audit.create({
+    AuditRecord.create({
                           :record_id  => session[:current_user_id],
                           :audit_type => "User Access",
-                          :reason     => "Log out"
+                          :reason     => "Log out",
+                          :level => "User"
     })
     session[:current_user_id] = nil
     @current_user = nil

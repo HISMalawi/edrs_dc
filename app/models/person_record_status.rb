@@ -113,6 +113,7 @@ class PersonRecordStatus < CouchRest::Model::Base
                                     :audit_type => "Status Change",
                                     :reason     => self.comment,
                                     :previous_value => self.prev_status,
+									:level => "Person",
                                     :current_value => self.status
               })		
 		

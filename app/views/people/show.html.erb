@@ -141,7 +141,7 @@
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
-		<% if @status.status == "DC ACTIVE" || @status.status == "DC INCOMPLETE"  || @status.status =="DC REJECTED" %>
+		<% if @status['status'] == "DC ACTIVE" || @status['status'] == "DC INCOMPLETE"  || @status['status'] =="DC REJECTED" %>
 
 			<button style="float: right; margin-right:1%" onmousedown="checkCompleteness()"><span>Completeness Check</span></button>
 
@@ -150,7 +150,7 @@
 			<!--button class="gray" style="float: right; margin-right:1%"><span>Completeness Check</span></button-->
 
 		<%end%>
-		<%if ["DC ACTIVE"].include? @status.status && false%>
+		<%if ["DC ACTIVE"].include? @status['status'] && false%>
 		
 			<button style="float: right; margin-right:3%" onmousedown="markAsPending()"><span>Mark Pending</span></button>
 		<%end%>
@@ -160,21 +160,21 @@
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role'] %>
-			<%if  (@status.present? && @status.status == "DC ACTIVE") %>
+			<%if  (@status.present? && @status['status'] == "DC ACTIVE") %>
 
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
 			<%end%>
-			<% if (@status.present? && @status.status == "HQ REJECTED") %>
+			<% if (@status.present? && @status['status'] == "HQ REJECTED") %>
 				<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>?next_url=<%=params[:next_url]%>?'"><span>Reapprove</span></button>
 			<%end%>
 		<%else%>
-			<%if  (@status.present? && @status.status == "DC COMPLETE") %>
+			<%if  (@status.present? && @status['status'] == "DC COMPLETE") %>
 					<button style="float: right; margin-right:3%" onmousedown="approveRecord()"><span>Approve</span></button>
 
 			<%end%>
 
-			<% if (@status.present? && @status.status == "HQ REJECTED") %>
+			<% if (@status.present? && @status['status'] == "HQ REJECTED") %>
 					<button style="float: right; margin-right:3%" onmousedown="window.location='/people/form_container?url=/dc/add_reaprove_comment/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Reapprove</span></button>
 			<%end%>
 		<%end%>
@@ -182,13 +182,13 @@
 
 	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role']%>
-			<%if  (@status.present? && @status.status == "DC ACTIVE")%>
+			<%if  (@status.present? && @status['status'] == "DC ACTIVE")%>
 
 					<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
 
 			<%end%>
 		<%else%>
-			<%if  @status.present? && @status.status == "DC COMPLETE" %>
+			<%if  @status.present? && @status['status'] == "DC COMPLETE" %>
 
 				<button class="red" style="float: right; margin-right:3%" onmousedown="rejectRecord()"><span>Reject</span></button>
 
@@ -199,20 +199,20 @@
 		<%end%>
 	<%end%>
 
-	<%if (@status.present? && @status.status == "HQ PRINTED") ||  (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED") || (@status.present? && @status.status == "DC PRINTED")  || (@status.present? && @status.status == "DC DISPATCHED")%>
+	<%if (@status.present? && @status['status'] == "HQ PRINTED") ||  (@status.present? && @status['status'] == "HQ CLOSED") || (@status.present? && @status['status'] == "HQ DISPATCHED") || (@status.present? && @status['status'] == "DC PRINTED")  || (@status.present? && @status['status'] == "DC DISPATCHED")%>
 			
 			<button  style="float: right; margin-right:3%" onmousedown="mark_for_reprint();"><span>Mark for Reprint</span></button>
 	<%end%>
-	<%if  (@status.present? && @status.status == "HQ PRINTED") || (@status.present? && @status.status == "HQ CLOSED") || (@status.present? && @status.status == "HQ DISPATCHED")  || (@status.present? && @status.status == "DC PRINTED")  || (@status.present? && @status.status == "DC DISPATCHED")%>
+	<%if  (@status.present? &&@status['status'] == "HQ PRINTED") || (@status.present? &&@status['status'] == "HQ CLOSED") || (@status.present? &&@status['status'] == "HQ DISPATCHED")  || (@status.present? &&@status['status'] == "DC PRINTED")  || (@status.present? && @status['status'] == "DC DISPATCHED")%>
 			<button class="orange" style="float: right; margin-right:3%" onmousedown="mark_for_amendment()"><span>Amend Record</span></button>
 
 	<%end%>
-	<%if (@status.present? && @status.status == "DC REPRINT") && false%>
+	<%if (@status.present? &&@status['status'] == "DC REPRINT") && false%>
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/dc/approve_reprint/<%= @person.id %>?next_url=<%=params[:next_url]%>'"><span>Proceed to Re-Print</span></button>
 
 	<%end%>
 
-	<%if  @status.present? && ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED", "HQ CAN RE PRINT"].include?(@status.status) %>
+	<%if  @status.present? && ["HQ CAN PRINT","HQ CAN PRINT AMENDED","HQ CAN PRINT LOST","HQ CAN PRINT DAMAGED", "HQ CAN RE PRINT"].include?(@status['status']) %>
 			<button  id="print_btn" class="gray" style="float: right; margin-right:3%" ><span>Print Preview</span></button>
 
 	<%end%>
@@ -793,7 +793,7 @@
 			}
 
 			function unLock(){
-				window.location.href ="/people/unlock_record?lock_id=<%=@lock.id%>&next_url="+next_url
+				window.location.href = next_url
 			}
 
 			function __$(id){

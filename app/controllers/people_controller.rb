@@ -159,7 +159,7 @@ class PeopleController < ApplicationController
 
       if !person_params[:barcode].blank? && !person_params[:barcode].nil? 
 
-            Barcode.create({
+            BarcodeRecord.create({
                               :person_record_id => person.id.to_s,
                               :barcode => person_params[:barcode].to_s,
                               :district_code => (person.district_code  rescue SETTINGS['district_code']),
@@ -171,12 +171,21 @@ class PeopleController < ApplicationController
       #create status
 
       if Person.duplicate.nil?
-          PersonRecordStatus.create({
-                                      :person_record_id => person.id.to_s,
-                                      :status => "DC ACTIVE",
-                                      :comment =>"Record Created",
-                                      :district_code =>  person.district_code,
-                                      :creator => User.current_user.id})
+          # PersonRecordStatus.create({
+          #                             :person_record_id => person.id.to_s,
+          #                             :status => "DC ACTIVE",
+          #                             :comment =>"Record Created",
+          #                             :district_code =>  person.district_code,
+          #                             :creator => User.current_user.id})
+          RecordStatus.create({
+                                :person_record_id => person.id.to_s,
+                                :status => "DC ACTIVE",
+                                :comment => "Record Created",
+                                :district_code =>  person.district_code,
+                                :voided => 0,
+                                :creator => (User.current_user.id rescue nil),
+                                :created_at => Time.now,
+                              	:updated_at => Time.now})
         else
           
           change_log = [{:duplicates => Person.duplicate.to_s}]
@@ -185,7 +194,8 @@ class PeopleController < ApplicationController
                           :record_id  => person.id.to_s,
                           :audit_type => "POTENTIAL DUPLICATE",
                           :reason     => "Record is a potential",
-                          :change_log => change_log
+                          :change_log => change_log,
+                          :level => "Person"
           })
 
           if eval(params[:person][:is_exact_duplicate])
@@ -202,12 +212,21 @@ class PeopleController < ApplicationController
               end
           end
 
-          PersonRecordStatus.create({
-                                      :person_record_id => person.id.to_s,
-                                      :status => status,
-                                      :district_code => person.district_code,
-                                      :comment =>"System mark record as a potential",
-                                      :creator => User.current_user.id})
+          # PersonRecordStatus.create({
+          #                             :person_record_id => person.id.to_s,
+          #                             :status => status,
+          #                             :district_code => person.district_code,
+          #                             :comment =>"System mark record as a potential",
+          #                             :creator => User.current_user.id})
+           RecordStatus.create({
+                                        :person_record_id => person.id.to_s,
+                                        :status => status,
+                                        :comment =>"System mark record as a potential",
+                                        :district_code =>  person.district_code,
+                                        :voided => 0,
+                                        :creator => (User.current_user.id rescue nil),
+                                        :created_at => Time.now,
+                              	        :updated_at => Time.now})
 
           Person.duplicate = nil
 
@@ -320,25 +339,36 @@ class PeopleController < ApplicationController
     page = params[:page] rescue 0
     size = params[:size] rescue 40
     people = []
-    record_status = []
-
+    record_status = [] 
     
     RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
 
-      person = Record.find(status.person_record_id) rescue nil
-      next if person.nil?
-      den = person.den rescue ""
-      drn = person.drn rescue ""
+###############
 
-     
-      if den.blank? && params[:den].present? && eval(params[:den])
-        next
-      end
+      max_status = RecordStatus.where(person_record_id: status.person_record_id).order('created_at desc').first.status
 
-      person = person.as_json
-      person["den"] = den
-      person["drn"] = drn
-      people << person
+      status_match = params[:statuses].include? "#{max_status}"
+
+      next if status_match == false
+
+###############
+
+        person = Record.find(status.person_record_id) rescue nil
+        next if person.nil?
+        den = person.den rescue ""
+        drn = person.drn rescue ""
+
+       
+        if den.blank? && params[:den].present? && eval(params[:den])
+          next
+        end
+
+        person = person.as_json
+        person["den"] = den
+        person["drn"] = drn
+        people << person
+
+      
     end
 
 =begin
@@ -618,18 +648,8 @@ class PeopleController < ApplicationController
 
   def show
       
-      @person = to_readable(Person.find(params[:id]))
+      @person = to_readable(Record.find(params[:id]))
 
-      @lock = MyLock.by_person_id.key(params[:id]).last
-      if @lock.blank?
-        @lock = MyLock.create(:person_id => params[:id],:user_id => User.current_user.id)
-      end
-
-      if User.current_user.id != @lock.user_id
-        @locked = true
-      else
-        @locked = false
-      end
 
       #Duplicate capturing 
       if SETTINGS["potential_duplicate"]
@@ -689,10 +709,9 @@ class PeopleController < ApplicationController
       connection = ActiveRecord::Base.connection
       statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{params[:id]}' ORDER BY created_at"
       statuses = connection.select_all(statuses_query).as_json
-
+      
       @status = statuses.last
-
-
+      #raise @status.inspect
       if @status['status'] =="DC AMEND"
         redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
       elsif @status['status'].include?("DUPLICATE")
@@ -703,8 +722,8 @@ class PeopleController < ApplicationController
 
           @section = "View"
           #raise params[:id].inspect
-          @burial_report = BurialReport.by_person_record_id.key(params[:id]).first
-
+          #@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+          @burial_report = nil
 
           comment_statuses = []
 
@@ -728,7 +747,7 @@ class PeopleController < ApplicationController
   end
 
   def find_by_barcode
-    barcode = Barcode.by_barcode.key(params[:barcode]).first
+    barcode = BarcodeRecord.where(barcode: params[:barcode]).first
     person = barcode.person
     render :text => person_selective_fields(person).to_json    
   end
@@ -1084,7 +1103,7 @@ class PeopleController < ApplicationController
 
   def search_barcode
       if params[:barcode].present?
-        barcode = Barcode.by_barcode.key(params[:barcode]).last
+        barcode = BarcodeRecord.where(barcode:params[:barcode]).last
         if barcode.present?
             id = barcode.person_record_id
             render :text => {:response =>  true, :id => id}.to_json

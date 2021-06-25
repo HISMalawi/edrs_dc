@@ -1,7 +1,43 @@
 class RecordIdentifier < ActiveRecord::Base
+	after_commit :push_to_couchDB
+	before_create :set_id
 	self.table_name = "person_identifier"
 	def person
-		return Person.find(self.person_record_id)
+		return Record.find(self.person_record_id)
+	end
+	def set_id
+		self.person_identifier_id = SecureRandom.uuid if self.person_identifier_id.blank?
+	end
+	def push_to_couchDB
+		data =  Pusher.database.get(self.id) rescue {}
+		
+		self.as_json.keys.each do |key|
+			next if key == "_rev"
+			next if key =="_deleted"
+			if key == "person_identifier_id"
+			 	data["_id"] = self.as_json[key]
+			else
+			 	data[key] = self.as_json[key]
+			end
+			if data["type"].nil?
+				data["type"] = "PersonIdentifier"
+			end
+		end
+		
+		return  Pusher.database.save_doc(data)
+
+	end
+
+
+	def self.check_for_skipped_dens(dens)
+		den = dens.last.value rescue 0
+		actual_dens =  dens.collect{|d| d.value}
+		difference = [*1..den] - actual_dens
+		if difference.blank?
+			return false, den
+		else
+			return true, difference[0]
+		end
 	end
 
 	def self.assign_den(person, creator) 
@@ -57,11 +93,9 @@ class RecordIdentifier < ActiveRecord::Base
 			rescue Exception => e
 			end
 		elsif person_assigened_den.present?
-			verify_not_duplicate(person_assigened_den)
 			person_assigened_den.push_to_couch
 
 			RecordStatus.where(person_record_id: person.id).order(:created_at).each do |s|
-				next if s === new_status
 				s.voided = 1
 				s.save
 			end
@@ -71,7 +105,10 @@ class RecordIdentifier < ActiveRecord::Base
 									  :status => "HQ ACTIVE",
 									  :district_code => (district_code rescue SETTINGS['district_code']),
 									  :comment=> "Record approved at DC",
-									  :creator => creator})
+									  :creator => creator,
+									  :voided => 0,
+                                      :created_at => Time.now,
+                              	      :updated_at => Time.now})
   
 			person.approved = "Yes"
 			person.approved_at = Time.now
@@ -82,26 +119,5 @@ class RecordIdentifier < ActiveRecord::Base
 		end
 
 
-	end
-
-	def verify_not_duplicate(assigned)
-		den = PersonIdentifier.find("#{assigned.district_code}/#{assigned.value.to_s.rjust(7,"0")}/#{assigned.year}")
-		if assigned.person_record_id == den.person_record_id
-		  return
-		else
-		  den.person_record_id = assigned.person_record_id
-		  den.save
-		end
-	end
-
-	def self.check_for_skipped_dens(dens)
-		den = dens.last.value rescue 0
-		actual_dens =  dens.collect{|d| d.value}
-		difference = [*1..den] - actual_dens
-		if difference.blank?
-			return false, den
-		else
-			return true, difference[0]
-		end
 	end
 end

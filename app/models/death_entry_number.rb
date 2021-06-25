@@ -4,7 +4,7 @@ class DeathEntryNumber< ActiveRecord::Base
 	def push_to_couch
 		begin
 			puts "Pushing records to couch"
-			identifier_record = PersonIdentifier.new
+			identifier_record = RecordIdentifier.new
 	        identifier_record.person_record_id = self.person_record_id.to_s
 	        identifier_record.identifier_type = "DEATH ENTRY NUMBER"
 	        den ="#{self.district_code}/#{self.value.to_s.rjust(7,"0")}/#{self.year}"

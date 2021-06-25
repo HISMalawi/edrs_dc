@@ -17,4 +17,23 @@ class UserModel < ActiveRecord::Base
     	@password = BCrypt::Password.create(new_password)
     	self.password_hash = @password
   end
+  def push_to_couchDB
+		data =  Pusher.database.get(self.id) rescue {}
+		
+		self.as_json.keys.each do |key|
+			next if key == "_rev"
+			next if key =="_deleted"
+			if key == "user_id"
+				data["_id"] = self.as_json[key]
+			else
+				data[key] = self.as_json[key]
+			end
+			if data["type"].nil?
+				data["type"] = "User"
+			end
+		end
+		
+		return  Pusher.database.save_doc(data)
+
+	end
 end

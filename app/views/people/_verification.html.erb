@@ -50,7 +50,7 @@
         </sub>
     <% if SETTINGS['enable_section2'].present? && SETTINGS['enable_section2'] %>
         <sub id="captured_mccod_data" name="Captured MCCOD Data">
-              <%= text_field_tag "mccod_summary", nil, {:helpText => 'MCCOD Summary', :tt_onLoad=>"summaryMCCOD()"} %>
+              <%= text_field_tag "mccod_summary", nil, {:helpText => 'MCCOD Summary',:condition=>"__$('person_confirm_mccod').value =='Yes'", :tt_onLoad=>"summaryMCCOD()"} %>
         </sub>
     <%end%>
     </section>  

@@ -194,7 +194,7 @@ class User < CouchRest::Model::Base
   end
   
   def create_audit
-    Audit.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
+    AuditRecord.create(record_id: self.username, audit_type: "Audit", level: "User", reason: "Created user record")
   end
   
   def insert_update_into_mysql

@@ -192,18 +192,18 @@ class UsersController < ApplicationController
     if request.referrer.match('edit_account')
       @current_user.preferred_keyboard = params[:user][:preferred_keyboard]
       @current_user.save!
-      Audit.create(record_id: @current_user.id, audit_type: "Audit", level: "User", reason: "Updated user preference")
+      AuditRecord.create(record_id: @current_user.id, audit_type: "Audit", level: "User", reason: "Updated user preference")
       redirect_to '/users/my_account' and return
     end
     
     if params[:user][:password].present? && params[:user][:password].length > 1
       @user.update_attributes(:password_hash => params[:user][:password], :password_attempt => 0, :last_password_date => Time.now)
-       Audit.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
+       AuditRecord.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
     end
 
     respond_to do |format|
       if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false) and @user.update_attributes(user_params)
-         Audit.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Updated user") 
+         AuditRecord.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Updated user") 
         format.html { redirect_to @user, :notice => 'User was successfully updated.' }
         format.json { render :show, :status => :ok, :location => @user }
       else
@@ -221,7 +221,7 @@ class UsersController < ApplicationController
     redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Deactivate User"))
 
     @user.destroy if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
-    Audit.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Destroyed user")
+    AuditRecord.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Destroyed user")
     respond_to do |format|
       format.html { redirect_to "/view_users", :notice => 'User was successfully destroyed.' }
       format.json { head :no_content }
@@ -264,7 +264,7 @@ class UsersController < ApplicationController
     if !user.nil?
 
       user.update_attributes(:active => false, :un_or_block_reason => params[:reason]) if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
-      Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Blocked user")
+      AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Blocked user")
 
     end
 
@@ -285,7 +285,7 @@ class UsersController < ApplicationController
     if !user.nil?
 
       user.update_attributes(:active => true, :un_or_block_reason => params[:reason]) if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
-      Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Unblocked user")
+      AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Unblocked user")
 
     end
 
@@ -545,7 +545,7 @@ class UsersController < ApplicationController
     user.save
     
     flash["notice"] = "Your new password has been changed succesfully" 
-    Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
+    AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
     
     redirect_to '/my_account'
 
@@ -576,7 +576,7 @@ class UsersController < ApplicationController
     user.save
     
     flash["notice"] = "User's password has been changed succesfully" 
-    Audit.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
+    AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Updated user password")
     
     redirect_to "/users/#{user.id}?next_url=/view_users?page=1"
 

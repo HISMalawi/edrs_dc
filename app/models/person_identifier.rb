@@ -144,12 +144,15 @@ class PersonIdentifier < CouchRest::Model::Base
               approved_already_status_couch.voided = false
               approved_already_status_couch.save
             else
-              PersonRecordStatus.create({
+              RecordStatus.create({
                                       :person_record_id => person.id.to_s,
                                       :status => "HQ ACTIVE",
                                       :district_code => (district_code rescue SETTINGS['district_code']),
                                       :comment=> "Record approved at DC",
-                                      :creator => creator})              
+                                      :creator => creator,
+                                      :voided => 0,
+                                      :created_at => Time.now,
+                              	      :updated_at => Time.now})              
             end
 
             person.approved = "Yes"
@@ -157,7 +160,7 @@ class PersonIdentifier < CouchRest::Model::Base
 
             person.save
 
-            Audit.create(record_id: person.id,
+            AuditRecord.create(record_id: person.id,
                            audit_type: "Audit",
                            user_id: creator,
                            level: "Person",
@@ -185,12 +188,15 @@ class PersonIdentifier < CouchRest::Model::Base
           rescue
           end
           
-          PersonRecordStatus.create({
+          RecordStatus.create({
                                     :person_record_id => person.id.to_s,
                                     :status => "HQ ACTIVE",
                                     :district_code => (district_code rescue SETTINGS['district_code']),
                                     :comment=> "Record approved at DC",
-                                    :creator => creator})
+                                    :creator => creator, 
+                                    :voided => 0,
+                                    :created_at => Time.now,
+                                    :updated_at => Time.now})
 
           person.approved = "Yes"
           person.approved_at = Time.now

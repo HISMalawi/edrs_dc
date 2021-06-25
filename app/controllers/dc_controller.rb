@@ -93,19 +93,17 @@ class DcController < ApplicationController
 
 
 	def approve_record
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		
 		RecordIdentifier.assign_den(person, User.current_user.id)
-		begin
-			unlock_users_record(person)
-		rescue
+		if person.status != 'HQ ACTIVE'
+			RecordStatus.change_status(person,"HQ ACTIVE","Record approved at DC")
 		end
-
 		redirect_to "#{params[:next_url].to_s}"
 	end
 
 	def check_approval_status
-		den = PersonIdentifier.by_person_record_id_and_identifier_type.key([params[:id], "DEATH ENTRY NUMBER"]).first
+		den = RecordIdentifier.where(person_record_id: params[:id], identifier_type: "DEATH ENTRY NUMBER").first
 		if den.present?
 			render :text => {assigned: true}.to_json
 		else
@@ -135,7 +133,7 @@ class DcController < ApplicationController
 			person = Person.find(params[:id])
 			RecordStatus.change_status(person, "DC REJECTED",params[:reason])	
 			unlock_users_record(person)		
-			Audit.create({
+			AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECTED",
 							:level => "Person",
@@ -157,7 +155,7 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 		RecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
 		unlock_users_record(person)
-		Audit.create({
+		AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC INCOMPLETE",
 							:level => "Person",
@@ -464,7 +462,7 @@ class DcController < ApplicationController
 		person = Person.find(params[:id])
 		RecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
 		if params[:barcode].present?
-            Barcode.create({
+            BarcodeRecord.create({
                               :person_record_id => person.id.to_s,
                               :barcode => params[:barcode].to_s,
                               :district_code => (person.district_code  rescue SETTINGS['district_code']),
@@ -473,11 +471,12 @@ class DcController < ApplicationController
 			
 		end
 
-		Audit.create({
+		AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REPRINT  #{params[:reason].upcase}",
 							:level => "Person",
-							:reason => params[:reason]})
+							:reason => params[:reason],
+							:creator => params[:user_id]})
 		unlock_users_record(person)
 		redirect_to "#{params[:next_url].to_s}"		
 	end
@@ -500,7 +499,8 @@ class DcController < ApplicationController
 		@person = Person.find(params[:id])
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
       	@person_place_details = place_details(@person)
-      	@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+      	#@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
+		@burial_report = nil
       	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC INCOMPLETE"],
                                                           [params[:id],"DC REJECTED"],
                                                           [params[:id],"HQ REJECTED"],

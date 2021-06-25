@@ -65,11 +65,22 @@ class Person < CouchRest::Model::Base
   def create_status
     
     if self.duplicate.nil?
-      PersonRecordStatus.create({
-                                  :person_record_id => self.id.to_s,
+      # PersonRecordStatus.create({
+      #                             :person_record_id => self.id.to_s,
+      #                             :status => "DC ACTIVE",
+      #                             :district_code =>  self.district_code,
+      #                             :created_by => User.current_user.id})
+
+      RecordStatus.create({
+                                  :person_record_id => person.id.to_s,
                                   :status => "DC ACTIVE",
+                                  :comment => "Record Created",
                                   :district_code =>  self.district_code,
-                                  :created_by => User.current_user.id})
+                                  :voided => 0,
+                                  :creator => (User.current_user.id rescue nil),
+                              	  :created_at => Time.now,
+                              	  :updated_at => Time.now})
+
     else
       
       change_log = [{:duplicates => self.duplicate.to_s}]
@@ -80,11 +91,14 @@ class Person < CouchRest::Model::Base
                       :reason     => "Record is a potential",
                       :change_log => change_log
       })
-      PersonRecordStatus.create({
+      RecordStatus.create({
                                   :person_record_id => self.id.to_s,
                                   :status => "DC POTENTIAL DUPLICATE",
                                   :district_code => self.district_code,
-                                  :created_by => User.current_user.id})
+                                  :creator => User.current_user.id},
+                                  :voided => 0,
+                                  :created_at => Time.now,
+                                  :updated_at => Time.now)
 
       self.duplicate = nil
 
@@ -153,14 +167,21 @@ class Person < CouchRest::Model::Base
   end
 
   def change_status(nextstatus)
-    status = PersonRecordStatus.by_person_recent_status.key(self.id.to_s).last
-    status.update_attributes({:voided => true})
-    PersonRecordStatus.create({
+    RecordStatus.where(person_record_id: self.id).order(:created_at).each do |s|
+      next if s === new_status
+      s.voided = 1
+      s.save
+    end
+    RecordStatus.create({
                         :person_record_id => self.id.to_s,
                         :status => nextstatus,
                         :district_code =>(self.district_code rescue SETTINGS['district_code']),
-                        :creator => User.current_user.id})
+                        :creator => User.current_user.id,
+                        :voided => 0,
+                        :created_at => Time.now,
+                        :updated_at => Time.now})
   end
+
   def self.calculate_time(onset_death_interval,unit)
     onset_interval = onset_death_interval
     if unit == "Second(s)"
@@ -470,13 +491,13 @@ class Person < CouchRest::Model::Base
 
   #Identifiers
   def den
-    return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH ENTRY NUMBER"]).first.identifier rescue "XXXXXXXX"
+    return RecordIdentifier.where(person_record_id: self.id, identifier_type:"DEATH ENTRY NUMBER").first.identifier rescue "XXXXXXXX"
   end
   def national_id
     return self.id_number rescue "XXXXXXXX"
   end
   def barcode
-      barcode = PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id,"Form Barcode"]).first
+      barcode = RecordIdentifier.where(person_record_id: self.id,identifier_type: "Form Barcode").first
       if barcode.present?
          return barcode.identifier
       else
@@ -489,7 +510,7 @@ class Person < CouchRest::Model::Base
       end
   end
   def drn
-      return PersonIdentifier.by_person_record_id_and_identifier_type.key([self.id, "DEATH REGISTRATION NUMBER"]).first.identifier rescue "XXXXXXXX"
+      return RecordIdentifier.where(person_record_id: self.id,identifier_type:"DEATH REGISTRATION NUMBER").first.identifier rescue "XXXXXXXX"
   end
 
   def insert_update_into_mysql
