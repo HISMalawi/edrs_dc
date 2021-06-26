@@ -330,17 +330,33 @@ class ApplicationController < ActionController::Base
         }
   end
 
+  def data_table_entry(person, den=false)
+    row = []
+   
+    if den.present? && den=="true"
+       row << person.den
+    end
+      row = row + [
+                   "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} (#{person.gender.first})",
+                   person.birthdate.strftime("%d/%b/%Y"),
+                   person.date_of_death.strftime("%d/%b/%Y"),
+                   place_of_death(person), 
+                  "#{person.informant_first_name} #{person.informant_middle_name rescue ''} #{person.informant_last_name}",
+                   person.id]
+ end
+
   def person_selective_fields(person)
 
 
       den = RecordIdentifier.where(person_record_id: person.id, identifier_type: "DEATH ENTRY NUMBER").first
 
       connection = ActiveRecord::Base.connection
-      statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{params[:id]}' ORDER BY created_at"
+      statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{person.id}' ORDER BY created_at"
       statuses = connection.select_all(statuses_query).as_json
 
       status = statuses.last
       status = statuses.last['status']
+
 
       return {
                       _id: person.id,

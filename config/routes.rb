@@ -406,7 +406,9 @@ Rails.application.routes.draw do
 
   get "/configs" => "users#configs"
   post "/save_configs" =>"users#save_configs"
-  
+
+  ############################Ajax Data Table ###########################################################################
+  get 'add_more_open_cases/:page_number' => 'people#more_open_cases'
 
   resources :users
 

@@ -22,7 +22,7 @@ class DcController < ApplicationController
 
 	def check_completeness
 
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 
 		if record_complete?(person)
 				RecordStatus.change_status(person, "DC COMPLETE","Marked as complete")

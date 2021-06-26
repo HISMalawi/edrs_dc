@@ -332,6 +332,59 @@ class PeopleController < ApplicationController
     
   end
 
+  def more_open_cases
+    cases = []
+    page = (params[:start].to_i / params[:length].to_i)
+    offset = page * params[:length].to_i
+    district_code_query = "AND p.district_code ='#{SETTINGS['district_code']}'"
+    
+    search_val = params[:search][:value] rescue nil
+    if search_val.present?
+        search_query = "AND (p.first_name LIKE '%#{search_val}%' || 
+                        p.last_name LIKE '%#{search_val}%' || p.middle_name LIKE '%#{search_val}%' 
+                        || p.hospital_of_death LIKE '%#{search_val}%' || p.gender LIKE '%#{search_val}%' 
+                        || p.place_of_death_ta LIKE '%#{search_val}%' || p.place_of_death_village LIKE '%#{search_val}%' 
+                        || p.place_of_death_district LIKE '%#{search_val}%')"
+    else
+      search_query = ""
+    end
+
+    sql = "SELECT distinct person_id, status FROM person_record_status s INNER JOIN people p ON s.person_record_id = p.person_id 
+           WHERE  s.voided = 0 AND status IN ('#{params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.join("','")}') 
+           #{search_query} #{district_code_query} ORDER BY s.created_at DESC"
+ 
+    sql =  "#{sql} LIMIT #{params[:length].to_i} OFFSET #{offset}"
+
+    connection = ActiveRecord::Base.connection
+    data = connection.select_all(sql).as_json
+
+    cases = []
+    records = {}
+    data.each do |row|
+          # max_status = RecordStatus.where(person_record_id: row["person_id"]).order('created_at desc').first.status
+
+          # status_match = params[:statuses].include? "#{max_status}"
+
+          # next if status_match == false
+          person = Record.find(row["person_id"])
+          next if person.blank?
+          next if person.first_name.blank?  && person.last_name.blank?
+          records[person.id] = person_selective_fields(person)
+          cases << data_table_entry(person,params[:den])
+    end
+    sql = "SELECT COUNT(distinct person_record_id) as total FROM person_record_status p WHERE voided = 0 AND status 
+          IN ('#{params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.join("','")}') #{district_code_query}"
+    total = connection.select_all(sql).as_json.last["total"].to_i rescue 0
+    render :text => {
+          "draw" => params[:draw].to_i,
+          "recordsTotal" => total,
+          "recordsFiltered" => total,
+          "records" => records,
+          "data" => cases}.to_json and return
+
+    #render text: cases.to_json and return
+   
+  end
 
   def search_by_status
      
