@@ -361,11 +361,11 @@ class PeopleController < ApplicationController
     cases = []
     records = {}
     data.each do |row|
-          # max_status = RecordStatus.where(person_record_id: row["person_id"]).order('created_at desc').first.status
+          max_status = RecordStatus.where(person_record_id: row["person_id"]).order('created_at desc').first.status
 
-          # status_match = params[:statuses].include? "#{max_status}"
+          status_match = params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.include? "#{max_status}"
 
-          # next if status_match == false
+          next if status_match == false
           person = Record.find(row["person_id"])
           next if person.blank?
           next if person.first_name.blank?  && person.last_name.blank?
