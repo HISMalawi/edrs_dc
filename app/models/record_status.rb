@@ -1,5 +1,5 @@
 class RecordStatus < ActiveRecord::Base
-	after_commit :push_to_couchDB
+	after_commit  :push_to_remote
 	before_create :set_id
 	self.table_name = "person_record_status"
 	def person
@@ -45,6 +45,11 @@ class RecordStatus < ActiveRecord::Base
 		end
 		
 		return  Pusher.database.save_doc(data)
+
+	end
+
+	def push_to_remote
+		return  Pusher2.push(self.as_json)
 
 	end
 end

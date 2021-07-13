@@ -1,6 +1,11 @@
 class Record < ActiveRecord::Base
-
+	after_commit :push_to_couchDB
+	before_create :set_id
 	self.table_name = "people"
+
+	def set_id
+		self.person_id = SecureRandom.uuid if self.person_id.blank?
+	end
 
 	def den
 		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH ENTRY NUMBER'").first.identifier rescue ''
@@ -11,7 +16,17 @@ class Record < ActiveRecord::Base
 	end
 
 	def barcode
-		return RecordIdentifier.where("person_record_id='#{self.person_id}' AND identifier_type = 'DEATH REGISTRATION NUMBER'").first.identifier rescue ''
+		barcode = RecordIdentifier.where(person_record_id: self.id,identifier_type: "Form Barcode").first
+		if barcode.present?
+		   return barcode.identifier
+		else
+			barcode = BarcodeRecord.where(person_record_id: self.id).last
+			if barcode.present? 
+				  return barcode.barcode
+			else
+				  return   "XXXXXXXX"
+			end
+		end
 	end
 
   	def status
@@ -173,5 +188,65 @@ class Record < ActiveRecord::Base
 			str = "#{str} #{self.mother_last_name}"
 		end
 		return str.strip  
+	end
+	def self.create_person(parameters)
+		params = parameters[:person]
+		params[:acknowledgement_of_receipt_date] = Time.now	
+		if params[:onset_death_interval1].present?
+			params[:onset_death_interval1] = self.calculate_time(params[:onset_death_interval1].to_i,params[:unit_onset_death_interval1])
+			
+		end
+	
+		if params[:onset_death_interval2].present?
+			params[:onset_death_interval2] = self.calculate_time(params[:onset_death_interval2].to_i,params[:unit_onset_death_interval2])
+		end
+	
+		if params[:onset_death_interval3].present?
+			params[:onset_death_interval3] = self.calculate_time(params[:onset_death_interval3].to_i,params[:unit_onset_death_interval3])
+		  end
+	
+		if params[:onset_death_interval4].present?
+			params[:onset_death_interval4] = self.calculate_time(params[:onset_death_interval4].to_i,params[:unit_onset_death_interval4])
+		end
+		person = self.create(params)
+
+		if parameters[:other_sig_cause_of_death1].present?
+			OtherSignificantCause.create({
+				person_id: person.id,
+				cause: parameters[:other_sig_cause_of_death1],
+				created_at: Time.now,
+				updated_at: Time.now
+			})
+			if parameters[:other_sig_cause_of_death2].present?
+				OtherSignificantCause.create({
+					person_id: person.id,
+					cause: parameters[:other_sig_cause_of_death2],
+					created_at: Time.now,
+					updated_at: Time.now
+				})
+			end
+		  end
+	end
+
+	def push_to_couchDB
+		data =  Pusher.database.get(self.id) rescue {}
+		
+		self.as_json.keys.each do |key|
+			next if key == "_rev"
+			next if key =="_deleted"
+			if key == "person_id"
+			 	data["_id"] = self.as_json[key]
+			elsif key=="voided"
+				data[key] = (self.as_json[key]==1? true : false)
+			else
+			 	data[key] = self.as_json[key]
+			end
+			if data["type"].nil?
+				data["type"] = "Person"
+			end
+		end
+		
+		return  Pusher.database.save_doc(data)
+
 	end
 end

@@ -28,8 +28,19 @@ id = []
 
 while page <= pages
 	Barcode.all.page(page).per(pagesize).each do |barcode|
+		next if barcode.district_code != SETTINGS['district_code']
 		begin
 			barcode.insert_update_into_mysql
+
+			statuses_query = "SELECT * FROM person_record_status WHERE  person_record_id='#{barcode.person_record_id}' ORDER BY created_at"
+			statuses = connection.select_all(statuses_query).as_json
+			last_status = statuses.last rescue nil
+			next if last_status.present?
+			person = Person.find(barcode.person_record_id)
+			person.insert_update_into_mysql
+			PersonRecordStatus.by_person_record_id.key(person.id).each do |status|
+				status.insert_update_into_mysql
+			end
 		rescue Exception => e
 			error = "#{barcode.id} : #{e.to_s}"
 			add_to_file(error)
@@ -51,6 +62,7 @@ id = []
 
 while page <= pages
 	Person.all.page(page).per(pagesize).each do |status|
+		next if status.district_code != SETTINGS['district_code']
 		status.insert_update_into_mysql
 	end
 
@@ -68,6 +80,7 @@ id = []
 
 while page <= pages
 	PersonIdentifier.all.page(page).per(pagesize).each do |identifier|
+		next if status.district_code != SETTINGS['district_code']
 		if identifier.identifier_type == "Form Barcode"
           barcode = BarcodeRecord.where(person_record_id: identifier.person_record_id).last
 

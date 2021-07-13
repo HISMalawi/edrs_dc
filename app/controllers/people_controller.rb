@@ -123,7 +123,7 @@ class PeopleController < ApplicationController
 
       person_params[:changed_by] = User.current_user.id
 
-      person = Person.create_person(params)
+      person = Record.create_person(params)
 
       if SETTINGS["potential_duplicate"]
 

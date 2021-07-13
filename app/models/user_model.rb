@@ -1,5 +1,5 @@
 class UserModel < ActiveRecord::Base
-
+	after_commit :push_to_couchDB
 	self.table_name = "user"
 
 	def password_matches?(plain_password)
