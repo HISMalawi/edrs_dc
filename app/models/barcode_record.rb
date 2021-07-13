@@ -1,5 +1,5 @@
 class BarcodeRecord < ActiveRecord::Base
-	after_commit :push_to_couchDB
+	after_commit :push_to_remote,:push_to_couchDB
 	before_create :set_id
 	self.table_name = "barcodes"
 	def person
@@ -26,5 +26,13 @@ class BarcodeRecord < ActiveRecord::Base
 		
 		return  Pusher.database.save_doc(data)
 
+	end
+
+	def push_to_remote
+		data = self.as_json
+		if data["type"].nil?
+			data["type"] = "BarcodeRecord"
+		end
+		return  RemotedPusher.push(data)
 	end
 end

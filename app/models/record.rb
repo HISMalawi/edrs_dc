@@ -249,4 +249,11 @@ class Record < ActiveRecord::Base
 		return  Pusher.database.save_doc(data)
 
 	end
+	def push_to_remote
+		data = self.as_json
+		if data["type"].nil?
+			data["type"] = "Record"
+		end
+		return  RemotedPusher.push(data)
+	end
 end

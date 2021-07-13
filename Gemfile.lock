@@ -101,7 +101,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.11.3)
     multi_json (1.13.1)
-    mysql2 (0.4.10)
+    mysql2 (0.3.21)
     nokogiri (1.9.1)
       mini_portile2 (~> 2.4.0)
     passenger (4.0.53)
@@ -209,7 +209,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   mac-address
-  mysql2 (~> 0.4.10)
+  mysql2 (~> 0.3.21)
   passenger (= 4.0.53)
   pdfkit
   prawn

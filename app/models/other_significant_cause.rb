@@ -1,5 +1,5 @@
 class OtherSignificantCause < ActiveRecord::Base
-	after_commit :push_to_couchDB
+	after_commit :push_to_couchDB,:push_to_remote
 	before_create :set_id
 	self.table_name = "other_significant_causes"
 	def person
@@ -27,6 +27,12 @@ class OtherSignificantCause < ActiveRecord::Base
 		end
 		
 		return  Pusher.database.save_doc(data)
-
+	end
+	def push_to_remote
+		data = self.as_json
+		if data["type"].nil?
+			data["type"] = "OtherSignificantCauseRecord"
+		end
+		return  RemotedPusher.push(data)
 	end
 end
