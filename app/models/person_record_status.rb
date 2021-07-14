@@ -48,7 +48,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	end
 
 	def person
-	    return Person.find(self.person_record_id)    	
+	    return Record.find(self.person_record_id)    	
 	end
 
 	def self.change_status(person,currentstatus,comment=nil)
@@ -58,7 +58,7 @@ class PersonRecordStatus < CouchRest::Model::Base
                                   :status => currentstatus,
                                   :comment => comment,
                                   :district_code => person.district_code,
-                                  :creator => (User.current_user.id rescue nil)})
+                                  :creator => (UserModel.current_user.id rescue nil)})
 
       PersonRecordStatus.by_person_recent_status.key(person.id).each.sort_by{|d| d.created_at}.each do |s|
         next if s === new_status
@@ -108,7 +108,7 @@ class PersonRecordStatus < CouchRest::Model::Base
 	end
 
 	def create_audit
-              Audit.create({
+              AuditRecord.create({
                                     :record_id  => self.person_record_id,
                                     :audit_type => "Status Change",
                                     :reason     => self.comment,

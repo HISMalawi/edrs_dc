@@ -5,7 +5,7 @@ end
 
 RecordStatus.where(status:'MARKED APPROVAL',voided:0, district_code: SETTINGS['district_code']).order(:created_at).limit(limit).each do |s|
 	begin
-		a = Person.find(s.person_record_id)
+		a = Record.find(s.person_record_id)
 		if a.den.split("/")[0] != SETTINGS['district_code']
 			PersonIdentifier.assign_den(a, s.creator)
 			d= PersonRecordStatus.find(s.person_record_status_id)

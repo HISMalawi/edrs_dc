@@ -17,6 +17,6 @@ class MyLock < CouchRest::Model::Base
 	 end
 
 	 def set_district_code
-	    self.district_code = (User.current_user.district_code rescue "HQ")
+	    self.district_code = (UserModel.current_user.district_code rescue "HQ")
 	 end
 end

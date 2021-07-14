@@ -57,7 +57,7 @@
             <tr><td><button onclick="window.location='/change_password'" style="width: 250px">Change Password</button></td></tr>
 
          
-        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") %>
+        <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Activate User") %>
             <tr><td><button onclick="window.location='/users/<%= @user.id %>/edit'" style="width: 250px">Edit demographics</button></td></tr>
         <%end%>
         <tr><td><button onclick="window.location='/keyboard_preference?id=<%= @user.id %>'" style="width: 250px">Keyboard Preference</button></td></tr>

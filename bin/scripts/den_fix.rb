@@ -9,7 +9,7 @@ person_counter = 0
 dens.each do |d|
 	next if d['count'].to_i == 1
 	puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-	person = Person.find(d['person_record_id']) 
+	person = Record.find(d['person_record_id']) 
 	identifiers = RecordIdentifier.where(person_record_id: person.id, identifier_type:'DEATH ENTRY NUMBER')
 	counter = 0
 	identifiers.each do |i|

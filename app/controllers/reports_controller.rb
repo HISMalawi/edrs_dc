@@ -133,7 +133,7 @@ class ReportsController < ApplicationController
 			query = "SELECT count(person_id) as count, gender , status, person_record_status.created_at , person_record_status.updated_at 
 					 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
 					 WHERE status = '#{status_map[params[:status]]}' AND gender = '#{g}' 
-					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 AND person_record_status.district_code = '#{UserModel.current_user.district_code}' 
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
 			puts query
@@ -182,7 +182,7 @@ class ReportsController < ApplicationController
 			query = "SELECT count(person_id) as count, gender FROM people 
 					WHERE people.voided = 1 AND people.voided_date >= '#{start_date}' 
 					AND people.voided_date <='#{end_date}' AND people.gender = '#{g}'
-		 			AND people.district_code = '#{User.current_user.district_code}' GROUP BY gender"
+		 			AND people.district_code = '#{UserModel.current_user.district_code}' GROUP BY gender"
 
 	
 			count_row = SimpleSQL.query_exec(query).split("\n")[1]
@@ -229,7 +229,7 @@ class ReportsController < ApplicationController
 			query = "SELECT count(person_id) as count, gender , status, person_record_status.created_at , person_record_status.updated_at 
 					 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
 					 WHERE status = 'DC REPRINT' AND gender = '#{g}' 
-					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 AND person_record_status.district_code = '#{UserModel.current_user.district_code}' 
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
 	
@@ -277,7 +277,7 @@ class ReportsController < ApplicationController
 			query = "SELECT count(person_id) as count, gender , status, person_record_status.created_at , person_record_status.updated_at 
 					 FROM people INNER JOIN person_record_status ON people.person_id  = person_record_status.person_record_id
 					 WHERE status = 'DC AMEND' AND gender = '#{g}' 
-					 AND person_record_status.district_code = '#{User.current_user.district_code}' 
+					 AND person_record_status.district_code = '#{UserModel.current_user.district_code}' 
 					 AND person_record_status.created_at >= '#{start_date}' AND person_record_status.created_at <='#{end_date}'
 					 GROUP BY status,gender"
 

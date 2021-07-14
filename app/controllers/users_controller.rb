@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   # GET /users/1.json
   def show
     
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
 
     @section = "View User"
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Create User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Create User"))
 
     @user = User.new
 
@@ -84,7 +84,7 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Update User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Update User"))
 
     @section = "Edit User"
 
@@ -106,13 +106,13 @@ class UsersController < ApplicationController
 
   def keyboard_preference
       if params[:preferred_keyboard].present?
-           @user = User.current_user rescue nil
+           @user = UserModel.current_user rescue nil
            @user.preferred_keyboard = params[:preferred_keyboard]
            @user.save
            flash[:notice] = "Keyboard preference changed succesfully!"
            redirect_to '/my_account'
       else
-       @user = User.current_user rescue nil
+       @user = UserModel.current_user rescue nil
       end
 
   end
@@ -135,7 +135,7 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Create User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Create User"))
      
       user = User.by_username.key(params[:user]['username']).first
       
@@ -202,7 +202,7 @@ class UsersController < ApplicationController
     end
 
     respond_to do |format|
-      if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false) and @user.update_attributes(user_params)
+      if ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false) and @user.update_attributes(user_params)
          AuditRecord.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Updated user") 
         format.html { redirect_to @user, :notice => 'User was successfully updated.' }
         format.json { render :show, :status => :ok, :location => @user }
@@ -218,9 +218,9 @@ class UsersController < ApplicationController
   # DELETE /users/1.json
   def destroy
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Deactivate User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Deactivate User"))
 
-    @user.destroy if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
+    @user.destroy if ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
     AuditRecord.create(record_id: @user.id, audit_type: "Audit", level: "User", reason: "Destroyed user")
     respond_to do |format|
       format.html { redirect_to "/view_users", :notice => 'User was successfully destroyed.' }
@@ -230,7 +230,7 @@ class UsersController < ApplicationController
 
   def block
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Deactivate User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Deactivate User"))
 
     @users = User.all.each
 
@@ -244,7 +244,7 @@ class UsersController < ApplicationController
 
   def unblock
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Activate User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Activate User"))
 
     @users = User.all.each
 
@@ -257,13 +257,13 @@ class UsersController < ApplicationController
   end
 
   def block_user
-    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Deactivate User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level(@facility_type).include?("Deactivate User"))
 
     user = User.find(params[:id]) rescue nil
 
     if !user.nil?
 
-      user.update_attributes(:active => false, :un_or_block_reason => params[:reason]) if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
+      user.update_attributes(:active => false, :un_or_block_reason => params[:reason]) if ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
       AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Blocked user")
 
     end
@@ -278,13 +278,13 @@ class UsersController < ApplicationController
 
   def unblock_user
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Activate User"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Activate User"))
 
     user = User.find(params[:id]) rescue nil
 
     if !user.nil?
 
-      user.update_attributes(:active => true, :un_or_block_reason => params[:reason]) if ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
+      user.update_attributes(:active => true, :un_or_block_reason => params[:reason]) if ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
       AuditRecord.create(record_id: user.id, audit_type: "Audit", level: "User", reason: "Unblocked user")
 
     end
@@ -299,7 +299,7 @@ class UsersController < ApplicationController
 
   def view
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     district_code = current_user.district_code
     
@@ -324,7 +324,7 @@ class UsersController < ApplicationController
 
   def query
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     results = []
     if params[:active].present?
@@ -366,7 +366,7 @@ class UsersController < ApplicationController
 
   def search
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     @section = "Search for User"
 
@@ -377,7 +377,7 @@ class UsersController < ApplicationController
   end
 
   def view_active
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     @users = User.all.each
 
@@ -389,7 +389,7 @@ class UsersController < ApplicationController
   end
 
   def view_blocked
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     @users = User.all.each
 
@@ -411,7 +411,7 @@ class UsersController < ApplicationController
   end
   def search_by_username
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     name = params[:id].strip rescue ""
 
@@ -429,7 +429,7 @@ class UsersController < ApplicationController
 
     users.each do |user|
 
-      next if user.username.strip.downcase == User.current_user.username.strip.downcase
+      next if user.username.strip.downcase == UserModel.current_user.username.strip.downcase
 
       record = {
           "username" => "#{user.username}",
@@ -449,7 +449,7 @@ class UsersController < ApplicationController
   
   def search_by_active
 
-    redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("View Users"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("View Users"))
 
     status = params[:status] == "true" ? true : false 
   
@@ -459,7 +459,7 @@ class UsersController < ApplicationController
      
     users.each do |user|
 
-      next if user.username.strip.downcase == User.current_user.username.strip.downcase
+      next if user.username.strip.downcase == UserModel.current_user.username.strip.downcase
 
       record = {
           "username" => "#{user.username}",
@@ -501,24 +501,24 @@ class UsersController < ApplicationController
 
   def my_account
     
-    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Change own password"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level(@facility_type).include?("Change own password"))
 
     @section = "My Account"
 
-    @user = User.current_user
+    @user = UserModel.current_user
 
     render :layout => "landing"
 
   end
 
   def change_password
-    redirect_to "/" and return if !(User.current_user.activities_by_level(@facility_type).include?("Change own password"))
+    redirect_to "/" and return if !(UserModel.current_user.activities_by_level(@facility_type).include?("Change own password"))
 
     @section = "Change Password"
 
     @targeturl = "/change_password"
 
-    @user = User.current_user
+    @user = UserModel.current_user
 
      @password_attempt = @user.password_attempt
 
@@ -526,7 +526,7 @@ class UsersController < ApplicationController
 
   end
   def confirm_password
-      user = User.current_user rescue User.find(params[:user_id])
+      user = UserModel.current_user rescue User.find(params[:user_id])
       password = params[:old_password]
       if user.password_matches?(password)
           render :text => {:response => true}.to_json
@@ -538,7 +538,7 @@ class UsersController < ApplicationController
 
   def update_password
      
-    user = User.current_user
+    user = UserModel.current_user
     user.plain_password = params[:user][:new_password].strip
     user.password_attempt = 0
     user.last_password_date = Time.now
@@ -595,50 +595,6 @@ class UsersController < ApplicationController
     render :layout => "landing"
   end
 
-   def build_mysql_database
-    @section = "Build MSQL"
-    start_date = "1900-01-01 00:00:00".to_time
-    #end_date = (Date.today - 1.day).to_date.strftime("%Y-%m-%d 23:59:59").to_time
-    end_date = (Date.today).to_date.strftime("%Y-%m-%d 23:59:59").to_time
-
-    @couchdb_files = {
-      'Person' => {count: Person.count, name: 'Person doc.', id: 'person_doc', 
-        doc_primary_key: 'person_id', table_name: 'people'},
-
-      'PersonIdentifier' => {count: PersonIdentifier.count, name: 'PersonIdentifier doc.', 
-        id: 'person_identifier_doc', doc_primary_key: 'person_identifier_id', table_name: 'person_identifier'},
-
-      'PersonRecordStatus' => {count: PersonRecordStatus.count, name: 'PersonRecordStatus doc.', 
-        id: 'person_record_status_doc', doc_primary_key: 'person_record_status_id', table_name: 'person_record_status'},
-      
-      'District' => {count: District.count, name: 'District doc.', 
-        id: 'district_doc', doc_primary_key: 'district_id', table_name: 'district'},
-
-      'Nationality' => {count: Nationality.count, name: 'Nationality doc.', 
-        id: 'nationality_doc', doc_primary_key: 'nationality_id', table_name: 'nationality'},
-
-      'Village' => {count: Village.count, name: 'Village doc.', 
-        id: 'village_doc', doc_primary_key: 'village_id', table_name: 'village'},
-
-      'TraditionalAuthority' => {count: TraditionalAuthority.count, name: 'TraditionalAuthority doc.', 
-        id: 'traditional_authority_doc', doc_primary_key: 'traditional_authority_id', table_name: 'traditional_authority'},
-
-      'User' => {count: User.count, name: 'User doc.', 
-        id: 'user_doc', doc_primary_key: 'user_id', table_name: 'user'},
-
-      'Role' => {count: Role.count, name: 'Role doc.', 
-        id: 'role_doc', doc_primary_key: 'role_id', table_name: 'role'},
-
-      'Country' => {count: Country.count, name: 'Country doc.', 
-        id: 'country_doc', doc_primary_key: 'country_id', table_name: 'country'}
-
-    }
-
-    (@couchdb_files || []).each do |doc, data|
-      create_file(data[:doc_primary_key], doc, data[:table_name])
-    end
-    render :layout => "landing"
-  end
 
   def create_mysql_database
     start_date = "1900-01-01 00:00:00".to_time
@@ -805,7 +761,7 @@ EOF
 
     end
 
-    @admin = ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
+    @admin = ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
 
   end
 

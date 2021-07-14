@@ -31,6 +31,7 @@ class LoginsController < ApplicationController
       end
 
       session[:current_user_id] = user.username
+      session[:current_user] = user
       session[:expires_at] =  Time.current + 4.hours
 
       login!(user,params[:remote_portal])
@@ -44,14 +45,14 @@ class LoginsController < ApplicationController
 
   def logout
     # session[:touchcontext] = nil
-    if User.current_user.present?
-      MyLock.by_user_id.key(User.current_user.id).each do |lock|
+    if UserModel.current_user.present?
+      MyLock.by_user_id.key(UserModel.current_user.id).each do |lock|
         lock.destroy
       end      
     end
 
     begin
-      user_access = UserAccess.by_user_id.key(User.current_user.id).each rescue []
+      user_access = UserAccess.by_user_id.key(UserModel.current_user.id).each rescue []
       user_access.each do |access|
         access.destroy
       end      

@@ -3,7 +3,7 @@
 		<input type="hidden" name="next_url" value="<%= params[:next_url]%>"> 
 	<%end%>
 		<input type="hidden" name="id" value="<%= params[:id]%>">
-		<input type="hidden" name="user_id" value="<%=User.current_user.id%>">
+		<input type="hidden" name="user_id" value="<%=UserModel.current_user.id%>">
 		<input name="reason" helpText ="Reason for <%= params[:operation]%> user(<%=@user.username%>) <i style='color: red'>*</i>" id="reason">
 	
 </form>

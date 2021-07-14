@@ -17,7 +17,7 @@ class RemotedPusher
             "OtherSignificantCauseRecord" => "other_significant_cause_id"
         }
 
-        Thread.new do
+       
             begin 
                 url = "#{SYNC_SETTINGS[:hq][:protocol]}://#{SYNC_SETTINGS[:hq][:host]}:3001/"
                 url = URI.parse(url)
@@ -33,11 +33,11 @@ class RemotedPusher
                     type = response_data["data"]["type"]
 
                     if  response_data["message"] =="Success"    
-                        insert_query = "INSERT INTO  pull_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
+                        insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
                         VALUES('#{response_data["data"][model_map[type]]}','#{type}',
                         1, '#{SETTINGS['district_code']}', NOw(),NOW());"
                     else
-                        insert_query = "INSERT INTO  pull_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
+                        insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
                         VALUES('#{response_data["data"][model_map[type]]}','#{type}',
                         0, '#{SETTINGS['district_code']}', NOw(),NOW());"
                     end
@@ -45,18 +45,18 @@ class RemotedPusher
                     SimpleSQL.query_exec(insert_query)
                 else
                     type = params["data"]["type"]
-                    insert_query = "INSERT INTO  pull_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
+                    insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
                     VALUES('#{params["data"][model_map[type]]}','#{type}',
                     0, '#{SETTINGS['district_code']}', NOw(),NOW());"
                     SimpleSQL.query_exec(insert_query)
                 end
             rescue
                 type = params["type"]
-                insert_query = "INSERT INTO  pull_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
+                insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
                 VALUES('#{params[model_map[type]]}','#{type}',
                 0, '#{SETTINGS['district_code']}', NOw(),NOW());"
                 SimpleSQL.query_exec(insert_query)
             end
-        end
     end
+    
 end

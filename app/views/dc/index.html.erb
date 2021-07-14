@@ -33,7 +33,7 @@
                                     
                                   </div>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/manage_cases?next_url=/'" >
                                     <div class="icon">
@@ -46,7 +46,7 @@
                                   </div>
                           <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("Manage duplicates") && SETTINGS['decentralized_printing']%>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Manage duplicates") && SETTINGS['decentralized_printing']%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/print_certificates?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -59,7 +59,7 @@
                                   </div>
                         <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role != "Data Clerk"%>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") && UserModel.current_user.role != "Data Clerk"%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/special_cases?next_url=/'" >
                                     <div class="icon">
@@ -71,7 +71,7 @@
                                     
                                   </div>
                           <%end%>
-                         <% if User.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
+                         <% if UserModel.current_user.activities_by_level("DC").include?("Request to open a closed case") %>
                                  <div class="touch_btn" onmousedown="window.location = '/dc/manage_requests?next_url=/'" >
                                     <div class="icon">
                                            <i class="fa fa-folder-open"></i>
@@ -83,7 +83,7 @@
                                   </div>
                           <%end%>
                          
-                          <% if  User.current_user.activities_by_level("DC").include?("Manage duplicates") %>
+                          <% if  UserModel.current_user.activities_by_level("DC").include?("Manage duplicates") %>
                                   <div class="touch_btn" onmousedown="window.location = '/dc/manage_duplicates?next_url=/'" >
                                     <div class="icon">
                                            <i class="fa fa-clone"></i>
@@ -104,10 +104,10 @@
 
                                       
                               </div>
-                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
+                            <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
 
                                     <div class="touch_btn"  onclick="window.location = '/users?next_url=/'"   >
                                           <div class="icon">
@@ -158,7 +158,7 @@
                                     </div>
                               <%end%>                              
 
-                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
+                                <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/my_account';" >
                                         <div class="icon">
@@ -180,7 +180,7 @@
                                 <td> :</td> 
                                 <td id="reported"  style="text-align:right; width: 30%">0</td>
                               </tr>
-                          <% if User.current_user.role == "ADR"%>
+                          <% if UserModel.current_user.role == "ADR"%>
                             <tr onmousedown="window.location.href='/dc/approve_cases'">
                                 <td><a href="/dc/approve_cases" >Complete </a></td>
                                 <td> :</td>

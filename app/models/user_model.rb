@@ -1,7 +1,7 @@
 class UserModel < ActiveRecord::Base
 	after_commit :push_to_couchDB,:push_to_remote
 	self.table_name = "user"
-
+	cattr_accessor :current_user
 	def password_matches?(plain_password)
 	    not plain_password.nil? and self.password == plain_password
 	end
@@ -35,6 +35,17 @@ class UserModel < ActiveRecord::Base
 		
 		return  Pusher.database.save_doc(data)
 
+	end
+	def has_role?(role_name)
+		self.current_user.role == role_name ? true : false
+	end
+	
+	def activities_by_level(level) 
+		RoleRecord.where(level: level, role: self.current_user.role).last.activities.split("|") rescue []
+	end
+
+	def self.get_active_user(username)
+		UserModel.where(username: username, active: 1).first
 	end
 
 	def push_to_remote

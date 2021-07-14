@@ -34,12 +34,12 @@ class PersonIdentifier < CouchRest::Model::Base
   end
 
   def person
-    person = Person.find(self.person_record_id)
+    person = Record.find(self.person_record_id)
     return person
   end
 
   def set_creator
-    self.creator =  User.current_user.id
+    self.creator =  UserModel.current_user.id
   end
 
   def set_check_digit
@@ -203,11 +203,11 @@ class PersonIdentifier < CouchRest::Model::Base
 
           person.save
 
-          Audit.create(record_id: person.id,
-                         audit_type: "Audit",
-                         user_id: creator,
-                         level: "Person",
-                         reason: "Approved record")
+          AuditRecord.create(record_id: person.id,
+                              audit_type: "Audit",
+                              user_id: creator,
+                              level: "Person",
+                              reason: "Approved record")
       self.can_assign_den = true
 
     else

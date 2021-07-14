@@ -13,14 +13,13 @@ class PeopleController < ApplicationController
   end
 
 	def index
-
       @facility = facility
 
       @district = district
 
       @section = "Home"
 
-      @portal_link = (UserAccess.by_user_id.key(User.current_user.id).last.portal_link rescue nil)
+      @portal_link = (UserAccess.by_user_id.key(UserModel.current_user.id).last.portal_link rescue nil)
 
       render :layout => "landing"
 
@@ -28,13 +27,13 @@ class PeopleController < ApplicationController
 
   def portal_logout
 
-    if User.current_user.present?
-      MyLock.by_user_id.key(User.current_user.id).each do |lock|
+    if UserModel.current_user.present?
+      MyLock.by_user_id.key(UserModel.current_user.id).each do |lock|
         lock.destroy
       end      
     end
 
-    user_access = UserAccess.by_user_id.key(User.current_user.id).each
+    user_access = UserAccess.by_user_id.key(UserModel.current_user.id).each
     user_access.each do |access|
       access.destroy
     end
@@ -65,7 +64,7 @@ class PeopleController < ApplicationController
   end
 
   def new
-	   #redirect_to "/" and return if !(User.current_user.activities_by_level("Facility").include?("Register a record"))
+	   #redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
      @current_nationality = Nationality.by_nationality.key("Malawian").last
      if session[:district_code].blank?
@@ -81,7 +80,7 @@ class PeopleController < ApplicationController
      
 	   if !params[:id].blank?
 	   else
-	    	@person = Person.new if @person.nil?
+	    	@person = Record.new if @person.nil?
 	   end
 	    @section = "New Person"
 	    render :layout => "touch"
@@ -93,7 +92,7 @@ class PeopleController < ApplicationController
 
   def add_cause_of_death
 
-        @person = Person.find(params[:id])
+        @person = Record.find(params[:id])
 
         render :layout => "touch"
     
@@ -101,7 +100,7 @@ class PeopleController < ApplicationController
 
   def update_cause_of_death
 
-      person = Person.find(params[:id])
+      person = Record.find(params[:id])
 
       if person.update_attributes(params[:person])
 
@@ -119,9 +118,9 @@ class PeopleController < ApplicationController
   def create
       person_params = params[:person]
 
-      person_params[:created_by] = User.current_user.id
+      person_params[:created_by] = UserModel.current_user.id
 
-      person_params[:changed_by] = User.current_user.id
+      person_params[:changed_by] = UserModel.current_user.id
 
       person = Record.create_person(params)
 
@@ -163,27 +162,27 @@ class PeopleController < ApplicationController
                               :person_record_id => person.id.to_s,
                               :barcode => person_params[:barcode].to_s,
                               :district_code => (person.district_code  rescue SETTINGS['district_code']),
-                              :creator => User.current_user.id
+                              :creator => UserModel.current_user.id
                               })
         
       end
 
       #create status
-
-      if Person.duplicate.nil?
+      duplicate = DuplicateRecord.where(new_record_id: person.id)
+      if duplicate.count > 0
           # PersonRecordStatus.create({
           #                             :person_record_id => person.id.to_s,
           #                             :status => "DC ACTIVE",
           #                             :comment =>"Record Created",
           #                             :district_code =>  person.district_code,
-          #                             :creator => User.current_user.id})
+          #                             :creator => UserModel.current_user.id})
           RecordStatus.create({
                                 :person_record_id => person.id.to_s,
                                 :status => "DC ACTIVE",
                                 :comment => "Record Created",
                                 :district_code =>  person.district_code,
                                 :voided => 0,
-                                :creator => (User.current_user.id rescue nil),
+                                :creator => (UserModel.current_user.id rescue nil),
                                 :created_at => Time.now,
                               	:updated_at => Time.now})
         else
@@ -217,18 +216,16 @@ class PeopleController < ApplicationController
           #                             :status => status,
           #                             :district_code => person.district_code,
           #                             :comment =>"System mark record as a potential",
-          #                             :creator => User.current_user.id})
+          #                             :creator => UserModel.current_user.id})
            RecordStatus.create({
                                         :person_record_id => person.id.to_s,
                                         :status => status,
                                         :comment =>"System mark record as a potential",
                                         :district_code =>  person.district_code,
                                         :voided => 0,
-                                        :creator => (User.current_user.id rescue nil),
+                                        :creator => (UserModel.current_user.id rescue nil),
                                         :created_at => Time.now,
                               	        :updated_at => Time.now})
-
-          Person.duplicate = nil
 
         end
 
@@ -262,7 +259,7 @@ class PeopleController < ApplicationController
                       :father_first_name => (params[:father_first_name] rescue nil)
                     }
 
-      person  = Person.new(field_hash)
+      person  = Record.new(field_hash)
       people = []
       exact_duplicate = false
       if SETTINGS["potential_duplicate"]
@@ -326,7 +323,7 @@ class PeopleController < ApplicationController
 
   def all
 
-      people = Person.all
+      people = Record.all
 
       render :text => people.to_json
     
@@ -394,7 +391,7 @@ class PeopleController < ApplicationController
     people = []
     record_status = [] 
     
-    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
+    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{UserModel.current_user.district_code}'").limit(params[:size].to_i).offset(params[:page].to_i * params[:size].to_i).each do |status|
 
 ###############
 
@@ -430,7 +427,7 @@ class PeopleController < ApplicationController
       statuses = params[:statuses]
 
       statuses.each do |status|
-          record_status << [User.current_user.district_code,status]
+          record_status << [UserModel.current_user.district_code,status]
       end
 
     
@@ -480,7 +477,7 @@ class PeopleController < ApplicationController
       cases = []
 
       data.each do |row|
-          person = Person.find(row["person_record_id"])
+          person = Record.find(row["person_record_id"])
           person["den"] = person.den rescue ""
           person["drn"] = person.drn rescue ""
           people << person
@@ -550,7 +547,7 @@ class PeopleController < ApplicationController
         
           person = pid.person
           if SETTINGS['site_type'] == "remote"
-              next if User.current_user.district_code != person.district_code
+              next if UserModel.current_user.district_code != person.district_code
           end
           people << person_selective_fields(person)
       end               
@@ -582,7 +579,7 @@ class PeopleController < ApplicationController
     end
 
     if params[:national_id].present?
-      Person.by_id_number.key(params[:national_id]).page(page).per(size).each do |person|
+      Record.where(id_number: params[:national_id]).each do |person|
         
           people << person_selective_fields(person)
       end               
@@ -605,7 +602,7 @@ class PeopleController < ApplicationController
       lock = MyLock.find(params[:lock_id]) rescue nil
  
       if lock.present?
-        if lock.user_id == User.current_user.id
+        if lock.user_id == UserModel.current_user.id
           lock.destroy
         end
       end
@@ -794,7 +791,7 @@ class PeopleController < ApplicationController
       end
   end
   def find
-    person = Person.find(params[:id])
+    person = Record.find(params[:id])
     person["status"] = PersonRecordStatus.by_person_recent_status.key(params[:id]).last.status
     render :text => person_selective_fields(person).to_json
   end
@@ -812,7 +809,7 @@ class PeopleController < ApplicationController
 
   def edit_field
 
-      @person = Person.find(params[:id])
+      @person = Record.find(params[:id])
 
       @helpText = params[:field].humanize
 
@@ -823,7 +820,7 @@ class PeopleController < ApplicationController
   end
 
   def update_field
-      person = Person.find(params[:id])
+      person = Record.find(params[:id])
       if person.update_person(params[:id],params[:person])
           change_log = {}
           params[:person].keys.each do |key|
@@ -852,7 +849,7 @@ class PeopleController < ApplicationController
               record["father_middle_name"] = (person.father_middle_name rescue nil)
               record["father_first_name"] = (person.father_first_name rescue nil)
               record["id"] = person.id
-              record["district_code"] = (User.current_user.district_code rescue SETTINGS['district_code'])
+              record["district_code"] = (UserModel.current_user.district_code rescue SETTINGS['district_code'])
 
               if SETTINGS['use_mysql_potential_search']
                   insert_potential_search(record)
@@ -1108,7 +1105,7 @@ class PeopleController < ApplicationController
 
   def person_label(person_id)
 
-    @person = Person.find(person_id)
+    @person = Record.find(person_id)
     sex =  @person.gender.match(/F/i) ? "(F)" : "(M)"
 
     place_of_death = @person.hospital_of_death  rescue ""
@@ -1188,23 +1185,23 @@ class PeopleController < ApplicationController
   
   def query_dc_sync
     page = params[:page] rescue 1
-      size = params[:size] rescue 40
-      people = []
-    Sync.by_facility_code.key(SETTINGS['facility_code'].to_s).page(page).per(size).each do |sync|
-      person = sync.person
-      person_details = {
-            id:           person.id,
-            first_name:   person.first_name,
-            last_name:    person.last_name,
-            middle_name:  person.middle_name,
-            gender:       person.gender,
-            date_reported:  person.created_at,
-            record_status:  sync.record_status,
-            dc_sync_status:  sync.dc_sync_status,
-            hq_sync_status:  sync.hq_sync_status
-      }
-      people << person_details
-    end
+    size = params[:size] rescue 40
+    people = []
+    # Sync.by_facility_code.key(SETTINGS['facility_code'].to_s).page(page).per(size).each do |sync|
+    #   person = sync.person
+    #   person_details = {
+    #         id:           person.id,
+    #         first_name:   person.first_name,
+    #         last_name:    person.last_name,
+    #         middle_name:  person.middle_name,
+    #         gender:       person.gender,
+    #         date_reported:  person.created_at,
+    #         record_status:  sync.record_status,
+    #         dc_sync_status:  sync.dc_sync_status,
+    #         hq_sync_status:  sync.hq_sync_status
+    #   }
+    #   people << person_details
+    # end
     render :text => people.to_json
   end
 ######################################################################################################################
@@ -1224,7 +1221,7 @@ class PeopleController < ApplicationController
       page = params[:page] rescue 1
       size = params[:size] rescue 40
       offset = page.to_i * size.to_i
-      render :text => Record.where(district_code: User.current_user.district_code, registration_type: params[:registration_type]).offset(offset).limit(size).each.to_json
+      render :text => Record.where(district_code: UserModel.current_user.district_code, registration_type: params[:registration_type]).offset(offset).limit(size).each.to_json
   end
 
 #########################################################################################################################
@@ -1300,7 +1297,7 @@ end
 
   def find_person
 
-    @person = Person.find(params[:id]) rescue nil
+    @person = Record.find(params[:id]) rescue nil
 
     @person = Person.new if @person.nil?
 

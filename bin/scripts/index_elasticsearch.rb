@@ -6,8 +6,7 @@ page_size = 100
 
 pages = people_count / page_size
 
-(0..pages).each do |page|
-    Person.by__id.page(page).per(page_size).each do |person|
+Record.all.each do |person|
         if SETTINGS["potential_duplicate"]
               record = {}
               record["first_name"] = person.first_name
@@ -36,6 +35,4 @@ pages = people_count / page_size
         else
           next
         end
-    end
-    puts "Indexed #{(page + 1) * page_size}"
 end

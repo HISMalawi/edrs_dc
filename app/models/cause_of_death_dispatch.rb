@@ -24,11 +24,11 @@ class CauseOfDeathDispatch < CouchRest::Model::Base
 	      self.district_code = SETTINGS["district_code"]
 	    end 
 	    if SETTINGS['site_type'] == "remote"
-	      self.district_code = User.current_user.district_code
+	      self.district_code = UserModel.current_user.district_code
 	    end
    	end
 
    	def set_creator
-	    self.creator = (User.current_user.id rescue User.by_created_at.each.first.id)
+	    self.creator = (UserModel.current_user.id rescue User.by_created_at.each.first.id)
 	end
 end

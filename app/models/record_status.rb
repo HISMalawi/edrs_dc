@@ -3,7 +3,7 @@ class RecordStatus < ActiveRecord::Base
 	before_create :set_id
 	self.table_name = "person_record_status"
 	def person
-		return Person.find(self.person_record_id)
+		return Record.find(self.person_record_id)
 	end
 	def set_id
 		self.person_record_status_id = SecureRandom.uuid if self.person_record_status_id.blank?
@@ -24,28 +24,6 @@ class RecordStatus < ActiveRecord::Base
 	        s.voided = 1
 	        s.save
 	    end
-	end
-
-	def push_to_couchDB
-		data =  Pusher.database.get(self.id) rescue {}
-		
-		self.as_json.keys.each do |key|
-			next if key == "_rev"
-			next if key =="_deleted"
-			if key == "person_record_status_id"
-			 	data["_id"] = self.as_json[key]
-			elsif key=="voided"
-				data[key] = (self.as_json[key]==1? true : false)
-			else
-			 	data[key] = self.as_json[key]
-			end
-			if data["type"].nil?
-				data["type"] = "PersonRecordStatus"
-			end
-		end
-		
-		return  Pusher.database.save_doc(data)
-
 	end
 
 	def push_to_remote

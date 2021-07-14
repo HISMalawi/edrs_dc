@@ -69,7 +69,7 @@ class Person < CouchRest::Model::Base
       #                             :person_record_id => self.id.to_s,
       #                             :status => "DC ACTIVE",
       #                             :district_code =>  self.district_code,
-      #                             :created_by => User.current_user.id})
+      #                             :created_by => UserModel.current_user.id})
 
       RecordStatus.create({
                                   :person_record_id => person.id.to_s,
@@ -77,7 +77,7 @@ class Person < CouchRest::Model::Base
                                   :comment => "Record Created",
                                   :district_code =>  self.district_code,
                                   :voided => 0,
-                                  :creator => (User.current_user.id rescue nil),
+                                  :creator => (UserModel.current_user.id rescue nil),
                               	  :created_at => Time.now,
                               	  :updated_at => Time.now})
 
@@ -95,7 +95,7 @@ class Person < CouchRest::Model::Base
                                   :person_record_id => self.id.to_s,
                                   :status => "DC POTENTIAL DUPLICATE",
                                   :district_code => self.district_code,
-                                  :creator => User.current_user.id},
+                                  :creator => UserModel.current_user.id},
                                   :voided => 0,
                                   :created_at => Time.now,
                                   :updated_at => Time.now)
@@ -122,7 +122,7 @@ class Person < CouchRest::Model::Base
 
   def self.update_state(id, status, audit_status)
 
-    person = Person.find(id)
+    person = Record.find(id)
     raise "Person with ID: #{id} not found".to_s if person.blank?
 
     status = status
@@ -145,7 +145,7 @@ class Person < CouchRest::Model::Base
 
   def set_district_code
     if SETTINGS['site_type'] == "remote"
-      self.district_code = User.current_user.district_code if self.district_code.blank?
+      self.district_code = UserModel.current_user.district_code if self.district_code.blank?
     else
        self.district_code = SETTINGS["district_code"] if self.district_code.blank?
     end   
@@ -176,7 +176,7 @@ class Person < CouchRest::Model::Base
                         :person_record_id => self.id.to_s,
                         :status => nextstatus,
                         :district_code =>(self.district_code rescue SETTINGS['district_code']),
-                        :creator => User.current_user.id,
+                        :creator => UserModel.current_user.id,
                         :voided => 0,
                         :created_at => Time.now,
                         :updated_at => Time.now})
@@ -362,7 +362,7 @@ class Person < CouchRest::Model::Base
 
   def update_person(id,params)
 
-       person = Person.find(id)
+       person = Record.find(id)
 
        if params[:place_of_death_district].present?
 
@@ -687,7 +687,7 @@ class Person < CouchRest::Model::Base
     return str.strip  
   end
   def self.qr_code_data(id)
-    person = Person.find(id)
+    person = Record.find(id)
     str = "05~#{person.npid}-#{person.den}-#{person.drn}"
     str += "~#{person.person_name}~#{person.birthdate.to_date.strftime("%d-%b-%Y")}~#{person.gender.first}"
     str += "~#{person.nationality}"    

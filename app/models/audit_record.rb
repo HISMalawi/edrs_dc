@@ -4,7 +4,7 @@ class AuditRecord < ActiveRecord::Base
 	self.table_name = "audit_trail"
 
 	def person
-		return Person.find(self.person_record_id)
+		return Record.find(self.person_record_id)
 	end
 	def set_id
 		self.audit_record_id = SecureRandom.uuid if self.audit_record_id.blank?

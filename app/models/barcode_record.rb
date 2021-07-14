@@ -3,7 +3,7 @@ class BarcodeRecord < ActiveRecord::Base
 	before_create :set_id
 	self.table_name = "barcodes"
 	def person
-		return Person.find(self.person_record_id)
+		return Record.find(self.person_record_id)
 	end
 	def set_id
 		self.barcode_id = SecureRandom.uuid if self.barcode_id.blank?

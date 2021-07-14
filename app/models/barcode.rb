@@ -21,7 +21,7 @@ class Barcode < CouchRest::Model::Base
   end
 
   def person
-	    person = Person.find(self.person_record_id)
+	    person = Record.find(self.person_record_id)
 	    return person
   end
 

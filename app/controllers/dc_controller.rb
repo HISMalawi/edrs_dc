@@ -14,7 +14,7 @@ class DcController < ApplicationController
 
       @section = "Home"
 
-      @portal_link = (UserAccess.by_user_id.key(User.current_user.id).last.portal_link rescue nil)
+      @portal_link = (UserAccess.by_user_id.key(UserModel.current_user.id).last.portal_link rescue nil)
       
       render :layout => "landing"
 		
@@ -95,7 +95,7 @@ class DcController < ApplicationController
 	def approve_record
 		person = Record.find(params[:id])
 		
-		RecordIdentifier.assign_den(person, User.current_user.id)
+		RecordIdentifier.assign_den(person, UserModel.current_user.id)
 		if person.status != 'HQ ACTIVE'
 			RecordStatus.change_status(person,"HQ ACTIVE","Record approved at DC")
 		end
@@ -123,14 +123,14 @@ class DcController < ApplicationController
 	end
 
 	def reaprove_record
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
 		unlock_users_record(person)
 		redirect_to params[:next_url]
 	end
 
 	def reject_record
-			person = Person.find(params[:id])
+			person = Record.find(params[:id])
 			RecordStatus.change_status(person, "DC REJECTED",params[:reason])	
 			unlock_users_record(person)		
 			AuditRecord.create({
@@ -152,7 +152,7 @@ class DcController < ApplicationController
 	end
 	
 	def mark_as_pending
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
 		unlock_users_record(person)
 		AuditRecord.create({
@@ -313,9 +313,9 @@ class DcController < ApplicationController
 
 	def show_duplicate
 
-		@person = Person.find(params[:id])
+		@person = Record.find(params[:id])
 
-		@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+		@status = RecordStatus.where(person_record_id: params[:id], voided:0).last
 
 	    @person_place_details = place_details(@person)
 
@@ -328,12 +328,12 @@ class DcController < ApplicationController
 	    		ids = log['duplicates'].split("|")
 	    		ids.each do |id|
 	    			 @existing_ids << id
-	    			 @statuses << PersonRecordStatus.by_person_recent_status.key(id).last.status
+	    			 @statuses << RecordStatus.where(person_record_id: params[:id], voided:0).last.status
 	    		end
 	    	end
 	    end
 
-	    @existing_record  = Person.find(@existing_ids[params[:index].to_i])
+	    @existing_record  = Record.find(@existing_ids[params[:index].to_i])
 
 	    @existing_place_details =  place_details(@existing_record)
 	   
@@ -349,8 +349,8 @@ class DcController < ApplicationController
 	end
 
 	def confirm_not_duplicate
-		person = Person.find(params[:id])
-		RecordIdentifier.assign_den(person, User.current_user.id)
+		person = Record.find(params[:id])
+		RecordIdentifier.assign_den(person, UserModel.current_user.id)
 		RecordStatus.change_status(person, "HQ ACTIVE",params[:comment])
 		check_den_assignment
 
@@ -381,18 +381,18 @@ class DcController < ApplicationController
 
 	def confirm_duplicate
 		
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 
 		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
-			RecordIdentifier.assign_den(person, User.current_user.id)
+			RecordIdentifier.assign_den(person, UserModel.current_user.id)
 			RecordStatus.change_status(person, "HQ ACTIVE",params[:comment])
 			check_den_assignment
 		end
 		
 		audit_record = Audit.find(params[:audit_id])
 		if audit_record.record_id != params[:id]
-			RecordStatus.change_status(Person.find(audit_record.record_id), "DC DUPLICATE",params[:comment])
-			Person.void_person(Person.find(audit_record.record_id),params[:user_id])
+			RecordStatus.change_status(Record.find(audit_record.record_id), "DC DUPLICATE",params[:comment])
+			Record.void_person(Record.find(audit_record.record_id),params[:user_id])
 		end
 
 		audit_log = audit_record.change_log rescue []
@@ -401,8 +401,8 @@ class DcController < ApplicationController
 			ids = d["duplicates"].split("|")
 			ids.each do |id|
 				next if params[:id] == id
-				RecordStatus.change_status(Person.find(id), "DC DUPLICATE",params[:comment])
-				Person.void_person(Person.find(id),params[:user_id])
+				RecordStatus.change_status(Record.find(id), "DC DUPLICATE",params[:comment])
+				Record.void_person(Record.find(id),params[:user_id])
 			end
 		end
 		
@@ -446,9 +446,9 @@ class DcController < ApplicationController
 	end
 
 	def approve_reprint
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "HQ REPRINT",params[:reason])
-		Audit.create({
+		AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC APPROVE REPRINT",
 							:level => "Person",
@@ -459,7 +459,7 @@ class DcController < ApplicationController
 
 	def mark_for_reprint
 		#raise params[:id].inspect
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC #{params[:reason].upcase}".squish,params[:reason])
 		if params[:barcode].present?
             BarcodeRecord.create({
@@ -481,14 +481,14 @@ class DcController < ApplicationController
 		redirect_to "#{params[:next_url].to_s}"		
 	end
 	def sent_to_hq_for_reprint
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 		RecordStatus.change_status(person, status.status.gsub("DC","HQ"))
 		unlock_users_record(person)
 		redirect_to "/dc/reprint_requests?next_url=/dc/manage_requests?next_url=/"
 	end
 	def do_amend
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC AMEND")
 		unlock_users_record(person)
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
@@ -496,7 +496,7 @@ class DcController < ApplicationController
 
 	def amendment
 		#raise params[:id].inspect
-		@person = Person.find(params[:id])
+		@person = Record.find(params[:id])
       	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
       	@person_place_details = place_details(@person)
       	#@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
@@ -534,7 +534,7 @@ class DcController < ApplicationController
 	end
 
 	def amendment_edit_field
-		@person = Person.find(params[:id])
+		@person = Record.find(params[:id])
 		@helpText = params[:field].humanize
       	@field = "person[#{params[:field]}]"
       	render :layout => "touch"
@@ -542,7 +542,7 @@ class DcController < ApplicationController
 
 	def amend_field
 		
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
 		if amendment_audit.present?
 			param_keys = params[:person].keys + (params[:prev].keys rescue [])
@@ -584,7 +584,7 @@ class DcController < ApplicationController
 	end
 
 	def proceed_amend
-		person = Person.find(params[:id])
+		person = Record.find(params[:id])
 
 	
 		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
@@ -647,7 +647,7 @@ class DcController < ApplicationController
 
 	def new_burial_report
 		@burial_report = BurialReport.new
-		@person = Person.find(params[:id])
+		@person = Record.find(params[:id])
 		render :layout => "touch"
 	end
 
@@ -674,23 +674,23 @@ class DcController < ApplicationController
 	    if SETTINGS['site_type']=="dc"
 	    	district_code = SETTINGS['district_code'].to_s
 	    else
-	    	district_code = User.current_user.district_code
+	    	district_code = UserModel.current_user.district_code
 	    end
-		Sync.by_district_code.key(district_code).page(page).per(size).each do |sync|
-			person = sync.person
-			person_details = {
-						id:          	person.id,
-						first_name:  	person.first_name,
-						last_name:   	person.last_name,
-						middle_name: 	person.middle_name,
-						gender:         person.gender,
-						date_reported: 	person.created_at,
-						record_status: 	sync.record_status,
-						dc_sync_status: sync.dc_sync_status,
-						hq_sync_status: sync.hq_sync_status
-			}
-			people << person_details
-		end
+		# Sync.by_district_code.key(district_code).page(page).per(size).each do |sync|
+		# 	person = sync.person
+		# 	person_details = {
+		# 				id:          	person.id,
+		# 				first_name:  	person.first_name,
+		# 				last_name:   	person.last_name,
+		# 				middle_name: 	person.middle_name,
+		# 				gender:         person.gender,
+		# 				date_reported: 	person.created_at,
+		# 				record_status: 	sync.record_status,
+		# 				dc_sync_status: sync.dc_sync_status,
+		# 				hq_sync_status: sync.hq_sync_status
+		# 	}
+		# 	people << person_details
+		# end
 		render :text => people.to_json
 	end
 	def check_den_assignment
@@ -728,7 +728,7 @@ class DcController < ApplicationController
 	    people = []
 	    record_status = []
 		
-	    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{User.current_user.district_code}'").limit(size.to_i).offset(page.to_i  * size.to_i).each do |status|
+	    RecordStatus.where("status IN('#{params[:statuses].join("','")}') AND voided = 0 AND district_code = '#{UserModel.current_user.district_code}'").limit(size.to_i).offset(page.to_i  * size.to_i).each do |status|
 	      
 	      person = Record.find(status.person_record_id) rescue nil
  		  people << fields_for_data_table(person)
@@ -749,7 +749,7 @@ class DcController < ApplicationController
      
 	    selected.each do |key|
 
-	      	person = Person.find(key.strip)
+	      	person = Record.find(key.strip)
 
 	      	next if person.blank?
 	      
@@ -850,7 +850,7 @@ class DcController < ApplicationController
 	def print_preview
 	    @section = "Print Preview"
 	    @targeturl = "/print" 
-	    @person = Person.find(params[:id])
+	    @person = Record.find(params[:id])
 	    @available_printers = SETTINGS["printer_name"].split(',')
   	end
 

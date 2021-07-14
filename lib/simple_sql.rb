@@ -27,9 +27,9 @@ class SimpleSQL
     ids = (((`mysql -u #{CONFIGS['username']} -p#{CONFIGS['password']} #{CONFIGS['database']} -e "#{query}"`).split(/\n/) rescue []) - ['person_id']) rescue []
     people = []
     ids.each do |id|
-      person = Person.find(id)
+      person = Record.find(id)
       if SETTINGS['site_type'] == "remote"
-              next if (User.current_user.district_code != person.district_code ) && (user.role !="System Administrator") && (user.site_code != "HQ")
+              next if (UserModel.current_user.district_code != person.district_code ) && (user.role !="System Administrator") && (user.site_code != "HQ")
           end
       people << person
     end

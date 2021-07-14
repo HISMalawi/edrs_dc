@@ -3,10 +3,11 @@
   
      
 </style>
+
 <div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
                         <div id="buttons" style="display: inline ">
 
-                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+                        <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Register a record") &&  UserModel.current_user.role != "Logistics Officer"%>
                               <% @registration_url = (SETTINGS["site_type"] == "dc" ? "/people/form_type" : "/people/new_person_type?form_type=NR-10") %>
                               <div class="touch_btn" onmousedown="window.location = '<%= @registration_url %>'" >
 
@@ -20,7 +21,7 @@
                               </div>
                           <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/search'" >
                                     <div class="icon">
@@ -33,7 +34,7 @@
                                   </div>
                           <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record")%>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record")%>
                                 <% if  SETTINGS['site_type'] == "dc" || SETTINGS['site_type'] == "remote"%>
                                   <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                     <div class="icon">
@@ -55,7 +56,7 @@
                                 <%end%>
                             <%end%>
 
-                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                            <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
                                 <%if @facility_type =='DC' %>
                                   <div class="touch_btn" onmousedown="window.location = '/dc/sync'" >
                                 <%else%>
@@ -77,11 +78,12 @@
 
                                         
                                 </div>
+                               
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
-                                      User.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
+                              <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Activate User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Deactivate User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Create User") or
+                                      UserModel.current_user.activities_by_level("#{@facility_type}").include?("Update User") %>
 
                                     <div class="touch_btn"  onclick="window.location = '/users'"   >
                                           <div class="icon">
@@ -126,7 +128,7 @@
                                       
                                     </div>
                                 <%end %>
-                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
+                                <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Change own password") %>
 
                                     <div class="touch_btn" onmousedown="window.location = '/my_account';" >
                                         <div class="icon">

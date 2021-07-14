@@ -32,7 +32,7 @@ class User < CouchRest::Model::Base
   cattr_accessor :current_user
 
   def has_role?(role_name)
-    self.current_user.role == role_name ? true : false
+    UserModel.current_user.role == role_name ? true : false
   end
 
   def activities_by_level(level)

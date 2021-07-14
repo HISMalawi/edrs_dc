@@ -52,7 +52,7 @@ require 'simple_sql'
   end
 
   def readable_format(result)
-      person = Person.find(result[0])
+      person = Record.find(result[0])
       return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
                     " Born on #{DateTime.parse(person.birthdate.to_s).strftime('%d/%B/%Y')} "+
                     " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +

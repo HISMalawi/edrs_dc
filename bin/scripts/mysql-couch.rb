@@ -20,7 +20,7 @@ while page <= pages
 	Record.all.limit(200).offset(page * 200).each do |person|
 		#raise person.attributes.inspect
 
-		couch_record = Person.find(person.id);
+		couch_record = Record.find(person.id);
 		if couch_record.blank?
 			barcode = BarcodeRecord.where(person_record_id: person.id).first
 			next if barcode.blank?

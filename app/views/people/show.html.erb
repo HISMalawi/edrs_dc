@@ -137,9 +137,9 @@
          <button  style="float: right; margin-right:1%;width:100px" onmousedown="unLock()"><span>Back</span></button>
    <%end %>
 
-  <% if User.current_user.district_code == @person.district_code %>
+  <% if UserModel.current_user.district_code == @person.district_code %>
 
-	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
+	<% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Check for duplicates") %>
 
 		<% if @status['status'] == "DC ACTIVE" || @status['status'] == "DC INCOMPLETE"  || @status['status'] =="DC REJECTED" %>
 
@@ -158,7 +158,7 @@
 			
 	<% end %>
 
-	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+	<% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role'] %>
 			<%if  (@status.present? && @status['status'] == "DC ACTIVE") %>
 
@@ -180,7 +180,7 @@
 		<%end%>
 	<%end%>
 
-	<% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+	<% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 		<%if SETTINGS['site_type'] == 'remote' && !SETTINGS['include_lo_role']%>
 			<%if  (@status.present? && @status['status'] == "DC ACTIVE")%>
 
@@ -222,7 +222,7 @@
 	<%end%>
 	<% if SETTINGS['site_type'] == "dc"%>
 
-		<% if @burial_report.blank? && User.current_user.role != "ADR"%>
+		<% if @burial_report.blank? && UserModel.current_user.role != "ADR"%>
 
 			<button style="float: right; margin-right:3%" onmousedown="window.location = '/people/form_container?url=/dc/new_burial_report/<%= @person.id %>?next_url=<%=request.env['REQUEST_URI']%>'"><span>Add Burial Report</span></button>
 		<%else  @burial_report.present? %>
@@ -1310,7 +1310,7 @@
 
 					var editable_statuses =["DC ACTIVE","DC INCOMPLETE","DC REJECTED", "HQ REJECTED"]
 
-					<% if User.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
+					<% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Edit a record") %>
 							if (editable_statuses.indexOf("<%= @person.status%>") >= 0){
 								<% if !@locked %>
 								window.location = "/people/form_container?url=/people/edit/<%= @person.id %>/"+field+"?next_url=/people/view?page=1"

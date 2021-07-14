@@ -6,7 +6,7 @@
 <div id="default" style="width: 90%;margin:auto; height: 400px; text-align: center; vertical-align: top;">
                         <div id="buttons" style="display: inline ">
 
-                        <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+                        <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && UserModel.current_user.role != "Logistics Officer"%>
 
                               <div class="touch_btn" onmousedown="window.location = '/people/new_person_type?form_type=NR-10'" >
                                 <div class="icon">
@@ -19,7 +19,7 @@
                               </div>
                           <%end%>
 
-                          <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                          <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/new_person_type?form_type=NR-10C'" >
                                     <div class="icon">

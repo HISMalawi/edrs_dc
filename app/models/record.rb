@@ -1,5 +1,5 @@
 class Record < ActiveRecord::Base
-	after_commit :push_to_couchDB
+	after_commit :push_to_remote
 	before_create :set_id
 	self.table_name = "people"
 
@@ -208,7 +208,33 @@ class Record < ActiveRecord::Base
 		if params[:onset_death_interval4].present?
 			params[:onset_death_interval4] = self.calculate_time(params[:onset_death_interval4].to_i,params[:unit_onset_death_interval4])
 		end
-		person = self.create(params)
+
+		
+
+		person = Record.new
+		params.keys.each do |key|
+			next if key == "potential_duplicate"
+			next if key == "is_exact_duplicate"
+			next if key == "barcode"
+			next if key == "age_estimate"
+			next if key == "birth_date"
+			next if key == "confirm_mccod"
+			person[key] = params[key]
+		end
+
+		person.save
+
+		person.reload
+
+		if params[:potential_duplicate].present?
+			params[:potential_duplicate].split("|").each do |id|
+				DuplicateRecord.create({
+					:existing_record_id => id,
+					:new_record_id => person.id,
+					:reviewed => 0
+				})
+			end
+		end
 
 		if parameters[:other_sig_cause_of_death1].present?
 			OtherSignificantCause.create({
@@ -225,30 +251,12 @@ class Record < ActiveRecord::Base
 					updated_at: Time.now
 				})
 			end
-		  end
-	end
-
-	def push_to_couchDB
-		data =  Pusher.database.get(self.id) rescue {}
-		
-		self.as_json.keys.each do |key|
-			next if key == "_rev"
-			next if key =="_deleted"
-			if key == "person_id"
-			 	data["_id"] = self.as_json[key]
-			elsif key=="voided"
-				data[key] = (self.as_json[key]==1? true : false)
-			else
-			 	data[key] = self.as_json[key]
-			end
-			if data["type"].nil?
-				data["type"] = "Person"
-			end
 		end
-		
-		return  Pusher.database.save_doc(data)
-
+		return person
 	end
+	def self.void_person(person,user_id)
+		person.update_attributes({:voided => true, :voided_date => Time.now, :voided_by => user_id})
+	  end
 	def push_to_remote
 		data = self.as_json
 		if data["type"].nil?

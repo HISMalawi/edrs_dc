@@ -64,7 +64,7 @@ class SimpleElasticSearch
      end
      elastic_search_index = "curl -XPUT 'http://#{SETTING['host']}:#{SETTING['port']}/#{SETTING['index']}/documents/#{person.id}'  -d '
               {
-                \"user\" : \"#{User.current_user.id}\",
+                \"user\" : \"#{UserModel.current_user.id}\",
                 \"first_name\": \"#{self.escape_single_quotes(person.first_name)}\",
                 \"last_name\": \"#{self.escape_single_quotes(person.last_name)}\",
                 \"middle_name\": \"#{self.escape_single_quotes(person.middle_name) rescue ''}\",
@@ -235,7 +235,7 @@ class SimpleElasticSearch
 
   def self.person_details(id)
       person = {}
-      @person = Person.find(id)
+      @person = Record.find(id)
 
       person["id"] = @person.id.to_s
       person["first_name"]= @person.first_name rescue ''

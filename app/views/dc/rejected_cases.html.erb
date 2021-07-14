@@ -58,7 +58,7 @@
 		
 </div>
 
-  <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
+  <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Register a record") %>
 
 		<button class="green" style="position:absolute; bottom:59px; right : 180px " onmousedown="window.location = '/people/new_split'" >Add New</button>
 

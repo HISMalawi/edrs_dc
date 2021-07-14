@@ -1,5 +1,5 @@
 
-User.current_user = User.first
+UserModel.current_user = User.first
 
 def create
   (1.upto(100)).each do |n|
@@ -69,7 +69,7 @@ def create
                                       :person_record_id => person.id.to_s,
                                       :status => status,
                                       :district_code =>  person.district_code,
-                                      :created_by => User.current_user.id})
+                                      :created_by => UserModel.current_user.id})
 
     identifier = PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
@@ -77,7 +77,7 @@ def create
                                       :identifier => rand(10 ** 10),
                                       :site_code => SETTINGS['site_code'],
                                       :district_code => SETTINGS['district_code'],
-                                      :creator => User.current_user.id})
+                                      :creator => UserModel.current_user.id})
     sleep 0.5
     SimpleElasticSearch.add(person)
 

@@ -36,7 +36,7 @@ while page <= pages
 			statuses = connection.select_all(statuses_query).as_json
 			last_status = statuses.last rescue nil
 			next if last_status.present?
-			person = Person.find(barcode.person_record_id)
+			person = Record.find(barcode.person_record_id)
 			person.insert_update_into_mysql
 			PersonRecordStatus.by_person_record_id.key(person.id).each do |status|
 				status.insert_update_into_mysql

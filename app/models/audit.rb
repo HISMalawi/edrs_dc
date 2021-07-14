@@ -48,7 +48,7 @@ class Audit < CouchRest::Model::Base
   end
 
   def person
-    person = Person.find(self.record_id)
+    person = Record.find(self.record_id)
     return person
   end
 
@@ -56,7 +56,7 @@ class Audit < CouchRest::Model::Base
     if Audit.user.present?
       self.user_id = Audit.user
     else
-      self.user_id = User.current_user.id rescue (User.by_role.key('System Administrator').first.id)
+      self.user_id = UserModel.current_user.id rescue (User.by_role.key('System Administrator').first.id)
     end
   end
   
@@ -76,7 +76,7 @@ class Audit < CouchRest::Model::Base
     end
   end 
  def set_creator
-    self.creator = (User.current_user.id rescue nil)
+    self.creator = (UserModel.current_user.id rescue nil)
  end
  def set_location
     self.ip_address =   (AuditTrail.ip_address_accessor rescue (request.remote_ip rescue `ip route show`[/default.*/][/\d+\.\d+\.\d+\.\d+/] rescue "0.0.0.0"))

@@ -214,7 +214,7 @@ def transform_data(records)
      person.save
      person.reload
 
-     $person_rec = Person.find(person.id)
+     $person_rec = Record.find(person.id)
      $id = person.id
 
    

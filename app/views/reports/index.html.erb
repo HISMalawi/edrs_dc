@@ -26,7 +26,7 @@
                 <div class="button_label">By date of death and gender</div>
                 <div class="button_description">  Register person at facility.</div>                      
          </div>
-        <% if User.current_user.role == "ADR" && false  %>
+        <% if UserModel.current_user.role == "ADR" && false  %>
             <div class="touch_btn" onmousedown="window.location = '/voided_reports?time_line=Today&next_url=/reports?next_url=/'" >
                     <div class="icon">
                         <i class="fa fa-bar-chart"></i>
@@ -50,7 +50,7 @@
                     <div class="button_description">  Register person at facility.</div>                      
              </div>
         <%end%>
-        <% if ["ADR","System Administrator"].include?(User.current_user.role) %>
+        <% if ["ADR","System Administrator"].include?(UserModel.current_user.role) %>
          <div class="touch_btn" onmousedown="window.location = '/reports/user_audits?timeline=Today&next_url=/reports?next_url=/'" >
                 <div class="icon">
                     <i class="fa fa-bar-chart"></i>

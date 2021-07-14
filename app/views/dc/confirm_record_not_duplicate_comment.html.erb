@@ -2,6 +2,6 @@
 	<input type="hidden" name="next_url" value="<%=params[:next_url]%>">
 	<input type="hidden" name="id" value="<%=params[:id]%>">
 	<input type="hidden" name="audit_id" value="<%=params[:audit_id]%>">
-	<input type="hidden" name="user_id" value ="<%=User.current_user.id%>">
+	<input type="hidden" name="user_id" value ="<%=UserModel.current_user.id%>">
 	<input type="" name="comment" helpText="Comment or reason why record is not a duplicate">
 </form>

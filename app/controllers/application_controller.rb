@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
                 "do_print_these",
                 "death_certificate",
                 "hq_is_online"]
-  before_filter :perform_basic_auth,:check_session_expirely,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference, :except => exceptions
+  before_filter :perform_basic_auth,:check_session_expirely,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference,:set_current_user, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
@@ -56,15 +56,17 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_keyboard_preference
-     @preferred_keyboard = User.current_user.preferred_keyboard rescue 'qwerty'
+     @preferred_keyboard = UserModel.current_user.preferred_keyboard rescue 'qwerty'
   end
-  
+  def set_current_user
+    @current_user = session[:current_user]
+  end
   def district
       if facility.present?
            return District.find(facility.district_id) rescue nil
       else
           if SETTINGS['district_code'].blank?
-            district_code = User.current_user.district_code.to_s
+            district_code = UserModel.current_user.district_code.to_s
 
           else
             district_code = SETTINGS['district_code'].to_s
@@ -78,7 +80,7 @@ class ApplicationController < ActionController::Base
 
   def unlock_users_record(person)
     begin
-      MyLock.by_user_id_and_person_id.key([User.current_user.id,person.id]).each do |lock|
+      MyLock.by_user_id_and_person_id.key([UserModel.current_user.id,person.id]).each do |lock|
             lock.destroy
       end      
     rescue Exception => e
@@ -91,7 +93,7 @@ class ApplicationController < ActionController::Base
   end
   
   def check_if_user_admin
-    @admin = ((User.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
+    @admin = ((UserModel.current_user.role.strip.downcase.match(/admin/) rescue false) ? true : false)
   end
 
   def print_and_redirect(print_url, redirect_url, message = "Printing, please wait...", show_next_button = false, patient_id = nil)
@@ -132,7 +134,7 @@ class ApplicationController < ActionController::Base
 
   #Root index of app
   def index
-    if SETTINGS['site_type'] =="facility" || User.current_user.role == "Data Clerk" ||  User.current_user.role == "Nurse/Midwife"
+    if SETTINGS['site_type'] =="facility" || UserModel.current_user.role == "Data Clerk" ||  UserModel.current_user.role == "Nurse/Midwife"
       redirect_to "/people/"
     else
       redirect_to "/dc/"
@@ -195,7 +197,7 @@ class ApplicationController < ActionController::Base
   end
 
   def readable_format(result)
-      person = Person.find(result['_id'])
+      person = Record.find(result['_id'])
       return [person.id, "#{person.first_name} #{person.middle_name rescue ''} #{person.last_name} #{person.gender}"+
                     " Born on #{DateTime.parse(person.birthdate.to_s).strftime('%d/%B/%Y')} "+
                     " died on #{DateTime.parse(person.date_of_death.to_s).strftime('%d/%B/%Y')} " +
@@ -461,7 +463,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def login!(user,portal_link = nil)
+    
     session[:current_user_id] = user.username
+    session[:current_user] = user
     if SETTINGS["site_type"] == "remote"
         session[:district_code] = user.district_code 
     else
@@ -470,6 +474,7 @@ class ApplicationController < ActionController::Base
    
 
     user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
+
     @current_user = user
   
     AuditRecord.create({
@@ -490,19 +495,20 @@ class ApplicationController < ActionController::Base
                           :level => "User"
     })
     session[:current_user_id] = nil
+    session[:current_user] = nil
     @current_user = nil
   end
 
   def current_user
     unless @current_user == false # meaning a user has previously been established as not logged in
       @current_user ||= authenticate_from_session || authenticate_from_basic_auth || false
-      User.current_user = @current_user
+      UserModel.current_user = @current_user
     end
   end
 
   def authenticate_from_basic_auth
     authenticate_with_http_basic do |user_name, password|
-      user = User.get_active_user(user_name)
+      user = UserModel.get_active_user(user_name)
       if user and user.password_matches?(password)
         return user
       else
@@ -513,7 +519,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_from_session
     unless session[:current_user_id].blank?
-      user = User.get_active_user(session[:current_user_id])
+      user = UserModel.get_active_user(session[:current_user_id])
       return user
     end
   end
@@ -558,7 +564,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_user_level_and_site
-    user = User.current_user
+    user = UserModel.current_user
     return if user.blank?
     if SETTINGS['site_type'] == "facility" && user.role != "System Administrator"
       redirect_to "/logout" and return  if user.site_code.to_s != SETTINGS['facility_code'].to_s

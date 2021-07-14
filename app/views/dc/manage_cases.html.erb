@@ -10,7 +10,7 @@
                     <td style="width:80%">-->
                         <div id="buttons" style="display: inline ">
 
-                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && User.current_user.role != "Logistics Officer"%>
+                            <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Register a record") && UserModel.current_user.role != "Logistics Officer"%>
 
                               <div class="touch_btn" onmousedown="window.location = '/people/new_person_type'" >
                                 <div class="icon">
@@ -23,7 +23,7 @@
                               </div>
                             <%end%>
 
-                             <% if !User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+                             <% if !UserModel.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/view?next_url=/dc/manage_cases?next_url=/'" >
                                     <div class="icon">
@@ -36,7 +36,7 @@
                                   </div>
                             <%end%>
 
-                             <% if User.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
+                             <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("Approve a record") %>
                                   <% if  @facility_type == 'Remote' && !SETTINGS['include_lo_role']%>
                                     <div class="touch_btn" onmousedown="window.location = '/people/view'" >
                                       <div class="icon">
@@ -61,7 +61,7 @@
                                   
                             <%end%>
 
-                            <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                            <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                  <div class="touch_btn" onmousedown="window.location = '/dc/approved_cases?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -74,7 +74,7 @@
                                   </div>
                             <%end %>
 
-                            <% if User.current_user.activities_by_level("DC").include?("Check completeness") &&User.current_user.role == "Logistics Officer" %>
+                            <% if UserModel.current_user.activities_by_level("DC").include?("Check completeness") &&UserModel.current_user.role == "Logistics Officer" %>
 
                                  <div class="touch_btn" onmousedown="window.location = '/dc/pending_cases?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -88,7 +88,7 @@
                               <%end %>
 
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") && User.current_user.role == "ADR"%>
+                              <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") && UserModel.current_user.role == "ADR"%>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/rejected_cases?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -101,7 +101,7 @@
                                   </div>
                               <%end %>
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
+                              <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/voided?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -113,7 +113,7 @@
                                     
                                   </div>
                               <%end%>
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
+                              <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
                               
 
                               <% if SETTINGS['decentralized_printing'] %>
@@ -133,7 +133,7 @@
                               <%end%>
                            
 
-                              <% if User.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
+                              <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View closed cases") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/dc/dispatched?next_url=/dc/manage_cases?next_url=/'" >
                                       <div class="icon">
@@ -145,7 +145,7 @@
                                     
                                   </div>
                               <%end%>
-                                <% if User.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
+                                <% if UserModel.current_user.activities_by_level("#{@facility_type}").include?("View a record") %>
 
                                   <div class="touch_btn" onmousedown="window.location = '/people/sync'" >
                                     <div class="icon">

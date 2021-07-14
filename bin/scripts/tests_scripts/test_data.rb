@@ -1,4 +1,4 @@
-User.current_user = User.first
+UserModel.current_user = User.first
 
 def create
   
@@ -39,7 +39,7 @@ def create
     record_status.person_record_id = person.id.to_s
     record_status.status = status
     record_status.district_code = person.district_code
-    record_status.creator = User.current_user.id
+    record_status.creator = UserModel.current_user.id
     if record_status.save
           PersonIdentifier.create({
                                       :person_record_id => person.id.to_s,
@@ -47,7 +47,7 @@ def create
                                       :identifier => rand(10 ** 10),
                                       :site_code => CONFIG['site_code'],
                                       :district_code => person.district_code,
-                                      :creator => User.current_user.id})
+                                      :creator => UserModel.current_user.id})
 
         title = "#{person.first_name} #{person.last_name}"
 
