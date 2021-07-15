@@ -213,12 +213,10 @@ class Record < ActiveRecord::Base
 
 		person = Record.new
 		params.keys.each do |key|
-			next if key == "potential_duplicate"
-			next if key == "is_exact_duplicate"
-			next if key == "barcode"
-			next if key == "age_estimate"
-			next if key == "birth_date"
-			next if key == "confirm_mccod"
+			next if ["potential_duplicate","is_exact_duplicate","barcode","age_estimate","birth_date","confirm_mccod"].include?(key)
+			next if ["birth_year","birth_month","birth_day","physical_address_same_as_home_address","mother_informant","father_informant"].include?(key)
+			next if ["unit_onset_death_interval1", "unit_onset_death_interval2","unit_onset_death_interval3","unit_onset_death_interval4"].include?(key)
+			next if ["other_sig_cause_of_death1", "other_sig_cause_of_death2"].include?(key)
 			person[key] = params[key]
 		end
 
@@ -236,17 +234,18 @@ class Record < ActiveRecord::Base
 			end
 		end
 
-		if parameters[:other_sig_cause_of_death1].present?
+
+		if params[:other_sig_cause_of_death1].present?
 			OtherSignificantCause.create({
 				person_id: person.id,
-				cause: parameters[:other_sig_cause_of_death1],
+				cause: params[:other_sig_cause_of_death1],
 				created_at: Time.now,
 				updated_at: Time.now
 			})
-			if parameters[:other_sig_cause_of_death2].present?
+			if params[:other_sig_cause_of_death2].present?
 				OtherSignificantCause.create({
 					person_id: person.id,
-					cause: parameters[:other_sig_cause_of_death2],
+					cause: params[:other_sig_cause_of_death2],
 					created_at: Time.now,
 					updated_at: Time.now
 				})
@@ -254,6 +253,25 @@ class Record < ActiveRecord::Base
 		end
 		return person
 	end
+	def self.calculate_time(onset_death_interval,unit)
+		onset_interval = onset_death_interval
+		if unit == "Second(s)"
+		  onset_interval = onset_death_interval
+		elsif unit == "Minute(s)"
+		  onset_interval = onset_death_interval * 60
+		elsif unit == "Hour(s)"
+		  onset_interval = onset_death_interval * 60 * 60
+		elsif unit == "Day(s)"
+		  onset_interval = onset_death_interval * 60 * 60 * 24
+		elsif unit == "Week(s)"
+		  onset_interval = onset_death_interval * 60 * 60 * 24 * 7
+		elsif unit == "Month(s)"
+		  onset_interval = onset_death_interval * 60 * 60 * 24 * 30
+		elsif unit == "Year(s)"
+		  onset_interval = onset_death_interval * 60 * 60 * 24 * 365
+		end
+		return onset_interval
+	  end
 	def self.void_person(person,user_id)
 		person.update_attributes({:voided => true, :voided_date => Time.now, :voided_by => user_id})
 	  end

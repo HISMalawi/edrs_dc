@@ -8,26 +8,6 @@ class RecordIdentifier < ActiveRecord::Base
 	def set_id
 		self.person_identifier_id = SecureRandom.uuid if self.person_identifier_id.blank?
 	end
-	def push_to_couchDB
-		data =  Pusher.database.get(self.id) rescue {}
-		
-		self.as_json.keys.each do |key|
-			next if key == "_rev"
-			next if key =="_deleted"
-			if key == "person_identifier_id"
-			 	data["_id"] = self.as_json[key]
-			else
-			 	data[key] = self.as_json[key]
-			end
-			if data["type"].nil?
-				data["type"] = "PersonIdentifier"
-			end
-		end
-		
-		return  Pusher.database.save_doc(data)
-
-	end
-
 
 	def self.check_for_skipped_dens(dens)
 		den = dens.last.value rescue 0

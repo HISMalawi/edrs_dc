@@ -72,20 +72,19 @@
         </div>
 	</body>
     <script>
-    function __$(id){
-        return document.getElementById(id);
-    }
+        function __$(id){
+            return document.getElementById(id);
+        }
 
-    function resizeDiv(){
-      var wH = window.innerHeight;
-      
-      __$("supercontainer").style.height = (wH * 0.97)+"px";
-      __$("main").style.height = (wH * 0.90)+"px";
-    }
+        function resizeDiv(){
+        var wH = window.innerHeight;
+        
+        __$("supercontainer").style.height = (wH * 0.97)+"px";
+        __$("main").style.height = (wH * 0.90)+"px";
+        }
 
-    resizeDiv();
-</script>
-<script>
+        resizeDiv();
+
         function setup(active_id){
             form =  window.frames['iframe'].contentDocument.getElementById("new_person");
             if(!form){
@@ -226,6 +225,8 @@
             }
           
         }
+
+        
     </script>
 
 </html>

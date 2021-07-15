@@ -19,24 +19,13 @@ class PeopleController < ApplicationController
 
       @section = "Home"
 
-      @portal_link = (UserAccess.by_user_id.key(UserModel.current_user.id).last.portal_link rescue nil)
+      @portal_link = SETTINGS['app_gate_url']
 
       render :layout => "landing"
 
   end
 
   def portal_logout
-
-    if UserModel.current_user.present?
-      MyLock.by_user_id.key(UserModel.current_user.id).each do |lock|
-        lock.destroy
-      end      
-    end
-
-    user_access = UserAccess.by_user_id.key(UserModel.current_user.id).each
-    user_access.each do |access|
-      access.destroy
-    end
 
     logout!
 
@@ -80,7 +69,7 @@ class PeopleController < ApplicationController
      
 	   if !params[:id].blank?
 	   else
-	    	@person = Record.new if @person.nil?
+	    	@person = Person.new if @person.nil?
 	   end
 	    @section = "New Person"
 	    render :layout => "touch"
@@ -169,13 +158,8 @@ class PeopleController < ApplicationController
 
       #create status
       duplicate = DuplicateRecord.where(new_record_id: person.id)
-      if duplicate.count > 0
-          # PersonRecordStatus.create({
-          #                             :person_record_id => person.id.to_s,
-          #                             :status => "DC ACTIVE",
-          #                             :comment =>"Record Created",
-          #                             :district_code =>  person.district_code,
-          #                             :creator => UserModel.current_user.id})
+   
+      if duplicate.count == 0
           RecordStatus.create({
                                 :person_record_id => person.id.to_s,
                                 :status => "DC ACTIVE",
@@ -187,13 +171,20 @@ class PeopleController < ApplicationController
                               	:updated_at => Time.now})
         else
           
-          change_log = [{:duplicates => Person.duplicate.to_s}]
+          if params[:potential_duplicate].present?
+            params[:potential_duplicate].split("|").each do |id|
+              DuplicateRecord.create({
+                :existing_record_id => id,
+                :new_record_id => person.id,
+                :reviewed => 0
+              })
+            end
+          end
 
-          Audit.create({
+          AuditRecord.create({
                           :record_id  => person.id.to_s,
                           :audit_type => "POTENTIAL DUPLICATE",
                           :reason     => "Record is a potential",
-                          :change_log => change_log,
                           :level => "Person"
           })
 
@@ -211,12 +202,7 @@ class PeopleController < ApplicationController
               end
           end
 
-          # PersonRecordStatus.create({
-          #                             :person_record_id => person.id.to_s,
-          #                             :status => status,
-          #                             :district_code => person.district_code,
-          #                             :comment =>"System mark record as a potential",
-          #                             :creator => UserModel.current_user.id})
+
            RecordStatus.create({
                                         :person_record_id => person.id.to_s,
                                         :status => status,
@@ -229,11 +215,6 @@ class PeopleController < ApplicationController
 
         end
 
-      Sync.create({
-                    :person_record_id => person.id.to_s,
-                    :record_status => "DC ACTIVE"
-      })
-      
       #redirect_to "/people/view/#{person.id.to_s}" and return
       #redirect_to "/people/finalize_create/#{person.id}" and return
       redirect_to "/people/view"
@@ -589,25 +570,6 @@ class PeopleController < ApplicationController
     render  :text => people.to_json
   end
 
-  def clear_all_locks
-      MyLock.all.each do |lock|
-        lock.destroy
-      end
-
-      flash[:notice] = "Successfully unlock all records"
-      redirect_to "/"
-  end
-
-  def unlock_record
-      lock = MyLock.find(params[:lock_id]) rescue nil
- 
-      if lock.present?
-        if lock.user_id == UserModel.current_user.id
-          lock.destroy
-        end
-      end
-      redirect_to params[:next_url]
-  end
 
   def remove_redu_states(person_id)
       #puts person_id
@@ -700,7 +662,11 @@ class PeopleController < ApplicationController
       
       @person = to_readable(Record.find(params[:id]))
 
-
+      @other_sig_cause_of_death = {}
+      OtherSignificantCause.where(person_id: @person.id).each_with_index do |d, i|
+        @other_sig_cause_of_death[i] = d.cause
+      end
+      #raise @other_sig_cause_of_death.inspect
       #Duplicate capturing 
       if SETTINGS["potential_duplicate"]
 
@@ -783,7 +749,7 @@ class PeopleController < ApplicationController
             next if status['status'].blank?
             next if status['comment'].blank?
             comment_statuses << status['status']
-            user = User.find(status['creator'])
+            user = UserModel.find(status['creator']) rescue ""
             @comments << {created_at: status['created_at'],status: status['status'] , reason: status['comment'], user: "#{user.first_name rescue ''} #{user.last_name rescue ''}", user_role: (user.role rescue '') } if status['comment'].present?
           end
           #raise @comments.inspect
@@ -821,16 +787,15 @@ class PeopleController < ApplicationController
 
   def update_field
       person = Record.find(params[:id])
-      if person.update_person(params[:id],params[:person])
-          change_log = {}
-          params[:person].keys.each do |key|
-            change_log[key] = params[:person][key]
-          end
-          Audit.create({
+      params[:person].keys.each do |key|
+        person[key] = params[:person][key]
+      end
+      if person.save
+          AuditRecord.create({
                           :record_id  => person.id.to_s,
                           :audit_type => "UPDATE RECORD",
                           :reason     => "Record update",
-                          :change_log => change_log
+                          :level => "Person"
           })
 
           if SETTINGS["potential_duplicate"]
@@ -1009,7 +974,7 @@ class PeopleController < ApplicationController
 
   def other_countries
      entry = params["search"] rescue nil
-     data = Person.by_other_home_country.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+     data = Record.where("other_home_country LIKE '%#{entry}%'").limit(32).each
      other_countries = []
      data.each do |d|
         other_countries << d.other_home_country if d.other_home_country.present?
@@ -1144,7 +1109,7 @@ class PeopleController < ApplicationController
     result = {
         "national_format" => (parsed.national_format rescue ""),
         "international_format" => (parsed.international_format rescue ""),
-        "country" => (Country.by_iso.key(parsed.territory.name).last.name rescue ""),
+        "country" => (CountryRecord.where(iso: parsed.territory.name).last.name rescue ""),
         "valid" => (parsed.valid? rescue false)
     }
 
@@ -1270,9 +1235,9 @@ end
 
   def find_identifier
       if params[:identifier].present?
-        count = PersonIdentifier.by_identifier.key(params[:identifier]).count  
+        count = RecordIdentifier.where(identifier: params[:identifier]).count  
         if count >= 1
-            render :text => {:response =>  PersonIdentifier.by_identifier.key(params[:identifier]).first.person_record_id}.to_json
+            render :text => {:response =>  RecordIdentifier.where(identifier: params[:identifier]).first.person_record_id}.to_json
         else
            render :text => {:response => false}.to_json
         end            
@@ -1298,8 +1263,6 @@ end
   def find_person
 
     @person = Record.find(params[:id]) rescue nil
-
-    @person = Person.new if @person.nil?
 
     @facility = facility
 

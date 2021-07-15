@@ -14,7 +14,7 @@ class DcController < ApplicationController
 
       @section = "Home"
 
-      @portal_link = (UserAccess.by_user_id.key(UserModel.current_user.id).last.portal_link rescue nil)
+      @portal_link = SETTINGS['app_gate_url']
       
       render :layout => "landing"
 		
@@ -26,11 +26,11 @@ class DcController < ApplicationController
 
 		if record_complete?(person)
 				RecordStatus.change_status(person, "DC COMPLETE","Marked as complete")
-				unlock_users_record(person)
+				(person)
 				redirect_to "#{params[:next_url].to_s}"
 		else
 				RecordStatus.change_status(person, "DC INCOMPLETE", "System marked as incomplete")
-				unlock_users_record(person)
+				(person)
 				redirect_to "/people/view/#{params[:id]}?next_url=#{params[:next_url]}&topic=Completeness Check&error=Record not complete"
 		end
 		
@@ -125,14 +125,14 @@ class DcController < ApplicationController
 	def reaprove_record
 		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC REAPPROVED",params[:reason])
-		unlock_users_record(person)
+		(person)
 		redirect_to params[:next_url]
 	end
 
 	def reject_record
 			person = Record.find(params[:id])
 			RecordStatus.change_status(person, "DC REJECTED",params[:reason])	
-			unlock_users_record(person)		
+			(person)		
 			AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC REJECTED",
@@ -154,7 +154,7 @@ class DcController < ApplicationController
 	def mark_as_pending
 		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC INCOMPLETE","Marked as pending : #{params[:reason]}")
-		unlock_users_record(person)
+		(person)
 		AuditRecord.create({
 							:record_id => params[:id].to_s    , 
 							:audit_type=>"DC INCOMPLETE",
@@ -352,9 +352,9 @@ class DcController < ApplicationController
 		person = Record.find(params[:id])
 		RecordIdentifier.assign_den(person, UserModel.current_user.id)
 		RecordStatus.change_status(person, "HQ ACTIVE",params[:comment])
-		check_den_assignment
+		
 
-		unlock_users_record(person)
+		(person)
 		Audit.user = params[:user_id].to_s
 		Audit.create({
 
@@ -386,7 +386,7 @@ class DcController < ApplicationController
 		if ["DC ACTIVE", "DC COMPLETE", "DC POTENTIAL DUPLICATE","DC EXACT DUPLICATE"].include?(person.status)
 			RecordIdentifier.assign_den(person, UserModel.current_user.id)
 			RecordStatus.change_status(person, "HQ ACTIVE",params[:comment])
-			check_den_assignment
+			
 		end
 		
 		audit_record = Audit.find(params[:audit_id])
@@ -417,7 +417,7 @@ class DcController < ApplicationController
 						:change_log =>[{:audit_id => params[:audit_id]}]
 		})
 			
-		unlock_users_record(person)
+		(person)
 		redirect_to "#{params[:next_url].to_s}"
 
 	end
@@ -453,7 +453,7 @@ class DcController < ApplicationController
 							:audit_type=>"DC APPROVE REPRINT",
 							:level => "Person",
 							:reason => params[:reason]})
-		unlock_users_record(person)
+		(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end
 
@@ -477,20 +477,20 @@ class DcController < ApplicationController
 							:level => "Person",
 							:reason => params[:reason],
 							:creator => params[:user_id]})
-		unlock_users_record(person)
+		(person)
 		redirect_to "#{params[:next_url].to_s}"		
 	end
 	def sent_to_hq_for_reprint
 		person = Record.find(params[:id])
 		status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
 		RecordStatus.change_status(person, status.status.gsub("DC","HQ"))
-		unlock_users_record(person)
+		(person)
 		redirect_to "/dc/reprint_requests?next_url=/dc/manage_requests?next_url=/"
 	end
 	def do_amend
 		person = Record.find(params[:id])
 		RecordStatus.change_status(person, "DC AMEND")
-		unlock_users_record(person)
+		(person)
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
 
@@ -605,7 +605,7 @@ class DcController < ApplicationController
 
 		RecordStatus.change_status(person, "HQ AMEND",params[:reason])
 		if params[:barcode].present?
-			PersonIdentifier.create({
+			RecordIdentifier.create({
                                       :person_record_id => person.id.to_s,
                                       :identifier_type => "AMENDMENT Barcode", 
                                       :identifier => params[:barcode].to_s,
@@ -614,7 +614,7 @@ class DcController < ApplicationController
                                       :creator => params[:user_id]})			
 		end
 
-		unlock_users_record(person)
+		(person)
 		redirect_to "#{params[:next_url].to_s}"
 	end
 	
@@ -692,23 +692,6 @@ class DcController < ApplicationController
 		# 	people << person_details
 		# end
 		render :text => people.to_json
-	end
-	def check_den_assignment
-		last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-		job_interval = SETTINGS['ben_assignment_interval']
-		job_interval = 1.5 if job_interval.blank?
-		job_interval = job_interval.to_f
-		now = Time.now
-
-		if (now - last_run_time).to_f > job_interval
-			if SETTINGS['site_type'].to_s != "facility"
-				if (defined? PersonIdentifier.can_assign_den).nil?
-					PersonIdentifier.can_assign_den = true
-				end
-				#AssignDen.perform_in(job_interval)
-			end
-					        
-		end
 	end
 
 	#Decentralize printing

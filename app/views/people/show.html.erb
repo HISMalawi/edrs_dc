@@ -709,11 +709,11 @@
 			<tr>
 				<td rowspan="2"> Part II </td>
 				<td><b>(i)</b></td>
-				<td colspan="4"> <%= @person.other_hospital_of_death["1"]["cause"] rescue "" %></td>
+				<td colspan="4"> <%= @other_sig_cause_of_death[0] rescue "" %></td>
 			</tr>
 			<tr>
 				<td><b>(ii)</b></td>
-				<td colspan="4"> <%= @person.other_hospital_of_death["2"]["cause"] rescue "" %></td>
+				<td colspan="4"> <%= @other_sig_cause_of_death[1] rescue "" %></td>
 			</tr>
 			<tr>
 				<td></td>

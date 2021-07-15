@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
                 "do_print_these",
                 "death_certificate",
                 "hq_is_online"]
-  before_filter :perform_basic_auth,:check_session_expirely,:check_cron_jobs,:check_database,:check_den_table,:current_user_keyboard_preference,:set_current_user, :except => exceptions
+  before_filter :perform_basic_auth,:check_session_expirely,:check_database,:check_den_table,:current_user_keyboard_preference,:set_current_user, :except => exceptions
 
   rescue_from CanCan::AccessDenied,
               :with => :access_denied
@@ -78,15 +78,6 @@ class ApplicationController < ActionController::Base
       end     
   end
 
-  def unlock_users_record(person)
-    begin
-      MyLock.by_user_id_and_person_id.key([UserModel.current_user.id,person.id]).each do |lock|
-            lock.destroy
-      end      
-    rescue Exception => e
-      
-    end
-  end
 
   def current_nationality
       return Nationality.find("Malawian")
@@ -428,32 +419,17 @@ class ApplicationController < ActionController::Base
   end
 
   def hq_is_online
-
       if SETTINGS["site_type"] == "facility"
-         hq_link = "#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}"
+          url = "#{SYNC_SETTINGS[:dc][:protocol]}://#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}/"
       else
-        online = Online.find("#{SETTINGS['district_code']}SYNC")
-        if online.blank?
-            online = Online.new
-            online.ip = SYNC_SETTINGS[:dc][:host]
-            online.port = SYNC_SETTINGS[:dc][:port]
-            online.time_seen = Time.now
-            online.save
-        else
-            if online.ip != SYNC_SETTINGS[:dc][:host]
-              online.ip = SYNC_SETTINGS[:dc][:host]
-              online.save
-            end
+          url = "#{SYNC_SETTINGS[:hq][:protocol]}://#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}/"
+      end
+      url = URI.parse(url)
+      req = Net::HTTP.new(url.host, url.port)
+      res = req.request_head(url.path)
+      puts "#{url}api/v1/dc_sync"
 
-            if online.port != SYNC_SETTINGS[:dc][:port]
-              online.port = SYNC_SETTINGS[:dc][:port]
-              online.save
-            end
-        end
-         hq_link = "#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}"
-      end    
-      online = is_up?(hq_link) rescue false
-      if online
+      if ["200","201","202","204","302"].include?(res.code.to_s)  
          render :text => {status: true}.to_json
       else
          render :text => {status: false}.to_json  
@@ -472,8 +448,6 @@ class ApplicationController < ActionController::Base
         session[:district_code] = SETTINGS["district_code"]     
     end
    
-
-    user_access = UserAccess.create(user_id: user.id,portal_link: portal_link)
 
     @current_user = user
   
@@ -538,29 +512,6 @@ class ApplicationController < ActionController::Base
           session[:expires_at] =  Time.current + 4.hours         
       end
     end    
-  end
-
-  def check_cron_jobs
-    last_run_time = File.mtime("#{Rails.root}/public/sentinel").to_time
-    job_interval = SETTINGS['ben_assignment_interval']
-    job_interval = 1.5 if job_interval.blank?
-    job_interval = job_interval.to_f
-    now = Time.now
-
-    if (now - last_run_time).to_f > job_interval
-        if SETTINGS['site_type'].to_s != "facility"
-          if (defined? PersonIdentifier.can_assign_den).nil?
-            PersonIdentifier.can_assign_den = true
-          end
-          #AssignDen.perform_in(job_interval)
-        end
-        
-    end
-
-    process = fork{
-      Kernel.system "curl -s #{SETTINGS['app_jobs_url']}/application/start_couch_to_mysql"
-    }
-    Process.detach(process)
   end
 
   def check_user_level_and_site

@@ -1,25 +1,29 @@
 require "net/http"
 class RemotedPusher
     def self.push(params)
-        
-        model_map ={
-            "UserModel" =>"user_id",
-            "Record" => "person_id",
-            "RecordIdentifier" => "person_identifier_id",
-            "RecordStatus" => "person_record_status_id",
-            "VillageRecord"=> "village_id",
-            "TA" =>"traditional_authority_id",
-            "DistrictRecord" =>" district_id",
-            "CountryRecord" => "country_id",
-            "NationalityRecord"=>"nationality_id",
-            "BarcodeRecord" => "barcode_id",
-            "PersonICDCode" =>"person_icd_code_id",
-            "OtherSignificantCauseRecord" => "other_significant_cause_id"
-        }
+        Thread.new do
+            model_map ={
+                "UserModel" =>"user_id",
+                "Record" => "person_id",
+                "RecordIdentifier" => "person_identifier_id",
+                "RecordStatus" => "person_record_status_id",
+                "VillageRecord"=> "village_id",
+                "TA" =>"traditional_authority_id",
+                "DistrictRecord" =>" district_id",
+                "CountryRecord" => "country_id",
+                "NationalityRecord"=>"nationality_id",
+                "BarcodeRecord" => "barcode_id",
+                "PersonICDCode" =>"person_icd_code_id",
+                "OtherSignificantCauseRecord" => "other_significant_cause_id"
+            }
 
        
             begin 
-                url = "#{SYNC_SETTINGS[:hq][:protocol]}://#{SYNC_SETTINGS[:hq][:host]}:3001/"
+                if SETTINGS["site_type"] == "facility"
+                    url = "#{SYNC_SETTINGS[:dc][:protocol]}://#{SYNC_SETTINGS[:dc][:host]}:#{SYNC_SETTINGS[:dc][:port]}/"
+                else
+                    url = "#{SYNC_SETTINGS[:hq][:protocol]}://#{SYNC_SETTINGS[:hq][:host]}:#{SYNC_SETTINGS[:hq][:port]}/"
+                end
                 url = URI.parse(url)
                 req = Net::HTTP.new(url.host, url.port)
                 res = req.request_head(url.path)
@@ -57,6 +61,7 @@ class RemotedPusher
                 0, '#{SETTINGS['district_code']}', NOw(),NOW());"
                 SimpleSQL.query_exec(insert_query)
             end
+        end
     end
     
 end

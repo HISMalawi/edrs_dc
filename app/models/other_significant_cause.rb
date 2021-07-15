@@ -11,7 +11,7 @@ class OtherSignificantCause < ActiveRecord::Base
 	def push_to_remote
 		data = self.as_json
 		if data["type"].nil?
-			data["type"] = "OtherSignificantCauseRecord"
+			data["type"] = "OtherSignificantCause"
 		end
 		return  RemotedPusher.push(data)
 	end

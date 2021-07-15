@@ -44,22 +44,6 @@ class LoginsController < ApplicationController
   end
 
   def logout
-    # session[:touchcontext] = nil
-    if UserModel.current_user.present?
-      MyLock.by_user_id.key(UserModel.current_user.id).each do |lock|
-        lock.destroy
-      end      
-    end
-
-    begin
-      user_access = UserAccess.by_user_id.key(UserModel.current_user.id).each rescue []
-      user_access.each do |access|
-        access.destroy
-      end      
-    rescue Exception => e
-      
-    end
-
 
     logout!
    

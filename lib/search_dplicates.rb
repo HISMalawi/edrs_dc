@@ -108,7 +108,7 @@ require 'simple_sql'
   end
 
   def start
-  	person = Person.new(@test_record)
+  	person = Record.new(@test_record)
  	puts potential_duplicate_full_text?(person)
   end
 

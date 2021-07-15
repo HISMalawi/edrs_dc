@@ -9,6 +9,9 @@ class RecordStatus < ActiveRecord::Base
 		self.person_record_status_id = SecureRandom.uuid if self.person_record_status_id.blank?
 	end
 	def self.change_status(person, currentstatus,comment=nil, creator = nil)
+		if creator.blank?
+			creator = (UserModel.current_user.id rescue nil)
+		end
 		new_status = RecordStatus.create({
                                   :person_record_id => person.id.to_s,
                                   :status => currentstatus,

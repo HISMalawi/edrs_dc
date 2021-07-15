@@ -7,17 +7,17 @@ RecordStatus.where(status:'MARKED APPROVAL',voided:0, district_code: SETTINGS['d
 	begin
 		a = Record.find(s.person_record_id)
 		if a.den.split("/")[0] != SETTINGS['district_code']
-			PersonIdentifier.assign_den(a, s.creator)
-			d= PersonRecordStatus.find(s.person_record_status_id)
+			RecordIdentifier.assign_den(a, s.creator)
+			d= RecordStatus.find(s.person_record_status_id)
 			d.voided = true
 			d.save
 			s.voided = 1
 			s.save
 		else
 			if a.status == "MARKED APPROVAL"
-				PersonRecordStatus.change_status(person, "HQ ACTIVE")
+				RecordStatus.change_status(person, "HQ ACTIVE")
 			end
-			d= PersonRecordStatus.find(s.person_record_status_id)
+			d= RecordStatus.find(s.person_record_status_id)
 			d.voided = true
 			d.save
 			s.voided = 1

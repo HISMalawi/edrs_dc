@@ -1,7 +1,7 @@
 class DeathEntryNumber< ActiveRecord::Base
-	after_commit :push_to_couch
+	after_commit :push_to_remote
 	self.table_name = "death_entry_numbers"
-	def push_to_couch
+	def push_to_remote
 		begin
 			puts "Pushing records to couch"
 			identifier_record = RecordIdentifier.new
