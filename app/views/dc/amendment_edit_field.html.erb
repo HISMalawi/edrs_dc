@@ -82,7 +82,8 @@
                             :tt_onUnLoad=>"validateOtherName('person',3)",
                             :tt_onLoad=> "removeUnknown();checkSpace()"} %>
     <% elsif @field  == "person[birthdate]" %>
-    				<input type="hidden" name="prev[birthdate]" value="<%= @person.birthdate.to_s %>">
+
+            <input type="hidden" id="person_birthdate_estimated" name="person[birthdate_estimated]" value=0 >
 
 					 <%= text_field_tag "person[birth_year]", nil, {:helpText => 'Year of Birth', :field_type => 'number', :absoluteMin => "1890", :min => "1940", :absoluteMax => Date.today.year, :tt_pageStyleClass => "Numeric NumbersWithUnknown", :value=> (@person.birthdate.to_date.year rescue '') }  %>
 
@@ -92,9 +93,8 @@
 
 		  			<%= text_field_tag "person[birth_day]",  nil, :field_type => 'number', :helpText => 'Birth Day', :condition => '($("person_birth_year").value != "Unknown") && ($("person_birth_month").value != "Unknown")', :tt_onLoad =>  "monthDaysKeyPad();$('nextButton').style.display = 'block';" ,:tt_onUnLoad => "setAgeValues()" , :value=> (@person.birthdate.to_date.day rescue '')%>
 
-				    <%= (f.hidden_field :birthdate) rescue "" %>
+            <input type="hidden" id="person_birthdate" name="person[birthdate]" value="<%= @person.birthdate.to_s %>">
 
-				    <%= f.hidden_field :birthdate_estimated rescue "" %>
             <input type="hidden" name="person[date_of_death]" id="person_date_of_death" value="<%= @person.date_of_death.to_s %>">
 	<% elsif @field  == "person[gender]" %>
 					<input type="hidden" name="prev[gender]" value="<%= @person.gender %>">

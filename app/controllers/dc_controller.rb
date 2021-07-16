@@ -497,30 +497,17 @@ class DcController < ApplicationController
 	def amendment
 		#raise params[:id].inspect
 		@person = Record.find(params[:id])
-      	@status = PersonRecordStatus.by_person_recent_status.key(params[:id]).last
+      	@status = RecordStatus.where(person_record_id: params[:id], voided:false).last
       	@person_place_details = place_details(@person)
       	#@burial_report = BurialReport.by_person_record_id.key(params[:id]).first
 		@burial_report = nil
-      	@comments = Audit.by_record_id_and_audit_type.keys([[params[:id],"DC INCOMPLETE"],
-                                                          [params[:id],"DC REJECTED"],
-                                                          [params[:id],"HQ REJECTED"],
-                                                          [params[:id],"DC REAPPROVED"],
-                                                          [params[:id],"DC DUPLICATE"],
-                                                          [params[:id],"RESOLVE DUPLICATE"],
-                                                          [params[:id],"DC REPRINT LOST"],
-                                                          [params[:id],"DC REPRINT DAMAGED"],
-                                                          [params[:id],"DC AMEND"]]).each
-      	@amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
 
-      	change_keys = @amendment_audit.change_log.keys rescue []
-      	place0 = {}
-      	place1 = {}
-      	change_keys.each do |key|
-      		place0[key] = (@amendment_audit.change_log[key][0] rescue "")
-      		place1[key] = (@amendment_audit.change_log[key][1] rescue "")
-      	end
-
-
+		@amended = {}
+		Amendment.where(person_id:params[:id], sent_to_hq: 0).each do |d|
+			@amended[d.field] = d.value
+		end
+		#raise @amended.inspect
+		@comments = []
 		@section ="Amendments"
 		
 	end
@@ -530,7 +517,7 @@ class DcController < ApplicationController
 		@statuses = ["DC AMEND"]
 		@next_url = "/dc/amendment_requests"
 		@den = true
-		render :template =>"/dc/dc_view_cases"
+		render :template =>"/people/view"
 	end
 
 	def amendment_edit_field
@@ -541,38 +528,16 @@ class DcController < ApplicationController
 	end
 
 	def amend_field
-		
 		person = Record.find(params[:id])
-		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
-		if amendment_audit.present?
-			param_keys = params[:person].keys + (params[:prev].keys rescue [])
-			hash = amendment_audit.change_log
-			param_keys.each do |key|
-				unless hash.present?
-					hash = {}
-				end
-				hash.merge!(key => [params[:person][key],params[:prev][key]])
-			end
-
-			amendment_audit.change_log = nil
-			amendment_audit.save
-			amendment_audit.reload
-
-			amendment_audit.change_log = hash
-			amendment_audit.save
-			amendment_audit.reload
-		else
-			amendment_audit = Audit.new
-			amendment_audit.record_id = params[:id]
-			amendment_audit.audit_type = "DC AMEND"
-			amendment_audit.change_log = {}
-
-			param_keys = params[:person].keys + (params[:prev].keys rescue [])
-
-			param_keys.each do |key|
-				amendment_audit.change_log[key] = [params[:person][key],params[:prev][key]]
-			end
-			amendment_audit.save
+		params[:person].keys.each do |key|
+			next if ["birthdate_estimated", "birth_year", "birth_month", "birth_day"].include?(key)
+			next if key == "date_of_death" &&  params[:person][key] == person.date_of_death
+			Amendment.create({
+				"person_id"=> params[:id],
+				"field" => key,
+				"value" => params[:person][key],
+				"sent_to_hq" => 0
+			})
 		end
 		redirect_to "/dc/ammendment/#{params[:id]}?next_url=#{params[:next_url]}"
 	end
@@ -586,35 +551,33 @@ class DcController < ApplicationController
 	def proceed_amend
 		person = Record.find(params[:id])
 
-	
-		amendment_audit = Audit.by_record_id_and_audit_type.key([params[:id],"DC AMEND"]).first
-		#raise amendment_audit.inspect
+		audit_person_record = AuditPersonRecord.new(person.as_json)
+		audit_person_record.audit_reason = "Amendment"
 
-		amend_keys = amendment_audit.change_log.keys
-		amend_keys.each do |key|
-			#person[key] = amendment_audit.change_log[key][0]
-			person.update_attributes({key => amendment_audit.change_log[key][0]})
-		end
-		#person.save
-
- 
-		amendment_audit.reason = "DC Amendment : #{params[:reason]}"
-		amendment_audit.level ="Person"
-		amendment_audit.save
-
-
-		RecordStatus.change_status(person, "HQ AMEND",params[:reason])
-		if params[:barcode].present?
-			RecordIdentifier.create({
-                                      :person_record_id => person.id.to_s,
-                                      :identifier_type => "AMENDMENT Barcode", 
-                                      :identifier => params[:barcode].to_s,
-                                      :site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
-                                      :district_code => (person.district_code rescue SETTINGS['district_code']),
-                                      :creator => params[:user_id]})			
+		Amendment.where(person_id:params[:id], sent_to_hq: 0).each do |d|
+			person[d.field] = d.value
 		end
 
-		(person)
+		if person.save
+			audit_person_record.save
+			Amendment.where(person_id:params[:id], sent_to_hq: 0).each do |d|
+				d.sent_to_hq = 1
+				d.save
+			end
+			RecordStatus.change_status(person, "HQ AMEND",params[:reason])
+			if params[:barcode].present?
+				RecordIdentifier.create({
+										:person_record_id => person.id.to_s,
+										:identifier_type => "AMENDMENT Barcode", 
+										:identifier => params[:barcode].to_s,
+										:site_code => (person.site_code rescue (SETTINGS['site_code'] rescue nil)),
+										:district_code => (person.district_code rescue SETTINGS['district_code']),
+										:creator => params[:user_id]})			
+			end
+		else
+
+		end
+
 		redirect_to "#{params[:next_url].to_s}"
 	end
 	

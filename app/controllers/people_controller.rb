@@ -787,10 +787,13 @@ class PeopleController < ApplicationController
 
   def update_field
       person = Record.find(params[:id])
+      audit_person_record = AuditPersonRecord.new(person.as_json)
+      audit_person_record.audit_reason = "Edit"
       params[:person].keys.each do |key|
         person[key] = params[:person][key]
       end
       if person.save
+          audit_person_record.save
           AuditRecord.create({
                           :record_id  => person.id.to_s,
                           :audit_type => "UPDATE RECORD",
