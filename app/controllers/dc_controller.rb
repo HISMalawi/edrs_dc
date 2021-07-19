@@ -321,17 +321,14 @@ class DcController < ApplicationController
 
 
 	    @existing_ids = []
-	    @duplicates_audit = Audit.by_record_id_and_audit_type.key([@person.id.to_s, "POTENTIAL DUPLICATE"]).last
-	    @statuses = []
-	    @duplicates_audit.change_log.each do |log|
-	    	unless  log['duplicates'].blank?
-	    		ids = log['duplicates'].split("|")
-	    		ids.each do |id|
-	    			 @existing_ids << id
-	    			 @statuses << RecordStatus.where(person_record_id: params[:id], voided:0).last.status
-	    		end
-	    	end
-	    end
+
+		if DuplicateRecord.where(new_record_id: @person.id).count == 0
+			RecordStatus.change_status(@person, 'DC ACTIVE','No duplicate association found')
+			redirect_to "/people/view/#{@person.id}?index=0&next_url=/dc/potential_duplicates" and return
+		end
+		DuplicateRecord.where(new_record_id: @person.id).each do |d|
+			@existing_ids << d.existing_record_id
+		end
 
 	    @existing_record  = Record.find(@existing_ids[params[:index].to_i])
 
@@ -353,16 +350,12 @@ class DcController < ApplicationController
 		RecordIdentifier.assign_den(person, UserModel.current_user.id)
 		RecordStatus.change_status(person, "HQ ACTIVE",params[:comment])
 		
-
-		(person)
-		Audit.user = params[:user_id].to_s
-		Audit.create({
+		AuditRecord.create({
 
 						:record_id => params[:id],
 						:audit_type => "RESOLVE DUPLICATE",
 						:level => "Person",
-						:reason => params[:comment],
-						:change_log =>[{:audit_id => params[:audit_id]}]
+						:reason => params[:comment]
 		})
 
 
