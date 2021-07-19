@@ -3,11 +3,12 @@ class DeathEntryNumber< ActiveRecord::Base
 	self.table_name = "death_entry_numbers"
 	def push_to_remote
 		begin
-			puts "Pushing records to couch"
-			identifier_record = RecordIdentifier.new
+			puts "Pushing records to remote"
+			den ="#{self.district_code}/#{self.value.to_s.rjust(7,"0")}/#{self.year}"
+			identifier_record = RecordIdentifier.where(identifier: den).first
+			identifier_record = RecordIdentifier.new if identifier_record.blank?
 	        identifier_record.person_record_id = self.person_record_id.to_s
 	        identifier_record.identifier_type = "DEATH ENTRY NUMBER"
-	        den ="#{self.district_code}/#{self.value.to_s.rjust(7,"0")}/#{self.year}"
 	        identifier_record.identifier =  den
 	        identifier_record.den_sort_value = (self.year.to_s + self.value.to_s.rjust(7,"0")).to_i
 	        identifier_record.district_code = self.district_code

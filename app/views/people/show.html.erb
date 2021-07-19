@@ -268,12 +268,12 @@
 
               <td colspan="3" style="border-right:none"><b>Place of Registration : </b></td>
               <% if @person.facility_code.to_s.present? %>
-                <td colspan="3" style="color:#4775a1;border-left:none"><%= HealthFacility.by_facility_code.key(@person.facility_code).first.name %> , <%= District.find(@person.district_code).name %></td>
+                <td colspan="3" style="color:#4775a1;border-left:none"><%= Facility.where(facility_code: @person.facility_code).first.name %> , <%= DistrictRecord.find(@person.district_code).name %></td>
               <%else%>
               	 <% if@person.registration_type == "Dead on Arrival" %>
-              	 	    <td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration %>,<%= District.find(@person.district_code).name %></td>
+              	 	    <td colspan="3" style="color:#4775a1;border-left:none"><%= @person.place_of_registration %>,<%= DistrictRecord.find(@person.district_code).name %></td>
               	 <%else%>
-                	<td colspan="3" style="color:#4775a1;border-left:none"><%= District.find(@person.district_code).name %> DRO</td>
+                	<td colspan="3" style="color:#4775a1;border-left:none"><%= DistrictRecord.find(@person.district_code).name %> DRO</td>
                 <%end%>
               <%end%>
           </tr>

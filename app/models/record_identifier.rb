@@ -73,7 +73,7 @@ class RecordIdentifier < ActiveRecord::Base
 			rescue Exception => e
 			end
 		elsif person_assigened_den.present?
-			person_assigened_den.push_to_couch
+			person_assigened_den.push_to_remote
 
 			RecordStatus.where(person_record_id: person.id).order(:created_at).each do |s|
 				s.voided = 1

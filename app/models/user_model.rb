@@ -1,5 +1,5 @@
 class UserModel < ActiveRecord::Base
-	after_commit :push_to_couchDB,:push_to_remote
+	after_commit :push_to_remote
 	self.table_name = "user"
 	cattr_accessor :current_user
 	def password_matches?(plain_password)
@@ -49,6 +49,10 @@ class UserModel < ActiveRecord::Base
 	end
 
 	def push_to_remote
+		data = self.as_json
+		if data["type"].nil?
+			data["type"] = "User"
+		end
 		return  RemotedPusher.push(self.as_json)
 	end
 end

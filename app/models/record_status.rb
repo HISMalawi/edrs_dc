@@ -1,5 +1,5 @@
 class RecordStatus < ActiveRecord::Base
-	after_commit :push_to_couchDB, :push_to_remote
+	after_commit :push_to_remote
 	before_create :set_id
 	self.table_name = "person_record_status"
 	def person
