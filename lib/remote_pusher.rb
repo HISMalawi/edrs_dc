@@ -18,16 +18,17 @@ class RemotedPusher
     end
 
     def self.handle_push_fail(params)
+        connection = ActiveRecord::Base.connection
         model_map = self.model_map
         type = params["type"]
-        query = "SELECT * FROM push_sync_tracker WHERE record_id ='#{params[model_map[type]]}';"
+        query = "SELECT * FROM push_sync_tracker WHERE record_id ='#{params[model_map[type]]}' AND sync_status=0;"
         push_record = connection.select_all(query).as_json
         if push_record.count == 0
             insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
-            VALUES('#{params[model_map[type]]}','#{type}',
-            0, '#{SETTINGS['district_code']}', NOw(),NOW());"
+                            VALUES('#{params[model_map[type]]}','#{type}',0,'#{SETTINGS['district_code']}', NOw(),NOW());"
+            SimpleSQL.query_exec(insert_query)
         end
-        SimpleSQL.query_exec(insert_query)
+
     end
 
     def self.push(params)
@@ -66,8 +67,7 @@ class RemotedPusher
                     
                     if push_record.count == 0
                         insert_query = "INSERT INTO  push_sync_tracker (record_id,type,sync_status,district_code,created_at,updated_at)
-                        VALUES('#{response_data["data"][model_map[type]]}','#{type}',
-                        #{sync_status}, '#{SETTINGS['district_code']}', NOw(),NOW());"
+                                        VALUES('#{response_data["data"][model_map[type]]}','#{type}',#{sync_status}, '#{SETTINGS['district_code']}', NOw(),NOW());"
                     else
                         insert_query = "UPDATE push_sync_tracker SET sync_status = #{sync_status} WHERE record_id='#{response_data["data"][model_map[type]]}';"
                     end
