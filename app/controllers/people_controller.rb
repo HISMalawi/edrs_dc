@@ -55,7 +55,7 @@ class PeopleController < ApplicationController
   def new
 	   #redirect_to "/" and return if !(UserModel.current_user.activities_by_level("Facility").include?("Register a record"))
      @site_type = site_type.to_s
-     @current_nationality = Nationality.by_nationality.key("Malawian").last
+     @current_nationality = NationalityRecord.where(nationality: "Malawian").last
      if session[:district_code].blank?
         if SETTINGS['site_type'] == "dc" || SETTINGS['site_type'] == "facility"
             session[:district_code] = SETTINGS['district_code'] 
@@ -327,10 +327,33 @@ class PeopleController < ApplicationController
       search_query = ""
     end
 
-    sql = "SELECT distinct person_id, status FROM person_record_status s INNER JOIN people p ON s.person_record_id = p.person_id 
-           WHERE  s.voided = 0 AND status IN ('#{params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.join("','")}') 
-           #{search_query} #{district_code_query} ORDER BY s.created_at DESC"
- 
+    if params[:den].present? && params[:den]=="true"
+      den = "identifier as den,"
+      den_query = " INNER JOIN person_identifier i ON p.person_id = i.person_record_id "
+      den_where_query = " AND identifier_type='DEATH ENTRY NUMBER'"
+    else
+      den = ""
+      den_query = ""
+      den_where_query = ""
+    end
+    sql = "SELECT 
+                #{den}
+                CONCAT(first_name, ' ',last_name,' (',(IF(gender='Male', 'M', 'F')),')') as name,
+                DATE_FORMAT(birthdate, '%d/%M/%Y')as dob,
+                DATE_FORMAT(date_of_death, '%d/%M/%Y')as dod,
+                CASE place_of_death
+                    WHEN 'Home' THEN CONCAT(place_of_death_village,',',place_of_death_ta,',',place_of_death_district)
+                    WHEN 'Health Facility' THEN CONCAT(hospital_of_death,',',place_of_death_district)
+                    WHEN 'Other' THEN CONCAT(other_place_of_death,',',place_of_death_district)
+                    ELSE 'N/A'
+                END as place_of_death,
+                IF(mother_first_name=NULL, 'N/A', CONCAT(informant_first_name, ' ', informant_last_name)) as name_of_informant,
+                person_id
+            FROM person_record_status s 
+            INNER JOIN people p ON s.person_record_id = p.person_id
+            #{den_query} 
+            WHERE  s.voided = 0 AND status IN ('#{params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.join("','")}') 
+            #{search_query} #{district_code_query} #{den_where_query} ORDER BY s.created_at DESC"
     sql =  "#{sql} LIMIT #{params[:length].to_i} OFFSET #{offset}"
 
     connection = ActiveRecord::Base.connection
@@ -344,11 +367,9 @@ class PeopleController < ApplicationController
           status_match = params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.include? "#{max_status}"
 
           next if status_match == false
-          person = Record.find(row["person_id"])
-          next if person.blank?
-          next if person.first_name.blank?  && person.last_name.blank?
-          records[person.id] = person_selective_fields(person)
-          cases << data_table_entry(person,params[:den])
+          entry = []
+          entry << row['den'] if params[:den].present? && params[:den]=="true"
+          cases << entry + [row["name"],row["dob"],row["dod"],row["place_of_death"],row["name_of_informant"],row["person_id"]]
     end
     sql = "SELECT COUNT(distinct person_record_id) as total FROM person_record_status p WHERE voided = 0 AND status 
           IN ('#{params[:statuses].collect{|status| status.gsub(/\_/, " ").upcase}.join("','")}') #{district_code_query}"

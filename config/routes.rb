@@ -410,6 +410,16 @@ Rails.application.routes.draw do
   ############################Ajax Data Table ###########################################################################
   get 'add_more_open_cases/:page_number' => 'people#more_open_cases'
 
+   ################## Sync ##############################################
+   post "/dc_sync" => "api#dc_sync"
+   post "/api/v1/dc_sync" => "api#dc_sync"
+   get  "/hq_sync"=>"api#hq_sync"
+   get  "/api/v1/hq_sync"=>"api#hq_sync"
+   get  "/get_remote_record" => "api#get_remote_record"
+   get  "/api/v1/get_remote_record" => "api#get_remote_record"
+   get "/update_sync_status" =>"api#update_sync_status"
+   get "/api/v1/update_sync_status" =>"api#update_sync_status"
+
   resources :users
 
   resource :login do

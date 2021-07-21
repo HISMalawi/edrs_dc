@@ -64,9 +64,9 @@ class UsersController < ApplicationController
     
     if params["search_string"].present?
         entry = params["search_string"] rescue nil
-        districts = District.by_name.startkey(entry).endkey("#{entry}\ufff0").limit(32).each
+        districts = DistrictRecord.where("name LIKE '#{entry}'").limit(32).each
     else
-        districts = District.all.each
+        districts = DistrictRecord.all.each
     end
     
     names = []

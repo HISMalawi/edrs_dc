@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
   def facility    
-      return HealthFacility.by_facility_code.key(SETTINGS['facility_code'].to_s).last rescue nil
+      return Facility.where(facility_code: SETTINGS['facility_code'].to_s).last rescue nil
   end
 
   def current_user_keyboard_preference
@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
   end
   def district
       if facility.present?
-           return District.find(facility.district_id) rescue nil
+           return DistrictRecord.find(facility.district_id) rescue nil
       else
           if SETTINGS['district_code'].blank?
             district_code = UserModel.current_user.district_code.to_s
@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
             district_code = SETTINGS['district_code'].to_s
           end
            
-          district = District.find(district_code) rescue nil
+          district = DistrictRecord.find(district_code) rescue nil
 
           return district
       end     

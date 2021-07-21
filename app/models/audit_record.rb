@@ -31,7 +31,7 @@ class AuditRecord < ActiveRecord::Base
 	def push_to_remote
 		data = self.as_json
 		if data["type"].nil?
-			data["type"] = "User"
+			data["type"] = "AuditRecord"
 		end
 		return  RemotedPusher.push(self.as_json)
 	end
